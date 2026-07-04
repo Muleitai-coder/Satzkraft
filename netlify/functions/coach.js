@@ -12,6 +12,15 @@ ABLAUF:
 6. Pflicht-Uebungen MUESSEN im Programm enthalten sein. Verbotene Uebungen duerfen in KEINER Variante vorkommen (auch keine nahen Varianten der verbotenen Bewegung, wenn die Einschraenkung dagegen spricht). Nutze das Kraftniveau fuer realistische Startgewichte (Anker: Kniebeuge; andere Uebungen im ueblichen Verhaeltnis dazu ableiten, konservativ). Verwende ausschliesslich das angegebene Equipment.
 7. Beruecksichtige Einschraenkungen konsequent (z.B. Knie: keine tiefen belasteten Kniebeugen, Alternativen waehlen; Schulter: kein Ueberkopf-Druecken usw.). Uebungsauswahl strikt ans Equipment anpassen. Volumen und Uebungszahl an Einheitsdauer und Level ausrichten.
 
+WARM-UP & COOL-DOWN:
+- NUR wenn im Briefing "Warm-up & Cool-down: Ja" steht. Sonst die Felder "warmup" und "cooldown" komplett weglassen.
+- Rein zeitbasiert: {name, seconds}. seconds 20-90. Warm-up 4-6 Eintraege, Cool-down 3-5 Eintraege pro Tag.
+- Passend zum Tag waehlen (Push-Tag: Schulter/Brust-Mobilisation; Beintag: Huefte/Knie) und Beschwerden beruecksichtigen.
+- Namen MUESSEN exakt aus diesen Listen stammen (keine anderen, keine Abwandlungen):
+- WARMUP-LISTE: Armkreisen | Schulterkreisen mit Band | Band Pull-Aparts | Cat-Cow | World's Greatest Stretch | Hueftkreisen [exakt: "H\u00fcftkreisen"] | Beinpendeln | Ausfallschritte dynamisch | Kniebeugen ohne Gewicht | Glute Bridges | Hampelmaenner [exakt: "Hampelm\u00e4nner"] | Seilspringen | Rumpfrotation stehend | Handgelenkkreisen | Nackenmobilisation | Schulterblatt-Liegestuetze [exakt: "Schulterblatt-Liegest\u00fctze"] | Thorakale Rotation im Vierfuessler [exakt: "Thorakale Rotation im Vierf\u00fc\u00dfler"] | Fersenheben | Marschieren auf der Stelle | Inchworm
+- COOLDOWN-LISTE: Brustdehnung Tuerrahmen [exakt: "Brustdehnung T\u00fcrrahmen"] | Schulterdehnung ueber Kreuz [exakt: "Schulterdehnung \u00fcber Kreuz"] | Trizepsdehnung ueber Kopf [exakt: "Trizepsdehnung \u00fcber Kopf"] | Lat-Dehnung am Rack | Kindhaltung | Kobra-Dehnung | Hueftbeuger-Dehnung im Ausfallschritt [exakt: "H\u00fcftbeuger-Dehnung im Ausfallschritt"] | Taubenhaltung | Beinrueckseiten-Dehnung [exakt: "Beinr\u00fcckseiten-Dehnung"] | Quadrizeps-Dehnung stehend | Wadendehnung an der Wand | Gesaessdehnung liegend (Figur 4) [exakt: "Ges\u00e4\u00dfdehnung liegend (Figur 4)"] | Unterarmdehnung | Tiefe Hocke halten
+- Schreibe die Namen im JSON mit echten Umlauten (UTF-8), exakt wie in den [exakt: ...]-Angaben.
+
 UEBUNGSNAMEN (streng):
 - Jeder Name bezeichnet GENAU EINE konkrete, sofort ausfuehrbare Uebung inkl. Equipment, z.B. "Kurzhantel-Rudern einarmig", "Langhantel-Kniebeuge", "Band Face Pulls", "Ring-Rudern".
 - VERBOTEN in Namen: "Ersatz", "Alternative", "variabel", "wahlweise", "nach Wahl", "oder", "o.ae.", "aehnlich" sowie jede Formulierung, die dem Nutzer die Auswahl ueberlaesst. Entscheide dich selbst fuer eine Uebung.
@@ -21,7 +30,9 @@ JSON-FORMAT (exakt einhalten):
 "settings":{"progressionSystem":"double_progression","deloadMultiplier":0.6,"requireAllSetsForIncrease":true,"allowAutoDecrease":true,"postDeloadReturnMultiplier":0.925},
 "categories":{"<key>":{"label":"...","color":"amber|emerald|violet|sky|orange|rose|slate","rest":<Sekunden>,"reps":{"aufbau":[min,max],"intensiv":[min,max],"deload":[min,max]}}},
 "weeks":[{"n":1,"phase":"aufbau|intensiv|deload","label":"...","rir":"2","sets":{"<category-key>":<anzahl>},"note":"..."}],
-"days":[{"key":"A","weekday":"Montag","title":"...","exercises":[
+"days":[{"key":"A","weekday":"Montag","title":"...",
+"warmup":[{"name":"<aus WARMUP-LISTE>","seconds":45}],"cooldown":[{"name":"<aus COOLDOWN-LISTE>","seconds":30}],
+"exercises":[
  {"name":"...","category":"<key>","weighted":true,"increment":2.5,"startWeight":40,"garmin":"...","cue":"Technik-Hinweis","video":"YouTube-Suchbegriff"},
  {"name":"Klimmzug mit Zusatz","category":"<key>","weighted":true,"bodyweight":true,"increment":2.5,"startWeight":0},
  {"name":"Plank","category":"core","unit":"seconds","target":"3 x 30-60 s"},
