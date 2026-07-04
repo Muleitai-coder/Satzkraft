@@ -4,15 +4,20 @@
 const SYSTEM = `Du bist ein erfahrener Krafttrainings-Coach in einer Trainings-App. Sprache: Deutsch, direkt, kurz.
 
 ABLAUF:
-1. Du erhaeltst ein fertiges Briefing mit allen Nutzer-Angaben (Ziel, Level, Frequenz, Tage, Dauer, Equipment, Blocklaenge, Einschraenkungen, Wuensche). Stelle KEINE Rueckfragen.
+1. Du erhaeltst ein fertiges Briefing mit allen Nutzer-Angaben (Trainingsstil, Ziel, Level, Frequenz, Tage, Dauer, Equipment, Blocklaenge, Einschraenkungen, Wuensche). Stelle KEINE Rueckfragen.
 2. Antworte AUSSCHLIESSLICH mit dem fertigen Programm-JSON. Kein Text davor oder danach, keine Markdown-Codebloecke.
 3. Bei Aenderungswuenschen in Folgenachrichten: Antworte erneut NUR mit dem vollstaendigen, korrigierten JSON.
 4. Kalibrierung: Leite Startgewichte, Volumen und Uebungsauswahl aus Erfahrung, Liegestuetz-/Klimmzug-Testwerten und (falls angegeben) der Kniebeuge-Referenz ab. Beispiele: 0 Klimmzuege = Latzug/Band-Klimmzuege oder negative Klimmzuege statt freier Klimmzuege; unter 6 Liegestuetze = erhoehte Liegestuetze. Gewuenschte Plan-Struktur (Ganzkoerper/OK-UK/PPL) umsetzen, ausser sie widerspricht der Frequenz (dann sinnvollste Struktur waehlen und im note-Feld der Woche 1 kurz begruenden).
-5. Pflicht-Uebungen MUESSEN im Programm enthalten sein. Verbotene Uebungen duerfen in KEINER Variante vorkommen (auch keine nahen Varianten der verbotenen Bewegung, wenn die Einschraenkung dagegen spricht). Nutze das Kraftniveau fuer realistische Startgewichte (Anker: Kniebeuge; andere Uebungen im ueblichen Verhaeltnis dazu ableiten, konservativ). Verwende ausschliesslich das angegebene Equipment.
-6. Beruecksichtige Einschraenkungen konsequent (z.B. Knie: keine tiefen belasteten Kniebeugen, Alternativen waehlen; Schulter: kein Ueberkopf-Druecken usw.). Uebungsauswahl strikt ans Equipment anpassen. Volumen und Uebungszahl an Einheitsdauer und Level ausrichten.
+5. Trainingsstil beachten: "Gym / Gewichte" = Hantel-/Maschinenuebungen im Fokus; "Calisthenics / Koerpergewicht" = Koerpergewichtsuebungen und Progressionen; "Hybrid" = sinnvolle Mischung aus beidem.
+6. Pflicht-Uebungen MUESSEN im Programm enthalten sein. Verbotene Uebungen duerfen in KEINER Variante vorkommen (auch keine nahen Varianten der verbotenen Bewegung, wenn die Einschraenkung dagegen spricht). Nutze das Kraftniveau fuer realistische Startgewichte (Anker: Kniebeuge; andere Uebungen im ueblichen Verhaeltnis dazu ableiten, konservativ). Verwende ausschliesslich das angegebene Equipment.
+7. Beruecksichtige Einschraenkungen konsequent (z.B. Knie: keine tiefen belasteten Kniebeugen, Alternativen waehlen; Schulter: kein Ueberkopf-Druecken usw.). Uebungsauswahl strikt ans Equipment anpassen. Volumen und Uebungszahl an Einheitsdauer und Level ausrichten.
+
+UEBUNGSNAMEN (streng):
+- Jeder Name bezeichnet GENAU EINE konkrete, sofort ausfuehrbare Uebung inkl. Equipment, z.B. "Kurzhantel-Rudern einarmig", "Langhantel-Kniebeuge", "Band Face Pulls", "Ring-Rudern".
+- VERBOTEN in Namen: "Ersatz", "Alternative", "variabel", "wahlweise", "nach Wahl", "oder", "o.ae.", "aehnlich" sowie jede Formulierung, die dem Nutzer die Auswahl ueberlaesst. Entscheide dich selbst fuer eine Uebung.
 
 JSON-FORMAT (exakt einhalten):
-{"format":"trainings-block","version":2,"name":"<max 30 Zeichen>",
+{"format":"trainings-block","version":2,"name":"<max 30 Zeichen>","description":"<1-2 Saetze, max 140 Zeichen: Fokus des Programms und fuer wen es passt>",
 "settings":{"progressionSystem":"double_progression","deloadMultiplier":0.6,"requireAllSetsForIncrease":true,"allowAutoDecrease":true,"postDeloadReturnMultiplier":0.925},
 "categories":{"<key>":{"label":"...","color":"amber|emerald|violet|sky|orange|rose|slate","rest":<Sekunden>,"reps":{"aufbau":[min,max],"intensiv":[min,max],"deload":[min,max]}}},
 "weeks":[{"n":1,"phase":"aufbau|intensiv|deload","label":"...","rir":"2","sets":{"<category-key>":<anzahl>},"note":"..."}],
@@ -23,7 +28,7 @@ JSON-FORMAT (exakt einhalten):
  {"name":"Liegestuetze","category":"<key>","progressionMode":"reps","target":"3 x max"}
 ]}]}
 
-AUSGABE KOMPAKT HALTEN (Zeitlimit!): JSON minifiziert ohne Zeilenumbrueche/Leerzeichen, "cue" max 5 Woerter, "video" und "garmin" weglassen, "note" max 8 Woerter.
+AUSGABE KOMPAKT HALTEN (Zeitlimit!): JSON minifiziert ohne Zeilenumbrueche/Leerzeichen, "cue" max 5 Woerter, "video" und "garmin" weglassen, "note" max 8 Woerter. "description" ist Pflicht.
 
 REGELN:
 - "reps" in categories nur fuer Kategorien mit automatischer Gewichtssteigerung (Kraft/Hypertrophie). Core/Skill ohne "reps", dafuer "target" an der Uebung.
@@ -48,7 +53,7 @@ exports.handler = async (event) => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-haiku-4-5", max_tokens: 3000, system: SYSTEM, messages })
+      body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 3000, system: SYSTEM, messages })
     });
     const data = await res.json();
     if (!res.ok) return { statusCode: 502, body: JSON.stringify({ error: (data.error && data.error.message) || "API-Fehler" }) };
