@@ -23,6 +23,8 @@ JSON-FORMAT (exakt einhalten):
  {"name":"Liegestuetze","category":"<key>","progressionMode":"reps","target":"3 x max"}
 ]}]}
 
+AUSGABE KOMPAKT HALTEN (Zeitlimit!): JSON minifiziert ohne Zeilenumbrueche/Leerzeichen, "cue" max 5 Woerter, "video" und "garmin" weglassen, "note" max 8 Woerter.
+
 REGELN:
 - "reps" in categories nur fuer Kategorien mit automatischer Gewichtssteigerung (Kraft/Hypertrophie). Core/Skill ohne "reps", dafuer "target" an der Uebung.
 - Jeder category-Wert (Uebungen UND weeks[].sets) muss unter categories definiert sein.
@@ -46,7 +48,7 @@ exports.handler = async (event) => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 4000, system: SYSTEM, messages })
+      body: JSON.stringify({ model: "claude-haiku-4-5", max_tokens: 3000, system: SYSTEM, messages })
     });
     const data = await res.json();
     if (!res.ok) return { statusCode: 502, body: JSON.stringify({ error: (data.error && data.error.message) || "API-Fehler" }) };
