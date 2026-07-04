@@ -177,6 +177,15 @@ body.rest-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 }
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:95;display:none;align-items:center;justify-content:center;padding:24px}
 .mbox{background:#141920;border:1px solid #242b35;border-radius:16px;padding:20px;max-width:360px;width:100%;max-height:84vh;overflow-y:auto}
+#wucd{display:none;position:fixed;inset:0;z-index:70;background:#0a0d12;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:12px}
+#wucd.open{display:flex}
+#wucd .wuk{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#71717a;font-weight:700}
+#wucd .wup{font-size:13px;color:#71717a}
+#wucd .wun{font-size:26px;font-weight:800;line-height:1.25;max-width:340px}
+#wucd .wut{font-size:72px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+#wucd .wunext{font-size:13px;color:#71717a;min-height:18px}
+#wucd .wurow{display:flex;gap:10px;margin-top:8px}
+html[data-theme="light"] #wucd{background:#f4f4f5}
 .htbl{width:100%;border-collapse:collapse;margin-bottom:4px}
 .htbl th,.htbl td{border-bottom:1px solid #242b35;padding:7px 6px;font-size:12px;text-align:left;color:#e4e4e7;vertical-align:top}
 .htbl th{color:#71717a;font-weight:600;font-size:11px}
@@ -373,6 +382,7 @@ html[data-theme="light"] .ex.rest-focus{box-shadow:0 0 0 1px rgba(52,211,153,.2)
 <div id="report" class="overlay"></div>
 <div id="lib"></div>
 <div id="modal"></div>
+<div id="wucd"></div>
 <script>
 var CAT_COLORS=["amber","emerald","violet","sky","orange","rose","slate"];
 var LIMITS={maxDays:7,maxWeeks:16,maxExPerDay:12,maxSets:10,maxNameLen:30,maxLabelLen:16};
@@ -834,7 +844,9 @@ function renderView(){
  h+='<div class="dayhdr'+(active()?' active':'')+'">'+(active()?'':'<h2>'+esc(day.wd||day.key)+(day.title?' · '+esc(day.title):'')+'</h2>')+'<span class="p" id="dayprog">'+dd+'/'+day.ex.length+' erledigt</span></div>';
  S.history.filter(function(e){return e.week===S.week&&e.day===S.day;}).forEach(function(e){var segments=e.segments||1;h+='<div class="sessbox">🗓 '+dDate(e.start)+(segments>1?' · Dauer '+fmtTime(e.dur)+' · '+segments+' Abschnitte':' · '+dClock(e.start)+'–'+dClock(e.end)+' · Dauer '+fmtTime(e.dur))+'</div>';});
  if(!active()&&!dayComplete(S.week,S.day))h+='<div class="starthint">▶ Tippe unten auf <b>Training starten</b>, um Sätze einzutragen.</div>';
+ if(day.wu&&day.wu.length){var wus=day.wu.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="wubtn" style="width:100%;margin:0 0 10px">\u25b6 Warm-up starten \u00b7 '+day.wu.length+' \u00dcbungen \u00b7 ~'+Math.round(wus/60)+' min</button>';}
  day.ex.forEach(function(ex){h+=exCardHtml(ex);});
+ if(day.cd&&day.cd.length){var cds=day.cd.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="cdbtn" style="width:100%;margin:4px 0 10px">\u25b6 Cool-down starten \u00b7 '+day.cd.length+' \u00dcbungen \u00b7 ~'+Math.round(cds/60)+' min</button>';}
  h+='<div class="legend">Oben rechts: <b>Programme</b> – laden/exportieren &amp; Fortschritt zurücksetzen · <b>Auswertung</b> – Bericht als PDF. Die Auswertung rechnet aus dem tatsächlich gehobenen Gewicht das Folgegewicht.<br><b>Beta:</b> ±Stepper, Scheibenrechner, 1RM-Trend im Verlauf, Backup-Erinnerung, Programm-Link.</div>';
  document.getElementById("app").innerHTML='<div class="wrap">'+h+'</div>';
 }
@@ -1212,7 +1224,7 @@ function importTranslate(ext){
   settings:(ext.settings&&typeof ext.settings==="object"&&!Array.isArray(ext.settings))?ext.settings:undefined,
   categories:cats,
   weeks:ext.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label||w.phase,rir:String(w.rir==null?"":w.rir),note:w.note||"",sets:w.sets||{}};}),
-  days:ext.days.map(function(d){return{key:String(d.key),wd:d.weekday||d.key,title:d.title||"",ex:d.exercises.map(function(e,i){return{id:String(d.key)+"_"+i,name:e.name,en:e.en||"",sub:e.cue||"",cat:e.category,target:e.target||"",q:e.video||(e.name+" Technik"),gname:(e.garmin!==undefined?e.garmin:null),proxy:e.proxy||null,w:!!e.weighted,inc:e.increment||2.5,def:(e.startWeight!=null?e.startWeight:0),bw:!!e.bodyweight,unit:((e.unit==="seconds"||e.unit==="time")?"seconds":"reps"),pmode:((typeof e.progressionMode==="string"&&VALID_PROGRESSION_MODES.indexOf(e.progressionMode)>=0)?e.progressionMode:undefined)};})};})
+  days:ext.days.map(function(d){return{key:String(d.key),wd:d.weekday||d.key,title:d.title||"",wu:wucdSan(d.warmup),cd:wucdSan(d.cooldown),ex:d.exercises.map(function(e,i){return{id:String(d.key)+"_"+i,name:e.name,en:e.en||"",sub:e.cue||"",cat:e.category,target:e.target||"",q:e.video||(e.name+" Technik"),gname:(e.garmin!==undefined?e.garmin:null),proxy:e.proxy||null,w:!!e.weighted,inc:e.increment||2.5,def:(e.startWeight!=null?e.startWeight:0),bw:!!e.bodyweight,unit:((e.unit==="seconds"||e.unit==="time")?"seconds":"reps"),pmode:((typeof e.progressionMode==="string"&&VALID_PROGRESSION_MODES.indexOf(e.progressionMode)>=0)?e.progressionMode:undefined)};})};})
  };
 }
 // Öffentliche Modul-Namen (Aliasse auf die bestehende, erprobte Logik).
@@ -1225,7 +1237,7 @@ function exportTranslate(p){
   _anleitung:ANLEITUNG,
   format:"trainings-block",version:2,name:p.name,categories:cats,
   weeks:p.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label,rir:w.rir,sets:w.sets,note:w.note};}),
-  days:p.days.map(function(d){return{key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;}else if(e.unit==="seconds")o.unit="seconds";if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.target)o.target=e.target;return o;})};})
+  days:p.days.map(function(d){var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;}else if(e.unit==="seconds")o.unit="seconds";if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.target)o.target=e.target;return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
  };
  if(p.settings)out.settings=p.settings;
  return out;
@@ -1281,9 +1293,74 @@ function exportCurrentJSON(){return JSON.stringify(exportTranslate(PROG()),null,
 function confirmReset(){
  showModal("Fortschritt zurücksetzen?","Eingetragene Sätze & Verlauf des aktiven Programms („"+esc(PROG().name)+"“) werden gelöscht. Das Programm selbst bleibt.",[{label:"Zurücksetzen",cls:"danger",action:function(){var st=newStore(PROG());S.store[S.active]=st;S.tg=st.tg;S.logs=st.logs;S.history=st.history;S.workout=st.workout;S.week=1;S.day=dayKeys()[0];save();closeLib();renderView();renderBar();}},{label:"Abbrechen",action:null}]);
 }
+// ---------- Warm-up & Cool-down (zeitbasiert, Whitelist) ----------
+var WUCD_LIB={
+ warmup:["Armkreisen","Schulterkreisen mit Band","Band Pull-Aparts","Cat-Cow","World's Greatest Stretch","H\u00fcftkreisen","Beinpendeln","Ausfallschritte dynamisch","Kniebeugen ohne Gewicht","Glute Bridges","Hampelm\u00e4nner","Seilspringen","Rumpfrotation stehend","Handgelenkkreisen","Nackenmobilisation","Schulterblatt-Liegest\u00fctze","Thorakale Rotation im Vierf\u00fc\u00dfler","Fersenheben","Marschieren auf der Stelle","Inchworm"],
+ cooldown:["Brustdehnung T\u00fcrrahmen","Schulterdehnung \u00fcber Kreuz","Trizepsdehnung \u00fcber Kopf","Lat-Dehnung am Rack","Kindhaltung","Kobra-Dehnung","H\u00fcftbeuger-Dehnung im Ausfallschritt","Taubenhaltung","Beinr\u00fcckseiten-Dehnung","Quadrizeps-Dehnung stehend","Wadendehnung an der Wand","Ges\u00e4\u00dfdehnung liegend (Figur 4)","Unterarmdehnung","Tiefe Hocke halten"]
+};
+var WUCD_SET={};WUCD_LIB.warmup.concat(WUCD_LIB.cooldown).forEach(function(n){WUCD_SET[n]=1;});
+ANLEITUNG.erlaubte_werte.warmup_uebungen=WUCD_LIB.warmup;
+ANLEITUNG.erlaubte_werte.cooldown_uebungen=WUCD_LIB.cooldown;
+ANLEITUNG.warmup_cooldown="OPTIONAL pro Tag: warmup:[{name,seconds}] und cooldown:[{name,seconds}]. Rein zeitbasiert (seconds 15-180), max 8 Eintraege je Block. 'name' MUSS exakt aus erlaubte_werte.warmup_uebungen bzw. cooldown_uebungen stammen, sonst wird der Eintrag beim Laden verworfen.";
+function wucdSan(arr){
+ if(!Array.isArray(arr))return [];
+ var out=[];
+ arr.forEach(function(it){
+  if(!it||!it.name||!WUCD_SET[String(it.name)])return;
+  var sec=Math.round(+it.seconds||45);if(sec<15)sec=15;if(sec>180)sec=180;
+  out.push({name:String(it.name),sec:sec});
+ });
+ return out.slice(0,8);
+}
+var wucdList=null,wucdIdx=0,wucdEnd=0,wucdTimer=null,wucdKind="";
+function startWucd(kind){
+ var d=dayByKey(S.day),list=kind==="wu"?(d.wu||[]):(d.cd||[]);
+ if(!list.length)return;
+ wucdList=list;wucdIdx=0;wucdKind=kind;
+ unlockAudio();requestWakeLock();
+ openWucdStep();
+}
+function openWucdStep(){
+ wucdEnd=Date.now()+wucdList[wucdIdx].sec*1000;
+ renderWucd();
+ clearInterval(wucdTimer);wucdTimer=setInterval(tickWucd,250);
+}
+function tickWucd(){
+ var left=(wucdEnd-Date.now())/1000;
+ if(left<=0){beep();if(navigator.vibrate)navigator.vibrate(200);nextWucd();return;}
+ var el=document.getElementById("wut");if(el)el.textContent=fmtTime(left);
+}
+function nextWucd(){
+ wucdIdx++;
+ if(wucdIdx>=wucdList.length){beep();endWucd();return;}
+ openWucdStep();
+}
+function endWucd(){
+ clearInterval(wucdTimer);wucdTimer=null;wucdList=null;
+ var el=document.getElementById("wucd");el.classList.remove("open");el.innerHTML="";
+ if(!(S.workout&&S.workout.running))releaseWakeLock();
+}
+function renderWucd(){
+ var it=wucdList[wucdIdx],nx=wucdList[wucdIdx+1];
+ var h='<button class="iconbtn" id="wucdclose" aria-label="Beenden" style="position:absolute;top:16px;right:16px;font-size:22px">\u2715</button>';
+ h+='<div class="wuk">'+(wucdKind==="wu"?"Warm-up":"Cool-down")+'</div>';
+ h+='<div class="wup">'+(wucdIdx+1)+' / '+wucdList.length+'</div>';
+ h+='<div class="wun">'+esc(it.name)+'</div>';
+ h+='<div class="wut" id="wut">'+fmtTime(it.sec)+'</div>';
+ h+='<div class="wunext">'+(nx?"Danach: "+esc(nx.name):"Letzte \u00dcbung")+'</div>';
+ h+='<div class="wurow"><button class="smallbtn" id="wucdplus">+15 s</button><button class="smallbtn go" id="wucdskip">Weiter \u203a</button></div>';
+ var el=document.getElementById("wucd");el.innerHTML=h;el.classList.add("open");
+}
+document.getElementById("wucd").addEventListener("click",function(e){
+ var b=e.target.closest("button");if(!b)return;
+ if(b.id==="wucdclose"){endWucd();return;}
+ if(b.id==="wucdskip"){nextWucd();return;}
+ if(b.id==="wucdplus"){wucdEnd+=15000;var el=document.getElementById("wut");if(el)el.textContent=fmtTime((wucdEnd-Date.now())/1000);return;}
+});
 // ---------- KI-Coach (Beta): Klick-Wizard ----------
 var COACH_STEPS=[
- {k:"ziel",q:"Was ist dein Hauptziel?",opts:["Muskelaufbau","Maximalkraft","K\u00f6rper definieren / Fett verlieren","Calisthenics / Athletik","Allgemeine Fitness & Gesundheit"]},
+ {k:"stil",q:"Wie willst du trainieren?",opts:["Gym / Gewichte","Calisthenics / K\u00f6rpergewicht","Hybrid (Gewichte + Calisthenics)"]},
+ {k:"ziel",q:"Was ist dein Hauptziel?",opts:["Muskelaufbau","Maximalkraft","K\u00f6rper definieren / Fett verlieren","Allgemeine Fitness & Gesundheit"]},
  {k:"nebenziel",q:"Wichtigstes Nebenziel?",opts:["Bessere Haltung","Mehr K\u00f6rperspannung","Schmerzen vorbeugen","Mehr Beweglichkeit","Athletischer aussehen","Kein Nebenziel"]},
  {k:"erfahrung",q:"Wie lange trainierst du schon regelm\u00e4\u00dfig?",opts:["Ich starte neu","Unter 3 Monate","3\u201312 Monate","1\u20133 Jahre","\u00dcber 3 Jahre","Unregelm\u00e4\u00dfig"]},
  {k:"pushups",q:"Wie viele saubere Liegest\u00fctze schaffst du?",opts:["0","1\u20135","6\u201315","16\u201330","Mehr als 30","Wei\u00df nicht"]},
@@ -1293,6 +1370,7 @@ var COACH_STEPS=[
  {k:"tage",q:"Wie oft pro Woche willst du trainieren?",opts:["2\u00d7","3\u00d7","4\u00d7","5\u00d7"]},
  {k:"wtage",q:"An welchen Tagen?",multi:true,cols:4,excl:"Egal",opts:["Mo","Di","Mi","Do","Fr","Sa","So","Egal"]},
  {k:"dauer",q:"Wie lang darf eine Einheit sein?",opts:["30 min","45 min","60 min","75 min","90 min"]},
+ {k:"wucd",q:"Warm-up & Cool-down einbauen? (Gef\u00fchrt mit Timer, passend zur Einheit)",opts:["Ja","Nein"]},
  {k:"equip",q:"Welches Equipment hast du?",multi:true,cols:2,excl:"Nur K\u00f6rpergewicht",opts:["Langhantel","Kurzhanteln","Rack / St\u00e4nder","Hantelbank","Klimmzugstange","Dip-Barren","Kabelzug","Maschinen","Kettlebell","Widerstandsb\u00e4nder","Ringe","Nur K\u00f6rpergewicht"]},
  {k:"kraft",q:"Kniebeuge-Arbeitsgewicht ungef\u00e4hr? (Referenz f\u00fcr Startgewichte)",opts:["Noch keine Langhantel-Erfahrung","Unter 60 kg","60\u2013100 kg","\u00dcber 100 kg","Wei\u00df nicht"],when:function(a){return(a.equip||[]).indexOf("Langhantel")>=0;}},
  {k:"split",q:"Welche Plan-Struktur w\u00fcnschst du dir?",opts:["Ganzk\u00f6rper","Oberk\u00f6rper / Unterk\u00f6rper","Push / Pull / Beine","Coach entscheidet"]},
@@ -1303,8 +1381,8 @@ var COACH_STEPS=[
 ];
 function stepVisible(st){return !st.when||st.when(coachAns);}
 function coachAdvance(dir){do{coachStep+=dir;}while(coachStep>0&&coachStep<COACH_STEPS.length&&!stepVisible(COACH_STEPS[coachStep]));}
-var coachStep=0,coachAns={},coachMsgs=[],coachBusy=false,coachProgram=null,coachErr=null,coachAdjust=false,coachRetried=false;
-function coachReset(){coachStep=0;coachAns={};coachMsgs=[];coachBusy=false;coachProgram=null;coachErr=null;coachAdjust=false;coachRetried=false;}
+var coachStep=0,coachAns={},coachMsgs=[],coachBusy=false,coachProgram=null,coachProgObj=null,coachDesc="",coachErr=null,coachAdjust=false,coachRetried=false,coachVagueRetried=false,libRenameId=null;
+function coachReset(){coachStep=0;coachAns={};coachMsgs=[];coachBusy=false;coachProgram=null;coachProgObj=null;coachDesc="";coachErr=null;coachAdjust=false;coachRetried=false;coachVagueRetried=false;}
 function extractProgram(text){
  var t=String(text||"").replace(/```json|```/g,"");
  var a=t.indexOf("{"),b=t.lastIndexOf("}");
@@ -1313,19 +1391,26 @@ function extractProgram(text){
  try{var o=JSON.parse(cand);if(o&&o.format==="trainings-block")return cand;}catch(e){}
  return null;
 }
+var VAGUE_RE=/ersatz|alternativ|variabel|wahlweise|nach wahl|o\.\s?ä|ähnlich|\boder\b/i;
+function vagueExercises(prog){
+ var out=[];
+ (prog.days||[]).forEach(function(d){(d.exercises||[]).forEach(function(x){if(x.name&&VAGUE_RE.test(x.name))out.push(x.name);});});
+ return out;
+}
 function coachBrief(){
  var lim=((coachAns.limits||[]).filter(function(x){return x!=="Keine";})).join(", ");
  var likes=((coachAns.likes||[]).filter(function(x){return x!=="Coach entscheidet";})).join(", ");
  var dis=((coachAns.dislikes||[]).filter(function(x){return x!=="Keine";})).join(", ");
  var wt=((coachAns.wtage||[]).filter(function(x){return x!=="Egal";})).join(", ");
  return "Erstelle ein Trainingsprogramm nach diesem Briefing:"
- +"\nHauptziel: "+coachAns.ziel
+ +"\nTrainingsstil: "+(coachAns.stil||"?")+"\nHauptziel: "+coachAns.ziel
  +(coachAns.nebenziel&&coachAns.nebenziel!=="Kein Nebenziel"?"\nNebenziel: "+coachAns.nebenziel:"")
  +"\nTrainingserfahrung: "+coachAns.erfahrung
  +"\nLiegest\u00fctze am St\u00fcck: "+(coachAns.pushups||"?")+" | Klimmz\u00fcge am St\u00fcck: "+(coachAns.pullups||"?")
  +(lim?"\nBeschwerden: "+lim+" (St\u00e4rke: "+(coachAns.severity||"unbekannt")+") \u2013 sichere Alternativen w\u00e4hlen":"\nBeschwerden: keine")
  +"\nFrequenz: "+coachAns.tage+" pro Woche"+(wt?", Trainingstage: "+wt:", Tage frei w\u00e4hlbar")
  +"\nDauer je Einheit: "+coachAns.dauer+" (Uebungszahl und Volumen daran ausrichten)"
+ +"\nWarm-up & Cool-down: "+(coachAns.wucd||"Nein")
  +"\nEquipment (NUR dieses verwenden): "+((coachAns.equip||[]).join(", ")||"unbekannt")
  +(coachAns.kraft?"\nKraftreferenz Kniebeuge: "+coachAns.kraft:"")
  +"\nGew\u00fcnschte Struktur: "+(coachAns.split||"Coach entscheidet")
@@ -1348,6 +1433,12 @@ function renderCoach(){
   h+='<div class="cmsg ai">Erstelle dein Programm \u2026 (dauert 20\u201340 Sekunden)</div>';
  }else if(coachProgram||coachErr){
   if(coachErr)h+='<div class="cmsg err">'+esc(coachErr)+'</div>';
+  else if(coachProgObj){
+   h+='<div class="cmsg ai"><b>'+esc(coachProgObj.name)+'</b>'+(coachDesc?'<br>'+esc(coachDesc):'')+'<br><span style="color:#71717a">'+coachProgObj.weeks.length+' Wochen \u00b7 '+coachProgObj.days.length+' Trainingstage</span>';
+   coachProgObj.days.forEach(function(d){h+='<br>'+esc((d.wd?d.wd+" \u00b7 ":"")+(d.title||d.key))+' \u2013 '+((d.ex||[]).length)+' \u00dcbungen'+((d.wu&&d.wu.length)||(d.cd&&d.cd.length)?' \u00b7 WU/CD':'');});
+   h+='</div>';
+   h+='<div class="libnote" style="margin-top:8px;font-size:11px">Erstellt mit Claude Sonnet \u00b7 KI-generiert \u2013 pr\u00fcfe \u00dcbungen und Gewichte vor dem Training selbst.</div>';
+  }
   else h+='<div class="cmsg ai">Dein Programm ist fertig. Laden \u2013 oder mit \u201eAnpassen\u201c \u00c4nderungen beschreiben.</div>';
   h+='<div class="librow" style="margin-top:10px">';
   if(coachProgram)h+='<button class="smallbtn go" id="coachload">Programm laden</button><button class="smallbtn" id="coachadj">Anpassen</button>';
@@ -1395,24 +1486,38 @@ function coachCall(){
    }
    coachBusy=false;coachErr="Die KI hat kein g\u00fcltiges Programm geliefert ("+chk.err+"). Neu starten und erneut versuchen.";renderCoach();return;
   }
+  var vg=vagueExercises(chk.prog);
+  if(vg.length&&!coachVagueRetried){
+   coachVagueRetried=true;
+   coachMsgs.push({role:"assistant",content:text});
+   coachMsgs.push({role:"user",content:"Diese Übungsnamen sind nicht eindeutig: "+vg.join(", ")+". Ersetze sie durch konkrete, eindeutig ausführbare Übungen mit Equipment-Angabe (keine Wörter wie Ersatz/Alternative/oder). Sende NUR das vollständige korrigierte JSON."});
+   coachCall();return;
+  }
   coachMsgs.push({role:"assistant",content:prog});
-  coachBusy=false;coachProgram=prog;coachErr=null;renderCoach();
+  var dsc="";try{dsc=String(JSON.parse(prog).description||"");}catch(e){}
+  coachBusy=false;coachProgram=prog;coachProgObj=chk.prog;coachDesc=dsc.slice(0,200);coachErr=null;renderCoach();
  })
  .catch(function(){coachBusy=false;coachErr="Netzwerkfehler. Ist die Function mit deployed (Ordner netlify/functions)?";renderCoach();});
 }
-function coachCreate(){coachBusy=true;coachErr=null;coachProgram=null;coachRetried=false;coachMsgs=[{role:"user",content:coachBrief()}];renderCoach();coachCall();}
+function coachCreate(){coachBusy=true;coachErr=null;coachProgram=null;coachProgObj=null;coachDesc="";coachRetried=false;coachVagueRetried=false;coachMsgs=[{role:"user",content:coachBrief()}];renderCoach();coachCall();}
 function coachSendAdj(){
  var inp=document.getElementById("adjinp"),v=inp?inp.value.trim():"";
  if(!v||coachBusy)return;
  coachMsgs.push({role:"user",content:"\u00c4nderungswunsch: "+v+" \u2013 Sende das vollst\u00e4ndige aktualisierte JSON."});
- coachBusy=true;coachAdjust=false;coachProgram=null;coachErr=null;coachRetried=false;
+ coachBusy=true;coachAdjust=false;coachProgram=null;coachProgObj=null;coachDesc="";coachErr=null;coachRetried=false;coachVagueRetried=false;
  renderCoach();coachCall();
 }
 
 function renderLib(){
  var h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><button class="iconbtn" id="libclose" style="font-size:22px">✕</button></div>';
  h+='<div class="libnote" style="margin:0 0 8px">Aktives Programm wechseln oder löschen:</div>';
- for(var id in S.programs){var p=S.programs[id];h+='<div class="progitem'+(id===S.active?" active":"")+'"><div class="meta"><div class="pn">'+esc(p.name)+(id===S.active?' ✓':'')+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(id===S.active?'':'<button class="smallbtn go" data-sel="'+id+'">Laden</button>')+(id==="default"?'':'<button class="smallbtn del" data-del="'+id+'">✕</button>')+'</div>';}
+ for(var id in S.programs){var p=S.programs[id];
+  if(id===libRenameId){
+   h+='<div class="progitem'+(id===S.active?" active":"")+'"><div class="meta" style="flex:1"><input class="inp" id="reninp" maxlength="'+LIMITS.maxNameLen+'" value="'+esc(p.name).replace(/"/g,"&quot;")+'" aria-label="Programmname" style="width:100%;text-align:left"><div class="pm" id="rencnt">'+p.name.length+' / '+LIMITS.maxNameLen+'</div></div><button class="smallbtn go" data-rensave="'+id+'">OK</button><button class="smallbtn" data-rencancel="1">Abbr.</button></div>';
+  }else{
+   h+='<div class="progitem'+(id===S.active?" active":"")+'"><div class="meta"><div class="pn">'+esc(p.name)+(id===S.active?' ✓':'')+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div><button class="iconbtn" data-ren="'+id+'" aria-label="Umbenennen" style="font-size:15px">✎</button>'+(id===S.active?'':'<button class="smallbtn go" data-sel="'+id+'">Laden</button>')+(id==="default"?'':'<button class="smallbtn del" data-del="'+id+'">✕</button>')+'</div>';
+  }
+ }
  h+='<div class="libsec">KI-Coach <span style="font-weight:600;color:#71717a">Beta</span></div>';
  h+='<div class="libnote">Beantworte ein paar Fragen, der Coach baut dir ein fertiges Programm.</div>';
  h+='<div class="librow"><button class="smallbtn go" id="coachbtn">Coach starten</button></div>';
@@ -1430,7 +1535,7 @@ function renderLib(){
  document.getElementById("lib").innerHTML=h+'</div>';
 }
 function openLib(){renderLib();document.getElementById("lib").classList.add("open");}
-function closeLib(){document.getElementById("lib").classList.remove("open");}
+function closeLib(){libRenameId=null;document.getElementById("lib").classList.remove("open");}
 
 // ---------- Events ----------
 var app=document.getElementById("app");
@@ -1446,6 +1551,8 @@ app.addEventListener("click",function(e){
  if(b.id==="pausew"){pauseWorkout();return;}
  if(b.id==="resumew"){resumeWorkout();return;}
  if(b.id==="stopw"){confirmStop();return;}
+ if(b.id==="wubtn"){startWucd("wu");return;}
+ if(b.id==="cdbtn"){startWucd("cd");return;}
  if(b.id==="libbtn"){openLib();return;}
  if(b.id==="pdf"){openReport();return;}
  if(b.id==="prev"){changeWeek(S.week-1);return;}
@@ -1467,6 +1574,9 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="libclose"){closeLib();return;}
  if(b.dataset.sel){setActive(b.dataset.sel);closeLib();return;}
  if(b.dataset.del){var id=b.dataset.del;showModal("Programm löschen?","„"+esc(S.programs[id].name)+"“ und dessen Fortschritt werden gelöscht.",[{label:"Löschen",cls:"danger",action:function(){deleteProgram(id);}},{label:"Abbrechen",action:null}]);return;}
+ if(b.dataset.ren){libRenameId=b.dataset.ren;renderLib();var ri=document.getElementById("reninp");if(ri){ri.focus();ri.select();}return;}
+ if(b.dataset.rensave){var rid=b.dataset.rensave,ri2=document.getElementById("reninp"),nv=ri2?ri2.value.trim().slice(0,LIMITS.maxNameLen):"";if(nv&&S.programs[rid])S.programs[rid].name=nv;libRenameId=null;save();renderLib();if(rid===S.active){renderView();renderBar();}return;}
+ if(b.dataset.rencancel){libRenameId=null;renderLib();return;}
  if(b.id==="coachbtn"){coachReset();renderCoach();return;}
  if(b.id==="coachback"){if(coachBusy)return;if(coachStep>0&&!coachProgram&&!coachErr){coachAdvance(-1);renderCoach();}else{renderLib();}return;}
  if(b.dataset.opt){var cst=COACH_STEPS[coachStep];if(cst){coachAns[cst.k]=b.dataset.opt;renderCoach();}return;}
@@ -1487,6 +1597,8 @@ document.getElementById("lib").addEventListener("click",function(e){
 });
 document.getElementById("lib").addEventListener("keydown",function(e){if(!e.target||e.key!=="Enter")return;if(e.target.id==="adjinp"){e.preventDefault();coachSendAdj();}else if(e.target.id==="freeinp"){e.preventDefault();var nb=document.getElementById("coachnext");if(nb)nb.click();}});
 document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var r=new FileReader();r.onload=function(){importProgram(String(r.result));};r.readAsText(t.files[0]);}});
+document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="reninp"){var c=document.getElementById("rencnt");if(c)c.textContent=t.value.length+" / "+LIMITS.maxNameLen;}});
+document.getElementById("lib").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.id==="reninp"){e.preventDefault();var sb=document.querySelector("#lib [data-rensave]");if(sb)sb.click();}});
 
 // ---------- PWA ----------
 (function(){
