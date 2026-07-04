@@ -1283,7 +1283,8 @@ function confirmReset(){
 }
 // ---------- KI-Coach (Beta): Klick-Wizard ----------
 var COACH_STEPS=[
- {k:"ziel",q:"Was ist dein Hauptziel?",opts:["Muskelaufbau","Maximalkraft","K\u00f6rper definieren / Fett verlieren","Calisthenics / Athletik","Allgemeine Fitness & Gesundheit"]},
+ {k:"stil",q:"Wie willst du trainieren?",opts:["Gym / Gewichte","Calisthenics / K\u00f6rpergewicht","Hybrid (Gewichte + Calisthenics)"]},
+ {k:"ziel",q:"Was ist dein Hauptziel?",opts:["Muskelaufbau","Maximalkraft","K\u00f6rper definieren / Fett verlieren","Allgemeine Fitness & Gesundheit"]},
  {k:"nebenziel",q:"Wichtigstes Nebenziel?",opts:["Bessere Haltung","Mehr K\u00f6rperspannung","Schmerzen vorbeugen","Mehr Beweglichkeit","Athletischer aussehen","Kein Nebenziel"]},
  {k:"erfahrung",q:"Wie lange trainierst du schon regelm\u00e4\u00dfig?",opts:["Ich starte neu","Unter 3 Monate","3\u201312 Monate","1\u20133 Jahre","\u00dcber 3 Jahre","Unregelm\u00e4\u00dfig"]},
  {k:"pushups",q:"Wie viele saubere Liegest\u00fctze schaffst du?",opts:["0","1\u20135","6\u201315","16\u201330","Mehr als 30","Wei\u00df nicht"]},
@@ -1303,8 +1304,8 @@ var COACH_STEPS=[
 ];
 function stepVisible(st){return !st.when||st.when(coachAns);}
 function coachAdvance(dir){do{coachStep+=dir;}while(coachStep>0&&coachStep<COACH_STEPS.length&&!stepVisible(COACH_STEPS[coachStep]));}
-var coachStep=0,coachAns={},coachMsgs=[],coachBusy=false,coachProgram=null,coachErr=null,coachAdjust=false,coachRetried=false;
-function coachReset(){coachStep=0;coachAns={};coachMsgs=[];coachBusy=false;coachProgram=null;coachErr=null;coachAdjust=false;coachRetried=false;}
+var coachStep=0,coachAns={},coachMsgs=[],coachBusy=false,coachProgram=null,coachProgObj=null,coachDesc="",coachErr=null,coachAdjust=false,coachRetried=false,coachVagueRetried=false,libRenameId=null;
+function coachReset(){coachStep=0;coachAns={};coachMsgs=[];coachBusy=false;coachProgram=null;coachProgObj=null;coachDesc="";coachErr=null;coachAdjust=false;coachRetried=false;coachVagueRetried=false;}
 function extractProgram(text){
  var t=String(text||"").replace(/```json|```/g,"");
  var a=t.indexOf("{"),b=t.lastIndexOf("}");
@@ -1313,13 +1314,19 @@ function extractProgram(text){
  try{var o=JSON.parse(cand);if(o&&o.format==="trainings-block")return cand;}catch(e){}
  return null;
 }
+var VAGUE_RE=/ersatz|alternativ|variabel|wahlweise|nach wahl|o\.\s?ä|ähnlich|\boder\b/i;
+function vagueExercises(prog){
+ var out=[];
+ (prog.days||[]).forEach(function(d){(d.exercises||[]).forEach(function(x){if(x.name&&VAGUE_RE.test(x.name))out.push(x.name);});});
+ return out;
+}
 function coachBrief(){
  var lim=((coachAns.limits||[]).filter(function(x){return x!=="Keine";})).join(", ");
  var likes=((coachAns.likes||[]).filter(function(x){return x!=="Coach entscheidet";})).join(", ");
  var dis=((coachAns.dislikes||[]).filter(function(x){return x!=="Keine";})).join(", ");
  var wt=((coachAns.wtage||[]).filter(function(x){return x!=="Egal";})).join(", ");
  return "Erstelle ein Trainingsprogramm nach diesem Briefing:"
- +"\nHauptziel: "+coachAns.ziel
+ +"\nTrainingsstil: "+(coachAns.stil||"?")+"\nHauptziel: "+coachAns.ziel
  +(coachAns.nebenziel&&coachAns.nebenziel!=="Kein Nebenziel"?"\nNebenziel: "+coachAns.nebenziel:"")
  +"\nTrainingserfahrung: "+coachAns.erfahrung
  +"\nLiegest\u00fctze am St\u00fcck: "+(coachAns.pushups||"?")+" | Klimmz\u00fcge am St\u00fcck: "+(coachAns.pullups||"?")
@@ -1348,6 +1355,12 @@ function renderCoach(){
   h+='<div class="cmsg ai">Erstelle dein Programm \u2026 (dauert 20\u201340 Sekunden)</div>';
  }else if(coachProgram||coachErr){
   if(coachErr)h+='<div class="cmsg err">'+esc(coachErr)+'</div>';
+  else if(coachProgObj){
+   h+='<div class="cmsg ai"><b>'+esc(coachProgObj.name)+'</b>'+(coachDesc?'<br>'+esc(coachDesc):'')+'<br><span style="color:#71717a">'+coachProgObj.weeks.length+' Wochen \u00b7 '+coachProgObj.days.length+' Trainingstage</span>';
+   coachProgObj.days.forEach(function(d){h+='<br>'+esc((d.weekday?d.weekday+" \u00b7 ":"")+(d.title||d.key))+' \u2013 '+((d.exercises||[]).length)+' \u00dcbungen';});
+   h+='</div>';
+   h+='<div class="libnote" style="margin-top:8px;font-size:11px">Erstellt mit Claude Sonnet \u00b7 KI-generiert \u2013 pr\u00fcfe \u00dcbungen und Gewichte vor dem Training selbst.</div>';
+  }
   else h+='<div class="cmsg ai">Dein Programm ist fertig. Laden \u2013 oder mit \u201eAnpassen\u201c \u00c4nderungen beschreiben.</div>';
   h+='<div class="librow" style="margin-top:10px">';
   if(coachProgram)h+='<button class="smallbtn go" id="coachload">Programm laden</button><button class="smallbtn" id="coachadj">Anpassen</button>';
@@ -1395,24 +1408,38 @@ function coachCall(){
    }
    coachBusy=false;coachErr="Die KI hat kein g\u00fcltiges Programm geliefert ("+chk.err+"). Neu starten und erneut versuchen.";renderCoach();return;
   }
+  var vg=vagueExercises(chk.prog);
+  if(vg.length&&!coachVagueRetried){
+   coachVagueRetried=true;
+   coachMsgs.push({role:"assistant",content:text});
+   coachMsgs.push({role:"user",content:"Diese Übungsnamen sind nicht eindeutig: "+vg.join(", ")+". Ersetze sie durch konkrete, eindeutig ausführbare Übungen mit Equipment-Angabe (keine Wörter wie Ersatz/Alternative/oder). Sende NUR das vollständige korrigierte JSON."});
+   coachCall();return;
+  }
   coachMsgs.push({role:"assistant",content:prog});
-  coachBusy=false;coachProgram=prog;coachErr=null;renderCoach();
+  var dsc="";try{dsc=String(JSON.parse(prog).description||"");}catch(e){}
+  coachBusy=false;coachProgram=prog;coachProgObj=chk.prog;coachDesc=dsc.slice(0,200);coachErr=null;renderCoach();
  })
  .catch(function(){coachBusy=false;coachErr="Netzwerkfehler. Ist die Function mit deployed (Ordner netlify/functions)?";renderCoach();});
 }
-function coachCreate(){coachBusy=true;coachErr=null;coachProgram=null;coachRetried=false;coachMsgs=[{role:"user",content:coachBrief()}];renderCoach();coachCall();}
+function coachCreate(){coachBusy=true;coachErr=null;coachProgram=null;coachProgObj=null;coachDesc="";coachRetried=false;coachVagueRetried=false;coachMsgs=[{role:"user",content:coachBrief()}];renderCoach();coachCall();}
 function coachSendAdj(){
  var inp=document.getElementById("adjinp"),v=inp?inp.value.trim():"";
  if(!v||coachBusy)return;
  coachMsgs.push({role:"user",content:"\u00c4nderungswunsch: "+v+" \u2013 Sende das vollst\u00e4ndige aktualisierte JSON."});
- coachBusy=true;coachAdjust=false;coachProgram=null;coachErr=null;coachRetried=false;
+ coachBusy=true;coachAdjust=false;coachProgram=null;coachProgObj=null;coachDesc="";coachErr=null;coachRetried=false;coachVagueRetried=false;
  renderCoach();coachCall();
 }
 
 function renderLib(){
  var h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><button class="iconbtn" id="libclose" style="font-size:22px">✕</button></div>';
  h+='<div class="libnote" style="margin:0 0 8px">Aktives Programm wechseln oder löschen:</div>';
- for(var id in S.programs){var p=S.programs[id];h+='<div class="progitem'+(id===S.active?" active":"")+'"><div class="meta"><div class="pn">'+esc(p.name)+(id===S.active?' ✓':'')+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(id===S.active?'':'<button class="smallbtn go" data-sel="'+id+'">Laden</button>')+(id==="default"?'':'<button class="smallbtn del" data-del="'+id+'">✕</button>')+'</div>';}
+ for(var id in S.programs){var p=S.programs[id];
+  if(id===libRenameId){
+   h+='<div class="progitem'+(id===S.active?" active":"")+'"><div class="meta" style="flex:1"><input class="inp" id="reninp" maxlength="'+LIMITS.maxNameLen+'" value="'+esc(p.name).replace(/"/g,"&quot;")+'" aria-label="Programmname" style="width:100%;text-align:left"><div class="pm" id="rencnt">'+p.name.length+' / '+LIMITS.maxNameLen+'</div></div><button class="smallbtn go" data-rensave="'+id+'">OK</button><button class="smallbtn" data-rencancel="1">Abbr.</button></div>';
+  }else{
+   h+='<div class="progitem'+(id===S.active?" active":"")+'"><div class="meta"><div class="pn">'+esc(p.name)+(id===S.active?' ✓':'')+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div><button class="iconbtn" data-ren="'+id+'" aria-label="Umbenennen" style="font-size:15px">✎</button>'+(id===S.active?'':'<button class="smallbtn go" data-sel="'+id+'">Laden</button>')+(id==="default"?'':'<button class="smallbtn del" data-del="'+id+'">✕</button>')+'</div>';
+  }
+ }
  h+='<div class="libsec">KI-Coach <span style="font-weight:600;color:#71717a">Beta</span></div>';
  h+='<div class="libnote">Beantworte ein paar Fragen, der Coach baut dir ein fertiges Programm.</div>';
  h+='<div class="librow"><button class="smallbtn go" id="coachbtn">Coach starten</button></div>';
@@ -1430,7 +1457,7 @@ function renderLib(){
  document.getElementById("lib").innerHTML=h+'</div>';
 }
 function openLib(){renderLib();document.getElementById("lib").classList.add("open");}
-function closeLib(){document.getElementById("lib").classList.remove("open");}
+function closeLib(){libRenameId=null;document.getElementById("lib").classList.remove("open");}
 
 // ---------- Events ----------
 var app=document.getElementById("app");
@@ -1467,6 +1494,9 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="libclose"){closeLib();return;}
  if(b.dataset.sel){setActive(b.dataset.sel);closeLib();return;}
  if(b.dataset.del){var id=b.dataset.del;showModal("Programm löschen?","„"+esc(S.programs[id].name)+"“ und dessen Fortschritt werden gelöscht.",[{label:"Löschen",cls:"danger",action:function(){deleteProgram(id);}},{label:"Abbrechen",action:null}]);return;}
+ if(b.dataset.ren){libRenameId=b.dataset.ren;renderLib();var ri=document.getElementById("reninp");if(ri){ri.focus();ri.select();}return;}
+ if(b.dataset.rensave){var rid=b.dataset.rensave,ri2=document.getElementById("reninp"),nv=ri2?ri2.value.trim().slice(0,LIMITS.maxNameLen):"";if(nv&&S.programs[rid])S.programs[rid].name=nv;libRenameId=null;save();renderLib();if(rid===S.active){renderView();renderBar();}return;}
+ if(b.dataset.rencancel){libRenameId=null;renderLib();return;}
  if(b.id==="coachbtn"){coachReset();renderCoach();return;}
  if(b.id==="coachback"){if(coachBusy)return;if(coachStep>0&&!coachProgram&&!coachErr){coachAdvance(-1);renderCoach();}else{renderLib();}return;}
  if(b.dataset.opt){var cst=COACH_STEPS[coachStep];if(cst){coachAns[cst.k]=b.dataset.opt;renderCoach();}return;}
@@ -1487,6 +1517,8 @@ document.getElementById("lib").addEventListener("click",function(e){
 });
 document.getElementById("lib").addEventListener("keydown",function(e){if(!e.target||e.key!=="Enter")return;if(e.target.id==="adjinp"){e.preventDefault();coachSendAdj();}else if(e.target.id==="freeinp"){e.preventDefault();var nb=document.getElementById("coachnext");if(nb)nb.click();}});
 document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var r=new FileReader();r.onload=function(){importProgram(String(r.result));};r.readAsText(t.files[0]);}});
+document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="reninp"){var c=document.getElementById("rencnt");if(c)c.textContent=t.value.length+" / "+LIMITS.maxNameLen;}});
+document.getElementById("lib").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.id==="reninp"){e.preventDefault();var sb=document.querySelector("#lib [data-rensave]");if(sb)sb.click();}});
 
 // ---------- PWA ----------
 (function(){
