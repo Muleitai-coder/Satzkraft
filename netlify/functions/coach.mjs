@@ -49,28 +49,123 @@ REGELN:
 - Sinnvolle Blockstruktur: 2-3 Aufbauwochen, dann Deload; ggf. Intensivierung. Startgewichte konservativ am Level orientieren.
 - Baue evidenzbasiert: Grunduebungen zuerst, ausgewogenes Push/Pull/Beine-Verhaeltnis, realistisches Volumen.`;
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== "POST") return { statusCode: 405, body: "" };
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) return { statusCode: 500, body: JSON.stringify({ error: "ANTHROPIC_API_KEY fehlt. In Netlify unter Site configuration > Environment variables setzen und neu deployen." }) };
+const MAX_BODY_BYTES = 60_000;
+const MAX_MESSAGES = 10;
+const MAX_MESSAGE_CHARS = 16_000;
+const MAX_TOTAL_MESSAGE_CHARS = 45_000;
+const REQUEST_TIMEOUT_MS = 45_000;
+const JSON_HEADERS = {
+  "content-type": "application/json; charset=utf-8",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff"
+};
+
+function json(status, body) {
+  return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
+}
+
+function sameOrigin(request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  try {
+    const source = new URL(origin);
+    const target = new URL(request.url);
+    return source.protocol === target.protocol && source.host === target.host;
+  } catch {
+    return false;
+  }
+}
+
+function validConversation(messages) {
+  if (!messages.length || messages[0].role !== "user" || messages[messages.length - 1].role !== "user") return false;
+  for (let i = 1; i < messages.length; i++) {
+    if (messages[i].role === messages[i - 1].role) return false;
+  }
+  return true;
+}
+
+export default async (request) => {
+  if (request.method !== "POST") return json(405, { error: "Methode nicht erlaubt" });
+  if (!sameOrigin(request)) return json(403, { error: "Anfrage nicht erlaubt" });
+  if (!(request.headers.get("content-type") || "").toLowerCase().startsWith("application/json")) {
+    return json(415, { error: "JSON erwartet" });
+  }
+
+  const declaredSize = Number(request.headers.get("content-length") || 0);
+  if (declaredSize > MAX_BODY_BYTES) return json(413, { error: "Anfrage ist zu groß" });
+
+  let raw;
+  try {
+    raw = await request.text();
+  } catch {
+    return json(400, { error: "Anfrage konnte nicht gelesen werden" });
+  }
+  if (new TextEncoder().encode(raw).length > MAX_BODY_BYTES) return json(413, { error: "Anfrage ist zu groß" });
+
   let payload;
-  try { payload = JSON.parse(event.body || "{}"); } catch (e) { return { statusCode: 400, body: JSON.stringify({ error: "Ungueltige Anfrage" }) }; }
-  const messages = (Array.isArray(payload.messages) ? payload.messages : [])
-    .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.length > 0)
-    .slice(-30)
-    .map(m => ({ role: m.role, content: m.content.slice(0, 4000) }));
-  if (!messages.length) return { statusCode: 400, body: JSON.stringify({ error: "Keine Nachricht" }) };
+  try {
+    payload = JSON.parse(raw || "{}");
+  } catch {
+    return json(400, { error: "Ungültige JSON-Anfrage" });
+  }
+
+  const sourceMessages = Array.isArray(payload.messages) ? payload.messages.slice(-MAX_MESSAGES) : [];
+  while (sourceMessages.length && sourceMessages[0] && sourceMessages[0].role === "assistant") sourceMessages.shift();
+  let totalChars = 0;
+  const messages = [];
+  for (const message of sourceMessages) {
+    if (!message || (message.role !== "user" && message.role !== "assistant") || typeof message.content !== "string") {
+      return json(400, { error: "Ungültiger Gesprächsverlauf" });
+    }
+    const content = message.content.trim();
+    if (!content || content.length > MAX_MESSAGE_CHARS) return json(400, { error: "Nachricht ist ungültig oder zu lang" });
+    totalChars += content.length;
+    if (totalChars > MAX_TOTAL_MESSAGE_CHARS) return json(413, { error: "Gesprächsverlauf ist zu groß" });
+    messages.push({ role: message.role, content });
+  }
+  if (!validConversation(messages)) return json(400, { error: "Ungültiger Gesprächsverlauf" });
+
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) {
+    console.error("coach_configuration_error: missing_api_key");
+    return json(503, { error: "KI-Coach ist momentan nicht verfügbar" });
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 3000, system: SYSTEM, messages })
+      body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 3000, system: SYSTEM, messages }),
+      signal: controller.signal
     });
-    const data = await res.json();
-    if (!res.ok) return { statusCode: 502, body: JSON.stringify({ error: (data.error && data.error.message) || "API-Fehler" }) };
-    const text = (data.content || []).map(c => c.type === "text" ? c.text : "").join("");
-    return { statusCode: 200, headers: { "content-type": "application/json" }, body: JSON.stringify({ text }) };
-  } catch (e) {
-    return { statusCode: 502, body: JSON.stringify({ error: "Anthropic-API nicht erreichbar" }) };
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      console.error("coach_provider_error", { status: res.status });
+      return json(502, { error: "KI-Coach konnte das Programm nicht erstellen" });
+    }
+    const text = ((data && data.content) || []).map(c => c.type === "text" ? c.text : "").join("");
+    if (!text) {
+      console.error("coach_provider_error: empty_response");
+      return json(502, { error: "KI-Coach hat keine verwertbare Antwort geliefert" });
+    }
+    return json(200, { text });
+  } catch (error) {
+    if (error && error.name === "AbortError") return json(504, { error: "KI-Anfrage hat zu lange gedauert. Bitte erneut versuchen." });
+    console.error("coach_network_error", { name: error && error.name ? error.name : "unknown" });
+    return json(502, { error: "KI-Coach ist momentan nicht erreichbar" });
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+export const config = {
+  path: "/.netlify/functions/coach",
+  method: "POST",
+  rateLimit: {
+    windowLimit: 6,
+    windowSize: 180,
+    aggregateBy: ["ip", "domain"]
   }
 };
