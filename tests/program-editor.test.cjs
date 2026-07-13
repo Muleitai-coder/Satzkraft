@@ -43,3 +43,19 @@ test('keeps editor drafts deeply separated from the original program', () => {
   draft.settings.deloadMultiplier = 0.5;
   assert.deepEqual(original, { weeks: [{ sets: { kraft: 3 } }], settings: { deloadMultiplier: 0.6 } });
 });
+
+test('starts in the familiar training view and separates novice from expert settings', () => {
+  assert.match(html, /editorView="training"/);
+  assert.match(html, />Training<\/button>.*>Wochen<\/button>.*>Details<\/button>/s);
+  assert.match(html, /Anstrengung/);
+  assert.match(html, /Satzzahlen für Fortgeschrittene/);
+  assert.match(html, /Experten-Einstellungen · Kategorien/);
+  assert.match(html, /Editor-Anleitung/);
+});
+
+test('uses one clear rename path and compact program actions', () => {
+  assert.doesNotMatch(html, /data-ren=/);
+  assert.doesNotMatch(html, /libRenameId/);
+  assert.match(html, /Den Namen änderst du im Editor unter „Details“/);
+  assert.match(html, /class="progaction" data-edit=/);
+});
