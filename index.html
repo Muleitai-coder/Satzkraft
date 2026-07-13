@@ -478,6 +478,7 @@ var DEFAULT_PROGRAM={
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
+var BACKUP_META_KEY="satzkraft-backup-meta-v1";
 function currentTheme(){return document.documentElement.dataset.theme==="light"?"light":"dark";}
 function themeButtonHtml(){
  var light=currentTheme()==="light";
@@ -1003,12 +1004,28 @@ function startWorkout(){
 function pauseWorkout(){var w=S.workout;if(w&&w.running){w.accrued+=(Date.now()-w.startedAt)/1000;w.running=false;releaseWakeLock();save();updateWorkoutPanel();}}
 function resumeWorkout(){var w=S.workout;if(w&&!w.running){w.startedAt=Date.now();w.running=true;requestWakeLock();save();updateWorkoutPanel();}}
 function backupJSON(){syncStore();return JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,programs:S.programs,active:S.active,store:S.store},null,1);}
+function readBackupMeta(){
+ try{var m=JSON.parse(localStorage.getItem(BACKUP_META_KEY)||"{}");return{lastAt:finiteNumber(m.lastAt,0,Number.MAX_SAFE_INTEGER,false)?m.lastAt:0,historyCount:finiteNumber(m.historyCount,0,1000000,true)?m.historyCount:0,remindedAt:finiteNumber(m.remindedAt,0,1000000,true)?m.remindedAt:0};}catch(e){return{lastAt:0,historyCount:0,remindedAt:0};}
+}
+function writeBackupMeta(m){try{localStorage.setItem(BACKUP_META_KEY,JSON.stringify(m));return true;}catch(e){return false;}}
+function totalCompletedTrainings(){
+ syncStore();var count=0;
+ for(var id in S.store){var history=S.store[id]&&S.store[id].history;if(!Array.isArray(history))continue;for(var i=0;i<history.length;i++)if(history[i]&&history[i].complete===true)count++;}
+ return count;
+}
+function backupDatePart(ts){var d=new Date(ts),p=function(n){return n<10?"0"+n:String(n);};return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+function downloadFullBackup(prefix){
+ var now=Date.now(),ok=downloadText((prefix||"satzkraft-backup")+"-"+backupDatePart(now)+".json",backupJSON());
+ if(ok){var done=totalCompletedTrainings();writeBackupMeta({lastAt:now,historyCount:done,remindedAt:done});}
+ return ok;
+}
+function backupStatusText(){var m=readBackupMeta();return m.lastAt?"Letzte Sicherung: "+new Date(m.lastAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"Noch keine vollständige Sicherung auf diesem Gerät gespeichert.";}
 function maybeOfferBackup(){
- var done=S.history.filter(function(e){return e.complete===true;}).length;
- if(done>0&&done%6===0){
+ var done=totalCompletedTrainings(),meta=readBackupMeta(),since=Math.max(meta.historyCount,meta.remindedAt);
+ if(done>0&&done-since>=6){
   showModal("Backup empfohlen","Du hast "+done+" Einheiten abgeschlossen. Die Daten liegen nur auf diesem Gerät – jetzt eine Sicherungsdatei speichern?",[
-   {label:"Backup speichern",cls:"primary",action:function(){downloadText("trainings-block-backup.json",backupJSON());}},
-   {label:"Später",action:null}
+   {label:"Backup speichern",cls:"primary",action:function(){downloadFullBackup("satzkraft-backup");}},
+   {label:"Später",action:function(){meta.remindedAt=done;writeBackupMeta(meta);}}
   ]);
  }
 }
@@ -1281,19 +1298,51 @@ function setActive(id){
  if(S.week>PROG().weeks.length)S.week=PROG().weeks.length;if(S.week<1)S.week=1;
  save();renderView();renderBar();
 }
+function validBackupNumber(v,max){if(v==="")return true;if(typeof v==="number")return isFinite(v)&&v>=0&&v<=max;if(typeof v==="string"&&v.length<=20)return /^\d+(?:\.\d+)?$/.test(v)&&Number(v)<=max;return false;}
+function validateBackupStore(st,id,program){
+ if(!plainObject(st)||!plainObject(st.tg)||!plainObject(st.logs)||!Array.isArray(st.history))return'Fortschritt von „'+esc(program.name||id)+'“ ist unvollständig.';
+ var tgKeys=Object.keys(st.tg),logKeys=Object.keys(st.logs),dayKeysForProgram=program.days.map(function(d){return d.key;});
+ if(tgKeys.length>5000||logKeys.length>5000||st.history.length>5000)return'Fortschritt von „'+esc(program.name||id)+'“ enthält ungewöhnlich viele Einträge.';
+ if(!finiteNumber(st.week,1,program.weeks.length,true)||typeof st.day!=="string"||dayKeysForProgram.indexOf(st.day)<0)return'Fortschritt von „'+esc(program.name||id)+'“ verweist auf eine ungültige Woche oder einen ungültigen Tag.';
+ for(var ti=0;ti<tgKeys.length;ti++)if(!validBackupNumber(st.tg[tgKeys[ti]],2000))return'Fortschritt von „'+esc(program.name||id)+'“ enthält ein ungültiges Arbeitsgewicht.';
+ for(var li=0;li<logKeys.length;li++){
+  var cell=st.logs[logKeys[li]];if(!plainObject(cell)||!Array.isArray(cell.sets)||cell.sets.length>LIMITS.maxSets)return'Fortschritt von „'+esc(program.name||id)+'“ enthält ungültige Satzdaten.';
+  for(var si=0;si<cell.sets.length;si++){var set=cell.sets[si];if(!plainObject(set)||!validBackupNumber(set.reps,10000)||!validBackupNumber(set.weight,2000))return'Fortschritt von „'+esc(program.name||id)+'“ enthält ungültige Wiederholungs- oder Gewichtswerte.';}
+ }
+ for(var hi=0;hi<st.history.length;hi++){
+  var entry=st.history[hi];if(!plainObject(entry)||!finiteNumber(entry.week,1,LIMITS.maxWeeks,true)||typeof entry.day!=="string"||entry.day.length>12||!finiteNumber(entry.start,0,Number.MAX_SAFE_INTEGER,false)||!finiteNumber(entry.end,0,Number.MAX_SAFE_INTEGER,false)||!finiteNumber(entry.dur,0,86400,false))return'Fortschritt von „'+esc(program.name||id)+'“ enthält einen ungültigen Verlaufseintrag.';
+  if(entry.complete!=null&&typeof entry.complete!=="boolean")return'Fortschritt von „'+esc(program.name||id)+'“ enthält einen ungültigen Abschlussstatus.';
+ }
+ if(st.workout!=null&&!plainObject(st.workout))return'Fortschritt von „'+esc(program.name||id)+'“ enthält eine ungültige laufende Einheit.';
+ return null;
+}
 function validateBackupFile(raw){
  if(!plainObject(raw)||!plainObject(raw.programs)||!Object.keys(raw.programs).length||!plainObject(raw.store))return"Backup-Struktur ist unvollständig.";
  if(raw.schemaVersion!=null&&!finiteNumber(raw.schemaVersion,1,DATA_SCHEMA_VERSION,true))return"Das Backup stammt aus einer neueren oder unbekannten Datenversion.";
  if(typeof raw.active!=="string"||!raw.programs[raw.active])return"Das aktive Programm im Backup ist ungültig.";
  var ids=Object.keys(raw.programs);
+ if(ids.length>50)return"Das Backup enthält ungewöhnlich viele Programme.";
+ var storeIds=Object.keys(raw.store);for(var sk=0;sk<storeIds.length;sk++)if(ids.indexOf(storeIds[sk])<0)return'Das Backup enthält Fortschritt für ein unbekanntes Programm.';
  for(var i=0;i<ids.length;i++){
-  var id=ids[i],program=raw.programs[id],check;
+  var id=ids[i],program=raw.programs[id],check;if(!/^[A-Za-z0-9_-]{1,80}$/.test(id)||id==="__proto__"||id==="constructor"||id==="prototype")return"Das Backup enthält einen ungültigen Programm-Schlüssel.";
   try{check=parseProgram(JSON.stringify(exportTranslate(program)));}catch(e){return'Programm „'+esc(id)+'“ im Backup ist beschädigt.';}
   if(check.err)return'Programm „'+esc((program&&program.name)||id)+'“ im Backup ist ungültig: '+check.err;
-  var st=raw.store[id];
-  if(st!=null&&(!plainObject(st)||!plainObject(st.tg)||!plainObject(st.logs)||!Array.isArray(st.history)))return'Fortschritt von „'+esc((program&&program.name)||id)+'“ ist beschädigt.';
+  var storeErr=validateBackupStore(raw.store[id],id,program);if(storeErr)return storeErr;
  }
  return null;
+}
+function confirmBackupRestore(raw){
+ showModal("Backup wiederherstellen?","Diese Datei ersetzt <b>alle Programme und den gesamten Fortschritt</b> auf diesem Gerät. Vorher lädt Satzkraft automatisch eine Sicherheitskopie des aktuellen Stands herunter.",[
+  {label:"Sichern & wiederherstellen",cls:"danger",action:function(){if(!downloadFullBackup("satzkraft-vor-wiederherstellung")){showModal("Wiederherstellung abgebrochen","Die Sicherheitskopie konnte nicht heruntergeladen werden. Deine aktuellen Daten wurden nicht verändert.",[{label:"OK",action:null}]);return;}try{var restored=clone(raw);restored.schemaVersion=DATA_SCHEMA_VERSION;localStorage.setItem(KEY,JSON.stringify(restored));setTimeout(function(){location.reload();},350);}catch(e){showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
+  {label:"Abbrechen",action:null}
+ ]);
+}
+function importBackup(text){
+ if(typeof text!=="string"||!text.length||text.length>5000000){showModal("Backup nicht geladen","Die Datei ist leer oder größer als 5 MB.",[{label:"OK",action:null}]);return;}
+ var raw;try{raw=JSON.parse(text);}catch(e){showModal("Backup nicht geladen","Die Datei enthält kein gültiges JSON. Deine aktuellen Daten bleiben unverändert.",[{label:"OK",action:null}]);return;}
+ if(!raw||!raw.programs||!raw.store){showModal("Backup nicht geladen","Die Datei ist kein vollständiges Satzkraft-Backup. Für einzelne Programme nutze bitte „Programm laden“.",[{label:"OK",action:null}]);return;}
+ var backupErr=validateBackupFile(raw);if(backupErr){showModal("Backup nicht geladen",backupErr+'<br><br><span style="color:#71717a">Deine aktuellen Daten bleiben unverändert.</span>',[{label:"OK",action:null}]);return;}
+ confirmBackupRestore(raw);
 }
 function importProgram(text){
  if(typeof text!=="string"||!text.length||text.length>5000000){showModal("Datei nicht geladen","Die Datei ist leer oder größer als 5 MB.",[{label:"OK",action:null}]);return;}
@@ -1302,10 +1351,7 @@ function importProgram(text){
   if(raw&&raw.programs&&raw.store){
    var backupErr=validateBackupFile(raw);
    if(backupErr){showModal("Backup nicht geladen",backupErr+'<br><br><span style="color:#71717a">Deine aktuellen Daten bleiben unverändert.</span>',[{label:"OK",action:null}]);return;}
-   showModal("Backup wiederherstellen?","Diese Datei ist ein vollständiges Backup. Es ersetzt ALLE Programme und den gesamten Fortschritt auf diesem Gerät.",[
-    {label:"Wiederherstellen",cls:"danger",action:function(){try{raw.schemaVersion=DATA_SCHEMA_VERSION;localStorage.setItem(KEY,JSON.stringify(raw));location.reload();}catch(e){showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
-    {label:"Abbrechen",action:null}
-   ]);return;
+   confirmBackupRestore(raw);return;
   }
  }catch(e){}
  var res=parseProgram(text);
@@ -1679,7 +1725,10 @@ function renderLib(){
  h+='<div class="libnote">Das fertige JSON hier einfügen <i>oder</i> eine Datei wählen. Jedes geladene Programm wird gespeichert und hat seinen eigenen Fortschritt.</div>';
  h+='<textarea class="libta" id="libpaste" aria-label="Programm-JSON einfügen" placeholder="JSON hier einfügen …"></textarea>';
  h+='<div class="librow"><button class="smallbtn go" id="libload">Programm laden</button><label class="smallbtn" style="display:inline-flex;align-items:center">Datei wählen<input type="file" id="libfile" accept=".json,application/json,text/plain" style="display:none"></label></div>';
- h+='<div class="libsec">3 · Fortschritt zurücksetzen</div>';
+ h+='<div class="libsec">3 · Daten sichern</div>';
+ h+='<div class="libnote"><b>'+esc(backupStatusText())+'</b><br>Das vollständige Backup enthält alle Programme, Satzwerte und Trainingsverläufe. Es bleibt als Datei bei dir und wird nicht an einen Server gesendet.</div>';
+ h+='<div class="librow"><button class="smallbtn go" id="libbackup">Vollständiges Backup</button><label class="smallbtn" style="display:inline-flex;align-items:center">Backup wiederherstellen<input type="file" id="backupfile" accept=".json,application/json" style="display:none"></label></div>';
+ h+='<div class="libsec">4 · Fortschritt zurücksetzen</div>';
  h+='<div class="libnote">Löscht eingetragene Sätze &amp; Verlauf des aktiven Programms („'+esc(PROG().name)+'"). Das Programm selbst bleibt erhalten.</div>';
  h+='<div class="librow"><button class="smallbtn del" id="libreset">Fortschritt zurücksetzen</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
@@ -1751,6 +1800,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="adjsend"){coachSendAdj();return;}
  if(b.id==="coachrestart"){coachReset();renderCoach();return;}
  if(b.id==="libreset"){confirmReset();return;}
+ if(b.id==="libbackup"){var backupOk=downloadFullBackup("satzkraft-backup");if(backupOk)renderLib();showModal(backupOk?"Backup gespeichert":"Backup fehlgeschlagen",backupOk?"Die vollständige Sicherungsdatei wurde heruntergeladen. Bewahre sie an einem sicheren Ort auf.":"Die Sicherungsdatei konnte nicht heruntergeladen werden.",[{label:"OK",cls:backupOk?"primary":"",action:null}]);return;}
  if(b.id==="libload"){var ta=document.getElementById("libpaste");importProgram(ta?ta.value:"");return;}
  if(b.id==="explink"){var eo=exportTranslate(PROG());delete eo._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(eo))));var okl=copyText(u);showModal(okl?"Link kopiert":"Kopieren nicht möglich",okl?"Wer den Link öffnet, bekommt dein Programm zum Laden angeboten (ohne deinen Fortschritt). Bei sehr großen Programmen kann der Link von Messengern gekürzt werden – dann Datei-Export nutzen.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);return;}
  if(b.id==="expfile"){downloadText((PROG().name||"programm").replace(/[^a-z0-9]+/gi,"_")+".json",exportCurrentJSON());return;}
@@ -1759,7 +1809,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="tplfile"){downloadText("vorlage-trainings-block.json",JSON.stringify(BLANK_TEMPLATE,null,2));return;}
 });
 document.getElementById("lib").addEventListener("keydown",function(e){if(!e.target||e.key!=="Enter")return;if(e.target.id==="adjinp"){e.preventDefault();coachSendAdj();}else if(e.target.id==="freeinp"){e.preventDefault();var nb=document.getElementById("coachnext");if(nb)nb.click();}});
-document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var r=new FileReader();r.onload=function(){importProgram(String(r.result));};r.readAsText(t.files[0]);return;}if(editorDraft&&(t.dataset.edProgram||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null)){var rerender=updateEditorInput(t);if(rerender)renderProgramEditor(t.dataset.edReps?"categories":"days",t.dataset.edReps?Object.keys(editorDraft.categories).indexOf(t.dataset.edReps):+t.dataset.edDay,t.dataset.edEx==null?null:+t.dataset.edEx);}});
+document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var r=new FileReader();r.onload=function(){importProgram(String(r.result));};r.readAsText(t.files[0]);return;}if(t.id==="backupfile"&&t.files&&t.files[0]){var br=new FileReader();br.onload=function(){importBackup(String(br.result));};br.readAsText(t.files[0]);return;}if(editorDraft&&(t.dataset.edProgram||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null)){var rerender=updateEditorInput(t);if(rerender)renderProgramEditor(t.dataset.edReps?"categories":"days",t.dataset.edReps?Object.keys(editorDraft.categories).indexOf(t.dataset.edReps):+t.dataset.edDay,t.dataset.edEx==null?null:+t.dataset.edEx);}});
 document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="reninp"){var c=document.getElementById("rencnt");if(c)c.textContent=t.value.length+" / "+LIMITS.maxNameLen;return;}if(editorDraft&&t.type!=="checkbox"&&t.tagName!=="SELECT"&&(t.dataset.edProgram||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null))updateEditorInput(t);});
 document.getElementById("lib").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.id==="reninp"){e.preventDefault();var sb=document.querySelector("#lib [data-rensave]");if(sb)sb.click();}});
 
