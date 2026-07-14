@@ -22,6 +22,7 @@
 html{color-scheme:dark}
 html[data-theme="light"]{color-scheme:light}
 body{margin:0;background:#0a0d12;color:#fafafa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .wrap{max-width:560px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 130px}
 .hdr{margin-bottom:16px}
 .ptitle{font-size:21px;font-weight:700;margin:0;letter-spacing:-.01em;line-height:1.25}
@@ -202,7 +203,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .histbtn{background:#10b981;color:#0a0d12;border:none;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer}
 .overlay{position:fixed;inset:0;background:#0a0d12;z-index:60;overflow-y:auto;display:none}
 .overlay.open{display:block}
-#lib{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:85;display:none;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));overflow-y:auto}
+#lib{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:85;display:none;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 #lib.open{display:flex}
 .libbox{background:#141920;border:1px solid #242b35;border-radius:16px;width:100%;max-width:480px;margin:auto;padding:18px}
 .owrap{max-width:560px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 40px}
@@ -217,14 +218,15 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .rtbl th{background:#141920;color:#a1a1aa;font-weight:600}
 .rtbl .exn{font-weight:600;width:38%}
 .rtbl .vol{width:18%;color:#a1a1aa}
-.progitem{background:#141920;border:1px solid #242b35;border-radius:12px;padding:12px 14px;margin-bottom:8px}
-.progitem.active{border-color:rgba(16,185,129,.5)}
+.progitem{background:#141920;border:1px solid #242b35;border-radius:12px;padding:13px 14px;margin-bottom:8px}
+.progitem.active{border-color:rgba(52,211,153,.65);background:linear-gradient(135deg,rgba(16,185,129,.17),rgba(13,148,136,.08));box-shadow:0 12px 28px rgba(0,0,0,.16),inset 0 0 0 1px rgba(52,211,153,.08)}
 .proghead{display:flex;align-items:flex-start;gap:10px}
 .progitem .meta{flex:1;min-width:0}
 .progitem .pn{font-size:14px;font-weight:600}
 .progitem .pm{font-size:11px;color:#71717a}
-.progactions{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px}
-.progaction{min-height:34px;background:#242b35;color:#fafafa;border:1px solid transparent;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:650;cursor:pointer;white-space:nowrap}
+.progactions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:7px;margin-top:11px}
+.progaction{width:100%;min-height:38px;background:#242b35;color:#fafafa;border:1px solid transparent;border-radius:8px;padding:7px 10px;font-size:12px;font-weight:650;cursor:pointer;white-space:nowrap}
+.progaction.edit-only{grid-column:2}
 .progaction.go{background:#10b981;color:#052e16}
 .progaction.del{background:transparent;border-color:#3f1d1d;color:#fca5a5;padding:6px 9px}
 .statuspill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(16,185,129,.28);padding:3px 7px;font-size:10px;font-weight:700;white-space:nowrap}
@@ -274,16 +276,20 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .edviewhead h2{font-size:16px;line-height:1.25;margin:0 0 3px}
 .edviewhead p{font-size:11px;line-height:1.4;color:#71717a;margin:0}
 .eddaysettings{background:#10151b;border:1px solid #242b35;border-radius:12px;padding:12px;margin-bottom:12px}
-.edexercise{background:#141920;border:1px solid #242b35;border-radius:14px;padding:13px 14px;margin-bottom:9px}
+.edexercise{position:relative;background:#141920;border:1px solid #242b35;border-radius:14px;padding:13px 14px;margin-bottom:9px}
 .edexercise.open{border-color:#10b981;background:rgba(16,185,129,.09);box-shadow:0 0 0 1px rgba(16,185,129,.15),0 14px 34px rgba(0,0,0,.24)}
 .editorbox.editing-exercise .edexercise:not(.open){opacity:.3;filter:saturate(.35);transform:scale(.985)}
 .editorbox.editing-exercise .edexercise{transition:opacity .18s,filter .18s,transform .18s,border-color .18s}
 .edexhead{display:flex;align-items:flex-start;gap:10px}
 .eddrag{display:grid;place-items:center;flex:0 0 30px;height:34px;border:0;border-radius:8px;background:#242b35;color:#a1a1aa;font-size:18px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 .eddrag:active{cursor:grabbing}
-.edexercise.dragtarget{border-color:#34d399;box-shadow:0 0 0 2px rgba(52,211,153,.22)}
+.edexercise.dragging-source{border-color:#34d399;background:rgba(16,185,129,.14);opacity:.58;transform:scale(.975);box-shadow:0 14px 30px rgba(0,0,0,.28),0 0 0 2px rgba(52,211,153,.2)}
+.edexercise.insert-before:before,.edexercise.insert-after:after{content:"";position:absolute;left:7px;right:7px;height:4px;border-radius:999px;background:#34d399;box-shadow:0 0 0 2px rgba(10,13,18,.9),0 0 14px rgba(52,211,153,.7);z-index:5;pointer-events:none}
+.edexercise.insert-before:before{top:-7px}
+.edexercise.insert-after:after{bottom:-7px}
 .wday[data-ed-drag-day]{touch-action:none;user-select:none;-webkit-user-select:none}
-.wday.eddaytarget{outline:2px solid #34d399;outline-offset:2px;opacity:1}
+.wday.dragging-source{opacity:.58;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+.wday.eddaytarget{outline:3px solid #34d399;outline-offset:2px;opacity:1;background:rgba(16,185,129,.2);transform:translateY(-2px)}
 .editorbox.dragging .edexercise,.editorbox.dragging .wday{transition:none}
 .edexnum{display:grid;place-items:center;flex:0 0 26px;height:26px;background:#242b35;border-radius:8px;color:#a1a1aa;font-size:11px;font-weight:800}
 .edexmain{flex:1;min-width:0}
@@ -311,12 +317,15 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .edcategoryhelp{background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.22);border-radius:10px;padding:10px 11px;color:#bae6fd;font-size:11px;line-height:1.5;margin:0 0 10px}
 .eddanger{border-color:#3f1d1d;background:rgba(127,29,29,.08)}
 .eddanger>summary{color:#fca5a5}
-.programothers{margin:10px 0 4px;border:1px solid #242b35;border-radius:11px;overflow:hidden}
-.programothers>summary{list-style:none;cursor:pointer;padding:11px 13px;color:#a1a1aa;font-size:12px;font-weight:700;background:#10151b}
+.programothers{margin:12px 0 5px;border:0;border-top:1px solid #242b35;border-bottom:1px solid #242b35;border-radius:0}
+.programothers>summary{list-style:none;cursor:pointer;padding:13px 4px;color:#a1a1aa;font-size:12px;font-weight:700;background:transparent}
 .programothers>summary::-webkit-details-marker{display:none}
 .programothers>summary:after{content:"+";float:right;color:#71717a}
 .programothers[open]>summary:after{content:"−"}
-.programothersbody{padding:9px 9px 1px}
+.programothers[open]>summary{border-bottom:1px solid #242b35}
+.programothersbody{padding:0}
+.programothersbody .progitem{border:0;border-bottom:1px solid #242b35;border-radius:0;margin:0;padding:14px 4px;background:transparent;box-shadow:none}
+.programothersbody .progitem:last-child{border-bottom:0}
 :focus-visible{outline:2px solid #34d399;outline-offset:2px}
 .inp:focus-visible,.libta:focus-visible{outline:none}
 @media(hover:hover){
@@ -408,7 +417,6 @@ html[data-theme="light"] .eddaysettings,
 html[data-theme="light"] .edphasehelp,
 html[data-theme="light"] .edadvanced,
 html[data-theme="light"] .edemptyday{background:#f4f4f5;border-color:#e4e4e7}
-html[data-theme="light"] .edtab.active{background:#fff;color:#141920}
 html[data-theme="light"] .edguide{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
 html[data-theme="light"] .edguide strong{color:#065f46}
 html[data-theme="light"] .edexercise{background:#fff;border-color:#e4e4e7}
@@ -425,7 +433,6 @@ html[data-theme="light"] .progaction.del{background:transparent;border-color:#fe
 html[data-theme="light"] .statuspill{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
 html[data-theme="light"] .edprescription,
 html[data-theme="light"] .programothers{background:#fff;border-color:#e4e4e7}
-html[data-theme="light"] .programothers>summary{background:#f4f4f5;color:#52525b}
 html[data-theme="light"] .edinherited,
 html[data-theme="light"] .edcategoryhelp{background:#f0f9ff;border-color:#bae6fd;color:#0369a1}
 html[data-theme="light"] .eddanger{background:#fff7f7;border-color:#fecaca}
@@ -468,7 +475,15 @@ html[data-theme="light"] .tag.violet{background:#f5f3ff;color:#6d28d9;border-col
 html[data-theme="light"] .tag.amber{background:#fffbeb;color:#b45309;border-color:#fde68a}
 html[data-theme="light"] .tag.emerald{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
 html[data-theme="light"] .tag.sky{background:#f0f9ff;color:#0369a1;border-color:#bae6fd}
-@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.editorbox{padding:14px}.edsticky{bottom:-14px;margin-left:-14px;margin-right:-14px}.progactions{justify-content:flex-start}.progaction{flex:0 0 auto}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:34px;height:38px}}
+html[data-theme="light"] .progitem.active{background:linear-gradient(135deg,#d1fae5,#ecfdf5);border-color:#34d399;box-shadow:0 10px 24px rgba(5,150,105,.12),inset 0 0 0 1px rgba(16,185,129,.12)}
+html[data-theme="light"] .edtab.active{background:#d1fae5;color:#065f46;box-shadow:inset 0 0 0 1px #6ee7b7}
+html[data-theme="light"] .programothers{border-color:#d4d4d8}
+html[data-theme="light"] .programothers>summary{background:transparent;color:#52525b}
+html[data-theme="light"] .programothers[open]>summary,
+html[data-theme="light"] .programothersbody .progitem{border-color:#e4e4e7}
+html[data-theme="light"] .programothersbody .progitem{background:transparent}
+html[data-theme="light"] .edexercise.dragging-source{background:#d1fae5;border-color:#10b981}
+@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.editorbox{padding:14px}.edsticky{bottom:-14px;margin-left:-14px;margin-right:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:34px;height:38px}}
 html[data-theme="light"] .tag.orange{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
 html[data-theme="light"] .tag.rose{background:#fff1f2;color:#be123c;border-color:#fecdd3}
 html[data-theme="light"] .tag.slate{background:#f8fafc;color:#475569;border-color:#cbd5e1}
@@ -1682,7 +1697,7 @@ function coachSendAdj(){
 }
 
 // ---------- Visueller Programm-Editor ----------
-var editorDraft=null,editorSourceId=null,editorView="training",editorDayIndex=0,editorWeekIndex=0,editorExerciseIndex=null,editorUndoStack=[],editorUndoField=null,editorDragState=null,editorSuppressClickUntil=0;
+var editorDraft=null,editorSourceId=null,editorInitialJSON="",editorView="training",editorDayIndex=0,editorWeekIndex=0,editorExerciseIndex=null,editorUndoStack=[],editorUndoField=null,editorDragState=null,editorSuppressClickUntil=0;
 var EDITOR_WEEKDAYS=["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
 function cloneJSON(v){return JSON.parse(JSON.stringify(v));}
 function editorPushUndo(label){
@@ -1719,6 +1734,7 @@ function editorWeekdayOptions(days,currentIndex){
 function openProgramEditor(id){
  var p=S.programs[id];if(!p)return;
  editorSourceId=id;editorDraft=cloneJSON(exportTranslate(p));delete editorDraft._anleitung;
+ editorInitialJSON=JSON.stringify(editorDraft);
  editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;
  renderProgramEditor();
 }
@@ -1849,8 +1865,18 @@ function editorAddWeek(copyIndex){var cats=Object.keys(editorDraft.categories),s
 function editorAddDay(){var key=editorNextDayKey(editorDraft.days),used={};editorDraft.days.forEach(function(d){used[d.weekday]=1;});var wd=EDITOR_WEEKDAYS.filter(function(x){return !used[x];})[0]||"Montag",cat=Object.keys(editorDraft.categories)[0];editorDraft.days.push({key:key,weekday:wd,title:"Neuer Trainingstag",exercises:[{name:"Neue Übung",category:cat,unit:"reps",sets:3,reps:[8,12]}]});return editorDraft.days.length-1;}
 function editorAddExercise(dayIndex){var cat=Object.keys(editorDraft.categories)[0],exs=editorDraft.days[dayIndex].exercises;exs.push({name:"Neue Übung",category:cat,unit:"reps",sets:3,reps:[8,12]});}
 function editorMoveExercise(dayIndex,exIndex,direction){var exs=editorDraft.days[dayIndex].exercises,to=exIndex+direction;if(to<0||to>=exs.length)return;var x=exs.splice(exIndex,1)[0];exs.splice(to,0,x);}
-function editorMoveExerciseTo(dayIndex,fromIndex,toIndex){var exs=editorDraft.days[dayIndex].exercises;if(fromIndex===toIndex||fromIndex<0||toIndex<0||fromIndex>=exs.length||toIndex>=exs.length)return false;var x=exs.splice(fromIndex,1)[0];exs.splice(toIndex,0,x);return true;}
-function editorMoveDayToWeekday(dayIndex,weekdayIndex){var day=editorDraft.days[dayIndex],newWeekday=EDITOR_WEEKDAYS[weekdayIndex];if(!day||!newWeekday||day.weekday===newWeekday)return false;var oldWeekday=day.weekday,other=null;editorDraft.days.forEach(function(candidate,di){if(di!==dayIndex&&candidate.weekday===newWeekday)other=candidate;});day.weekday=newWeekday;if(other)other.weekday=oldWeekday;return true;}
+function editorMoveExerciseToGap(dayIndex,fromIndex,targetIndex,position){
+ var exs=editorDraft.days[dayIndex].exercises;if(fromIndex<0||targetIndex<0||fromIndex>=exs.length||targetIndex>=exs.length)return null;
+ var insertAt=targetIndex+(position==="after"?1:0);if(fromIndex<insertAt)insertAt--;if(insertAt===fromIndex)return null;
+ var x=exs.splice(fromIndex,1)[0];exs.splice(insertAt,0,x);return insertAt;
+}
+function editorMoveExerciseTo(dayIndex,fromIndex,toIndex){return editorMoveExerciseToGap(dayIndex,fromIndex,toIndex,toIndex>fromIndex?"after":"before")!=null;}
+function editorDayIndexAtWeekday(weekdayIndex,exceptIndex){var weekday=EDITOR_WEEKDAYS[weekdayIndex],found=null;editorDraft.days.forEach(function(day,di){if(di!==exceptIndex&&day.weekday===weekday)found=di;});return found;}
+function editorMoveDayToWeekday(dayIndex,weekdayIndex,allowSwap){var day=editorDraft.days[dayIndex],newWeekday=EDITOR_WEEKDAYS[weekdayIndex];if(!day||!newWeekday||day.weekday===newWeekday)return false;var oldWeekday=day.weekday,otherIndex=editorDayIndexAtWeekday(weekdayIndex,dayIndex);if(otherIndex!=null&&!allowSwap)return false;day.weekday=newWeekday;if(otherIndex!=null)editorDraft.days[otherIndex].weekday=oldWeekday;return true;}
+function confirmEditorDaySwap(dayIndex,weekdayIndex){
+ var source=editorDraft.days[dayIndex],otherIndex=editorDayIndexAtWeekday(weekdayIndex,dayIndex),target=otherIndex==null?null:editorDraft.days[otherIndex];if(!source||!target)return;
+ showModal("Trainingstage tauschen?","Auf <b>"+esc(EDITOR_WEEKDAYS[weekdayIndex])+"</b> liegt bereits „"+esc(target.title||target.key)+"“. Möchtest du <b>"+esc(source.weekday)+" · "+esc(source.title||source.key)+"</b> und <b>"+esc(target.weekday)+" · "+esc(target.title||target.key)+"</b> miteinander tauschen?",[{label:"Tage tauschen",cls:"primary",action:function(){editorPushUndo("Trainingstage getauscht");if(editorMoveDayToWeekday(dayIndex,weekdayIndex,true)){editorDayIndex=dayIndex;editorExerciseIndex=null;renderProgramEditor("training",dayIndex,null);}else editorUndoStack.pop();}},{label:"Nicht tauschen",action:null}]);
+}
 function confirmEditorDeleteWeek(index){
  var week=editorDraft.weeks[index];if(!week||editorDraft.weeks.length<=1)return;
  showModal("Woche wirklich löschen?","Woche "+(index+1)+" · <b>"+esc(week.label)+"</b> wird aus dem Programm entfernt. Du kannst den Schritt anschließend im Editor rückgängig machen.",[{label:"Woche löschen",cls:"danger",action:function(){editorPushUndo("Woche gelöscht");editorDraft.weeks.splice(index,1);editorRenumberWeeks(editorDraft);editorWeekIndex=Math.max(0,index-1);renderProgramEditor("weeks",editorWeekIndex);}},{label:"Abbrechen",action:null}]);
@@ -1861,31 +1887,42 @@ function confirmEditorDeleteDay(index){
 }
 function confirmEditorDeleteProgram(){
  var id=editorSourceId,p=S.programs[id];if(!p||id==="default")return;
- showModal("Programm wirklich löschen?","<b>"+esc(p.name)+"</b> und der gesamte zugehörige Trainingsfortschritt werden dauerhaft gelöscht.",[{label:"Programm löschen",cls:"danger",action:function(){closeLib();deleteProgram(id);showModal("Programm gelöscht","„"+esc(p.name)+"“ wurde entfernt.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
+ showModal("Programm wirklich löschen?","<b>"+esc(p.name)+"</b> und der gesamte zugehörige Trainingsfortschritt werden dauerhaft gelöscht.",[{label:"Programm löschen",cls:"danger",action:function(){closeLib(true);deleteProgram(id);showModal("Programm gelöscht","„"+esc(p.name)+"“ wurde entfernt.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
 }
-function clearEditorDragTargets(){var root=document.getElementById("lib");if(!root)return;root.querySelectorAll(".dragtarget,.eddaytarget").forEach(function(el){el.classList.remove("dragtarget","eddaytarget");});var box=root.querySelector(".editorbox");if(box)box.classList.remove("dragging");}
+function clearEditorDropTargets(){var root=document.getElementById("lib");if(!root)return;root.querySelectorAll(".insert-before,.insert-after,.eddaytarget").forEach(function(el){el.classList.remove("insert-before","insert-after","eddaytarget");});}
+function clearEditorDragTargets(){var root=document.getElementById("lib");if(!root)return;clearEditorDropTargets();root.querySelectorAll(".dragging-source").forEach(function(el){el.classList.remove("dragging-source");});var box=root.querySelector(".editorbox");if(box)box.classList.remove("dragging");}
+function activateEditorDrag(){var drag=editorDragState;if(!drag||drag.active)return;drag.active=true;var box=document.querySelector("#lib .editorbox"),source=drag.type==="exercise"?drag.handle.closest("[data-ed-ex-card]"):drag.handle;if(box)box.classList.add("dragging");if(source)source.classList.add("dragging-source");if(navigator.vibrate)try{navigator.vibrate(18);}catch(err){}}
 function finishEditorDrag(e,cancelled){
  var drag=editorDragState;if(!drag)return;if(drag.timer)clearTimeout(drag.timer);if(drag.handle&&drag.handle.releasePointerCapture)try{drag.handle.releasePointerCapture(drag.pointerId);}catch(err){}
- var changed=false;if(drag.active&&!cancelled&&drag.target!=null){if(drag.type==="exercise"&&drag.target!==drag.source){editorPushUndo("Übung verschoben");changed=editorMoveExerciseTo(drag.day,drag.source,drag.target);if(changed)editorExerciseIndex=drag.target;}else if(drag.type==="day"){editorPushUndo("Trainingstag verschoben");changed=editorMoveDayToWeekday(drag.source,drag.target);if(!changed)editorUndoStack.pop();if(changed)editorDayIndex=drag.source;}}
- if(drag.active)editorSuppressClickUntil=Date.now()+500;editorDragState=null;clearEditorDragTargets();if(changed)renderProgramEditor();
+ var changed=false,newIndex=null,swapRequest=null;if(drag.active&&!cancelled&&drag.target!=null){if(drag.type==="exercise"&&drag.target!==drag.source){editorPushUndo("Übung verschoben");newIndex=editorMoveExerciseToGap(drag.day,drag.source,drag.target,drag.position||"before");changed=newIndex!=null;if(!changed)editorUndoStack.pop();else editorExerciseIndex=newIndex;}else if(drag.type==="day"){var occupied=editorDayIndexAtWeekday(drag.target,drag.source);if(occupied!=null)swapRequest={day:drag.source,weekday:drag.target};else{editorPushUndo("Trainingstag verschoben");changed=editorMoveDayToWeekday(drag.source,drag.target,false);if(!changed)editorUndoStack.pop();if(changed)editorDayIndex=drag.source;}}}
+ if(drag.active)editorSuppressClickUntil=Date.now()+500;editorDragState=null;clearEditorDragTargets();if(changed)renderProgramEditor();else if(swapRequest)confirmEditorDaySwap(swapRequest.day,swapRequest.weekday);
 }
 function syncEditorForm(){
  var root=document.getElementById("lib");if(!root||!editorDraft)return;
  var fields=root.querySelectorAll("[data-ed-program],[data-ed-reps],[data-ed-cat],[data-ed-week],[data-ed-day]");
  for(var i=0;i<fields.length;i++)if(/^(INPUT|SELECT|TEXTAREA)$/.test(fields[i].tagName))updateEditorInput(fields[i]);
 }
-function editorStoreProgram(replaceOriginal){
+function resetProgramEditorState(){editorDraft=null;editorSourceId=null;editorInitialJSON="";editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;}
+function editorHasUnsavedChanges(){if(!editorDraft)return false;syncEditorForm();return JSON.stringify(editorDraft)!==editorInitialJSON;}
+function finishEditorSave(exitMode){if(exitMode==="back"){resetProgramEditorState();renderLib();}else closeLib(true);}
+function confirmEditorExit(exitMode){
+ var replaceOriginal=editorSourceId!=="default",saveLabel=replaceOriginal?"Original ersetzen":"Als Kopie speichern";
+ showModal("Änderungen noch nicht gespeichert","Du hast dieses Programm verändert. Möchtest du deine Änderungen speichern, bevor du den Editor verlässt?",[{label:saveLabel,cls:"primary",action:function(){editorStoreProgram(replaceOriginal,exitMode);}},{label:"Änderungen verwerfen",cls:"danger",action:function(){if(exitMode==="back"){resetProgramEditorState();renderLib();}else closeLib(true);}},{label:"Weiter bearbeiten",action:null}]);
+}
+function returnToProgramList(force){if(!force&&editorHasUnsavedChanges()){confirmEditorExit("back");return;}resetProgramEditorState();renderLib();}
+function editorStoreProgram(replaceOriginal,exitMode){
  syncEditorForm();
  var checked=parseProgram(JSON.stringify(editorDraft));if(checked.err){showModal("Programm noch nicht gespeichert",checked.err+"<br><br><span style=\"color:#71717a\">Deine Änderungen bleiben im Editor erhalten.</span>",[{label:"Weiter bearbeiten",action:null}]);return;}
  var p=checked.prog;
- if(!replaceOriginal){while(S.programs[p.id])p.id=genId();S.programs[p.id]=p;S.store[p.id]=newStore(p);setActive(p.id);flushSave();closeLib();showModal("Programm gespeichert 💾","„"+esc(p.name)+"“ wurde als neues Programm angelegt. Das Original und dessen Fortschritt bleiben erhalten.",[{label:"Los geht's",cls:"primary",action:null}]);return;}
+ if(!replaceOriginal){while(S.programs[p.id])p.id=genId();S.programs[p.id]=p;S.store[p.id]=newStore(p);setActive(p.id);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);showModal("Programm gespeichert 💾","„"+esc(p.name)+"“ wurde als neues Programm angelegt. Das Original und dessen Fortschritt bleiben erhalten.",[{label:"Los geht's",cls:"primary",action:null}]);return;}
  if(editorSourceId==="default"||!S.programs[editorSourceId])return;
  var sourceId=editorSourceId,sourceName=S.programs[sourceId].name;
- showModal("Original wirklich ersetzen?","„"+esc(sourceName)+"“ wird durch deine bearbeitete Version ersetzt. <b>Nur der Fortschritt dieses Programms</b> wird dabei zurückgesetzt.",[{label:"Ersetzen & Fortschritt löschen",cls:"danger",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId)alias(S);flushSave();closeLib();if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Andere Programme und deren Fortschritt wurden nicht verändert.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
+ showModal("Original wirklich ersetzen?","„"+esc(sourceName)+"“ wird durch deine bearbeitete Version ersetzt. <b>Nur der Fortschritt dieses Programms</b> wird dabei zurückgesetzt.",[{label:"Ersetzen & Fortschritt löschen",cls:"danger",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId)alias(S);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Andere Programme und deren Fortschritt wurden nicht verändert.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
 }
 
 function programItemHtml(id,p){
- return '<div class="progitem'+(id===S.active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(id===S.active?'<span class="statuspill">● Aktiv</span>':'')+'</div><div class="progactions">'+(id===S.active?'':'<button class="progaction go" data-sel="'+attr(id)+'">Aktivieren</button>')+'<button class="progaction" data-edit="'+attr(id)+'">Bearbeiten</button></div></div>';
+ var active=id===S.active;
+ return '<div class="progitem'+(active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(active?'<span class="statuspill">● Aktiv</span>':'')+'</div><div class="progactions">'+(active?'':'<button class="progaction go" data-sel="'+attr(id)+'">Aktivieren</button>')+'<button class="progaction'+(active?' edit-only':'')+'" data-edit="'+attr(id)+'">Bearbeiten</button></div></div>';
 }
 function renderLib(){
  var h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><button class="iconbtn" id="libclose" style="font-size:22px">✕</button></div>';
@@ -1912,8 +1949,11 @@ function renderLib(){
  h+='<div class="librow"><button class="smallbtn del" id="libreset">Fortschritt zurücksetzen</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
-function openLib(){renderLib();document.getElementById("lib").classList.add("open");}
-function closeLib(){editorDraft=null;editorSourceId=null;editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;document.getElementById("lib").classList.remove("open");}
+var surfaceScrollY=0;
+function lockSurfaceScroll(){if(document.body.classList.contains("surface-locked"))return;surfaceScrollY=window.scrollY||document.documentElement.scrollTop||0;document.body.style.top="-"+surfaceScrollY+"px";document.body.classList.add("surface-locked");}
+function unlockSurfaceScroll(){if(!document.body.classList.contains("surface-locked"))return;var y=surfaceScrollY;document.body.classList.remove("surface-locked");document.body.style.top="";window.scrollTo(0,y);}
+function openLib(){renderLib();lockSurfaceScroll();document.getElementById("lib").classList.add("open");}
+function closeLib(force){if(!force&&editorHasUnsavedChanges()){confirmEditorExit("close");return;}resetProgramEditorState();document.getElementById("lib").classList.remove("open");unlockSurfaceScroll();}
 
 // ---------- Events ----------
 var app=document.getElementById("app");
@@ -1949,7 +1989,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(e.target.id==="lib"){closeLib();return;}
  var b=e.target.closest("button");if(!b)return;
  if(b.id==="libclose"){closeLib();return;}
- if(b.id==="editorback"){editorDraft=null;editorSourceId=null;editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];renderLib();return;}
+ if(b.id==="editorback"){returnToProgramList(false);return;}
  if(b.dataset.edit){openProgramEditor(b.dataset.edit);return;}
  if(b.id==="editorhelp"){showEditorHelp();return;}
  if(b.id==="editorundo"){editorUndo();return;}
@@ -1997,13 +2037,13 @@ document.getElementById("lib").addEventListener("focusin",function(e){
 document.getElementById("lib").addEventListener("focusout",function(e){if(editorUndoField===e.target)editorUndoField=null;});
 document.getElementById("lib").addEventListener("pointerdown",function(e){
  if(!editorDraft||(e.button!=null&&e.button!==0))return;var handle=e.target.closest("[data-ed-drag-ex],[data-ed-drag-day]");if(!handle)return;
- var type=handle.dataset.edDragEx!=null?"exercise":"day";editorDragState={type:type,source:+(type==="exercise"?handle.dataset.edDragEx:handle.dataset.edDragDay),day:+(handle.dataset.edDay||editorDayIndex),pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,handle:handle,active:false,target:null,timer:null};
+ var type=handle.dataset.edDragEx!=null?"exercise":"day";editorDragState={type:type,source:+(type==="exercise"?handle.dataset.edDragEx:handle.dataset.edDragDay),day:+(handle.dataset.edDay||editorDayIndex),pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,handle:handle,active:false,target:null,position:null,timer:null};
  if(handle.setPointerCapture)try{handle.setPointerCapture(e.pointerId);}catch(err){}
- editorDragState.timer=setTimeout(function(){if(!editorDragState||editorDragState.handle!==handle)return;editorDragState.active=true;var box=document.querySelector("#lib .editorbox");if(box)box.classList.add("dragging");},320);
+ editorDragState.timer=setTimeout(function(){if(!editorDragState||editorDragState.handle!==handle)return;activateEditorDrag();},180);
 });
 document.getElementById("lib").addEventListener("pointermove",function(e){
- var drag=editorDragState;if(!drag||e.pointerId!==drag.pointerId)return;var distance=Math.abs(e.clientX-drag.startX)+Math.abs(e.clientY-drag.startY);if(!drag.active){if(distance>10){clearTimeout(drag.timer);editorDragState=null;}return;}e.preventDefault();clearEditorDragTargets();var box=document.querySelector("#lib .editorbox");if(box)box.classList.add("dragging");var under=document.elementFromPoint(e.clientX,e.clientY),target;
- if(drag.type==="exercise"){target=under&&under.closest("[data-ed-ex-card]");if(target&&+target.dataset.edExCard!==drag.source){drag.target=+target.dataset.edExCard;target.classList.add("dragtarget");}else drag.target=null;}
+ var drag=editorDragState;if(!drag||e.pointerId!==drag.pointerId)return;if(!drag.active){var distance=Math.abs(e.clientX-drag.startX)+Math.abs(e.clientY-drag.startY);if(distance<6)return;if(drag.timer)clearTimeout(drag.timer);activateEditorDrag();}e.preventDefault();clearEditorDropTargets();var box=document.querySelector("#lib .editorbox");if(box)box.classList.add("dragging");var under=document.elementFromPoint(e.clientX,e.clientY),target;
+ if(drag.type==="exercise"){target=under&&under.closest("[data-ed-ex-card]");if(target&&+target.dataset.edExCard!==drag.source){var rect=target.getBoundingClientRect();drag.target=+target.dataset.edExCard;drag.position=e.clientY<rect.top+rect.height/2?"before":"after";target.classList.add(drag.position==="before"?"insert-before":"insert-after");}else{drag.target=null;drag.position=null;}}
  else{target=under&&under.closest("[data-ed-weekday-slot]");if(target){drag.target=+target.dataset.edWeekdaySlot;target.classList.add("eddaytarget");}else drag.target=null;}
 });
 document.getElementById("lib").addEventListener("pointerup",function(e){if(editorDragState&&e.pointerId===editorDragState.pointerId)finishEditorDrag(e,false);});
@@ -2011,6 +2051,7 @@ document.getElementById("lib").addEventListener("pointercancel",function(e){if(e
 document.getElementById("lib").addEventListener("keydown",function(e){if(!e.target||e.key!=="Enter")return;if(e.target.id==="adjinp"){e.preventDefault();coachSendAdj();}else if(e.target.id==="freeinp"){e.preventDefault();var nb=document.getElementById("coachnext");if(nb)nb.click();}});
 document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var r=new FileReader();r.onload=function(){importProgram(String(r.result));};r.readAsText(t.files[0]);return;}if(t.id==="backupfile"&&t.files&&t.files[0]){var br=new FileReader();br.onload=function(){importBackup(String(br.result));};br.readAsText(t.files[0]);return;}if(editorDraft&&(t.dataset.edProgram||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null)){var rerender=updateEditorInput(t);if(t.dataset.edReps){renderProgramEditor("details");return;}if(t.dataset.edWeek!=null&&t.dataset.edField==="phase"){renderProgramEditor("weeks",+t.dataset.edWeek);return;}if(t.dataset.edDay!=null&&(rerender||t.dataset.edField==="weekday"||t.dataset.edField==="category"||t.dataset.edField==="unit")){renderProgramEditor("days",+t.dataset.edDay,t.dataset.edEx==null?null:+t.dataset.edEx);}}});
 document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(editorDraft&&t.type!=="checkbox"&&t.tagName!=="SELECT"&&(t.dataset.edProgram||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null))updateEditorInput(t);});
+window.addEventListener("beforeunload",function(e){if(!editorHasUnsavedChanges())return;e.preventDefault();e.returnValue="";});
 
 // ---------- PWA ----------
 (function(){
