@@ -100,9 +100,24 @@ test('uses a flat secondary program list and a stronger active state', () => {
   assert.match(html, /\.progitem\.active\{[^}]*background:linear-gradient/);
   assert.match(html, /\.progactions\{display:grid;grid-template-columns:repeat\(2/);
   assert.match(html, /html\[data-theme="light"\] \.progitem\.active/);
-  assert.match(html, /<details class="programcreate">/);
+  assert.match(html, /id="createhubbtn"/);
   assert.match(html, /Neues Programm erstellen/);
-  assert.match(html, /KI-Coach, Vorlage oder fertige Datei/);
+  assert.match(html, /Manuell erstellen/);
+  assert.match(html, /Satzkraft KI-Coach/);
+  assert.match(html, /Externe KI \+ Vorlage/);
+  assert.match(html, /Fertiges Programm importieren/);
+});
+
+test('uses a shared preview and a dedicated unsaved draft mode', () => {
+  assert.match(html, /function prepareProgramImport/);
+  assert.match(html, /function renderImportPreview/);
+  assert.match(html, /Speichern &amp; aktivieren/);
+  assert.match(html, /Nur speichern/);
+  assert.match(html, /Vorher bearbeiten/);
+  assert.match(html, /editorUnsavedDraft/);
+  assert.match(html, /id="edsavenew"/);
+  assert.match(html, /id="edsavenewactive"/);
+  assert.match(html, /Plan prüfen &amp; speichern/);
 });
 
 test('applies the live preview order and requires approval before swapping occupied days', () => {
