@@ -74,3 +74,36 @@ test('copies the planned weight when repetitions are entered', () => {
   assert.equal(written[0].weight, '80');
   assert.equal(weightInput.value, '80');
 });
+
+test('runs timed holds in the shared bar and records them before the set rest', () => {
+  assert.match(html, /function startHold\(exid\)/);
+  assert.match(html, /restPhase="hold"/);
+  assert.match(html, /Halten starten \(Satz /);
+  assert.match(html, /Stopp &amp; eintragen/);
+  assert.match(html, /Zielbereich erreicht/);
+  assert.match(html, /Bestwert: /);
+  assert.match(html, /if\(next<sets\.length\)startRest\(pause,exid\)/);
+  assert.match(html, /holdMaxAlerted=true;beep\(\)/);
+});
+
+test('compacts completed exercise cards only during an active workout', () => {
+  assert.match(html, /active\(\)&&done&&!expandedDoneExercises\[ex\.id\]/);
+  assert.match(html, /class="ex done excompact"/);
+  assert.match(html, /data-expand-done=/);
+  assert.match(html, /expandedDoneExercises\[expanded\.id\]=true/);
+});
+
+test('uses one SVG icon system, larger training text and subtle completion feedback', () => {
+  assert.match(html, /function icon\(name\)/);
+  for (const name of ['play', 'pause', 'stop', 'timer', 'plus', 'check', 'close', 'chevron-left', 'chevron-right', 'undo', 'edit', 'external', 'download', 'sparkle']) {
+    assert.match(html, new RegExp(`["']?${name.replace('-', '\\-')}["']?`));
+  }
+  assert.match(html, /\.presc\{[^}]*font-size:13px/);
+  assert.match(html, /\.last\{[^}]*font-size:12px/);
+  assert.match(html, /\.rec\{[^}]*font-size:13px/);
+  assert.match(html, /\.exname\{[^}]*font-size:15px/);
+  assert.match(html, /\.editnote\{[^}]*font-size:12px/);
+  assert.match(html, /@keyframes setpulse/);
+  assert.match(html, /@keyframes checkpop/);
+  assert.doesNotMatch(html, /workoutPanelHtml/);
+});
