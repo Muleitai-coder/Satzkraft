@@ -68,11 +68,28 @@ test('builds separate weight, repetition and time trends', () => {
   assert.equal(squat.first, 116.5);
   assert.equal(squat.latest, 126);
   assert.equal(squat.best, 126);
+  assert.equal(squat.bestWeek, 2);
+  assert.equal(squat.firstWeek, 1);
   assert.equal(squat.delta, 9.5);
   assert.equal(push.type, 'reps');
   assert.deepEqual(Array.from(push.points, point => point.value), [10, 12]);
   assert.equal(plank.type, 'seconds');
   assert.deepEqual(Array.from(plank.points, point => point.value), [30, 45]);
+});
+
+test('keeps deload work in totals but excludes weighted deload points from the trend', () => {
+  const data = context.buildReportData(
+    { weeks: [{ n: 1, phase: 'aufbau' }, { n: 2, phase: 'deload' }], days: [{ key: 'A', ex: [{ id: 'x', name: 'X', w: true }] }] },
+    { '1|A|x': { sets: [{ reps: '5', weight: '100' }] }, '2|A|x': { sets: [{ reps: '5', weight: '60' }] } },
+    []
+  );
+  const metric = data.exercises[0];
+  assert.deepEqual(Array.from(metric.points, point => point.week), [1]);
+  assert.equal(metric.latest, metric.first);
+  assert.equal(metric.delta, 0);
+  assert.equal(metric.bestWeek, 1);
+  assert.equal(data.totalSets, 2);
+  assert.equal(data.totalVolume, 800);
 });
 
 test('ignores malformed and contradictory values instead of inventing progress', () => {
@@ -99,6 +116,11 @@ test('renders a responsive and accessible report with local-data and print guida
   assert.match(html, /Nur lokal gespeichert/);
   assert.match(html, /Vollständiges Trainingsprotokoll/);
   assert.match(html, /@media\(max-width:760px\).*\.rexgrid\{grid-template-columns:1fr\}/s);
-  assert.match(html, /\.rdetails:not\(\[open\]\)>\.rdetailsbody\{display:block !important\}/);
+  assert.match(html, /\.rdetails:not\(\[open\]\)\{display:none !important\}/);
+  assert.match(html, /Deload-Wochen fließen nicht in den Übungstrend ein/);
+  assert.match(html, /function printReport\(\)/);
+  assert.match(html, /b\.id==="reprint"\)printReport\(\)/);
+  assert.doesNotMatch(html, /window\.open\("","_blank"\)/);
+  assert.match(html, /document\.title=\(PROG\(\)\.name\|\|"Satzkraft"\)\+" – Auswertung"/);
   assert.match(html, /e\.key==="Escape".*closeReport/s);
 });

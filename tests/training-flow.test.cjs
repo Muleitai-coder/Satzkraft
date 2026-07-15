@@ -62,6 +62,7 @@ test('copies the planned weight when repetitions are entered', () => {
     writeSets: (_ex, sets) => { written = sets; },
     save() {},
     setComplete: (_ex, set) => set.reps !== '' && set.weight !== '',
+    scheduleAutoRest() {},
     updateCard() {},
     applyLocks() {},
     updateProgressUI() {},
@@ -73,6 +74,116 @@ test('copies the planned weight when repetitions are entered', () => {
   assert.equal(written[0].reps, '7');
   assert.equal(written[0].weight, '80');
   assert.equal(weightInput.value, '80');
+});
+
+test('completes repetitions from weight input and queues automatic rest', () => {
+  const start = html.indexOf('function onSetInput');
+  const end = html.indexOf('function onSetChange', start);
+  let written, scheduled;
+  const repsInput = { value: '' };
+  const exercise = { id: 'squat', w: true };
+  const context = {
+    restPhase: null,
+    restExId: null,
+    restNextSet: -1,
+    S: { week: 1 },
+    document: { getElementById: id => id === 'rep-squat-0' ? repsInput : null },
+    findEx: () => exercise,
+    sanDec: value => value,
+    sanInt: value => value,
+    active: () => true,
+    getSets: () => [{ reps: '', weight: '' }, { reps: '', weight: '' }],
+    round: value => value,
+    targetWeight: () => 0,
+    catReps: () => [8, 12],
+    PROG: () => ({ weeks: [{ phase: 'aufbau' }] }),
+    writeSets: (_ex, sets) => { written = sets; },
+    save() {},
+    setComplete: (_ex, set) => set.reps !== '' && set.weight !== '',
+    scheduleAutoRest: (...args) => { scheduled = args; },
+    updateCard() {},
+    applyLocks() {},
+    updateProgressUI() {},
+    maybeAskDone() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  context.onSetInput({ id: 'wt-squat-0', value: '80' });
+  assert.equal(written[0].weight, '80');
+  assert.equal(written[0].reps, '12');
+  assert.equal(repsInput.value, '12');
+  assert.equal(scheduled[2], false);
+  assert.equal(scheduled[3], true);
+});
+
+test('keeps zero targets empty and reuses a previous calibration weight', () => {
+  const start = html.indexOf('function onSetInput');
+  const end = html.indexOf('function onSetChange', start);
+  let written;
+  const weightInput = { value: '' };
+  const exercise = { id: 'squat', w: true };
+  const sets = [{ reps: '12', weight: '80' }, { reps: '', weight: '' }];
+  const context = {
+    restPhase: null,
+    restExId: null,
+    restNextSet: -1,
+    document: { getElementById: id => id === 'wt-squat-1' ? weightInput : null },
+    findEx: () => exercise,
+    sanDec: value => value,
+    sanInt: value => value,
+    active: () => true,
+    getSets: () => sets.map(set => ({ ...set })),
+    round: value => value,
+    targetWeight: () => 0,
+    writeSets: (_ex, next) => { written = next; },
+    save() {},
+    setComplete: (_ex, set) => set.reps !== '' && set.weight !== '',
+    scheduleAutoRest() {},
+    updateCard() {},
+    applyLocks() {},
+    updateProgressUI() {},
+    maybeAskDone() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  context.onSetInput({ id: 'rep-squat-1', value: '12' });
+  assert.equal(written[1].weight, '80');
+  assert.equal(weightInput.value, '80');
+
+  sets[0] = { reps: '', weight: '' };
+  weightInput.value = '';
+  context.onSetInput({ id: 'rep-squat-1', value: '12' });
+  assert.equal(written[1].weight, '');
+  assert.equal(weightInput.value, '');
+});
+
+test('formats long time prescriptions in minutes without changing stored seconds', () => {
+  const start = html.indexOf('function fmtSeconds');
+  const end = html.indexOf('function dDate', start);
+  const context = {};
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  assert.equal(context.fmtSeconds(90), '90 Sek');
+  assert.equal(context.fmtSeconds(150), '2:30 min');
+  assert.equal(context.fmtSeconds(900), '15 min');
+  assert.equal(context.fmtSecondsRange(30, 60), '30–60 Sek');
+  assert.equal(context.fmtSecondsRange(780, 900), '13–15 min');
+});
+
+test('guards the delayed automatic rest and keeps the page scrollable', () => {
+  assert.match(html, /var AUTO_REST_DELAY=2000/);
+  assert.match(html, /scheduleAutoRest\(ex,i,wasComplete,nowComplete\)/);
+  assert.match(html, /canStartRest\(ex,current,firstOpen\)/);
+  assert.match(html, /startRest\(catRest\(ex\),ex\.id\)/);
+  assert.doesNotMatch(html, /body\.rest-lock\{position:fixed/);
+  assert.match(html, /body\.rest-lock \.ex:not\(\.rest-focus\)\{opacity:\.55/);
+});
+
+test('explains calibration programs in training and import preview', () => {
+  assert.match(html, /Noch kein Arbeitsgewicht: Trag beim ersten Satz dein Gewicht ein/);
+  assert.match(html, /missingWeights/);
+  assert.match(html, /Übungen ohne Startgewicht/);
+  assert.match(html, /tw>0\?tw\+" kg":\(ex\.bw\?"Körpergew\.":"—"\)/);
 });
 
 test('runs timed holds in the shared bar and records them before the set rest', () => {
@@ -91,11 +202,13 @@ test('compacts completed exercise cards only during an active workout', () => {
   assert.match(html, /class="ex done excompact"/);
   assert.match(html, /data-expand-done=/);
   assert.match(html, /expandedDoneExercises\[expanded\.id\]=true/);
+  assert.match(html, /data-collapse-done=/);
+  assert.match(html, /delete expandedDoneExercises\[collapsed\.id\]/);
 });
 
 test('uses one SVG icon system, larger training text and subtle completion feedback', () => {
   assert.match(html, /function icon\(name\)/);
-  for (const name of ['play', 'pause', 'stop', 'timer', 'plus', 'check', 'close', 'chevron-left', 'chevron-right', 'undo', 'edit', 'external', 'download', 'sparkle']) {
+  for (const name of ['play', 'pause', 'stop', 'timer', 'plus', 'check', 'close', 'info', 'chevron-left', 'chevron-right', 'undo', 'edit', 'external', 'download', 'sparkle']) {
     assert.match(html, new RegExp(`["']?${name.replace('-', '\\-')}["']?`));
   }
   assert.match(html, /\.presc\{[^}]*font-size:13px/);

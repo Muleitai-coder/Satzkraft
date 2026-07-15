@@ -17,6 +17,11 @@ const targetEnd = html.indexOf('function editorExerciseMeta', targetStart);
 assert.ok(targetStart >= 0 && targetEnd > targetStart, 'Zielbereich-Erkennung wurde nicht gefunden');
 vm.runInContext(html.slice(targetStart, targetEnd), context);
 
+const typeStart = html.indexOf('function editorExerciseType');
+const typeEnd = html.indexOf('function renderEditorTraining', typeStart);
+assert.ok(typeStart >= 0 && typeEnd > typeStart, 'Übungstyp-Hilfsfunktionen wurden nicht gefunden');
+vm.runInContext(html.slice(typeStart, typeEnd), context);
+
 const moveStart = html.indexOf('function editorMoveExerciseToGap');
 const moveEnd = html.indexOf('function confirmEditorDeleteWeek', moveStart);
 assert.ok(moveStart >= 0 && moveEnd > moveStart, 'Drag-and-drop-Hilfsfunktionen wurden nicht gefunden');
@@ -61,7 +66,9 @@ test('starts in the familiar training view and separates novice from expert sett
   assert.match(html, /Anstrengung/);
   assert.match(html, /Satzzahlen der Trainingsgruppen/);
   assert.match(html, /Trainingsgruppen \('/);
-  assert.match(html, /Editor-Anleitung/);
+  assert.match(html, /So funktioniert der Editor/);
+  assert.match(html, /EDITOR_INFO=/);
+  assert.match(html, /data-ed-section=/);
 });
 
 test('uses one clear rename path and compact program actions', () => {
@@ -104,7 +111,7 @@ test('uses a flat secondary program list and a stronger active state', () => {
   assert.match(html, /Neues Programm erstellen/);
   assert.match(html, /Manuell erstellen/);
   assert.match(html, /Satzkraft KI-Coach/);
-  assert.match(html, /Externe KI \+ Vorlage/);
+  assert.match(html, /Mit ChatGPT &amp; Co\. erstellen/);
   assert.match(html, /Fertiges Programm importieren/);
 });
 
@@ -141,7 +148,7 @@ test('applies the live preview order and requires approval before swapping occup
   assert.doesNotMatch(html, /insert-before/);
   assert.doesNotMatch(html, /insert-after/);
   assert.match(html, /dragging-source/);
-  assert.match(html, /data-ed-openex=.*data-ed-drag-ex=/s);
+  assert.match(html, /\(isOpen\?'':'<button class="eddrag" data-ed-drag-ex=/);
   assert.match(html, /Date\.now\(\)<editorSuppressClickUntil/);
 });
 
@@ -149,4 +156,37 @@ test('reuses a numeric exercise hint when enabling an explicit prescription', ()
   assert.deepEqual(Array.from(context.editorTargetReps({ target: '3–5 explosive Reps' })), [3, 5]);
   assert.deepEqual(Array.from(context.editorTargetReps({ target: '45 Sekunden' })), [45, 45]);
   assert.equal(context.editorTargetReps({ target: 'sauber und kontrolliert' }), null);
+});
+
+test('maps the four novice exercise types without rewriting exotic settings', () => {
+  assert.equal(context.editorExerciseType({ weighted: true, unit: 'reps' }), 'weight');
+  assert.equal(context.editorExerciseType({ unit: 'reps' }), 'bodyweight');
+  assert.equal(context.editorExerciseType({ weighted: true, bodyweight: true, unit: 'reps' }), 'added_weight');
+  assert.equal(context.editorExerciseType({ unit: 'seconds' }), 'seconds');
+  assert.equal(context.editorExerciseType({ weighted: true, unit: 'seconds' }), 'custom');
+  assert.match(html, /Individuell \(aktuelle Einstellung\)/);
+  assert.doesNotMatch(html, /Was wird eingetragen\?/);
+  assert.doesNotMatch(html, /> Gewicht erfassen</);
+});
+
+test('edits guided warm-up and cool-down blocks with undo and limits', () => {
+  assert.match(html, /Warm-up &amp; Cool-down/);
+  assert.match(html, /Rein zeitbasiert, geführt mit Timer/);
+  assert.match(html, /data-ed-wucd-add=/);
+  assert.match(html, /data-ed-wucd-move=/);
+  assert.match(html, /data-ed-wucd-delete=/);
+  assert.match(html, /list\.length>=8/);
+  assert.match(html, /Math\.max\(15,Math\.min\(180/);
+});
+
+test('offers a complete external-AI handoff and exports from the program library', () => {
+  assert.match(html, /1 · Auftrag \+ Vorlage kopieren/);
+  assert.match(html, /2 · Bei der KI einfügen und Wünsche ausfüllen/);
+  assert.match(html, /3 · Ergebnis importieren/);
+  assert.match(html, /function externalAiPrompt\(\)/);
+  assert.match(html, /Antworte NUR mit dem fertigen JSON/);
+  assert.match(html, /id="tplpromptcopy"/);
+  assert.match(html, /Exportieren &amp; Teilen/);
+  assert.match(html, /trainings_richtlinien/);
+  assert.match(html, /Startgewichte konservativ waehlen/);
 });
