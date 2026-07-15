@@ -179,12 +179,20 @@ test('edits guided warm-up and cool-down blocks with undo and limits', () => {
   assert.match(html, /Math\.max\(15,Math\.min\(180/);
 });
 
+test('centers disclosure arrows and uses a plain information glyph', () => {
+  assert.match(html, /\.edadvanced>summary:after\{[^}]*top:50%[^}]*translateY\(-50%\)/);
+  assert.match(html, /info:'<path d="M12 10\.5V18M12 6\.5h\.01"\/>/);
+  assert.doesNotMatch(html, /info:'<circle/);
+});
+
 test('offers a complete external-AI handoff and exports from the program library', () => {
-  assert.match(html, /1 · Auftrag \+ Vorlage kopieren/);
-  assert.match(html, /2 · Bei der KI einfügen und Wünsche ausfüllen/);
+  assert.match(html, /1 · Trainingswunsch eintragen/);
+  assert.match(html, /2 · Text für ChatGPT kopieren/);
   assert.match(html, /3 · Ergebnis importieren/);
-  assert.match(html, /function externalAiPrompt\(\)/);
-  assert.match(html, /Antworte NUR mit dem fertigen JSON/);
+  assert.match(html, /function externalAiPrompt\(wish\)/);
+  assert.match(html, /Antworte NUR mit dem/);
+  assert.match(html, /vollständigen fertigen JSON/);
+  assert.match(html, /id="externalwish"/);
   assert.match(html, /id="tplpromptcopy"/);
   assert.match(html, /Exportieren &amp; Teilen/);
   assert.match(html, /trainings_richtlinien/);

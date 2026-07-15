@@ -66,6 +66,7 @@ test('copies the planned weight when repetitions are entered', () => {
     updateCard() {},
     applyLocks() {},
     updateProgressUI() {},
+    collapseDoneExcept() {},
     maybeAskDone() {}
   };
   vm.createContext(context);
@@ -104,6 +105,7 @@ test('completes repetitions from weight input and queues automatic rest', () => 
     updateCard() {},
     applyLocks() {},
     updateProgressUI() {},
+    collapseDoneExcept() {},
     maybeAskDone() {}
   };
   vm.createContext(context);
@@ -142,6 +144,7 @@ test('keeps zero targets empty and reuses a previous calibration weight', () => 
     updateCard() {},
     applyLocks() {},
     updateProgressUI() {},
+    collapseDoneExcept() {},
     maybeAskDone() {}
   };
   vm.createContext(context);
@@ -189,7 +192,9 @@ test('explains calibration programs in training and import preview', () => {
 test('runs timed holds in the shared bar and records them before the set rest', () => {
   assert.match(html, /function startHold\(exid\)/);
   assert.match(html, /restPhase="hold"/);
-  assert.match(html, /Halten starten \(Satz /);
+  assert.match(html, /class="timefield"/);
+  assert.match(html, /Timer starten/);
+  assert.doesNotMatch(html, /class="holdbtn"/);
   assert.match(html, /Stopp &amp; eintragen/);
   assert.match(html, /Zielbereich erreicht/);
   assert.match(html, /Bestwert: /);
@@ -198,6 +203,9 @@ test('runs timed holds in the shared bar and records them before the set rest', 
 });
 
 test('compacts completed exercise cards only during an active workout', () => {
+  assert.match(html, /DONE_COLLAPSE_DELAY=12000/);
+  assert.match(html, /scheduleDoneCollapse\(ex\)/);
+  assert.match(html, /collapseDoneExcept\(exid\)/);
   assert.match(html, /active\(\)&&done&&!expandedDoneExercises\[ex\.id\]/);
   assert.match(html, /class="ex done excompact"/);
   assert.match(html, /data-expand-done=/);

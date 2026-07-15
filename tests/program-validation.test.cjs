@@ -14,7 +14,7 @@ const context = {
   WD_MAP: { montag: 0, mo: 0, monday: 0, dienstag: 1, di: 1, tuesday: 1, mittwoch: 2, mi: 2, wednesday: 2, donnerstag: 3, do: 3, thursday: 3, freitag: 4, fr: 4, friday: 4, samstag: 5, sa: 5, saturday: 5, sonntag: 6, so: 6, sunday: 6 },
   WD_CANON: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
   VALID_PROGRESSION_MODES: ["weight", "added_weight", "reps", "seconds", "progression", "none"],
-  WUCD_SET: { Armkreisen: 1, Kindhaltung: 1 },
+  WUCD_SET: { Armkreisen: 1, "Kniebeugen ohne Gewicht": 1, "Cat-Cow": 1, "Brustdehnung Türrahmen": 1, Kindhaltung: 1 },
   ANLEITUNG: {},
   esc: value => String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"),
   wucdSan: list => Array.isArray(list) ? list.map(item => ({ name: item.name, sec: item.seconds })) : [],
@@ -194,4 +194,16 @@ test("creates a valid neutral manual draft with a final recovery week", () => {
   assert.equal(draft.weeks[7].phase, "deload");
   assert.equal(draft.weeks[7].sets.allgemein, 2);
   assert.deepEqual(Array.from(draft.categories.allgemein.reps.aufbau), [8, 12]);
+});
+
+test("loads the complete manual test program with all exercise scenarios", () => {
+  const file = fs.readFileSync(new URL("../TESTPROGRAMM-ALLE-SZENARIEN.json", `file://${__dirname}/`), "utf8");
+  const checked = context.parseProgram(file);
+  assert.equal(checked.err, undefined);
+  const exercises = checked.prog.days.flatMap(day => day.ex);
+  assert.ok(exercises.some(ex => ex.name === "Stairmaster" && ex.unit === "seconds" && ex.reps[0] === 1200));
+  assert.ok(exercises.some(ex => ex.w && ex.bw));
+  assert.ok(exercises.some(ex => ex.w && ex.def === 0 && !ex.bw));
+  assert.ok(exercises.some(ex => ex.pmode === "reps"));
+  assert.ok(exercises.some(ex => ex.sets === 4 && ex.reps[0] === 6));
 });
