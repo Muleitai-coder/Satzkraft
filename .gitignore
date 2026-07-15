@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Zugangsdaten und lokale Konfiguration
+.env
+.env.*
+!.env.example
+
+# Lokale Abhängigkeiten und Protokolle
+node_modules/
+*.log
