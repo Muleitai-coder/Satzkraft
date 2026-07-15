@@ -6,7 +6,32 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
-Noch keine Änderungen.
+### Hinzugefügt
+
+- `FB-20260715-01`: Zeitübungen unterstützen jetzt die Modi `target` (automatischer Stopp am oberen Ziel) und `max` (manueller Stopp). Der Modus kann im Programmeditor gewählt und im JSON mit `timerMode` importiert/exportiert werden.
+- `FB-20260715-07`: Ein Klick auf die Versionsnummer in der Fußzeile öffnet ein Popup mit den drei wichtigsten Änderungen der aktuellen Testfassung.
+- `FB-20260715-09`: Fußbereiche und Versions-Popup nennen Christian Woyack als Entwickler, ohne Adresse oder Kontaktdaten zu veröffentlichen.
+
+### Geändert
+
+- `FB-20260715-02`: Nach vollständig erreichter Zielzeit empfiehlt Satzkraft eine leichte Steigerung von Widerstand, Tempo oder Übungsvariante; die Zeitvorgabe wird nicht endlos verlängert.
+- `FB-20260715-03`: Zeitvorgaben ab zwei Minuten werden in Satzfeldern als Minuten mit einer Nachkommastelle angezeigt und eingegeben; intern und in vorhandenen Trainingsdaten bleiben die Werte kompatibel in Sekunden gespeichert.
+- `FB-20260715-04`: Die Halte-Timerleiste verwendet nach Erreichen des Zielbereichs einen bernsteinfarbenen Fortschritt und eine kontrastreiche Stopp-Schaltfläche. Das mobile Layout der Leiste wurde entzerrt.
+- `FB-20260715-06`: Das bisherige dünne Info-Zeichen wurde durch ein deutliches, gefülltes Info-Symbol ohne umgebenden Kreis ersetzt.
+- `FB-20260715-07`: Die Versionsnummer neben der Überschrift „Programme“ wurde entfernt; sie steht nur noch in den Fußbereichen.
+- `FB-20260715-10`: Auch der integrierte KI-Coach erhält verbindliche Regeln für `timerMode:"target"` inklusive Sekundenbereich und `timerMode:"max"`. Manuelle Erstellung, Editor und externe KI-Vorlage verwenden dieselben Timer-Modi.
+
+### Behoben
+
+- `FB-20260715-05`: Beim automatischen Einklappen einer erledigten Übung wird die Position der aktuell bearbeiteten Übung erhalten, sodass der Bildschirm nicht mehr springt.
+
+### Offen
+
+- `FB-20260715-08`: Vorerst wird keine Adresse veröffentlicht. Ein mögliches vollständiges Impressum bleibt bis zur späteren rechtlichen und produktseitigen Entscheidung offen; persönliche Adressdaten stehen nicht im Repository.
+
+### Dokumentation
+
+- Fester Ablauf für neue Fehler und Änderungswünsche im Projektbriefing definiert: strukturierte Aufnahme mit Feedback-ID, Priorisierung, Reproduktion, Umsetzung, Prüfung, Nutzerabnahme und Versionsentscheidung.
 
 ## [0.17.0] – 2026-07-15
 
@@ -113,4 +138,3 @@ Noch keine Änderungen.
 
 - Aufbau der lokalen Satzkraft-PWA, der Programm- und Trainingslogik sowie der serverseitigen KI-Coach-Funktion.
 - Diese frühen Entwicklungsstände hatten keine konsistent gepflegten App-Versionen oder Release-Tags.
-

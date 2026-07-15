@@ -406,3 +406,116 @@ Die folgenden Punkte sind **umgesetzt und abgenommen**. Bei Widersprüchen zu ä
 5. **Briefing pflegen:** Bei neuen verbindlichen Produktentscheidungen oder Architekturregeln diesen aktuellen Statusabschnitt erweitern. Detailtickets gehören ins Briefing, nutzerorientierte Zusammenfassungen ins Changelog.
 6. **Prüfen:** Gesamte Node-Testsuite, `git diff --check` und risikogerechte manuelle Browserprüfung ausführen. Der aktuelle Versions-Test muss zusätzlich sicherstellen, dass die Version im Changelog vorkommt.
 7. **Git-Abschluss:** Zusammenhängend committen; bei echten veröffentlichten Releases künftig einen Git-Tag `vVERSION` anlegen. Historische Versionen ohne vorhandenen Tag werden nicht nachträglich als angeblich veröffentlichte Tags ausgegeben.
+
+---
+
+## 10. Verbindlicher Ablauf für Fehler und Änderungswünsche
+
+Dieser Ablauf gilt für jedes neue Feedback ab v0.17.0. Ziel ist, Beobachtung, Umsetzung, Test und Release eindeutig voneinander zu trennen. Ein neuer Hinweis wird nicht still mit einem anderen Thema vermischt.
+
+### 10.1 · Feedback aufnehmen
+
+Der Nutzer darf Feedback frei formulieren. Der umsetzende Agent überführt es intern in diese Struktur; fehlende, sicher aus dem Projekt ableitbare Angaben werden selbst ermittelt und nicht unnötig zurückgefragt:
+
+```text
+Titel:
+Typ: Fehler | UX-Verbesserung | neue Funktion | Dokumentation
+Betroffene App-Version:
+Bereich: Training | Timer | Editor | Programme | Import/Export | Auswertung | KI-Coach | PWA
+Ist-Verhalten:
+Erwartetes Verhalten:
+Schritte zum Nachstellen:
+Gerät / Browser / Bildschirmgröße (wenn relevant):
+Betroffenes Programm oder JSON (wenn relevant):
+Priorität aus Nutzersicht: blockierend | störend | Wunsch
+```
+
+- Für jeden unabhängig prüfbaren Punkt wird eine kurze Feedback-ID vergeben: `FB-YYYYMMDD-01`, fortlaufend pro Tag.
+- Mehrere Beobachtungen in einer Nachricht dürfen gemeinsam bearbeitet werden, bleiben aber als einzelne Feedback-Punkte nachvollziehbar.
+- Zugangsdaten, API-Keys, persönliche Trainingsdaten oder andere Geheimnisse gehören nie in Briefing, Changelog, Tests oder Commits.
+
+### 10.2 · Einordnen und priorisieren
+
+1. **Blockierend:** Datenverlust, App startet nicht, Training kann nicht fortgesetzt werden, Import/Backup beschädigt Daten oder KI-Kosten können unkontrolliert entstehen. Sofort isoliert prüfen; keine themenfremden Erweiterungen bündeln.
+2. **Störend:** Funktion arbeitet grundsätzlich, führt aber zu falschem Verhalten, unnötigen Schritten oder deutlicher Verwirrung. Im nächsten Patch oder zusammenhängenden UX-Paket beheben.
+3. **Wunsch:** Neue oder alternative Bedienung ohne bestehenden Defekt. Gegen Nicht-Ziele, Datenmodell und Einfachheit der App prüfen, bevor sie eingeplant wird.
+
+Vor der Umsetzung wird festgehalten, ob es sich um einen reproduzierbaren Fehler, eine Produktentscheidung oder eine noch zu testende UX-Hypothese handelt. Bei einer Produktentscheidung hat die aktuelle ausdrückliche Nutzerentscheidung Vorrang vor älteren Briefing-Passagen; der neue Stand wird anschließend im Briefing dokumentiert.
+
+### 10.3 · Reproduzieren und absichern
+
+1. Betroffene Version und aktuellen Quellstand prüfen.
+2. Fehler mit möglichst kleinem Szenario nachstellen; für Programm-/Übungsfälle zuerst `TESTPROGRAMM-ALLE-SZENARIEN.json` verwenden oder gezielt erweitern.
+3. Bei einem Fehler nach Möglichkeit zuerst einen Test ergänzen, der ohne Korrektur fehlschlägt. Bei rein visuellen Problemen stattdessen Ausgangszustand, Viewport und betroffene Ansicht festhalten.
+4. Ursache und betroffene Daten-/UI-Pfade bestimmen. Keine Reparatur an `js/progression.js`, wenn die Ursache außerhalb der geprüften Progressionsmathematik liegt.
+
+Kann ein gemeldeter Fehler nicht reproduziert werden, werden keine spekulativen Änderungen vorgenommen. Stattdessen werden die bereits geprüften Bedingungen und genau die noch fehlende Information genannt.
+
+### 10.4 · Umsetzen
+
+- Kleinste zusammenhängende Änderung wählen, die den bestätigten Punkt vollständig löst.
+- Bestehende Nutzerdaten, Austauschformat Version 2 und Backups kompatibel halten.
+- Verwandte Tests erweitern; bestehende sinnvolle Tests nicht abschwächen oder löschen.
+- Nutzerrelevante Änderung sofort unter `CHANGELOG.md` → `Unreleased` dokumentieren und dabei die Feedback-ID nennen.
+- Verbindliche Produkt- oder Architekturentscheidungen zusätzlich im aktuellen Statusabschnitt dieses Briefings festhalten.
+
+### 10.5 · Prüfen
+
+Die Abnahme erfolgt risikogerecht, mindestens aber so:
+
+1. Gezielter Test für den betroffenen Bereich.
+2. Gesamte Node-Testsuite.
+3. `git diff --check`.
+4. Bei Layout, Interaktion, Fokus, Scrollen oder responsivem Verhalten eine manuelle Browserprüfung am betroffenen Viewport; mobile Standardprüfung 390 × 844 px, wenn kein anderes Gerät genannt wurde.
+5. Bei Import-/Datenänderungen zusätzlich ein bestehendes Programm sowie `TESTPROGRAMM-ALLE-SZENARIEN.json` laden.
+6. Bei PWA-/Release-Änderungen Versionsgleichheit von `APP_VERSION`, Service-Worker-Cache, Changelog und Briefing prüfen.
+
+### 10.6 · Ergebnis übergeben und vom Nutzer abnehmen lassen
+
+Der Abschlussbericht nennt immer:
+
+- gelöste Feedback-IDs und das neue Verhalten,
+- betroffene Dateien,
+- ausgeführte Tests und Ergebnis,
+- konkrete Schritte für den manuellen Nutzertest,
+- aktuelle Version sowie ausdrücklich, ob die Änderung nur lokal, committed oder zu GitHub hochgeladen ist,
+- noch offene oder bewusst nicht umgesetzte Punkte.
+
+Erst die erfolgreiche technische Prüfung beendet die Umsetzung. Die Rückmeldung des Nutzers aus dem eigenen Praxistest ist die Produktabnahme. Neue Beobachtungen daraus erhalten neue Feedback-IDs und durchlaufen denselben Ablauf.
+
+### 10.7 · Versionsentscheidung
+
+- Reine Fehlerkorrektur oder kleine Anpassung an bereits ausgeliefertem Verhalten: `PATCH`, z. B. v0.17.0 → v0.17.1.
+- Zusammenhängendes neues UX-/Funktionspaket: `MINOR`, z. B. v0.17.x → v0.18.0.
+- In Arbeit befindliche lokale Änderungen erhöhen die sichtbare App-Version erst dann, wenn der Release-Umfang feststeht und die Abnahme bestanden ist.
+- Mehrere kleine Feedback-Punkte dürfen in einem Patch gebündelt werden, wenn sie gemeinsam geprüft und im Changelog einzeln nachvollziehbar sind.
+
+## 11. Aktuelle Feedback-Runde · Kompletttest vom 15.07.2026
+
+Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nicht als neue sichtbare Version veröffentlicht. Bis zur Nutzerabnahme bleibt `APP_VERSION` bei v0.17.0.
+
+| Feedback-ID | Priorität | Status | Verbindliches Verhalten |
+|---|---|---|---|
+| `FB-20260715-01` | störend | umgesetzt | Zeitübungen unterscheiden `timerMode:"target"` und `timerMode:"max"`. Zielzeit stoppt exakt am oberen Ziel automatisch; Maximalzeit läuft bis zum manuellen Stopp. Fehlt das Feld in einem alten Programm, wird aus der bestehenden Vorgabe kompatibel ein sinnvoller Modus abgeleitet. |
+| `FB-20260715-02` | störend | umgesetzt | Erreicht der Nutzer bei einer Zielzeit alle Sätze am oberen Bereich, bleibt der Zeitbereich bestehen. Die UI empfiehlt stattdessen, Widerstand, Tempo oder Variante leicht zu steigern. `js/progression.js` bleibt unverändert. |
+| `FB-20260715-03` | störend | umgesetzt | Zeitbereiche ab 120 Sekunden werden im Satzfeld in Minuten mit einer Nachkommastelle angezeigt; Eingaben und ±-Schritte erfolgen dort ebenfalls in Minuten. Speicherung und Austauschformat bleiben in Sekunden. |
+| `FB-20260715-04` | störend | umgesetzt | Der Zielzustand des Halte-Timers ist bernsteinfarben statt grün; die Stopp-Schaltfläche bleibt kontrastreich. Auf kleinen Bildschirmen stehen Timerstatus und Aktionen in zwei klaren Zeilen. |
+| `FB-20260715-05` | störend | umgesetzt | Beim Einklappen einer vorherigen erledigten Übung wird die Bildschirmposition der aktuell fokussierten Übung ausgeglichen. |
+| `FB-20260715-06` | Wunsch | umgesetzt | Info-Schaltflächen verwenden ein deutliches gefülltes `i` ohne Kreis. |
+| `FB-20260715-07` | Wunsch | umgesetzt | Kein Versions-Chip mehr neben „Programme“. Die anklickbare Version steht im Fußbereich und öffnet genau drei aktuelle Änderungshöhepunkte. |
+| `FB-20260715-08` | Produktentscheidung | entschieden/offen | Aktuelle Entscheidung: keine Adresse veröffentlichen. Ein vollständiges Impressum bleibt vorerst offen; keine Privatadresse oder private Kontaktdaten in App, Briefing, Changelog oder Tests aufnehmen. |
+| `FB-20260715-09` | Wunsch | umgesetzt | In Trainingsfußzeile, Programmverwaltung und Versions-Popup steht „Entwickelt von Christian Woyack“. Die Nennung enthält bewusst keine Adresse oder Kontaktdaten. |
+| `FB-20260715-10` | störend | umgesetzt | Timer-Modi sind in allen Erstellwegen berücksichtigt: manuelle Erstellung führt in den Editor, Zeitübungen zeigen dort die Moduswahl; externe KI-Vorlage und integrierter KI-Coach erzeugen bzw. erhalten `timerMode`. Zielzeit benötigt `sets` und `reps:[minSekunden,maxSekunden]`; Maximalzeit läuft bis zum eigenen Stopp. |
+
+### Sportliche Leitentscheidung für Zeitübungen
+
+- `target` ist für feste Trainingsvorgaben wie Plank 30–60 Sekunden oder Stairmaster 20 Minuten gedacht. Das obere Ziel ist eine Grenze, kein Anlass für unbegrenzt längere Sätze.
+- Nach sauberem Erreichen des oberen Ziels wird die Belastung in einem kleinen Schritt anspruchsvoller gemacht; anschließend arbeitet der Nutzer wieder innerhalb desselben Zeitbereichs.
+- `max` ist für Tests wie Dead Hang oder „so lange wie möglich“ gedacht. Hier misst der Nutzer bewusst bis zum eigenen Stopp; die App zeigt den bisherigen Bestwert als Vergleich.
+- Diese UX-Regel überträgt das Prinzip progressiver Belastungssteigerung auf Zeitübungen. Sie ist keine medizinische Empfehlung und ändert nicht die bestehende Progressionsmathematik.
+
+### Abnahme für diese Runde
+
+- Testszenarien: Plank (`target`, 30–60 Sek), Stairmaster (`target`, 20,0 min) und Dead Hang (`max`) aus `TESTPROGRAMM-ALLE-SZENARIEN.json`.
+- Mobile Browserprüfung: 390 × 844 px; Minutenfeld, Timerleiste, Versions-Popup und Konsole prüfen.
+- Release nach Nutzerabnahme voraussichtlich als zusammenhängendes UX-Paket; Versionsnummer erst dann festlegen und mit Service-Worker-Cache synchron erhöhen.

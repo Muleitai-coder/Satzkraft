@@ -142,6 +142,7 @@
           "name": "Plank",
           "category": "technik",
           "unit": "seconds",
+          "timerMode": "target",
           "sets": 3,
           "reps": [30, 60],
           "progressionMode": "seconds",
@@ -165,6 +166,7 @@
           "name": "Stairmaster",
           "category": "zeit",
           "unit": "seconds",
+          "timerMode": "target",
           "sets": 1,
           "reps": [1200, 1200],
           "progressionMode": "none",
@@ -174,6 +176,7 @@
           "name": "Hollow Body Hold",
           "category": "technik",
           "unit": "seconds",
+          "timerMode": "target",
           "sets": 2,
           "reps": [20, 45],
           "target": "Rücken bleibt am Boden"
@@ -227,6 +230,7 @@
           "name": "Dead Hang",
           "category": "zeit",
           "unit": "seconds",
+          "timerMode": "max",
           "sets": 2,
           "reps": [30, 90],
           "target": "Griffkraft testen"
