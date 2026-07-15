@@ -1,8 +1,9 @@
-# Briefing: Satzkraft v0.15 – UX-, Auswertungs- und Editor-Überarbeitung
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.17.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
-**Von:** App-Architektur (Review Juli 2026, Basis: Satzkraft v0.14.1)
-**Ziel:** Alle unten definierten Arbeitspakete umsetzen. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing steht.
+**Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
+**Aktueller Produktstand:** Satzkraft v0.17.0
+**Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
 
@@ -17,6 +18,8 @@ Satzkraft ist eine deutschsprachige Krafttrainings-PWA, komplett lokal (localSto
 | `netlify/functions/coach.mjs` | Serverfunktion für den KI-Coach (Anthropic-API, Key nur serverseitig) |
 | `sw.js` | Service Worker, Cache-Name enthält die App-Version |
 | `tests/*.test.cjs / *.mjs` | Node-Tests (`node --test tests/`), schneiden Funktionen per String-Anker aus `index.html` |
+| `CHANGELOG.md` | Verbindliche Versionshistorie; laufende Änderungen zuerst unter `Unreleased` |
+| `TESTPROGRAMM-ALLE-SZENARIEN.json` | Valides Importprogramm für manuelle Tests aller wichtigen Übungs- und Editorvarianten |
 
 Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen mit Standardwerten), `weeks` (Phasen `aufbau|intensiv|deload`, RIR, Satzzahlen je Kategorie), `days` mit `ex` (Übungen). Übung: `w` (weighted), `bw` (bodyweight = Zusatzgewicht), `unit` (`reps|seconds`), `sets`/`reps` als eigene Vorgabe, optional `wu`/`cd` (Warm-up/Cool-down, zeitbasiert, Whitelist `WUCD_LIB`). Externes Austauschformat: `format:"trainings-block"`, `version:2` (siehe `BLANK_TEMPLATE` und `parseProgram`).
 
@@ -32,7 +35,7 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
    - Austauschformat `trainings-block` Version 2 nicht brechen. Neue Felder nur optional und abwärtskompatibel; alte Programme/Backups müssen weiter laden.
 5. **`js/progression.js` nicht verändern.** Die Progressionslogik (doppelte Progression, Deload 0.6, Wiedereinstieg 0.925, RIR-Logik) ist geprüft und bleibt exakt so.
 6. **Test-Anker nicht umbenennen/verschieben.** Die Tests schneiden `index.html` an diesen Funktionsnamen: `reportFinite`, `reportNumber`, `catReps`, `getSets`, `onSetInput`, `onSetChange`, `workoutProgress`, `stopWorkout`, `readBackupMeta`, `confirmBackupRestore`, `validBackupNumber`, `cloneJSON`, `openProgramEditor`, `editorTargetReps`, `editorExerciseMeta`, `editorMoveExerciseToGap`, `confirmEditorDeleteWeek`. Diese Funktionsnamen müssen als Strings erhalten bleiben und ihre relative Reihenfolge behalten.
-7. **Versionierung:** Bei Release `APP_VERSION` in `index.html` UND `CACHE` in `sw.js` synchron erhöhen (Test `version.test.cjs` prüft das). Die CSS-Klassen `appversion` und `versionfoot` müssen im Quelltext weiter vorkommen (Test prüft auch das) – sie dürfen aber an anderer Stelle gerendert werden.
+7. **Versionierung und Historie:** Jede nutzerrelevante Änderung sofort unter `Unreleased` in `CHANGELOG.md` eintragen. Bei einem Release den Abschnitt auf die neue Version mit Datum umstellen und gleichzeitig `APP_VERSION` in `index.html` sowie `CACHE` in `sw.js` synchron erhöhen (Test `version.test.cjs` prüft das). Die CSS-Klassen `appversion` und `versionfoot` müssen im Quelltext weiter vorkommen – sie dürfen aber an anderer Stelle gerendert werden. Kein Release ohne Changelog-Eintrag.
 8. **Nach jedem Arbeitspaket:** `node --test tests/` grün + manuelle Checks (Abschnitt 6). Tests bei geänderten Verhalten bewusst erweitern, nicht löschen.
 9. **Ein Arbeitspaket = ein Commit** (bzw. eine zusammenhängende Änderung), Reihenfolge wie unten.
 
@@ -229,7 +232,9 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
 
 ---
 
-## 5. Reihenfolge & Versionierung
+## 5. Historische Reihenfolge & Versionierung
+
+Die folgende Zuordnung dokumentiert den ursprünglichen Umsetzungsplan für v0.15.x. Die tatsächliche und fortan verbindliche Versionshistorie steht in `CHANGELOG.md`.
 
 1. Paket A → Release **v0.15.0**
 2. Paket B → v0.15.1
@@ -341,3 +346,63 @@ Pakete A–E wurden geprüft und sind **umgesetzt und abgenommen** (B3 Live-Vors
 - Editor: Warm-up-Eintrag anlegen, verschieben, löschen – Bereich bleibt offen; geöffnete Übung ohne Drag-Griff.
 - Zeit-Übung mit 900 s anlegen → überall „15 min“-Darstellung, Eingabe weiter in Sekunden.
 - Version auf **0.16.0** heben (`APP_VERSION` + `sw.js`-Cache).
+
+---
+
+## 8. Status-Update: Feedback-Runde 2, Stand v0.17.0
+
+Die folgenden Punkte sind **umgesetzt und abgenommen**. Bei Widersprüchen zu älteren Soll-Beschreibungen in den Paketen A–F gilt dieser aktuelle Stand.
+
+### G1 · Erledigte Übungen klappen verzögert ein
+- Die volle Karte bleibt nach dem letzten Satz zunächst sichtbar.
+- Automatisches Einklappen nach `DONE_COLLAPSE_DELAY=12000` (12 Sekunden).
+- Wird währenddessen in einer anderen Übung weitertrainiert oder deren Pause/Timer gestartet, klappt die zuvor erledigte Übung direkt ein.
+- Solange der Eingabefokus noch in der erledigten Karte liegt, wird das Einklappen verschoben. Manuelles Öffnen/Einklappen bleibt möglich.
+
+### G2 · Timerbedienung für Zeitübungen vereinfacht
+- Kein separater Vollbreiten-Button „Halten starten“ mehr.
+- Der Timerknopf befindet sich direkt im Sekunden-Eingabefeld des ersten offenen Satzes und liegt vor dem Pause-Button.
+- Nutzertexte verwenden „Timer starten“ bzw. „Stopp & eintragen“; intern darf der bestehende Phasenname `hold` erhalten bleiben.
+- Für lange Zeitübungen wie Stairmaster bleibt die Eingabe in Sekunden, während Vorgaben lesbar in Minuten erscheinen.
+
+### G3 · Trainings- und Editorlayout vereinheitlicht
+- Die Vorgabezeile aus Sätzen, Wiederholungs-/Zeitziel, Gewichtsziel und Pause bleibt einzeilig und darf bei sehr kleinen Breiten horizontal scrollen.
+- Geschlossene Editor-Übungen zeigen die Trainingsgruppe in einer eigenen oberen Metazeile und die Parameter darunter. Unterschiedliche Kategorienamen und Satzzeichen dürfen die Parameterzeile nicht verschieben.
+- Aufklapp-Pfeile in Editor, Programmverwaltung und Auswertung sind nach einem gemeinsamen Muster vertikal zentriert.
+- Info-Schaltflächen behalten eine ausreichende unsichtbare Touch-Fläche, zeigen visuell aber nur das Info-Zeichen ohne umgebenden Kreis. Damit ersetzt G3 die ältere Kreis-Vorgabe aus F9.
+
+### G4 · „Mit ChatGPT & Co.“ ohne Fachbegriffe
+- Schritt 1: Nutzer schreibt seinen Trainingswunsch frei in ein Textfeld.
+- Schritt 2: „Text für ChatGPT kopieren“ verbindet den Wunsch automatisch mit Anweisung und vollständiger `BLANK_TEMPLATE`-Vorlage. Es gibt keine separaten Begriffe „Auftrag“, „Meine Wünsche“ oder „Nur Vorlage“ in diesem Flow.
+- Schritt 3: Die vollständige JSON-Antwort wird geprüft und importiert. Der Hinweis erklärt ausdrücklich den Bereich vom ersten `{` bis zum letzten `}` und die Prüfung fehlender Felder.
+- Der allgemeine Import darf weiterhin Markdown-Codeblöcke und eindeutigen Begleittext sicher entfernen; strukturelle Lücken werden nicht erraten.
+
+### G5 · Vollständiges manuelles Testprogramm
+- `TESTPROGRAMM-ALLE-SZENARIEN.json` ist Bestandteil des Projekts und muss valide bleiben.
+- Abgedeckt sind mindestens: normales Gewicht mit und ohne Startgewicht, Körpergewicht, Körpergewicht plus Zusatzgewicht, reine Wiederholungsprogression, kurze Zeitvorgaben, Stairmaster 20 Minuten, eigene Satz-/Wiederholungsvorgaben, unterschiedliche Kategorienamen sowie Warm-up/Cool-down.
+- `program-validation.test.cjs` lädt diese Datei über `parseProgram`; Änderungen am Austauschformat dürfen diesen Test nicht brechen.
+
+### G6 · KI-Coach-Zugang
+- Der KI-Coach bleibt in der Oberfläche als Beta gekennzeichnet, erhält aber **keinen zusätzlichen Zugangscode**.
+- Es gibt weder einen Code im Frontend noch eine Umgebungsvariable `COACH_BETA_CODE` in der Serverfunktion.
+- Der Anthropic-Key bleibt ausschließlich serverseitig; Same-Origin-Prüfung, Größenlimits, Eingabevalidierung, generische Fehlermeldungen und das Netlify-Rate-Limit bleiben verbindlich.
+
+### Abnahme v0.17.0
+- `APP_VERSION` und Service-Worker-Cache stehen beide auf **0.17.0**.
+- Automatisierte Abnahme nach Rücknahme des Zugangscodes: **60 Tests grün**.
+- Mobile Sichtprüfung bei 390 × 844 px: Timerfeld, Editor-Metadaten, Pfeile und Info-Zeichen ohne Browserfehler.
+- Die nutzerrelevanten Änderungen stehen in `CHANGELOG.md`.
+
+---
+
+## 9. Verbindlicher Release- und Dokumentationsprozess ab v0.17.0
+
+1. **Während der Umsetzung:** Jede nutzerrelevante Ergänzung, Änderung, Fehlerbehebung oder Produktentscheidung unter `CHANGELOG.md` → `Unreleased` eintragen.
+2. **Vor dem Release:** Semantische Version festlegen. Solange die App vor v1.0 ist, bedeutet üblicherweise:
+   - `MINOR` für ein größeres UX-/Funktionspaket, z. B. 0.17.0 → 0.18.0.
+   - `PATCH` für reine Korrekturen ohne neues größeres Paket, z. B. 0.17.0 → 0.17.1.
+3. **Synchron erhöhen:** `APP_VERSION` in `index.html` und `CACHE` in `sw.js` auf dieselbe Version setzen.
+4. **Changelog abschließen:** `Unreleased`-Einträge unter eine Überschrift `[VERSION] – YYYY-MM-DD` verschieben; leeren `Unreleased`-Abschnitt oben stehen lassen.
+5. **Briefing pflegen:** Bei neuen verbindlichen Produktentscheidungen oder Architekturregeln diesen aktuellen Statusabschnitt erweitern. Detailtickets gehören ins Briefing, nutzerorientierte Zusammenfassungen ins Changelog.
+6. **Prüfen:** Gesamte Node-Testsuite, `git diff --check` und risikogerechte manuelle Browserprüfung ausführen. Der aktuelle Versions-Test muss zusätzlich sicherstellen, dass die Version im Changelog vorkommt.
+7. **Git-Abschluss:** Zusammenhängend committen; bei echten veröffentlichten Releases künftig einen Git-Tag `vVERSION` anlegen. Historische Versionen ohne vorhandenen Tag werden nicht nachträglich als angeblich veröffentlichte Tags ausgegeben.
