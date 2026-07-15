@@ -60,13 +60,7 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .sessionlock .eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#34d399;margin-bottom:7px}
 .sessionlock .week{font-size:24px;font-weight:750;line-height:1.1}
 .sessionlock .trainingday{font-size:14px;font-weight:600;color:#d4d4d8;margin-top:8px}
-.workoutpanel{display:flex;align-items:center;justify-content:space-between;gap:14px;border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.07)}
-.runlabel{font-size:12px;font-weight:700;color:#6ee7b7;margin-bottom:3px}
-.runlabel.paused{color:#fcd34d}
 .runhint{font-size:10px;color:#71717a;margin-top:5px;line-height:1.35}
-.runtime{font-size:25px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1}
-.runactions{display:flex;gap:7px;flex-shrink:0}
-.runactions .bbtn{padding:9px 11px}
 .wstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
 .wday{padding:9px 2px;border-radius:10px;border:1px solid #242b35;background:#141920;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px}
 .wday.rest{opacity:.4;border-style:dashed}
@@ -87,6 +81,10 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .starthint{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#6ee7b7;border-radius:12px;padding:14px;font-size:13px;margin-bottom:14px;text-align:center;line-height:1.5}
 .ex{background:#141920;border:1px solid #242b35;border-radius:16px;padding:16px;margin-bottom:12px}
 .ex.done{border-color:rgba(16,185,129,.5)}
+.excompact{display:flex;align-items:center;gap:9px;padding:10px 12px}
+.excompact .tag{flex:none}
+.excompactname{flex:1;min-width:0;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.excompactcheck{color:#34d399;font-size:17px;font-weight:800}
 .ex.rest-focus{border-color:#34d399;box-shadow:0 0 0 1px rgba(52,211,153,.25),0 20px 55px rgba(0,0,0,.5)}
 body.rest-lock .ex{transition:opacity .2s,filter .2s,transform .2s}
 body.rest-lock .ex:not(.rest-focus){opacity:.14;filter:saturate(.25) blur(.3px);transform:scale(.985)}
@@ -101,7 +99,7 @@ body.rest-lock .ex:not(.rest-focus){opacity:.14;filter:saturate(.25) blur(.3px);
 .tag.orange{background:rgba(249,115,22,.15);color:#fdba74;border-color:rgba(249,115,22,.3)}
 .tag.rose{background:rgba(244,63,94,.15);color:#fda4af;border-color:rgba(244,63,94,.3)}
 .tag.slate{background:rgba(100,116,139,.15);color:#cbd5e1;border-color:rgba(100,116,139,.3)}
-.exname{font-size:14px;font-weight:600;margin:4px 0 0;line-height:1.2}
+.exname{font-size:15px;font-weight:600;margin:4px 0 0;line-height:1.2}
 .exen{font-size:12px;color:#71717a;font-style:italic;margin:0}
 .exsub{font-size:12px;color:#71717a;margin:2px 0 0}
 .links{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:6px}
@@ -110,11 +108,11 @@ body.rest-lock .ex:not(.rest-focus){opacity:.14;filter:saturate(.25) blur(.3px);
 .g.ok{color:rgba(16,185,129,.85)}
 .g.proxy{color:rgba(245,158,11,.85)}
 .chk{width:32px;height:32px;border-radius:999px;border:2px solid #313a46;color:#313a46;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
-.chk.done{background:#10b981;border-color:#10b981;color:#0a0d12}
-.presc{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:12px;color:#a1a1aa;background:rgba(10,13,18,.5);border-radius:8px;padding:8px 10px;margin-bottom:8px}
+.chk.done{background:#10b981;border-color:#10b981;color:#0a0d12;animation:checkpop .2s ease-out}
+.presc{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:13px;color:#a1a1aa;background:rgba(10,13,18,.5);border-radius:8px;padding:8px 10px;margin-bottom:8px}
 .presc b{color:#e4e4e7}
 .presc .dot{color:#313a46}
-.last{display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:12px;min-width:0;width:100%;background:none;border:none;text-align:left;padding:4px 0;cursor:pointer;font-family:inherit}
+.last{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:12px;min-width:0;width:100%;background:none;border:none;text-align:left;padding:4px 0;cursor:pointer;font-family:inherit}
 .last:active{opacity:.6}
 .last .l{color:#71717a;flex-shrink:0}
 .last .v{color:#a1a1aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -126,19 +124,28 @@ body.rest-lock .ex:not(.rest-focus){opacity:.14;filter:saturate(.25) blur(.3px);
 .inp:disabled{opacity:.4}
 .srows{display:flex;flex-direction:column;gap:6px}
 .srow{display:flex;align-items:center;gap:6px;border:1px solid transparent;border-radius:8px;padding:4px 6px}
-.srow.full{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.4)}
+.srow.full{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.4);animation:setpulse .28s ease-out}
 .srow .slbl{font-size:11px;color:#71717a;width:24px;flex-shrink:0}
 .srow .inp{flex:1}
 .srow .unit{font-size:11px;color:#71717a;flex-shrink:0}
-.editnote{font-size:11px;color:#71717a;margin-top:8px;text-align:center}
+.editnote{font-size:12px;color:#71717a;margin-top:8px;text-align:center}
 .pausebtn{margin-top:10px;width:100%;background:#242b35;border:1px solid #313a46;color:#d4d4d8;border-radius:10px;padding:8px;font-size:12px;font-weight:600;cursor:pointer}
 .pausebtn:active{background:#313a46}
 .pausebtn:disabled{opacity:.4}
-.rec{margin-top:12px;border:1px solid;border-radius:12px;padding:8px 12px;font-size:12px;font-weight:500;display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+.holdbtn{margin-top:7px;width:100%;background:rgba(14,165,233,.12);border:1px solid rgba(56,189,248,.35);color:#7dd3fc;border-radius:10px;padding:9px;font-size:12px;font-weight:700;cursor:pointer}
+.holdbtn:disabled{opacity:.38}
+.rec{margin-top:12px;border:1px solid;border-radius:12px;padding:8px 12px;font-size:13px;font-weight:500;display:flex;gap:8px;align-items:flex-start;line-height:1.45}
 .rec.emerald{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.4);color:#6ee7b7}
 .rec.amber{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4);color:#fcd34d}
 .rec.sky{background:rgba(14,165,233,.15);border-color:rgba(14,165,233,.4);color:#7dd3fc}
 .rec.orange{background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74}
+.ico{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}
+.iconbtn .ico{width:20px;height:20px}
+.createicon .ico{width:20px;height:20px}
+.programheadtools{display:flex;align-items:center;gap:5px;margin-left:auto}
+@keyframes setpulse{0%{background:rgba(16,185,129,.42);transform:scale(.99)}100%{background:rgba(16,185,129,.15);transform:scale(1)}}
+@keyframes checkpop{0%{transform:scale(.72)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.srow.full,.chk.done{animation:none}}
 .legend{margin-top:24px;background:rgba(20,25,32,.5);border:1px solid rgba(36,43,53,.5);border-radius:12px;padding:12px;font-size:12px;color:#71717a;line-height:1.55}
 .legend b{color:#a1a1aa}
 #bar{position:fixed;left:0;right:0;bottom:0;background:rgba(10,13,18,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid #242b35;padding:10px 16px calc(10px + env(safe-area-inset-bottom));z-index:40}
@@ -158,6 +165,10 @@ body.rest-lock .ex:not(.rest-focus){opacity:.14;filter:saturate(.25) blur(.3px);
 .restname .subline{font-size:10px;color:#6ee7b7;margin-top:2px}
 .restcontent .tbig{min-width:46px;text-align:center}
 .nextpause{background:#10b981;color:#0a0d12}
+.restbar.holdmode{border-color:rgba(56,189,248,.5)}
+.restbar.holdmode .restfill{background:#0ea5e9;transition:width .2s,background .2s}
+.restbar.holdmode.target .restfill{background:#10b981}
+.holdactions{display:flex;gap:6px;align-items:center}
 .workoutbar{width:100%;min-height:56px;display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid rgba(16,185,129,.4);border-radius:14px;background:#141920}
 .workoutbar.paused{border-color:rgba(245,158,11,.48)}
 .workoutbarstate{flex:1;min-width:0;padding-left:3px}
@@ -179,9 +190,6 @@ body.rest-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .bbtn.mini{padding:7px 9px;font-size:12px}
 .muted{font-size:11px;color:#71717a}
 @media(max-width:430px){
- .workoutpanel{align-items:flex-start;flex-direction:column}
- .runactions{width:100%}
- .runactions .bbtn{flex:1}
  .restcontent{gap:5px;padding:7px}
  .restcontent .bbtn.mini{padding:7px}
  .workoutbar{gap:6px}
@@ -241,7 +249,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .reportintro p{margin:0;color:#a1a1aa;font-size:12px;line-height:1.5;max-width:620px}
 .reportlocal{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #242b35;border-radius:999px;padding:6px 9px;color:#a1a1aa;font-size:10px;font-weight:700}
 .reportlocal:before{content:"";width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.12)}
-.rsummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 18px}
+.rsummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px}
 .rmetric{background:#141920;border:1px solid #242b35;border-radius:13px;padding:13px;min-width:0}
 .rmetric .rlab{display:block;color:#a1a1aa;font-size:10px;font-weight:700;line-height:1.25;margin-bottom:7px}
 .rmetric .rval{display:block;color:#fafafa;font-size:20px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
@@ -288,9 +296,9 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .rdetails{margin-top:14px;border:1px solid #242b35;border-radius:13px;overflow:hidden}
 .rdetails>summary{cursor:pointer;list-style:none;padding:13px 15px;font-size:13px;font-weight:700;background:#10151b;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .rdetails>summary::-webkit-details-marker{display:none}
-.rdetails>summary:after{content:"+";font-size:18px;color:#71717a}
+.rdetails>summary:after{content:"";width:7px;height:7px;border-right:2px solid #71717a;border-bottom:2px solid #71717a;transform:rotate(45deg)}
 .rdetails[open]>summary{border-bottom:1px solid #242b35}
-.rdetails[open]>summary:after{content:"−"}
+.rdetails[open]>summary:after{transform:rotate(225deg)}
 .rdetailsbody{padding:4px 14px 14px}
 .rfootnote{font-size:10px;line-height:1.5;color:#71717a;margin:12px 2px 0}
 .progitem{background:#141920;border:1px solid #242b35;border-radius:12px;padding:13px 14px;margin-bottom:8px}
@@ -318,7 +326,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .edsection,.edcard{background:#10151b;border:1px solid #242b35;border-radius:12px;margin:9px 0;overflow:hidden}
 .edsection>summary,.edcard>summary{cursor:pointer;list-style:none;padding:12px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 .edsection>summary::-webkit-details-marker,.edcard>summary::-webkit-details-marker{display:none}
-.edsection>summary:after,.edcard>summary:after{content:"›";margin-left:auto;color:#71717a;font-size:18px;transform:rotate(90deg)}
+.edsection>summary:after,.edcard>summary:after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid #71717a;border-bottom:2px solid #71717a;transform:rotate(45deg)}
 .edsection:not([open])>summary:after,.edcard:not([open])>summary:after{transform:none}
 .edbody{padding:2px 12px 12px}
 .edgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -381,9 +389,16 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .edadvanced{background:#10151b;border:1px solid #242b35;border-radius:11px;margin:11px 0;overflow:hidden}
 .edadvanced>summary{cursor:pointer;list-style:none;padding:11px 12px;font-size:12px;font-weight:700;color:#d4d4d8}
 .edadvanced>summary::-webkit-details-marker{display:none}
-.edadvanced>summary:after{content:"+";float:right;color:#71717a}
-.edadvanced[open]>summary:after{content:"−"}
+.edadvanced>summary:after{content:"";float:right;width:7px;height:7px;margin:2px 3px 0 0;border-right:2px solid #71717a;border-bottom:2px solid #71717a;transform:rotate(45deg)}
+.edadvanced[open]>summary:after{transform:rotate(225deg)}
 .edadvanced .edbody{padding-top:5px}
+.edwucdhelp{color:#71717a;font-size:10px;line-height:1.45;margin:0 0 10px}
+.edwucdgroup+.edwucdgroup{margin-top:14px;padding-top:13px;border-top:1px solid #242b35}
+.edwucdtitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;color:#d4d4d8;font-size:11px;font-weight:750}
+.edwucdrow{display:grid;grid-template-columns:minmax(0,1fr) 84px auto;gap:6px;align-items:center;margin-bottom:6px}
+.edwucdrow select,.edwucdrow input{width:100%;min-height:37px;background:#141920;border:1px solid #313a46;border-radius:8px;color:#fafafa;padding:7px 8px;font-size:11px}
+.edwucdmove{display:flex;gap:4px}
+.edwucdmove .edmini{min-width:32px;padding:4px 7px}
 .edemptyday{background:#10151b;border:1px dashed #313a46;border-radius:12px;padding:18px 12px;text-align:center;color:#71717a;font-size:12px;margin-bottom:12px}
 .edprescription{background:#10151b;border:1px solid #313a46;border-radius:11px;padding:11px 12px;grid-column:1/-1}
 .edprescription h3{font-size:13px;margin:0 0 4px}
@@ -397,8 +412,8 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .programothers{margin:12px 0 5px;border:0;border-top:1px solid #242b35;border-bottom:1px solid #242b35;border-radius:0}
 .programothers>summary{list-style:none;cursor:pointer;padding:13px 4px;color:#a1a1aa;font-size:12px;font-weight:700;background:transparent}
 .programothers>summary::-webkit-details-marker{display:none}
-.programothers>summary:after{content:"+";float:right;color:#71717a}
-.programothers[open]>summary:after{content:"−"}
+.programothers>summary:after{content:"";float:right;width:7px;height:7px;margin:2px 3px 0 0;border-right:2px solid #71717a;border-bottom:2px solid #71717a;transform:rotate(45deg)}
+.programothers[open]>summary:after{transform:rotate(225deg)}
 .programothers[open]>summary{border-bottom:1px solid #242b35}
 .programothersbody{padding:0}
 .programothersbody .progitem{border:0;border-bottom:1px solid #242b35;border-radius:0;margin:0;padding:14px 4px;background:transparent;box-shadow:none}
@@ -406,8 +421,8 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .programcreate{margin:15px 0 5px;border:1px solid rgba(16,185,129,.38);border-radius:14px;background:rgba(16,185,129,.06);overflow:hidden}
 .programcreate>summary{display:flex;align-items:center;gap:11px;list-style:none;cursor:pointer;padding:14px;color:#d1fae5}
 .programcreate>summary::-webkit-details-marker{display:none}
-.programcreate>summary:after{content:"›";margin-left:auto;color:#6ee7b7;font-size:24px;font-weight:500;line-height:1;transform:rotate(90deg);transition:transform .16s ease}
-.programcreate[open]>summary:after{transform:rotate(-90deg)}
+.programcreate>summary:after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid #6ee7b7;border-bottom:2px solid #6ee7b7;transform:rotate(45deg);transition:transform .16s ease}
+.programcreate[open]>summary:after{transform:rotate(225deg)}
 .programcreate[open]>summary{border-bottom:1px solid rgba(16,185,129,.25)}
 .createplus{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:10px;background:#10b981;color:#052e16;font-size:20px;font-weight:500}
 .programcreate>summary b{display:block;font-size:13px}
@@ -429,6 +444,10 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .subviewbox{max-width:620px}
 .subviewlead{font-size:12px;color:#a1a1aa;line-height:1.55;margin:-2px 0 14px}
 .importdrop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px dashed #3b4654;border-radius:12px;background:#10151b;margin:10px 0}
+.importtextwrap{position:relative}
+.importtextwrap .libta{padding-right:82px}
+.importclear{position:absolute;top:8px;right:8px;border:1px solid #313a46;border-radius:8px;background:#242b35;color:#d4d4d8;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer}
+.importclear[hidden]{display:none}
 .importdrop strong{display:block;font-size:12px}
 .importdrop small{display:block;color:#71717a;font-size:10px;margin-top:3px}
 .importnotice{border:1px solid #2b3440;border-radius:12px;background:#10151b;padding:12px 13px;margin:10px 0;color:#a1a1aa;font-size:11px;line-height:1.5}
@@ -511,7 +530,6 @@ html[data-theme="light"] .libbox,
 html[data-theme="light"] .rwk,
 html[data-theme="light"] .rtbl th,
 html[data-theme="light"] .progitem{background:#fff;border-color:#e4e4e7}
-html[data-theme="light"] .workoutpanel{background:#ecfdf5;border-color:#a7f3d0}
 html[data-theme="light"] .wday.train{border-color:#d4d4d8}
 html[data-theme="light"] .wday.train:active,
 html[data-theme="light"] .iconbtn:active,
@@ -681,9 +699,11 @@ html[data-theme="light"] .importtechnical{border-color:#d4d4d8}
 html[data-theme="light"] .importtechnical pre{background:#f4f4f5;border-color:#d4d4d8;color:#52525b}
 html[data-theme="light"] .importactions{background:rgba(255,255,255,.97);border-color:#e4e4e7}
 html[data-theme="light"] .manualday.sel{background:#10b981;border-color:#10b981;color:#052e16}
+html[data-theme="light"] .edwucdrow select,html[data-theme="light"] .edwucdrow input{background:#fff;border-color:#d4d4d8;color:#18181b}
+html[data-theme="light"] .edwucdgroup+.edwucdgroup{border-color:#e4e4e7}
 html[data-theme="light"] .versionfoot{color:#71717a}
 @media(max-width:600px){.creategrid,.previewdays{grid-template-columns:1fr}.createchoice{min-height:0}.manualgrid{grid-template-columns:1fr}.subviewbox,.createhub{max-width:480px}}
-@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.editorbox,.subviewbox,.createhub{padding:14px}.edsticky,.importactions{bottom:-14px;margin-left:-14px;margin-right:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:38px;height:42px}.edexhead{gap:7px}.manualdays{gap:3px}.manualday{min-height:42px;font-size:9px}.previewstats{gap:5px}.previewstat{padding:8px 4px}}
+@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.editorbox,.subviewbox,.createhub{padding:14px}.edsticky,.importactions{bottom:-14px;margin-left:-14px;margin-right:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:38px;height:42px}.edexhead{gap:7px}.edwucdrow{grid-template-columns:1fr 72px}.edwucdmove{grid-column:1/-1;justify-content:flex-end}.manualdays{gap:3px}.manualday{min-height:42px;font-size:9px}.previewstats{gap:5px}.previewstat{padding:8px 4px}}
 @media(max-width:760px){.rsummary{grid-template-columns:repeat(2,minmax(0,1fr))}.rweekgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.rexgrid{grid-template-columns:1fr}}
 @media(max-width:520px){.reportwrap{padding-left:13px;padding-right:13px}.reporthead{margin-left:-13px;margin-right:-13px;gap:8px}.reporthead h1{font-size:19px}.reportactions .histbtn{font-size:0;padding:9px}.reportactions .histbtn:before{content:"PDF";font-size:11px}.reportintro{display:block}.reportlocal{margin-top:10px}.rmetric{padding:11px}.rmetric .rval{font-size:18px}.rpanel{padding:13px}.rsession{grid-template-columns:minmax(0,1fr) auto}.rsessionmeta{grid-column:1/-1;text-align:left}.rdetailsbody{padding-left:9px;padding-right:9px}.rtbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.rtbl th,.rtbl td{min-width:88px}.rtbl .exn{min-width:150px}}
 html[data-theme="light"] .tag.orange{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
@@ -696,10 +716,11 @@ html[data-theme="light"] .rec.orange{background:#fff7ed;color:#c2410c;border-col
 html[data-theme="light"] .badge.norm{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
 html[data-theme="light"] .badge.deload{background:#f0f9ff;color:#0369a1;border-color:#bae6fd}
 html[data-theme="light"] .ex.rest-focus{box-shadow:0 0 0 1px rgba(52,211,153,.2),0 20px 55px rgba(63,63,70,.18)}
+html[data-theme="light"] .holdbtn{background:#f0f9ff;border-color:#bae6fd;color:#0369a1}
 @media print{
  @page{size:A4;margin:13mm}
- html,body{background:#fff !important}
- #app,#bar,#modal,#lib{display:none !important}
+ html,body,body.surface-locked{position:static!important;top:auto!important;overflow:visible!important;height:auto!important;background:#fff !important}
+ #app,#bar,#modal,#lib,#wucd{display:none !important}
  #report{position:static !important;display:block !important;background:#fff !important;overflow:visible !important}
  .reportwrap{padding:0 !important;max-width:none !important}
  .reporthead{position:static !important;margin:0 0 7mm !important;padding:0 0 4mm !important;background:#fff !important;border-color:#bbb !important;backdrop-filter:none !important}
@@ -709,7 +730,7 @@ html[data-theme="light"] .ex.rest-focus{box-shadow:0 0 0 1px rgba(52,211,153,.2)
  .reportintro{margin-bottom:5mm !important}
  .reportintro h2{color:#111 !important}
  .reportintro p{color:#555 !important}
- .rsummary{grid-template-columns:repeat(4,1fr) !important;gap:3mm !important}
+ .rsummary{grid-template-columns:repeat(3,1fr) !important;gap:3mm !important}
  .rmetric,.rpanel,.rweekitem,.rexcard,.rsession,.rdetails{background:#fff !important;border-color:#bbb !important;box-shadow:none !important}
  .rmetric{padding:3mm !important}
  .rmetric .rlab,.rmetric .rsub,.rpanelhead p,.rexday,.rexvalue span,.rsessionmain span,.rsessionmeta,.rfootnote{color:#555 !important}
@@ -720,8 +741,8 @@ html[data-theme="light"] .ex.rest-focus{box-shadow:0 0 0 1px rgba(52,211,153,.2)
  .rbar{background:#ddd !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
  .rbar>span,.rsparkline,.rsparkdot{background:#10b981 !important;stroke:#047857 !important;fill:#047857 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
  .rdetails>summary{display:none !important}
- .rdetails:not([open])>.rdetailsbody{display:block !important}
- .rdetailsbody{display:block !important;padding:2mm 0 0 !important}
+ .rdetails:not([open]){display:none !important}
+ .rdetails[open]>.rdetailsbody{display:block !important;padding:2mm 0 0 !important}
  .rmeta{color:#666 !important}
  .rwk{background:#f0f0f0 !important;border:none !important;color:#111 !important}
  .rsec{color:#111 !important;border-color:#ccc !important}
@@ -804,7 +825,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.14.0";
+var APP_VERSION="0.15.4";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -812,7 +833,7 @@ var BACKUP_META_KEY="satzkraft-backup-meta-v1";
 function currentTheme(){return document.documentElement.dataset.theme==="light"?"light":"dark";}
 function themeButtonHtml(){
  var light=currentTheme()==="light";
- return '<button class="linkbtn themebtn" id="themebtn" aria-label="'+(light?"Dunkelmodus":"Hellmodus")+'" title="'+(light?"Dunkelmodus einschalten":"Hellmodus einschalten")+'">'+(light?"☾ Dunkel":"☀ Hell")+'</button>';
+ return '<button class="linkbtn themebtn" id="themebtn" aria-label="'+(light?"Dunkelmodus":"Hellmodus")+'" title="'+(light?"Dunkelmodus einschalten":"Hellmodus einschalten")+'">'+(light?"Dunkelmodus":"Hellmodus")+'</button>';
 }
 function applyTheme(theme,persist){
  theme=theme==="light"?"light":"dark";
@@ -823,7 +844,7 @@ function applyTheme(theme,persist){
  var btn=document.getElementById("themebtn");
  if(btn){
   var light=theme==="light";
-  btn.innerHTML=light?"☾ Dunkel":"☀ Hell";
+  btn.textContent=light?"Dunkelmodus":"Hellmodus";
   btn.setAttribute("aria-label",light?"Dunkelmodus":"Hellmodus");
   btn.title=light?"Dunkelmodus einschalten":"Hellmodus einschalten";
  }
@@ -840,6 +861,10 @@ function dDate(ts){return new Date(ts).toLocaleDateString("de-DE",{weekday:"shor
 function dClock(ts){return new Date(ts).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function attr(s){return esc(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function icon(name){
+ var paths={play:'<path d="M8 5l11 7-11 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1"/>',timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2M9 2h6"/>',plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="M5 12l4 4 10-10"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',"chevron-left":'<path d="M15 5l-7 7 7 7"/>',"chevron-right":'<path d="M9 5l7 7-7 7"/>',undo:'<path d="M9 7H5V3M5 7c2-3 5-4 8-3 4 1 7 5 6 9s-5 7-9 6c-2 0-4-2-5-4"/>',edit:'<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>',external:'<path d="M14 5h5v5M11 13l8-8M19 13v6H5V5h6"/>',download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',sparkle:'<path d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4zM18 15l.7 2.3L21 18l-2.3.7L18 21l-.7-2.3L15 18l2.3-.7z"/>'};
+ return'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||"")+'</svg>';
+}
 
 // ---------- State (mehrere Programme) ----------
 var loadIssueRaw="",loadIssueText="",storageErrorShown=false;
@@ -1041,7 +1066,7 @@ function recHtml(ex){
  var rec=recommendForWeek(ex,S.week);
  if(rec.action==="none"||!rec.message)return "";
  var color=REC_COLOR[rec.action]||"amber";
- return '<div class="rec '+color+'">↗ <span><b>'+esc(rec.message)+'</b>'+(rec.reason?'<br><span style="opacity:.8">'+esc(rec.reason)+'</span>':'')+'</span></div>';
+ return '<div class="rec '+color+'">'+icon("external")+'<span><b>'+esc(rec.message)+'</b>'+(rec.reason?'<br><span style="opacity:.8">'+esc(rec.reason)+'</span>':'')+'</span></div>';
 }
 function stpBtn(ex,i,kind,d,dis){return '<button class="stp" data-step="'+kind+'" data-ex="'+esc(ex.id)+'" data-i="'+i+'" data-d="'+d+'" aria-label="'+(kind==="wt"?"Gewicht":"Wiederholungen")+' '+(d>0?"erhöhen":"verringern")+'"'+dis+'>'+(d>0?'+':'−')+'</button>';}
 function setRowHtml(ex,i,s,rr,tw,dis){
@@ -1089,60 +1114,57 @@ function showHistory(ex){
  }
  showModal("Verlauf · "+esc(ex.name),body,[{label:"Schließen",cls:"primary",action:null}]);
 }
+var expandedDoneExercises={};
 function exCardHtml(ex){
  var sets=getSets(ex),wk=PROG().weeks[S.week-1],rr=catReps(ex,wk.phase),tw=targetWeight(ex),last=lastPerf(ex),done=isDone(ex);
+ if(active()&&done&&!expandedDoneExercises[ex.id])return'<div class="ex done excompact" id="card-'+attr(ex.id)+'"><span class="tag '+catColor(ex)+'">'+esc(catLabel(ex))+'</span><span class="excompactname">'+esc(ex.name)+'</span><span class="excompactcheck" aria-label="Erledigt">'+icon("check")+'</span><button class="edmini" data-expand-done="'+attr(ex.id)+'">Öffnen</button></div>';
  var dis=active()?"":" disabled";
  var h='<div class="ex'+(done?" done":"")+(active()?"":" locked")+'" id="card-'+ex.id+'">';
  h+='<div class="exhead"><div class="info">';
  h+='<span class="tag '+catColor(ex)+'">'+esc(catLabel(ex))+'</span>';
  h+='<h3 class="exname">'+esc(ex.name)+'</h3>'+(ex.en?'<p class="exen">'+esc(ex.en)+'</p>':'')+(ex.sub?'<p class="exsub">'+esc(ex.sub)+'</p>':'');
- h+='<div class="links"><a href="'+ytUrl(ex.q||(ex.name+" Technik"))+'" target="_blank" rel="noopener noreferrer">▶ Video</a>';
- h+=ex.gname?'<span class="g ok" title="In Garmin Connect: '+esc(ex.gname)+'">⌚ '+esc(ex.gname)+'</span>':(ex.proxy?'<span class="g proxy" title="Proxy: '+esc(ex.proxy)+'">⌚ Proxy: '+esc(ex.proxy)+'</span>':'');
- h+='</div></div><div class="chk'+(done?" done":"")+'" id="chk-'+ex.id+'">✓</div></div>';
+ h+='<div class="links"><a href="'+ytUrl(ex.q||(ex.name+" Technik"))+'" target="_blank" rel="noopener noreferrer">'+icon("play")+' Video</a>';
+ h+=ex.gname?'<span class="g ok" title="In Garmin Connect: '+esc(ex.gname)+'">Garmin: '+esc(ex.gname)+'</span>':(ex.proxy?'<span class="g proxy" title="Proxy: '+esc(ex.proxy)+'">Garmin-Proxy: '+esc(ex.proxy)+'</span>':'');
+ h+='</div></div><div class="chk'+(done?" done":"")+'" id="chk-'+ex.id+'">'+icon("check")+'</div></div>';
  h+='<div class="presc"><span><b>'+sets.length+'</b> Sätze</span><span class="dot">·</span>';
  h+=rr?'<span><b>'+rr[0]+'–'+rr[1]+'</b> '+(isTime(ex)?"Sek":"Wdh")+'</span>':'<span><b>'+esc(ex.target||"—")+'</b></span>';
  if(ex.w)h+='<span class="dot">·</span><span>Ziel <b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"Körpergew.")+'</b></span>';
  h+='<span class="dot">·</span><span>Pause '+restLabel(catRest(ex))+'</span></div>';
- if(last){var v=last.sets.filter(function(s){return s.reps!=="";}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":""+s.reps;}).join(" · ")||"—";h+='<button class="last" data-hist="'+ex.id+'"><span class="l">↩ Zuletzt (W'+last.week+'):</span><span class="v">'+v+'</span><span class="histhint">Verlauf ›</span></button>';}
+ if(last){var v=last.sets.filter(function(s){return s.reps!=="";}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":""+s.reps;}).join(" · ")||"—";h+='<button class="last" data-hist="'+ex.id+'"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+v+'</span><span class="histhint">Verlauf '+icon("chevron-right")+'</span></button>';}
  if(ex.w)h+='<div class="wwrow"><span>Arbeitsgewicht:</span><input class="inp" id="ww-'+ex.id+'" inputmode="decimal" aria-label="'+esc(ex.name)+' Arbeitsgewicht in kg" value="'+baseWeight(ex,S.week)+'"'+dis+'><span>kg'+(ex.bw&&tw===0?" (Zusatz)":"")+'</span></div>';
  var firstOpen=firstOpenSet(ex,sets);
  var hasData=sets.some(function(s){return s.reps!==""||s.weight!=="";});
  h+='<div class="srows">';for(var i=0;i<sets.length;i++){var rdis;if(active()){rdis=(i>firstOpen)?" disabled":"";}else{rdis=(sets[i].reps!==""||sets[i].weight!=="")?"":" disabled";}h+=setRowHtml(ex,i,sets[i],rr,tw,rdis);}h+='</div>';
- if(!active()&&hasData)h+='<div class="editnote">✎ Werte antippen, um sie nachträglich zu ändern.</div>';
+ if(!active()&&hasData)h+='<div class="editnote">'+icon("edit")+' Werte antippen, um sie nachträglich zu ändern.</div>';
  var pauseDisabled=(!restPhase&&canStartRest(ex,sets,firstOpen))?"":" disabled";
- h+='<button class="pausebtn" id="pause-'+esc(ex.id)+'" data-rest="'+catRest(ex)+'" data-rest-ex="'+esc(ex.id)+'"'+pauseDisabled+'>⏱ Pause starten ('+fmtTime(catRest(ex))+')</button>';
+ h+='<button class="pausebtn" id="pause-'+esc(ex.id)+'" data-rest="'+catRest(ex)+'" data-rest-ex="'+esc(ex.id)+'"'+pauseDisabled+'>'+icon("timer")+' Pause starten ('+fmtTime(catRest(ex))+')</button>';
+ if(isTime(ex)){var holdDisabled=canStartHold(ex,sets,firstOpen)?"":" disabled";h+='<button class="holdbtn" id="hold-'+attr(ex.id)+'" data-hold-ex="'+attr(ex.id)+'"'+holdDisabled+'>'+icon("timer")+' Halten starten (Satz '+(Math.min(firstOpen,sets.length-1)+1)+')</button>';}
  h+='<div id="rec-'+ex.id+'">'+recHtml(ex)+'</div>';
  return h+'</div>';
 }
-function workoutPanelHtml(){
- var w=S.workout;if(!w)return"";
- return '<div class="panel workoutpanel" id="workoutPanel"><div><div class="runlabel'+(w.running?'':' paused')+'" id="workoutState">'+(w.running?'Training läuft':'Zeitmessung pausiert')+'</div><div class="runtime" id="wtElapsed">'+fmtTime(elapsedSec())+'</div>'+(w.running?'':'<div class="runhint">Satzwerte können weiter bearbeitet werden.</div>')+'</div><div class="runactions">'+(w.running?'<button class="bbtn pause" id="pausew">⏸ Zeit pausieren</button>':'<button class="bbtn go" id="resumew">▶ Zeit fortsetzen</button>')+'<button class="bbtn stop" id="stopw">■ Beenden</button></div></div>';
-}
-function updateWorkoutPanel(){var panel=document.getElementById("workoutPanel");if(panel)panel.outerHTML=workoutPanelHtml();}
 function renderView(){
  document.body.classList.toggle("training",active());
  var P=PROG(),wk=P.weeks[S.week-1],day=dayByKey(S.day),h="";
- h+='<div class="hdr"><div class="topright"><span class="appversion" aria-label="Satzkraft Version '+esc(APP_VERSION)+'">v'+esc(APP_VERSION)+'</span>'+themeButtonHtml()+'<button class="linkbtn" id="libbtn">Programme</button><button class="linkbtn" id="pdf">Auswertung</button></div><h1 class="ptitle">'+esc(P.name)+'</h1><p class="sub">'+P.days.length+' Tage · '+P.weeks.length+' Wochen</p></div>';
+ h+='<div class="hdr"><div class="topright"><button class="linkbtn" id="libbtn">Programme</button><button class="linkbtn" id="pdf">Auswertung</button></div><h1 class="ptitle">'+esc(P.name)+'</h1><p class="sub">'+P.days.length+' Tage · '+P.weeks.length+' Wochen</p></div>';
  if(active()){
   h+='<div class="panel sessionlock"><div class="eyebrow">Laufendes Training</div><div class="week">Woche '+wk.n+'<span class="muted"> / '+P.weeks.length+'</span></div><div class="trainingday">'+esc(day.wd||day.key)+(day.title?' · '+esc(day.title):'')+'</div></div>';
-  h+=workoutPanelHtml();
  }else{
-  h+='<div class="panel"><div class="wknav"><button class="nav" id="prev"'+(S.week===1?" disabled":"")+'>‹</button><div class="wknum"><div class="lbl">Woche</div><div class="big">'+wk.n+'<span>/'+P.weeks.length+'</span></div></div><button class="nav" id="next"'+(S.week===P.weeks.length?" disabled":"")+'>›</button></div>';
+  h+='<div class="panel"><div class="wknav"><button class="nav" id="prev" aria-label="Vorherige Woche"'+(S.week===1?" disabled":"")+'>'+icon("chevron-left")+'</button><div class="wknum"><div class="lbl">Woche</div><div class="big">'+wk.n+'<span>/'+P.weeks.length+'</span></div></div><button class="nav" id="next" aria-label="Nächste Woche"'+(S.week===P.weeks.length?" disabled":"")+'>'+icon("chevron-right")+'</button></div>';
   h+='<div class="bars">';P.weeks.forEach(function(w,idx){var f=weekFrac(idx+1),full=f>=0.999,active=(idx+1)===S.week,label='Woche '+(idx+1)+' von '+P.weeks.length+': '+(w.label||w.phase)+', '+Math.round(f*100)+' % abgeschlossen';h+='<button class="bar'+(w.phase==="deload"?" deload":"")+(active?" cur":"")+'" data-week="'+(idx+1)+'" aria-label="'+esc(label)+'"'+(active?' aria-current="step"':'')+'><div class="fill'+(full?" full":"")+'" id="wbar-'+(idx+1)+'" style="height:'+(f*100)+'%"></div></button>';});h+='</div>';
   h+='<div class="wknums">';P.weeks.forEach(function(w,idx){h+='<div class="'+((idx+1)===S.week?"cur":"")+'">'+(idx+1)+'</div>';});h+='</div>';
   h+='<div><span class="badge '+(wk.phase==="deload"?"deload":"norm")+'">'+esc(wk.label)+'</span>'+(wk.rir?'<span class="rir">◎ RIR '+esc(wk.rir)+'</span>':'')+'</div>';
   if(wk.note)h+='<p class="note">'+esc(wk.note)+'</p>';h+='</div>';
   var slots=weekLayout();
-  h+='<div class="wstrip">';for(var wi=0;wi<7;wi++){var wd=slots[wi];if(wd){var stt=dayStatus(wd),sel=(S.day===wd.key);h+='<button class="wday train'+(sel?" active":"")+(stt.complete?" done":"")+'" data-day="'+esc(wd.key)+'" title="'+esc(wd.wd||wd.key)+(wd.title?" · "+esc(wd.title):"")+'"><span class="wdn">'+WD_ABBR[wi]+'</span><span class="wstat">'+(stt.complete?"✓":"•")+'</span></button>';}else{h+='<div class="wday rest"><span class="wdn">'+WD_ABBR[wi]+'</span><span class="wstat"></span></div>';}}h+='</div>';
+  h+='<div class="wstrip">';for(var wi=0;wi<7;wi++){var wd=slots[wi];if(wd){var stt=dayStatus(wd),sel=(S.day===wd.key);h+='<button class="wday train'+(sel?" active":"")+(stt.complete?" done":"")+'" data-day="'+esc(wd.key)+'" title="'+esc(wd.wd||wd.key)+(wd.title?" · "+esc(wd.title):"")+'"><span class="wdn">'+WD_ABBR[wi]+'</span><span class="wstat">'+(stt.complete?icon("check"):"•")+'</span></button>';}else{h+='<div class="wday rest"><span class="wdn">'+WD_ABBR[wi]+'</span><span class="wstat"></span></div>';}}h+='</div>';
  }
  var dd=day.ex.filter(isDone).length;
  h+='<div class="dayhdr'+(active()?' active':'')+'">'+(active()?'':'<h2>'+esc(day.wd||day.key)+(day.title?' · '+esc(day.title):'')+'</h2>')+'<span class="p" id="dayprog">'+dd+'/'+day.ex.length+' erledigt</span></div>';
  S.history.filter(function(e){return e.week===S.week&&e.day===S.day;}).forEach(function(e){var segments=e.segments||1;h+='<div class="sessbox">🗓 '+dDate(e.start)+(segments>1?' · Dauer '+fmtTime(e.dur)+' · '+segments+' Abschnitte':' · '+dClock(e.start)+'–'+dClock(e.end)+' · Dauer '+fmtTime(e.dur))+'</div>';});
- if(!active()&&!dayComplete(S.week,S.day))h+='<div class="starthint">▶ Tippe unten auf <b>Training starten</b>, um Sätze einzutragen.</div>';
- if(day.wu&&day.wu.length){var wus=day.wu.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="wubtn" style="width:100%;margin:0 0 10px">\u25b6 Warm-up starten \u00b7 '+day.wu.length+' \u00dcbungen \u00b7 ~'+Math.round(wus/60)+' min</button>';}
+ if(!active()&&!dayComplete(S.week,S.day))h+='<div class="starthint">'+icon("play")+' Tippe unten auf <b>Training starten</b>, um Sätze einzutragen.</div>';
+ if(day.wu&&day.wu.length){var wus=day.wu.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="wubtn" style="width:100%;margin:0 0 10px">'+icon("play")+' Warm-up starten \u00b7 '+day.wu.length+' \u00dcbungen \u00b7 ~'+Math.round(wus/60)+' min</button>';}
  day.ex.forEach(function(ex){h+=exCardHtml(ex);});
- if(day.cd&&day.cd.length){var cds=day.cd.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="cdbtn" style="width:100%;margin:4px 0 10px">\u25b6 Cool-down starten \u00b7 '+day.cd.length+' \u00dcbungen \u00b7 ~'+Math.round(cds/60)+' min</button>';}
- h+='<div class="legend">Oben rechts: <b>Programme</b> – erstellen, laden und exportieren · <b>Auswertung</b> – Kennzahlen, Übungsfortschritt und Bericht als PDF. Die Progression rechnet aus dem tatsächlich gehobenen Gewicht das Folgegewicht.<br><b>Satzkraft v'+esc(APP_VERSION)+'</b> · Deine Trainingsdaten bleiben lokal auf diesem Gerät.</div>';
+ if(day.cd&&day.cd.length){var cds=day.cd.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="cdbtn" style="width:100%;margin:4px 0 10px">'+icon("play")+' Cool-down starten \u00b7 '+day.cd.length+' \u00dcbungen \u00b7 ~'+Math.round(cds/60)+' min</button>';}
+ h+='<div class="legend"><b>Satzkraft v'+esc(APP_VERSION)+'</b> · Deine Trainingsdaten bleiben lokal auf diesem Gerät.</div>';
  document.getElementById("app").innerHTML='<div class="wrap">'+h+'</div>';
 }
 
@@ -1152,7 +1174,7 @@ function updateProgressUI(){
 }
 function updateCard(ex){
  var done=isDone(ex);
- var card=document.getElementById("card-"+ex.id);if(card)card.classList.toggle("done",done);
+ var card=document.getElementById("card-"+ex.id);if(card&&active()&&done&&!expandedDoneExercises[ex.id]&&!card.classList.contains("excompact")){card.outerHTML=exCardHtml(ex);return;}if(card)card.classList.toggle("done",done);
  var chk=document.getElementById("chk-"+ex.id);if(chk)chk.classList.toggle("done",done);
  var rec=document.getElementById("rec-"+ex.id);if(rec)rec.innerHTML=recHtml(ex);
 }
@@ -1164,9 +1186,15 @@ function canStartRest(ex,sets,firstOpen){
  if(restPhase)return restPhase==="set"&&firstOpen>restNextSet;
  return true;
 }
+function canStartHold(ex,sets,firstOpen){
+ if(!active()||!isTime(ex))return false;sets=sets||getSets(ex);if(firstOpen==null)firstOpen=firstOpenSet(ex,sets);if(firstOpen>=sets.length)return false;
+ if(!restPhase)return true;
+ return restPhase==="set"&&restExId===ex.id&&restNextSet===firstOpen;
+}
 function updatePauseButton(ex){
  var sets=getSets(ex),btn=document.getElementById("pause-"+ex.id);
  if(btn)btn.disabled=!!restPhase||!canStartRest(ex,sets,firstOpenSet(ex,sets));
+ var hold=document.getElementById("hold-"+ex.id);if(hold)hold.disabled=!canStartHold(ex,sets,firstOpenSet(ex,sets));
 }
 function applyLocks(ex){
  var sets=getSets(ex),firstOpen=firstOpenSet(ex,sets);
@@ -1176,6 +1204,7 @@ function applyLocks(ex){
    if(restExId!==ex.id)lock=true;
    else if(restPhase==="countdown")lock=lock||j>=restNextSet;
    else if(restPhase==="set")lock=lock||j>restNextSet;
+   else if(restPhase==="hold")lock=true;
   }
   var rep=document.getElementById("rep-"+ex.id+"-"+j),wt=document.getElementById("wt-"+ex.id+"-"+j);
   if(rep&&document.activeElement!==rep)rep.disabled=lock;
@@ -1272,7 +1301,7 @@ function notifyRestDone(){
 }
 
 // ---------- Timer ----------
-var restEnd=null,restTotal=0,restBaseSec=0,restExId=null,restExerciseName="",restScrollY=null,restPhase=null,restNextSet=-1,actx=null;
+var restEnd=null,restTotal=0,restBaseSec=0,restExId=null,restExerciseName="",restScrollY=null,restPhase=null,restNextSet=-1,holdStartedAt=0,holdMin=null,holdMax=null,holdMaxAlerted=false,holdBest=0,actx=null;
 function unlockAudio(){try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();if(actx.state==="suspended")actx.resume();}catch(e){}}
 function beep(){try{unlockAudio();if(!actx)return;var o=actx.createOscillator(),g=actx.createGain();o.connect(g);g.connect(actx.destination);o.type="sine";o.frequency.value=880;var t=actx.currentTime;g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(0.32,t+0.03);g.gain.setValueAtTime(0.32,t+1.05);g.gain.exponentialRampToValueAtTime(0.001,t+1.45);o.start(t);o.stop(t+1.5);}catch(e){}}
 function focusRest(exid){
@@ -1298,8 +1327,20 @@ function startRest(sec,exid){
  unlockAudio();restTotal=sec;restBaseSec=sec;restEnd=Date.now()+sec*1000;restExId=exid;restExerciseName=ex.name;restPhase="countdown";restNextSet=next;
  applyAllLocks();renderBar();requestAnimationFrame(function(){if(restPhase&&restExId)focusRest(restExId);});
 }
+function holdBestSeconds(ex){var best=0,suffix="|"+ex.id;for(var key in S.logs){if(key.slice(-suffix.length)!==suffix)continue;var cell=S.logs[key],sets=cell&&cell.sets;if(!Array.isArray(sets))continue;sets.forEach(function(set){var value=reportFinite(set&&set.reps);if(value!=null&&value>best)best=value;});}return Math.round(best);}
+function startHold(exid){
+ var ex=exid?findEx(exid):null;if(!ex)return;var sets=getSets(ex),next=firstOpenSet(ex,sets);if(!canStartHold(ex,sets,next))return;
+ var range=catReps(ex,PROG().weeks[S.week-1].phase);unlockAudio();requestWakeLock();restEnd=null;restTotal=0;restBaseSec=catRest(ex);restExId=exid;restExerciseName=ex.name;restPhase="hold";restNextSet=next;holdStartedAt=Date.now();holdMin=Array.isArray(range)?Number(range[0]):null;holdMax=Array.isArray(range)?Number(range[1]):null;holdMaxAlerted=false;holdBest=holdBestSeconds(ex);
+ applyAllLocks();renderBar();requestAnimationFrame(function(){if(restPhase==="hold")focusRest(exid);});
+}
+function holdElapsedSeconds(){return holdStartedAt?Math.max(0,Math.floor((Date.now()-holdStartedAt)/1000)):0;}
+function cancelHold(){resetRestState();clearRestFocus();applyAllLocks();renderBar();}
+function finishHold(){
+ if(restPhase!=="hold")return;var ex=findEx(restExId),seconds=Math.max(1,holdElapsedSeconds()),exid=restExId,index=restNextSet,pause=restBaseSec;resetRestState();clearRestFocus();
+ var input=document.getElementById("rep-"+exid+"-"+index);if(ex&&input){input.disabled=false;input.value=String(seconds);onSetInput(input);}if(ex){var sets=getSets(ex),next=firstOpenSet(ex,sets);if(next<sets.length)startRest(pause,exid);else{applyAllLocks();renderBar();}}
+}
 function adjustRest(d){if(restPhase==="countdown"&&restEnd){restEnd=Math.max(Date.now(),restEnd+d*1000);var rem=Math.max(0,(restEnd-Date.now())/1000);if(rem>restTotal)restTotal=rem;renderBar();}}
-function resetRestState(){restEnd=null;restTotal=0;restBaseSec=0;restExId=null;restExerciseName="";restPhase=null;restNextSet=-1;}
+function resetRestState(){restEnd=null;restTotal=0;restBaseSec=0;restExId=null;restExerciseName="";restPhase=null;restNextSet=-1;holdStartedAt=0;holdMin=null;holdMax=null;holdMaxAlerted=false;holdBest=0;}
 function stopRest(){resetRestState();clearRestFocus();applyAllLocks();renderBar();}
 function endRest(){
  restEnd=null;restTotal=0;restPhase="set";applyAllLocks();beep();if(navigator.vibrate)navigator.vibrate([400,150,400,150,700]);notifyRestDone();renderBar();
@@ -1316,7 +1357,7 @@ function beginWorkout(mode){
   firstStart=records.reduce(function(min,e){return e.start&&e.start<min?e.start:min;},n);
   segmentsBase=records.reduce(function(sum,e){return sum+(e.segments||1);},0);
  }
- S.workout={running:true,startedAt:n,accrued:accrued,firstStart:firstStart,askedDone:false,completedAt:0,week:S.week,day:S.day,mode:mode,segmentsBase:segmentsBase};
+ expandedDoneExercises={};S.workout={running:true,startedAt:n,accrued:accrued,firstStart:firstStart,askedDone:false,completedAt:0,week:S.week,day:S.day,mode:mode,segmentsBase:segmentsBase};
  save();renderBar();renderView();
 }
 function startWorkout(){
@@ -1335,8 +1376,8 @@ function startWorkout(){
   {label:"Zur Auswahl",action:null}
  ]);
 }
-function pauseWorkout(){var w=S.workout;if(w&&w.running){w.accrued+=(Date.now()-w.startedAt)/1000;w.running=false;releaseWakeLock();save();updateWorkoutPanel();renderBar();}}
-function resumeWorkout(){var w=S.workout;if(w&&!w.running){w.startedAt=Date.now();w.running=true;requestWakeLock();save();updateWorkoutPanel();renderBar();}}
+function pauseWorkout(){var w=S.workout;if(w&&w.running){w.accrued+=(Date.now()-w.startedAt)/1000;w.running=false;releaseWakeLock();save();renderBar();}}
+function resumeWorkout(){var w=S.workout;if(w&&!w.running){w.startedAt=Date.now();w.running=true;requestWakeLock();save();renderBar();}}
 function backupJSON(){syncStore();return JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,programs:S.programs,active:S.active,store:S.store},null,1);}
 function readBackupMeta(){
  try{var m=JSON.parse(localStorage.getItem(BACKUP_META_KEY)||"{}");return{lastAt:finiteNumber(m.lastAt,0,Number.MAX_SAFE_INTEGER,false)?m.lastAt:0,historyCount:finiteNumber(m.historyCount,0,1000000,true)?m.historyCount:0,remindedAt:finiteNumber(m.remindedAt,0,1000000,true)?m.remindedAt:0};}catch(e){return{lastAt:0,historyCount:0,remindedAt:0};}
@@ -1368,7 +1409,7 @@ function workoutProgress(week,dayKey){
  day.ex.forEach(function(ex){var need=setsForExercise(ex,week),stored=S.logs[week+"|"+dayKey+"|"+ex.id],done=0;totalSets+=need;for(var i=0;i<need;i++)if(stored&&stored.sets&&stored.sets[i]&&setComplete(ex,stored.sets[i])){completedSets++;done++;}if(need>0&&done===need)completedExercises++;});
  return{completedSets:completedSets,totalSets:totalSets,completedExercises:completedExercises,totalExercises:day.ex.length,complete:day.ex.length>0&&completedExercises===day.ex.length};
 }
-function stopWorkout(){var w=S.workout;if(!w)return;clearDonePrompt();var sessionWeek=w.week||S.week,sessionDay=w.day||S.day,dur=Math.max(1,Math.round(w.accrued+(w.running?(Date.now()-w.startedAt)/1000:0)));replaceDayHistory(sessionWeek,sessionDay,{start:w.firstStart,end:Date.now(),dur:dur,week:sessionWeek,day:sessionDay,complete:dayComplete(sessionWeek,sessionDay),segments:(w.segmentsBase||0)+1});resetRestState();clearRestFocus();releaseWakeLock();S.workout=null;save();renderBar();renderView();if(dayComplete(sessionWeek,sessionDay))maybeOfferBackup();}
+function stopWorkout(){var w=S.workout;if(!w)return;clearDonePrompt();var sessionWeek=w.week||S.week,sessionDay=w.day||S.day,dur=Math.max(1,Math.round(w.accrued+(w.running?(Date.now()-w.startedAt)/1000:0)));replaceDayHistory(sessionWeek,sessionDay,{start:w.firstStart,end:Date.now(),dur:dur,week:sessionWeek,day:sessionDay,complete:dayComplete(sessionWeek,sessionDay),segments:(w.segmentsBase||0)+1});resetRestState();clearRestFocus();releaseWakeLock();expandedDoneExercises={};S.workout=null;save();renderBar();renderView();if(dayComplete(sessionWeek,sessionDay))maybeOfferBackup();}
 function confirmStop(){
  var w=S.workout;if(!w)return;var repeat=w.mode==="repeat",progress=workoutProgress(w.week||S.week,w.day||S.day),summary=progress.completedSets+" von "+progress.totalSets+" Sätzen · "+progress.completedExercises+" von "+progress.totalExercises+" Übungen erledigt.<br><br>",msg,label,cls="primary";
  if(repeat){msg=summary+"Die frühere Trainingszeit dieses Tages wird durch diese Wiederholung ersetzt. Deine jetzt eingetragenen Werte bleiben gespeichert.";label="Wiederholung speichern & beenden";cls="danger";}
@@ -1396,16 +1437,19 @@ function renderBar(){
  var bar=document.getElementById("bar"),w=S.workout,h="";
  if(!w){
   var completed=dayComplete(S.week,S.day),continuing=dayWasInterrupted(S.week,S.day)&&!completed;
-  h='<div class="barwrap"><div class="start-only"><button class="bbtn go" id="startw">▶ Training '+(completed?"wiederholen":continuing?"fortsetzen":"starten")+'</button></div></div>';
+  h='<div class="barwrap"><div class="start-only"><button class="bbtn go" id="startw">'+icon("play")+' Training '+(completed?"wiederholen":continuing?"fortsetzen":"starten")+'</button></div></div>';
+ }else if(restPhase==="hold"){
+  var held=holdElapsedSeconds(),holdPct=holdMax?Math.max(0,Math.min(100,held/holdMax*100)):0,holdReached=holdMin!=null&&held>=holdMin,holdSub=holdMin!=null?(holdReached?"Zielbereich erreicht":"Ziel "+holdMin+"–"+holdMax+" Sek"):(holdBest?"Bestwert: "+holdBest+" Sek":"So lange wie möglich");
+  h='<div class="barwrap"><div class="restbar holdmode'+(holdReached?' target':'')+'" id="holdBar"><div class="restfill" id="holdFill" style="width:'+holdPct+'%"></div><div class="restcontent"><div class="restname"><div class="main">'+esc(restExerciseName)+'</div><div class="subline" id="holdStatus">'+holdSub+'</div></div><span class="tbig" id="holdCount">'+fmtTime(held)+'</span><div class="holdactions"><button class="bbtn go" id="stophold">Stopp &amp; eintragen</button><button class="bbtn stop mini" id="cancelhold" aria-label="Halten abbrechen">Abbrechen</button></div></div></div></div>';
  }else if(restPhase==="countdown"&&restEnd){
   var rem=Math.max(0,Math.round((restEnd-Date.now())/1000)),pct=restTotal>0?Math.max(0,Math.min(100,(rem/restTotal)*100)):0;
-  h='<div class="barwrap"><div class="restbar"><div class="restfill" id="restFill" style="width:'+pct+'%"></div><div class="restcontent"><div class="restname"><div class="main">'+esc(restExerciseName)+'</div><div class="subline">Satzpause</div></div><button class="bbtn mini" data-radj="-15">−15</button><span class="tbig" id="rtCount">'+fmtTime(rem)+'</span><button class="bbtn mini" data-radj="15">+15</button><button class="bbtn stop mini" id="stopr" aria-label="Satzpause beenden">■</button></div></div></div>';
+  h='<div class="barwrap"><div class="restbar"><div class="restfill" id="restFill" style="width:'+pct+'%"></div><div class="restcontent"><div class="restname"><div class="main">'+esc(restExerciseName)+'</div><div class="subline">Satzpause</div></div><button class="bbtn mini" data-radj="-15">−15</button><span class="tbig" id="rtCount">'+fmtTime(rem)+'</span><button class="bbtn mini" data-radj="15">+15</button><button class="bbtn stop mini" id="stopr" aria-label="Satzpause beenden">'+icon("stop")+'</button></div></div></div>';
  }else if(restPhase==="set"){
   var setEx=findEx(restExId),setList=setEx?getSets(setEx):[],setFinished=!!(setEx&&setList[restNextSet]&&setComplete(setEx,setList[restNextSet]));
   var isLast=restNextSet>=setList.length-1,setLabel=setFinished?(isLast?"Übung abgeschlossen":"Satz "+(restNextSet+1)+" abgeschlossen"):"Satz "+(restNextSet+1)+" eintragen";
-  h='<div class="barwrap"><div class="restbar setmode"><div class="restfill" style="width:100%"></div><div class="restcontent"><div class="restname"><div class="main">'+esc(restExerciseName)+'</div><div class="subline">'+setLabel+'</div></div>'+(!isLast?'<button class="bbtn nextpause" id="nextpause"'+(setFinished?"":" disabled")+'>Nächste Satzpause</button>':'')+'<button class="bbtn stop mini" id="stopr" aria-label="Pausenmodus schließen">■</button></div></div></div>';
+  h='<div class="barwrap"><div class="restbar setmode"><div class="restfill" style="width:100%"></div><div class="restcontent"><div class="restname"><div class="main">'+esc(restExerciseName)+'</div><div class="subline">'+setLabel+'</div></div>'+(!isLast?'<button class="bbtn nextpause" id="nextpause"'+(setFinished?"":" disabled")+'>Nächste Satzpause</button>':'')+'<button class="bbtn stop mini" id="stopr" aria-label="Pausenmodus schließen">'+icon("stop")+'</button></div></div></div>';
  }else{
-  h='<div class="barwrap"><div class="workoutbar'+(w.running?'':' paused')+'"><div class="workoutbarstate"><div class="label">'+(w.running?'Training läuft':'Zeit pausiert')+'</div><div class="time" id="barWtElapsed">'+fmtTime(elapsedSec())+'</div></div>'+(w.running?'<button class="bbtn pause" id="barpausew">⏸ Pause</button>':'<button class="bbtn go" id="barresumew">▶ Weiter</button>')+'<button class="bbtn stop" id="barstopw">■ Ende</button></div></div>';
+  h='<div class="barwrap"><div class="workoutbar'+(w.running?'':' paused')+'"><div class="workoutbarstate"><div class="label">'+(w.running?'Training läuft':'Zeit pausiert')+'</div><div class="time" id="barWtElapsed">'+fmtTime(elapsedSec())+'</div>'+(w.running?'':'<div class="runhint">Satzwerte können weiter bearbeitet werden.</div>')+'</div>'+(w.running?'<button class="bbtn pause" id="barpausew">'+icon("pause")+' Pause</button>':'<button class="bbtn go" id="barresumew">'+icon("play")+' Weiter</button>')+'<button class="bbtn stop" id="barstopw">'+icon("stop")+' Ende</button></div></div>';
  }
  bar.innerHTML=h;
  bar.classList.remove("is-hidden");
@@ -1414,11 +1458,12 @@ function renderBar(){
 setInterval(function(){
  var w=S.workout;
  if(w){
-  if(w.running){var elapsedText=fmtTime(elapsedSec()),el=document.getElementById("wtElapsed"),barElapsed=document.getElementById("barWtElapsed");if(el)el.textContent=elapsedText;if(barElapsed)barElapsed.textContent=elapsedText;}
+  if(w.running){var elapsedText=fmtTime(elapsedSec()),barElapsed=document.getElementById("barWtElapsed");if(barElapsed)barElapsed.textContent=elapsedText;}
   if(w.completedAt&&(Date.now()-w.completedAt)>GRACE){autoStop("60 Minuten nach Abschluss automatisch gestoppt.");}
   else if(elapsedSec()*1000>HARDCAP){autoStop("Zeitlimit (3 Std.) erreicht – automatisch gestoppt.");}
  }
  if(restPhase==="countdown"&&restEnd){var rem=Math.round((restEnd-Date.now())/1000);if(rem<=0){endRest();}else{var rc=document.getElementById("rtCount");if(rc)rc.textContent=fmtTime(rem);var fill=document.getElementById("restFill");if(fill&&restTotal>0)fill.style.width=Math.max(0,Math.min(100,(rem/restTotal)*100))+"%";}}
+ if(restPhase==="hold"){var held=holdElapsedSeconds(),count=document.getElementById("holdCount"),holdFill=document.getElementById("holdFill"),holdBar=document.getElementById("holdBar"),status=document.getElementById("holdStatus");if(count)count.textContent=fmtTime(held);if(holdFill&&holdMax)holdFill.style.width=Math.max(0,Math.min(100,held/holdMax*100))+"%";if(holdMin!=null&&held>=holdMin){if(holdBar)holdBar.classList.add("target");if(status)status.textContent="Zielbereich erreicht";}if(holdMax!=null&&held>=holdMax&&!holdMaxAlerted){holdMaxAlerted=true;beep();if(navigator.vibrate)navigator.vibrate([250,100,400]);}}
 },250);
 
 // ---------- Auswertung / PDF ----------
@@ -1437,9 +1482,9 @@ function buildReportData(program,logs,history){
   for(var w=1;w<=weeks.length;w++){
    var cell=logs[w+"|"+day.key+"|"+ex.id],sets=cell&&Array.isArray(cell.sets)?cell.sets:[],weekMetric=null,weekVolume=0,weekSets=0;
    sets.forEach(function(set){if(!reportSetHasData(set))return;var reps=reportFinite(set.reps);weekSets++;exerciseSets++;totalSets++;if(ex.w){var weight=reportFinite(set.weight);if(weight!=null&&weight>0){var volume=reps*weight,estimate=reportEstimate1RM(weight,reps);weekVolume+=volume;exerciseVolume+=volume;totalVolume+=volume;if(estimate!=null&&(weekMetric==null||estimate>weekMetric))weekMetric=estimate;}}else if(weekMetric==null||reps>weekMetric)weekMetric=reps;});
-   if(weekSets&&weekMetric!=null)points.push({week:w,value:weekMetric,sets:weekSets,volume:weekVolume});
+   if(weekSets&&weekMetric!=null&&!(ex.w&&weeks[w-1]&&weeks[w-1].phase==="deload"))points.push({week:w,value:weekMetric,sets:weekSets,volume:weekVolume});
   }
-  if(exerciseSets){var first=points.length?points[0].value:null,latest=points.length?points[points.length-1].value:null,best=null;points.forEach(function(point){if(best==null||point.value>best)best=point.value;});exercises.push({id:ex.id,name:ex.name||"Unbenannte Übung",dayKey:day.key,dayLabel:(day.wd||day.key)+(day.title?" · "+day.title:""),type:type,totalSets:exerciseSets,volume:exerciseVolume,points:points,first:first,latest:latest,best:best,delta:first!=null&&latest!=null?latest-first:null,lastWeek:points.length?points[points.length-1].week:null});}
+  if(exerciseSets){var first=points.length?points[0].value:null,latest=points.length?points[points.length-1].value:null,best=null,bestWeek=null;points.forEach(function(point){if(best==null||point.value>best){best=point.value;bestWeek=point.week;}});exercises.push({id:ex.id,name:ex.name||"Unbenannte Übung",dayKey:day.key,dayLabel:(day.wd||day.key)+(day.title?" · "+day.title:""),type:type,totalSets:exerciseSets,volume:exerciseVolume,points:points,first:first,firstWeek:points.length?points[0].week:null,latest:latest,best:best,bestWeek:bestWeek,delta:first!=null&&latest!=null?latest-first:null,lastWeek:points.length?points[points.length-1].week:null});}
  });});
  var completedSessions=Object.keys(completeKeys).length,totalPlanned=weeks.length*days.length;
  return{sessions:sessions,completedSessions:completedSessions,totalPlanned:totalPlanned,completionPct:totalPlanned?Math.min(100,Math.round(completedSessions/totalPlanned*100)):0,totalDuration:totalDuration,totalSets:totalSets,totalVolume:totalVolume,weekly:weekly,exercises:exercises};
@@ -1454,9 +1499,9 @@ function reportSparkline(points,label){
  return'<svg class="rspark" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+attr(label)+'"><line class="rsparkbase" x1="8" y1="'+(height-7)+'" x2="'+(width-8)+'" y2="'+(height-7)+'"/><polyline class="rsparkline" points="'+poly+'"/>'+dots+'</svg>';
 }
 function reportExerciseCard(metric){
- var unit=reportMetricUnit(metric.type),first=metric.first==null?"–":reportNumber(metric.first)+" "+unit,latest=metric.latest==null?"–":reportNumber(metric.latest)+" "+unit,delta=metric.delta,deltaText="Noch kein Vergleich zwischen zwei Wochen";
+ var unit=reportMetricUnit(metric.type),first=metric.first==null?"–":reportNumber(metric.first)+" "+unit,latest=metric.latest==null?"–":reportNumber(metric.latest)+" "+unit,best=metric.best==null?"–":reportNumber(metric.best)+" "+unit,delta=metric.delta,deltaText="Noch kein Vergleich zwischen zwei Wochen";
  if(delta!=null&&metric.points.length>1){deltaText=(delta>0?"+":"")+reportNumber(delta)+" "+unit+" seit dem ersten Messwert";}
- return'<article class="rexcard"><div class="rexhead"><div><div class="rexname">'+esc(metric.name)+'</div><div class="rexday">'+esc(metric.dayLabel)+' · '+metric.totalSets+' Arbeitssätze</div></div><span class="rextype">'+reportMetricName(metric.type)+'</span></div><div class="rexvalues"><div class="rexvalue"><span>Erster Wert</span><b>'+first+'</b></div><div class="rexarrow" aria-hidden="true">→</div><div class="rexvalue"><span>Aktuell · W'+(metric.lastWeek||"–")+'</span><b>'+latest+'</b></div></div><div class="rexdelta'+(delta==null||delta===0?' neutral':'')+'">'+esc(deltaText)+'</div>'+reportSparkline(metric.points,metric.name+': Entwicklung über '+metric.points.length+' Wochen')+'</article>';
+ return'<article class="rexcard"><div class="rexhead"><div><div class="rexname">'+esc(metric.name)+'</div><div class="rexday">'+esc(metric.dayLabel)+' · '+metric.totalSets+' Arbeitssätze</div></div><span class="rextype">'+reportMetricName(metric.type)+'</span></div><div class="rexvalues"><div class="rexvalue"><span>Erster Wert · W'+(metric.firstWeek||"–")+'</span><b>'+first+'</b></div><div class="rexarrow" aria-hidden="true">'+icon("chevron-right")+'</div><div class="rexvalue"><span>Aktuell · W'+(metric.lastWeek||"–")+'</span><b>'+latest+'</b></div></div><div class="rexdelta'+(delta==null||delta===0?' neutral':'')+'">'+esc(deltaText)+'<br>Bestwert: '+esc(best)+' · W'+(metric.bestWeek||"–")+'</div>'+reportSparkline(metric.points,metric.name+': Entwicklung über '+metric.points.length+' Wochen')+'</article>';
 }
 function reportDetailedProtocol(program){
  var out="",any=false;
@@ -1464,25 +1509,40 @@ function reportDetailedProtocol(program){
  return any?out:'<div class="rempty"><strong>Noch kein Trainingsprotokoll</strong>Sobald du Satzwerte einträgst, erscheint hier die vollständige Übersicht.</div>';
 }
 function buildReport(){
- var program=PROG(),data=buildReportData(program,S.logs,S.history),now=Date.now(),b='<div class="owrap reportwrap"><header class="reporthead"><div class="reportheadmain"><div class="reporteyebrow">Satzkraft v'+esc(APP_VERSION)+'</div><h1 id="reporttitle">Auswertung</h1></div><div class="reportactions"><button class="histbtn" id="reprint">Drucken / PDF</button><button class="iconbtn" id="repclose" aria-label="Auswertung schließen" style="font-size:22px">✕</button></div></header>';
+ var program=PROG(),data=buildReportData(program,S.logs,S.history),now=Date.now(),b='<div class="owrap reportwrap"><header class="reporthead"><div class="reportheadmain"><div class="reporteyebrow">Satzkraft v'+esc(APP_VERSION)+'</div><h1 id="reporttitle">Auswertung</h1></div><div class="reportactions"><button class="histbtn" id="reprint">'+icon("download")+' Drucken / PDF</button><button class="iconbtn" id="repclose" aria-label="Auswertung schließen">'+icon("close")+'</button></div></header>';
  b+='<div class="reportintro"><div><h2>'+esc(program.name)+'</h2><p>Stand '+dDate(now)+' · '+dClock(now)+' Uhr. Die Kennzahlen basieren auf deinen tatsächlich eingetragenen Trainingsdaten.</p></div><span class="reportlocal">Nur lokal gespeichert</span></div>';
- b+='<section class="rsummary" aria-label="Zusammenfassung"><div class="rmetric"><span class="rlab">Einheiten abgeschlossen</span><span class="rval">'+data.completedSessions+' / '+data.totalPlanned+'</span><span class="rsub">'+data.completionPct+' % des Trainingsblocks</span></div><div class="rmetric"><span class="rlab">Dokumentierte Trainingszeit</span><span class="rval">'+reportDuration(data.totalDuration)+'</span><span class="rsub">inklusive fortgesetzter Einheiten</span></div><div class="rmetric"><span class="rlab">Eingetragene Arbeitssätze</span><span class="rval">'+reportNumber(data.totalSets,0)+'</span><span class="rsub">mit Wiederholung oder Haltezeit</span></div><div class="rmetric"><span class="rlab">Bewegtes Trainingsgewicht</span><span class="rval">'+reportNumber(data.totalVolume,0)+' kg</span><span class="rsub">Gewicht × Wiederholungen</span></div></section>';
+ b+='<section class="rsummary" aria-label="Zusammenfassung"><div class="rmetric"><span class="rlab">Einheiten abgeschlossen</span><span class="rval">'+data.completedSessions+' / '+data.totalPlanned+'</span><span class="rsub">'+data.completionPct+' % des Trainingsblocks</span></div><div class="rmetric"><span class="rlab">Dokumentierte Trainingszeit</span><span class="rval">'+reportDuration(data.totalDuration)+'</span><span class="rsub">inklusive fortgesetzter Einheiten</span></div><div class="rmetric"><span class="rlab">Bewegtes Trainingsgewicht</span><span class="rval">'+reportNumber(data.totalVolume,0)+' kg</span><span class="rsub">Gewicht × Wiederholungen</span></div></section>';
  b+='<section class="rpanel"><div class="rpanelhead"><div><h2>Fortschritt im Trainingsblock</h2><p>Eine Einheit zählt, sobald sie vollständig beendet und gespeichert wurde.</p></div><div class="rprogressvalue">'+data.completionPct+' %</div></div><div class="rbar" role="progressbar" aria-label="Trainingsblock abgeschlossen" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data.completionPct+'"><span style="width:'+data.completionPct+'%"></span></div>';
  if(data.weekly.length){b+='<div class="rweekgrid">';data.weekly.forEach(function(week){b+='<div class="rweekitem"><div class="rweekitemtop"><span>Woche '+week.week+'</span><span>'+week.completed+' / '+week.total+'</span></div><div class="rbar" role="progressbar" aria-label="Woche '+week.week+' abgeschlossen" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+week.pct+'"><span style="width:'+week.pct+'%"></span></div></div>';});b+='</div>';}b+='</section>';
  b+='<section class="rpanel"><div class="rpanelhead"><div><h2>Fortschritt je Übung</h2><p>Gewichtsübungen nutzen das geschätzte 1RM; bei anderen Übungen zählt der beste Wochenwert.</p></div></div>';
  if(data.exercises.length){b+='<div class="rexgrid">'+data.exercises.map(reportExerciseCard).join("")+'</div>';}else b+='<div class="rempty"><strong>Noch kein Übungsverlauf</strong>Trage im Training deine Sätze ein. Danach werden deine ersten Vergleichswerte automatisch aufgebaut.</div>';b+='</section>';
  b+='<section class="rpanel"><div class="rpanelhead"><div><h2>Letzte Einheiten</h2><p>Vollständige und unterbrochene Trainings werden getrennt gekennzeichnet.</p></div></div>';
  if(data.sessions.length){b+='<div class="rsessions">';data.sessions.slice(0,6).forEach(function(session){var day=program.days.filter(function(item){return String(item.key)===session.day;})[0],dayName=day?((day.wd||day.key)+(day.title?" · "+day.title:"")):session.day;b+='<div class="rsession"><div class="rsessionmain"><b>'+esc(dayName||"Training")+'</b><span>'+dDate(session.start)+' · Woche '+session.week+'</span></div><span class="rsessionstatus'+(session.complete?'':' partial')+'">'+(session.complete?'Abgeschlossen':'Unterbrochen')+'</span><span class="rsessionmeta">'+reportDuration(session.dur)+(session.segments>1?' · '+session.segments+' Abschnitte':'')+'</span></div>';});b+='</div>';}else b+='<div class="rempty"><strong>Noch keine Einheit gespeichert</strong>Nach deinem ersten beendeten Training erscheint hier der zeitliche Verlauf.</div>';b+='</section>';
- b+='<details class="rdetails"><summary>Vollständiges Trainingsprotokoll <span class="rmeta" style="margin:0">für Druck / PDF</span></summary><div class="rdetailsbody">'+reportDetailedProtocol(program)+'</div></details><p class="rfootnote"><b>Hinweis zum geschätzten 1RM:</b> Satzkraft verwendet die Epley-Formel als verständlichen Vergleichswert und begrenzt die Berechnung auf höchstens 30 Wiederholungen. Der Wert ist eine Schätzung, kein Maximaltest. Körpergewichtsübungen ohne eingetragenes Zusatzgewicht werden nicht als bewegtes Trainingsgewicht berechnet.</p></div>';
+ b+='<details class="rdetails"><summary>Vollständiges Trainingsprotokoll <span class="rmeta" style="margin:0">wird nur mitgedruckt, wenn geöffnet</span></summary><div class="rdetailsbody">'+reportDetailedProtocol(program)+'</div></details><p class="rfootnote"><b>Hinweis zum geschätzten 1RM:</b> Satzkraft verwendet die Epley-Formel als verständlichen Vergleichswert und begrenzt die Berechnung auf höchstens 30 Wiederholungen. Der Wert ist eine Schätzung, kein Maximaltest. Körpergewichtsübungen ohne eingetragenes Zusatzgewicht werden nicht als bewegtes Trainingsgewicht berechnet. Deload-Wochen fließen nicht in den Übungstrend ein.</p></div>';
  document.getElementById("report").innerHTML=b;
 }
 var reportReturnFocus=null;
 function openReport(){reportReturnFocus=document.activeElement;buildReport();lockSurfaceScroll();var report=document.getElementById("report");report.classList.add("open");var close=document.getElementById("repclose");(close||report).focus();}
 function closeReport(){var report=document.getElementById("report");if(!report.classList.contains("open"))return;report.classList.remove("open");unlockSurfaceScroll();if(reportReturnFocus&&document.contains(reportReturnFocus))reportReturnFocus.focus();reportReturnFocus=null;}
+function printReport(){
+ var report=document.getElementById("report");if(!report||!report.innerHTML)return;
+ var oldTitle=document.title,restored=false,restore=function(){if(restored)return;restored=true;document.title=oldTitle;window.removeEventListener("afterprint",restore);};
+ document.title=(PROG().name||"Satzkraft")+" – Auswertung";window.addEventListener("afterprint",restore);window.print();setTimeout(restore,1500);
+}
 
 // ---------- Programm-Bibliothek (Import/Export) ----------
 var ANLEITUNG={
- anleitung:"Trainingsplan fuer die App 'Trainings-Block'. Eine KI darf Werte aendern oder im SELBEN Aufbau ein neues Programm bauen. Behalte die Struktur und alle Pflichtfelder, erfinde keine neuen Feldnamen, halte dich an 'erlaubte_werte'. Diese Datei ist bereits ein vollstaendiges, korrektes Beispiel – am besten daran orientieren. Danach in der App unter dem Ordner-Symbol bei '2 Programm laden' einfuegen. '_anleitung' wird beim Laden ignoriert und darf drinbleiben.",
+ anleitung:"Trainingsplan fuer die App 'Trainings-Block'. Eine KI darf Werte aendern oder im SELBEN Aufbau ein neues Programm bauen. Behalte die Struktur und alle Pflichtfelder, erfinde keine neuen Feldnamen, halte dich an 'erlaubte_werte'. Diese Datei ist bereits ein vollstaendiges, korrektes Beispiel – am besten daran orientieren. Danach in der App unter 'Programme' -> 'Neues Programm erstellen' -> 'Fertiges Programm importieren' einfuegen. '_anleitung' wird beim Laden ignoriert und darf drinbleiben.",
+ trainings_richtlinien:[
+  "Blockaufbau: 2-3 Aufbauwochen, dann 1 Deload-Woche. Laengere Blöcke danach mit Intensivierungswochen fortsetzen. Die letzte Woche eines Blocks ist idealerweise ein Deload.",
+  "Anstrengung (rir) ueber den Block absenken: Aufbau 3 -> 2, Intensiv 2 -> 1, Deload 4-5.",
+  "Volumen: etwa 10-20 Arbeitssaetze pro Muskelgruppe und Woche, Einsteiger in der unteren Haelfte. Deload: etwa halbe Satzzahl.",
+  "Uebungszahl an der Einheitsdauer ausrichten: ~45 min = 4-5 Uebungen, ~60 min = 5-7, ~90 min = 7-9.",
+  "Wiederholungsbereiche: schwere Grunduebungen 3-7, Hypertrophie 6-12, Isolation eher 10-15.",
+  "Grunduebungen an den Anfang des Tages. Druck- und Zuguebungen sowie Ober-/Unterkoerper ausgewogen verteilen.",
+  "Startgewichte konservativ waehlen (lieber zu leicht als zu schwer); nur angegebenes Equipment verwenden.",
+  "Bei genannten Einschraenkungen sichere Alternativen waehlen; keine Uebung doppelt am selben Tag."
+ ],
  checkliste:[
   "format bleibt exakt 'trainings-block'.",
   "Jede Uebung braucht 'name' und 'category'.",
@@ -1808,6 +1868,7 @@ function deleteProgram(id){
 function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);return true;}}catch(e){}try{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");ta.remove();return ok;}catch(e){}return false;}
 function downloadText(name,t){try{var blob=new Blob([t],{type:"application/json"});var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1500);return true;}catch(e){return false;}}
 function exportCurrentJSON(){return JSON.stringify(exportTranslate(PROG()),null,2);}
+function externalAiPrompt(){return "Du bist ein erfahrener Krafttrainings-Coach. Erstelle mir ein Trainingsprogramm\nim Format der folgenden Vorlage (JSON). Halte dich exakt an Struktur, Feldnamen\nund die erlaubten Werte aus \"_anleitung\" – erfinde keine neuen Felder. Beachte\ndie Trainings-Richtlinien in der Vorlage. Antworte NUR mit dem fertigen JSON,\nohne Text davor oder danach.\n\nMeine Wünsche:\n- Ziel: [z. B. Muskelaufbau]\n- Trainingstage pro Woche: [z. B. 3 – Mo/Mi/Fr]\n- Dauer pro Einheit: [z. B. 60 min]\n- Equipment: [z. B. Langhantel, Kurzhanteln, Klimmzugstange]\n- Erfahrung: [z. B. 1 Jahr]\n- Einschränkungen: [z. B. keine]\n\nVORLAGE:\n"+JSON.stringify(BLANK_TEMPLATE,null,2);}
 function confirmReset(){
  showModal("Fortschritt zurücksetzen?","Eingetragene Sätze & Verlauf des aktiven Programms („"+esc(PROG().name)+"“) werden gelöscht. Das Programm selbst bleibt.",[{label:"Zurücksetzen",cls:"danger",action:function(){var st=newStore(PROG());S.store[S.active]=st;S.tg=st.tg;S.logs=st.logs;S.history=st.history;S.workout=st.workout;S.week=1;S.day=dayKeys()[0];save();closeLib();renderView();renderBar();}},{label:"Abbrechen",action:null}]);
 }
@@ -1860,13 +1921,13 @@ function endWucd(){
 }
 function renderWucd(){
  var it=wucdList[wucdIdx],nx=wucdList[wucdIdx+1];
- var h='<button class="iconbtn" id="wucdclose" aria-label="Beenden" style="position:absolute;top:16px;right:16px;font-size:22px">\u2715</button>';
+ var h='<button class="iconbtn" id="wucdclose" aria-label="Beenden" style="position:absolute;top:16px;right:16px">'+icon("close")+'</button>';
  h+='<div class="wuk">'+(wucdKind==="wu"?"Warm-up":"Cool-down")+'</div>';
  h+='<div class="wup">'+(wucdIdx+1)+' / '+wucdList.length+'</div>';
  h+='<div class="wun">'+esc(it.name)+'</div>';
  h+='<div class="wut" id="wut">'+fmtTime(it.sec)+'</div>';
  h+='<div class="wunext">'+(nx?"Danach: "+esc(nx.name):"Letzte \u00dcbung")+'</div>';
- h+='<div class="wurow"><button class="smallbtn" id="wucdplus">+15 s</button><button class="smallbtn go" id="wucdskip">Weiter \u203a</button></div>';
+ h+='<div class="wurow"><button class="smallbtn" id="wucdplus">'+icon("plus")+' 15 s</button><button class="smallbtn go" id="wucdskip">Weiter '+icon("chevron-right")+'</button></div>';
  var el=document.getElementById("wucd");el.innerHTML=h;el.classList.add("open");
 }
 document.getElementById("wucd").addEventListener("click",function(e){
@@ -1946,7 +2007,7 @@ function coachSummary(){
  }).filter(Boolean).join("");
 }
 function renderCoach(){
- var h='<div class="libbox"><div class="ohdr"><button class="iconbtn" id="coachback" style="font-size:20px" aria-label="Zur\u00fcck">\u2039</button><h1>KI-Coach <span style="font-size:11px;color:#71717a;font-weight:600">Beta</span></h1><button class="iconbtn" id="libclose" style="font-size:22px" aria-label="Schlie\u00dfen">\u2715</button></div>';
+ var h='<div class="libbox"><div class="ohdr"><button class="iconbtn" id="coachback" aria-label="Zur\u00fcck">'+icon("chevron-left")+'</button><h1>KI-Coach <span style="font-size:11px;color:#71717a;font-weight:600">Beta</span></h1><button class="iconbtn" id="libclose" aria-label="Schlie\u00dfen">'+icon("close")+'</button></div>';
  if(coachBusy){
   h+='<div class="cmsg ai">Erstelle dein Programm \u2026 (dauert 20\u201340 Sekunden)</div>';
  }else if(coachProgram||coachErr){
@@ -2105,10 +2166,34 @@ function editorExerciseMeta(ex,d){
  if(ex.weighted)parts.push("mit Gewicht");
  return parts.join(" · ");
 }
+function editorExerciseType(ex){
+ var unit=ex.unit||"reps";
+ if(ex.weighted&&ex.bodyweight&&unit==="reps")return"added_weight";
+ if(ex.weighted&&!ex.bodyweight&&unit==="reps")return"weight";
+ if(!ex.weighted&&unit==="seconds")return"seconds";
+ if(!ex.weighted&&unit==="reps")return"bodyweight";
+ return"custom";
+}
+function editorExerciseTypeOptions(ex){
+ var current=editorExerciseType(ex),h="";
+ h+=editorOption("weight","Mit Gewicht (Hantel, Maschine)",current);
+ h+=editorOption("bodyweight","Nur Körpergewicht (z. B. Liegestütze)",current);
+ h+=editorOption("added_weight","Körpergewicht + Zusatzgewicht (z. B. Klimmzüge mit Gürtel)",current);
+ h+=editorOption("seconds","Halten auf Zeit (z. B. Plank)",current);
+ if(current==="custom")h+=editorOption("custom","Individuell (aktuelle Einstellung)",current);
+ return h;
+}
+function editorWucdOptions(kind,current){var h="",list=WUCD_LIB[kind]||[];list.forEach(function(name){h+=editorOption(name,name,current);});return h;}
+function renderEditorWucdList(day,dayIndex,kind,label){
+ var list=Array.isArray(day[kind])?day[kind]:[],h='<div class="edwucdgroup"><div class="edwucdtitle"><span>'+esc(label)+'</span><button class="edmini" data-ed-wucd-add="'+kind+'" data-ed-day="'+dayIndex+'"'+(list.length>=8?' disabled':'')+'>'+icon("plus")+' Eintrag</button></div>';
+ if(!list.length)h+='<div class="edempty">Noch keine Einträge.</div>';
+ list.forEach(function(item,index){h+='<div class="edwucdrow"><select aria-label="'+esc(label)+' Übung '+(index+1)+'" data-ed-wucd="'+kind+'" data-ed-day="'+dayIndex+'" data-ed-wucd-index="'+index+'" data-ed-field="name">'+editorWucdOptions(kind,item.name)+'</select><input type="number" min="15" max="180" step="1" value="'+attr(item.seconds)+'" aria-label="Sekunden" data-ed-wucd="'+kind+'" data-ed-day="'+dayIndex+'" data-ed-wucd-index="'+index+'" data-ed-field="seconds"><div class="edwucdmove"><button class="edmini" data-ed-wucd-move="-1" data-ed-wucd-kind="'+kind+'" data-ed-day="'+dayIndex+'" data-ed-wucd-index="'+index+'" aria-label="Nach oben"'+(index===0?' disabled':'')+'>Nach oben</button><button class="edmini" data-ed-wucd-move="1" data-ed-wucd-kind="'+kind+'" data-ed-day="'+dayIndex+'" data-ed-wucd-index="'+index+'" aria-label="Nach unten"'+(index===list.length-1?' disabled':'')+'>Nach unten</button><button class="edmini" data-ed-wucd-delete="'+kind+'" data-ed-day="'+dayIndex+'" data-ed-wucd-index="'+index+'" aria-label="Eintrag löschen">Löschen</button></div></div>';});
+ return h+'</div>';
+}
 function renderEditorTraining(d,catKeys){
  editorDayIndex=Math.max(0,Math.min(editorDayIndex,d.days.length-1));
- var day=d.days[editorDayIndex],h='<div class="edguide"><span class="num">1</span><div><strong>So bearbeitest du dein Training</strong>Wähle einen Tag und öffne eine Übung. Ziehe Übungen am Griff rechts; die Liste und Nummern sortieren sich dabei direkt neu. Trainingstage hältst du oben kurz fest.</div></div>';
- h+='<div class="edviewhead"><div class="meta"><h2>'+esc(d.name)+'</h2><p>Dein Plan sieht hier fast genauso aus wie beim Training.</p></div><button class="edmini" id="edaddday"'+(d.days.length>=LIMITS.maxDays?' disabled':'')+'>+ Tag</button></div>';
+ var day=d.days[editorDayIndex],h='<div class="edguide"><div><strong>So bearbeitest du dein Training</strong>Wähle einen Tag und öffne eine Übung. Ziehe Übungen am Griff rechts; die Liste und Nummern sortieren sich dabei direkt neu. Trainingstage hältst du oben kurz fest.</div></div>';
+ h+='<div class="edviewhead"><div class="meta"><h2>'+esc(d.name)+'</h2><p>Dein Plan sieht hier fast genauso aus wie beim Training.</p></div><button class="edmini" id="edaddday"'+(d.days.length>=LIMITS.maxDays?' disabled':'')+'>'+icon("plus")+' Tag</button></div>';
  var slots=new Array(7);d.days.forEach(function(item,di){var pos=EDITOR_WEEKDAYS.indexOf(item.weekday);if(pos>=0&&slots[pos]==null)slots[pos]=di;});
  h+='<div class="wstrip" aria-label="Trainingstag auswählen">';
  for(var wi=0;wi<7;wi++){var di=slots[wi];if(di!=null)h+='<button class="wday train'+(di===editorDayIndex?' active':'')+'" data-ed-daypick="'+di+'" data-ed-drag-day="'+di+'" data-ed-weekday-slot="'+wi+'" title="Antippen: öffnen · halten: auf anderen Tag verschieben"><span class="wdn">'+WD_ABBR[wi]+'</span><span class="wstat editor-day-grip" aria-hidden="true"></span></button>';else h+='<div class="wday rest" data-ed-weekday-slot="'+wi+'"><span class="wdn">'+WD_ABBR[wi]+'</span><span class="wstat"></span></div>';}
@@ -2116,19 +2201,19 @@ function renderEditorTraining(d,catKeys){
  if(!day)return h+'<div class="edemptyday">Noch kein Trainingstag vorhanden.</div>';
  h+='<div class="eddaysettings"><div class="edgrid"><label class="edfield"><span>Trainingstag</span><select data-ed-day="'+editorDayIndex+'" data-ed-field="weekday">'+editorWeekdayOptions(d.days,editorDayIndex)+'</select></label>';
  h+=editorInput('Name des Tages',day.title||'','data-ed-day="'+editorDayIndex+'" data-ed-field="title"',{max:60});h+='</div>';
- h+='<div class="libnote">'+day.exercises.length+' Übungen · Tag oben halten und auf einen anderen Wochentag ziehen'+(day.warmup&&day.warmup.length?' · Warm-up bleibt erhalten':'')+(day.cooldown&&day.cooldown.length?' · Cool-down bleibt erhalten':'')+'</div></div>';
+ h+='<div class="libnote">'+day.exercises.length+' Übungen · Tag oben halten und auf einen anderen Wochentag ziehen</div></div>';
+ h+='<details class="edadvanced"><summary>Warm-up &amp; Cool-down</summary><div class="edbody"><div class="edwucdhelp">Rein zeitbasiert, geführt mit Timer. Übungen stammen aus einer festen Liste.</div>'+renderEditorWucdList(day,editorDayIndex,"warmup","Warm-up")+renderEditorWucdList(day,editorDayIndex,"cooldown","Cool-down")+'</div></details>';
  day.exercises.forEach(function(ex,ei){var c=d.categories[ex.category]||{},isOpen=editorExerciseIndex===ei;
   h+='<div class="edexercise'+(isOpen?' open':'')+'" data-ed-ex-card="'+ei+'"><div class="edexhead"><div class="edexmain"><div class="edexname"><span class="edordernum">'+(ei+1)+'</span> · <span class="edexlabel">'+esc(ex.name)+'</span></div><div class="edexmeta"><span class="tag '+esc(c.color||'slate')+'">'+esc(c.label||ex.category)+'</span> · '+esc(editorExerciseMeta(ex,d).split(' · ').slice(1).join(' · '))+'</div></div><button class="edmini" data-ed-openex="'+ei+'">'+(isOpen?'Schließen':'Bearbeiten')+'</button><button class="eddrag" data-ed-drag-ex="'+ei+'" data-ed-day="'+editorDayIndex+'" aria-label="'+esc(ex.name)+' halten und verschieben" title="Halten und verschieben"></button></div>';
   if(isOpen){h+='<div class="edexedit"><div class="edgrid">';
    h+=editorInput('Übungsname',ex.name,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="name"',{wide:true,max:80});
    h+='<label class="edfield"><span>Trainingsgruppe</span><select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="category">';catKeys.forEach(function(key){h+=editorOption(key,d.categories[key].label,ex.category);});h+='</select><small>Steuert Standardwerte und Satzpause.</small></label>';
-   h+='<label class="edfield"><span>Was wird eingetragen?</span><select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="unit">'+editorOption('reps','Wiederholungen',ex.unit||'reps')+editorOption('seconds','Sekunden',ex.unit||'reps')+'</select></label>';
+   h+='<label class="edfield wide"><span>Übungstyp</span><select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="exerciseType">'+editorExerciseTypeOptions(ex)+'</select></label>';
    var ownPrescription=ex.sets!=null||Array.isArray(ex.reps),effectiveSets=editorDraftSets(d,ex,editorWeekIndex),effectiveReps=editorDraftReps(d,ex,editorWeekIndex),unitLabel=ex.unit==="seconds"?'Sekunden':'Wiederholungen';
    h+='<div class="edprescription"><h3>Trainingsvorgabe</h3><div class="libnote">Sätze und '+unitLabel+' stehen später genau so in der Trainingsansicht.</div><label class="edcheck"><input type="checkbox" data-ed-own="1" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'"'+(ownPrescription?' checked':'')+'> Eigene Vorgabe für diese Übung</label>';
    if(ownPrescription){h+='<div class="edprescgrid">'+editorInput('Sätze',effectiveSets,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="sets"',{type:'number',min:1,max:LIMITS.maxSets,step:'1'})+editorInput('Min. '+unitLabel,effectiveReps?effectiveReps[0]:8,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="repMin"',{type:'number',min:1,max:10000,step:'1'})+editorInput('Max. '+unitLabel,effectiveReps?effectiveReps[1]:12,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="repMax"',{type:'number',min:1,max:10000,step:'1'})+'</div>';}else{h+='<div class="edinherited">ℹ <span><b>Standard der Trainingsgruppe, Woche '+(editorWeekIndex+1)+':</b> '+effectiveSets+' Sätze'+(effectiveReps?' · '+effectiveReps[0]+(effectiveReps[0]===effectiveReps[1]?'':'–'+effectiveReps[1])+' '+(ex.unit==="seconds"?'Sek':'Wdh'):' · freie Vorgabe')+'. Aktiviere „Eigene Vorgabe“, um nur diese Übung anzupassen.</span></div>';}
    h+='</div>';
-   h+='<label class="edcheck"><input type="checkbox" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="weighted"'+(ex.weighted?' checked':'')+'> Gewicht erfassen</label>';
-   if(ex.weighted){h+='<label class="edcheck"><input type="checkbox" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="bodyweight"'+(ex.bodyweight?' checked':'')+'> Körpergewicht + Zusatzgewicht</label>';h+=editorInput('Startgewicht (kg)',ex.startWeight==null?0:ex.startWeight,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="startWeight"',{type:'number',min:0,max:2000,step:'0.1'});h+=editorInput('Steigerung (kg)',ex.increment==null?2.5:ex.increment,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="increment"',{type:'number',min:.1,max:100,step:'0.1'});}
+   if(ex.weighted){h+=editorInput(ex.bodyweight?'Zusatzgewicht in kg, 0 = ohne':'Startgewicht (kg)',ex.startWeight==null?0:ex.startWeight,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="startWeight"',{type:'number',min:0,max:2000,step:'0.1'});h+=editorInput('Steigerung (kg)',ex.increment==null?2.5:ex.increment,'data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="increment"',{type:'number',min:.1,max:100,step:'0.1'});if(ex.bodyweight)h+='<div class="libnote" style="grid-column:1/-1">Eingetragen wird nur das Zusatzgewicht.</div>';}
    h+=editorInput('Zusätzliches Ziel / Hinweis',ex.target||'','data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="target"',{wide:true,max:200});
    h+=editorInput('Technik-Hinweis',ex.cue||'','data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="cue"',{wide:true,area:true,max:200});
    h+=editorInput('Video-Suchbegriff',ex.video||'','data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="video"',{max:200});
@@ -2136,12 +2221,12 @@ function renderEditorTraining(d,catKeys){
    h+='</div><div class="edactions"><button class="smallbtn" data-ed-moveex="-1" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'"'+(ei===0?' disabled':'')+'>Nach oben</button><button class="smallbtn" data-ed-moveex="1" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'"'+(ei===day.exercises.length-1?' disabled':'')+'>Nach unten</button><span class="spacer"></span><button class="smallbtn del" data-ed-delex="1" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'"'+(day.exercises.length<=1?' disabled':'')+'>Löschen</button></div></div>';}
   h+='</div>';
  });
- h+='<div class="edactions"><button class="smallbtn" data-ed-addex="'+editorDayIndex+'"'+(day.exercises.length>=LIMITS.maxExPerDay?' disabled':'')+'>+ Übung hinzufügen</button><span class="spacer"></span><button class="smallbtn del" data-ed-delday="'+editorDayIndex+'"'+(d.days.length<=1?' disabled':'')+'>Trainingstag löschen</button></div>';
+ h+='<div class="edactions"><button class="smallbtn" data-ed-addex="'+editorDayIndex+'"'+(day.exercises.length>=LIMITS.maxExPerDay?' disabled':'')+'>'+icon("plus")+' Übung hinzufügen</button><span class="spacer"></span><button class="smallbtn del" data-ed-delday="'+editorDayIndex+'"'+(d.days.length<=1?' disabled':'')+'>Trainingstag löschen</button></div>';
  return h;
 }
 function renderEditorWeeks(d,catKeys){
- editorWeekIndex=Math.max(0,Math.min(editorWeekIndex,d.weeks.length-1));var w=d.weeks[editorWeekIndex],h='<div class="edguide"><span class="num">2</span><div><strong>Wochen einfach steuern</strong>Wähle eine Woche und entscheide nur, wie trainiert werden soll. Die Satzzahlen darunter brauchst du nur für genauere Anpassungen.</div></div>';
- h+='<div class="edviewhead"><div class="meta"><h2>'+d.weeks.length+' Trainingswochen</h2><p>Jede Woche kann einen eigenen Schwerpunkt und eine eigene Anstrengung haben.</p></div><button class="edmini" id="edaddweek"'+(d.weeks.length>=LIMITS.maxWeeks?' disabled':'')+'>+ Woche</button></div><div class="edweekstrip" aria-label="Woche auswählen">';
+ editorWeekIndex=Math.max(0,Math.min(editorWeekIndex,d.weeks.length-1));var w=d.weeks[editorWeekIndex],h='<div class="edguide"><div><strong>Wochen einfach steuern</strong>Wähle eine Woche und entscheide nur, wie trainiert werden soll. Die Satzzahlen darunter brauchst du nur für genauere Anpassungen.</div></div>';
+ h+='<div class="edviewhead"><div class="meta"><h2>'+d.weeks.length+' Trainingswochen</h2><p>Jede Woche kann einen eigenen Schwerpunkt und eine eigene Anstrengung haben.</p></div><button class="edmini" id="edaddweek"'+(d.weeks.length>=LIMITS.maxWeeks?' disabled':'')+'>'+icon("plus")+' Woche</button></div><div class="edweekstrip" aria-label="Woche auswählen">';
  d.weeks.forEach(function(item,wi){h+='<button class="edweekbtn'+(wi===editorWeekIndex?' active':'')+'" data-ed-weekpick="'+wi+'" aria-label="Woche '+(wi+1)+' · '+attr(item.label)+'">'+(wi+1)+'</button>';});h+='</div>';
  h+='<div class="eddaysettings"><div class="edviewhead"><div class="meta"><h2>Woche '+(editorWeekIndex+1)+' · '+esc(w.label)+'</h2><p>'+esc(editorPhaseLabel(w.phase))+'</p></div></div><div class="edgrid">';
  h+='<label class="edfield"><span>Wie soll trainiert werden?</span><select data-ed-week="'+editorWeekIndex+'" data-ed-field="phase">'+editorOption('aufbau','Aufbau · normal steigern',w.phase)+editorOption('intensiv','Intensiv · schwerer trainieren',w.phase)+editorOption('deload','Erholungswoche · bewusst leichter',w.phase)+'</select></label>';
@@ -2155,7 +2240,7 @@ function renderEditorWeeks(d,catKeys){
  return h;
 }
 function renderEditorDetails(d,catKeys){
- var h='<div class="edguide"><span class="num">3</span><div><strong>Name und Trainingsgruppen</strong>Den Programmnamen kannst du nur noch hier ändern. Trainingsgruppen liefern gemeinsame Standardwerte für ähnliche Übungen.</div></div><div class="eddaysettings"><div class="edgrid">';
+ var h='<div class="edguide"><div><strong>Name und Trainingsgruppen</strong>Den Programmnamen kannst du nur noch hier ändern. Trainingsgruppen liefern gemeinsame Standardwerte für ähnliche Übungen.</div></div><div class="eddaysettings"><div class="edgrid">';
  h+=editorInput('Programmname',d.name,'data-ed-program="name"',{wide:true,max:LIMITS.maxNameLen});
  h+=editorInput('Beschreibung',d.description||'','data-ed-program="description"',{wide:true,area:true,max:200});h+='</div></div>';
  h+='<details class="edadvanced"><summary>Trainingsgruppen ('+catKeys.length+')</summary><div class="edbody"><div class="edcategoryhelp"><b>Was ist eine Trainingsgruppe?</b><br>Sie bündelt Standardwerte für ähnliche Übungen – zum Beispiel „Kraft“ mit längerer Satzpause und 5–7 Wiederholungen. Änderungen gelten für alle Übungen der Gruppe, außer eine Übung hat eine eigene Vorgabe.</div>';
@@ -2166,7 +2251,7 @@ function renderEditorDetails(d,catKeys){
   h+='<label class="edcheck"><input type="checkbox" data-ed-reps="'+attr(key)+'"'+(hasReps?' checked':'')+'> Automatische Wiederholungsbereiche</label>';
   if(hasReps){[["aufbau","Aufbau"],["intensiv","Intensiv"],["deload","Erholung"]].forEach(function(item){var range=c.reps[item[0]]||[8,12];h+=editorInput(item[1]+' min.',range[0],'data-ed-cat="'+attr(key)+'" data-ed-rep="'+item[0]+'" data-ed-range="0"',{type:'number',min:1,max:100,step:'1'});h+=editorInput(item[1]+' max.',range[1],'data-ed-cat="'+attr(key)+'" data-ed-rep="'+item[0]+'" data-ed-range="1"',{type:'number',min:1,max:100,step:'1'});});}
   h+='</div><div class="edactions"><span class="edkey">Technischer Schlüssel: '+esc(key)+'</span><span class="spacer"></span><button class="smallbtn del" data-ed-delcat="'+attr(key)+'"'+((catKeys.length<=1||editorCategoryInUse(d,key))?' disabled':'')+'>Trainingsgruppe löschen</button></div></div></details>';});
- h+='<div class="edactions"><button class="smallbtn" id="edaddcat"'+(catKeys.length>=20?' disabled':'')+'>+ Trainingsgruppe</button></div></div></details>';
+ h+='<div class="edactions"><button class="smallbtn" id="edaddcat"'+(catKeys.length>=20?' disabled':'')+'>'+icon("plus")+' Trainingsgruppe</button></div></div></details>';
  if(editorSourceId&&editorSourceId!=="default")h+='<details class="edadvanced eddanger"><summary>Programm löschen</summary><div class="edbody"><div class="libnote" style="margin:0 0 10px">Löscht dieses Programm und seinen gesamten Trainingsfortschritt. Vorher erscheint noch eine Sicherheitsabfrage.</div><button class="smallbtn del" id="eddeleteprogram">Programm endgültig löschen</button></div></details>';
  h+='<div class="libnote">Beim Speichern prüft Satzkraft den gesamten Plan. Einstellungen aus dem KI-Import sowie Warm-up und Cool-down bleiben erhalten.</div>';
  return h;
@@ -2176,13 +2261,13 @@ function renderProgramEditor(view,index,exercise){
  if(view){if(view==="days")view="training";if(view==="categories"||view==="program")view="details";editorView=view;}
  if(index!=null){if(editorView==="training")editorDayIndex=index;if(editorView==="weeks")editorWeekIndex=index;}
  if(exercise!==undefined)editorExerciseIndex=exercise;
- var d=editorDraft,catKeys=Object.keys(d.categories),editingClass=(editorView==="training"&&editorExerciseIndex!=null?' editing-exercise':''),h='<div class="libbox editorbox'+editingClass+'"><div class="ohdr"><button class="iconbtn" id="editorback" aria-label="Zurück" style="font-size:22px">‹</button><h1>'+(editorSourceId?'Programm bearbeiten':'Programm erstellen')+'</h1><button class="edundo" id="editorundo"'+(editorUndoStack.length?'':' disabled')+' aria-label="Letzte Änderung rückgängig machen">↶ <span>Rückgängig</span></button><button class="edtophelp" id="editorhelp" aria-label="Anleitung öffnen">Anleitung</button><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div>';
+ var d=editorDraft,catKeys=Object.keys(d.categories),editingClass=(editorView==="training"&&editorExerciseIndex!=null?' editing-exercise':''),h='<div class="libbox editorbox'+editingClass+'"><div class="ohdr"><button class="iconbtn" id="editorback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>'+(editorSourceId?'Programm bearbeiten':'Programm erstellen')+'</h1><button class="edundo" id="editorundo"'+(editorUndoStack.length?'':' disabled')+' aria-label="Letzte Änderung rückgängig machen">'+icon("undo")+' <span>Rückgängig</span></button><button class="edtophelp" id="editorhelp" aria-label="Anleitung öffnen">Anleitung</button><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div>';
  h+='<div class="edtabs" role="tablist" aria-label="Editor-Bereiche"><button class="edtab'+(editorView==="training"?' active':'')+'" data-ed-tab="training" role="tab" aria-selected="'+(editorView==="training")+'">Training</button><button class="edtab'+(editorView==="weeks"?' active':'')+'" data-ed-tab="weeks" role="tab" aria-selected="'+(editorView==="weeks")+'">Wochen</button><button class="edtab'+(editorView==="details"?' active':'')+'" data-ed-tab="details" role="tab" aria-selected="'+(editorView==="details")+'">Details</button></div>';
  h+=editorView==="weeks"?renderEditorWeeks(d,catKeys):editorView==="details"?renderEditorDetails(d,catKeys):renderEditorTraining(d,catKeys);
- h+=editorSourceId?'<div class="edsticky"><button class="smallbtn go" id="edsavecopy">Sicher als Kopie speichern</button>'+(editorSourceId!=="default"?'<button class="smallbtn" id="edreplace">Original ersetzen</button>':'')+'</div>':'<div class="edsticky"><button class="smallbtn" id="edsavenew">Nur speichern</button><button class="smallbtn go" id="edsavenewactive">Speichern &amp; aktivieren</button></div>';
+ h+=editorSourceId?'<div class="edsticky"><button class="smallbtn go" id="edsavecopy">Als Kopie speichern</button>'+(editorSourceId!=="default"?'<button class="smallbtn" id="edreplace">Original ersetzen</button>':'')+'</div>':'<div class="edsticky"><button class="smallbtn" id="edsavenew">Nur speichern</button><button class="smallbtn go" id="edsavenewactive">Speichern &amp; aktivieren</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
-function showEditorHelp(){showModal("Editor-Anleitung","<b>1. Training:</b> Öffne eine Übung und lege Sätze, Wiederholungen oder Zeit fest. Halte den Punkt-Griff rechts und ziehe: Die Übungen und Nummern sortieren sich sofort neu. Trainingstage kannst du oben am kleinen Griff auf einen anderen Wochentag ziehen.<br><br><b>2. Trainingsgruppen:</b> Sie liefern gemeinsame Standardwerte für ähnliche Übungen. Eine eigene Übungsvorgabe überschreibt diese Werte nur für diese Übung.<br><br><b>3. Wochen:</b> Lege Schwerpunkt und Anstrengung fest. Erweiterte Satzzahlen brauchst du nur, wenn die Trainingsgruppen zwischen Wochen wechseln sollen.<br><br><b>Rückgängig:</b> Änderungen und Löschvorgänge kannst du oben mit ↶ zurücknehmen. Für die Bedienung ohne Ziehen gibt es in jeder geöffneten Übung außerdem „Nach oben“ und „Nach unten“.<br><br><b>Sicher speichern:</b> Mit „Als Kopie speichern“ bleiben Original und bisheriger Trainingsfortschritt erhalten.",[{label:"Verstanden",cls:"primary",action:null}]);}
+function showEditorHelp(){showModal("Editor-Anleitung","<b>1. Training:</b> Öffne eine Übung und lege Sätze, Wiederholungen oder Zeit fest. Halte den Punkt-Griff rechts und ziehe: Die Übungen und Nummern sortieren sich sofort neu. Trainingstage kannst du oben am kleinen Griff auf einen anderen Wochentag ziehen.<br><br><b>2. Trainingsgruppen:</b> Sie liefern gemeinsame Standardwerte für ähnliche Übungen. Eine eigene Übungsvorgabe überschreibt diese Werte nur für diese Übung.<br><br><b>3. Wochen:</b> Lege Schwerpunkt und Anstrengung fest. Erweiterte Satzzahlen brauchst du nur, wenn die Trainingsgruppen zwischen Wochen wechseln sollen.<br><br><b>Rückgängig:</b> Änderungen und Löschvorgänge kannst du oben mit der Schaltfläche „Rückgängig“ zurücknehmen. Für die Bedienung ohne Ziehen gibt es in jeder geöffneten Übung außerdem „Nach oben“ und „Nach unten“.<br><br><b>Sicher speichern:</b> Mit „Als Kopie speichern“ bleiben Original und bisheriger Trainingsfortschritt erhalten.",[{label:"Verstanden",cls:"primary",action:null}]);}
 function editorFieldValue(t){return t.type==="checkbox"?t.checked:(t.type==="number"?(t.value===""?"":Number(t.value)):t.value);}
 function updateEditorInput(t){
  if(!editorDraft)return false;var value=editorFieldValue(t);
@@ -2191,7 +2276,8 @@ function updateEditorInput(t){
  if(t.dataset.edReps){var rc=editorDraft.categories[t.dataset.edReps];if(!rc)return false;rc.reps=t.checked?{aufbau:[8,12],intensiv:[6,10],deload:[10,10]}:null;return true;}
  if(t.dataset.edCat){var c=editorDraft.categories[t.dataset.edCat];if(!c)return false;if(t.dataset.edRep){if(!c.reps)c.reps={};if(!c.reps[t.dataset.edRep])c.reps[t.dataset.edRep]=[8,12];c.reps[t.dataset.edRep][+t.dataset.edRange]=value;}else c[t.dataset.edField]=value;return false;}
  if(t.dataset.edWeek!=null){var w=editorDraft.weeks[+t.dataset.edWeek];if(!w)return false;if(t.dataset.edSet)w.sets[t.dataset.edSet]=value;else if(t.dataset.edField==="phase"){var oldPhase=w.phase,defaults={aufbau:["Aufbau"],intensiv:["Intensiv","Intensivierung"],deload:["Deload","Erholungswoche"]};w.phase=value;if((defaults[oldPhase]||[]).indexOf(w.label)>=0)w.label=editorPhaseLabel(value);}else w[t.dataset.edField]=value;return false;}
- if(t.dataset.edDay!=null){var day=editorDraft.days[+t.dataset.edDay];if(!day)return false;if(t.dataset.edEx!=null){var ex=day.exercises[+t.dataset.edEx],field=t.dataset.edField;if(!ex)return false;if(field==="repMin"||field==="repMax"){if(!Array.isArray(ex.reps))ex.reps=editorDraftReps(editorDraft,ex,editorWeekIndex)||[8,12];ex.reps[field==="repMin"?0:1]=value;}else ex[field]=value;if(field==="weighted"){if(value){ex.increment=ex.increment||2.5;if(ex.startWeight==null)ex.startWeight=0;}else{delete ex.increment;delete ex.startWeight;delete ex.bodyweight;}return true;}}else day[t.dataset.edField]=value;return false;}
+ if(t.dataset.edWucd){var timedDay=editorDraft.days[+t.dataset.edDay],timedList=timedDay&&timedDay[t.dataset.edWucd],timedItem=timedList&&timedList[+t.dataset.edWucdIndex];if(!timedItem)return false;timedItem[t.dataset.edField]=t.dataset.edField==="seconds"?Math.max(15,Math.min(180,Math.round(Number(value)||15))):value;return false;}
+ if(t.dataset.edDay!=null){var day=editorDraft.days[+t.dataset.edDay];if(!day)return false;if(t.dataset.edEx!=null){var ex=day.exercises[+t.dataset.edEx],field=t.dataset.edField;if(!ex)return false;if(field==="repMin"||field==="repMax"){if(!Array.isArray(ex.reps))ex.reps=editorDraftReps(editorDraft,ex,editorWeekIndex)||[8,12];ex.reps[field==="repMin"?0:1]=value;}else if(field==="exerciseType"){if(value==="custom")return false;if(value==="weight"||value==="added_weight"){ex.weighted=true;ex.unit="reps";ex.increment=ex.increment||2.5;if(ex.startWeight==null)ex.startWeight=0;if(value==="added_weight")ex.bodyweight=true;else delete ex.bodyweight;}else{delete ex.weighted;delete ex.bodyweight;delete ex.increment;delete ex.startWeight;ex.unit=value==="seconds"?"seconds":"reps";}return true;}else ex[field]=value;}else day[t.dataset.edField]=value;return false;}
  return false;
 }
 function editorAddCategory(){var key=editorNextCategoryKey(editorDraft.categories);editorDraft.categories[key]={label:"Neue Trainingsgruppe",color:"slate",rest:90};editorDraft.weeks.forEach(function(w){w.sets[key]=3;});return Object.keys(editorDraft.categories).indexOf(key);}
@@ -2252,7 +2338,7 @@ function finishEditorDrag(e,cancelled){
 }
 function syncEditorForm(){
  var root=document.getElementById("lib");if(!root||!editorDraft)return;
- var fields=root.querySelectorAll("[data-ed-program],[data-ed-reps],[data-ed-cat],[data-ed-week],[data-ed-day]");
+ var fields=root.querySelectorAll("[data-ed-program],[data-ed-reps],[data-ed-cat],[data-ed-week],[data-ed-day],[data-ed-wucd]");
  for(var i=0;i<fields.length;i++)if(/^(INPUT|SELECT|TEXTAREA)$/.test(fields[i].tagName))updateEditorInput(fields[i]);
 }
 function resetProgramEditorState(){editorDraft=null;editorSourceId=null;editorInitialJSON="";editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorUnsavedDraft=false;editorReturnView="library";}
@@ -2279,12 +2365,13 @@ function programItemHtml(id,p){
  return '<div class="progitem'+(active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(active?'<span class="statuspill">● Aktiv</span>':'')+'</div><div class="progactions">'+(active?'':'<button class="progaction go" data-sel="'+attr(id)+'">Aktivieren</button>')+'<button class="progaction'+(active?' edit-only':'')+'" data-edit="'+attr(id)+'">Bearbeiten</button></div></div>';
 }
 function renderLib(){
- var h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><button class="iconbtn" id="libclose" style="font-size:22px">✕</button></div>';
+ var h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><div class="programheadtools"><span class="appversion" aria-label="Satzkraft Version '+esc(APP_VERSION)+'">v'+esc(APP_VERSION)+'</span>'+themeButtonHtml()+'<button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div></div>';
  h+='<div class="libnote" style="margin:0 0 8px">Dein aktives Programm steht immer oben. Name und Löschen findest du gesammelt unter „Bearbeiten“.</div>';
  var activeProgram=S.programs[S.active];if(activeProgram)h+=programItemHtml(S.active,activeProgram);
  var otherIds=Object.keys(S.programs).filter(function(id){return id!==S.active;});
  if(otherIds.length){h+='<details class="programothers"><summary>Weitere Programme ('+otherIds.length+')</summary><div class="programothersbody">';otherIds.forEach(function(id){h+=programItemHtml(id,S.programs[id]);});h+='</div></details>';}
- h+='<button class="createchoice primary" id="createhubbtn" style="width:100%;min-height:0;margin:15px 0 5px"><span class="createicon" aria-hidden="true">+</span><b>Neues Programm erstellen</b><small>Manuell, mit dem KI-Coach, über eine externe KI oder aus einer fertigen Datei.</small></button>';
+ h+='<button class="createchoice primary" id="createhubbtn" style="width:100%;min-height:0;margin:15px 0 5px"><span class="createicon" aria-hidden="true">'+icon("plus")+'</span><b>Neues Programm erstellen</b><small>Manuell, mit dem KI-Coach, über eine externe KI oder aus einer fertigen Datei.</small></button>';
+ h+='<div class="libsec">Exportieren &amp; Teilen</div><div class="libnote">Aktives Programm „'+esc(PROG().name)+'“ als Datei oder Link – ohne deinen Fortschritt.</div><div class="librow"><button class="smallbtn" id="expcopy">Aktuelles kopieren</button><button class="smallbtn" id="expfile">Als Datei</button><button class="smallbtn" id="explink">Link teilen</button></div>';
  h+='<div class="libsec">Daten sichern</div>';
  h+='<div class="libnote"><b>'+esc(backupStatusText())+'</b><br>Das vollständige Backup enthält alle Programme, Satzwerte und Trainingsverläufe. Es bleibt als Datei bei dir und wird nicht an einen Server gesendet.</div>';
  h+='<div class="librow"><button class="smallbtn go" id="libbackup">Vollständiges Backup</button><label class="smallbtn" style="display:inline-flex;align-items:center">Backup wiederherstellen<input type="file" id="backupfile" accept=".json,application/json" style="display:none"></label></div>';
@@ -2295,34 +2382,33 @@ function renderLib(){
  document.getElementById("lib").innerHTML=h+'</div>';
 }
 function renderCreateHub(){
- var h='<div class="libbox createhub"><div class="ohdr"><button class="iconbtn" id="createback" aria-label="Zurück" style="font-size:22px">‹</button><h1>Neues Programm</h1><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div><div class="subviewlead">Wähle den Weg, der zu dir passt. Egal wie der Plan entsteht: Vor dem Speichern kannst du ihn prüfen und bearbeiten.</div><div class="creategrid">';
- h+='<button class="createchoice primary" id="manualcreate"><span class="createicon" aria-hidden="true">✎</span><b>Manuell erstellen</b><small>Name, Wochen und Trainingstage festlegen. Danach baust du den Plan in der vertrauten Trainingsansicht auf.</small></button>';
- h+='<button class="createchoice" id="coachbtn"><span class="createicon" aria-hidden="true">✦</span><b>Satzkraft KI-Coach <span style="color:#71717a;font-size:10px">Beta</span></b><small>Beantworte die ausführlichen Fragen und lass dir einen gezielten Trainingsplan erstellen.</small></button>';
- h+='<button class="createchoice" id="externalaibtn"><span class="createicon" aria-hidden="true">↗</span><b>Externe KI + Vorlage</b><small>Nutze ChatGPT, Claude oder eine andere KI mit der vollständigen Satzkraft-Beispieldatei.</small></button>';
- h+='<button class="createchoice" id="importbtn"><span class="createicon" aria-hidden="true">↓</span><b>Fertiges Programm importieren</b><small>JSON einfügen oder Datei auswählen. Satzkraft prüft alles vor dem Speichern.</small></button>';
+ var h='<div class="libbox createhub"><div class="ohdr"><button class="iconbtn" id="createback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Neues Programm</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Wähle den Weg, der zu dir passt. Egal wie der Plan entsteht: Vor dem Speichern kannst du ihn prüfen und bearbeiten.</div><div class="creategrid">';
+ h+='<button class="createchoice primary" id="manualcreate"><span class="createicon" aria-hidden="true">'+icon("edit")+'</span><b>Manuell erstellen</b><small>Name, Wochen und Trainingstage festlegen. Danach baust du den Plan in der vertrauten Trainingsansicht auf.</small></button>';
+ h+='<button class="createchoice" id="coachbtn"><span class="createicon" aria-hidden="true">'+icon("sparkle")+'</span><b>Satzkraft KI-Coach <span style="color:#71717a;font-size:10px">Beta</span></b><small>Beantworte die ausführlichen Fragen und lass dir einen gezielten Trainingsplan erstellen.</small></button>';
+ h+='<button class="createchoice" id="externalaibtn"><span class="createicon" aria-hidden="true">'+icon("external")+'</span><b>Mit ChatGPT &amp; Co. erstellen</b><small>Auftrag und Vorlage kopieren, bei einer beliebigen KI einfügen, Ergebnis importieren.</small></button>';
+ h+='<button class="createchoice" id="importbtn"><span class="createicon" aria-hidden="true">'+icon("download")+'</span><b>Fertiges Programm importieren</b><small>Programm-Datei oder kopiertes JSON einfügen. Satzkraft prüft alles vor dem Speichern.</small></button>';
  h+='</div><div class="versionfoot">Satzkraft v'+esc(APP_VERSION)+'</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderExternalAiCreate(){
- var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück" style="font-size:22px">‹</button><h1>Mit externer KI</h1><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div><div class="subviewlead">Die Vorlage ist ein vollständiges Beispiel und enthält unter „_anleitung“ alle erlaubten Werte. Gib sie einer beliebigen KI und beschreibe dein Wunschtraining.</div>';
- h+='<div class="importnotice ok"><strong>Freie KI-Wahl bleibt erhalten</strong>Übungsnamen sind nicht an eine feste Datenbank gebunden. Die KI darf deine gewünschten Übungen im Satzkraft-Format eintragen.</div>';
- h+='<div class="createblock"><div class="createtitle">1 · Satzkraft-Vorlage holen</div><div class="librow"><button class="smallbtn go" id="tplcopy">Vorlage kopieren</button><button class="smallbtn" id="tplfile">Vorlage als Datei</button></div></div>';
- h+='<div class="createblock"><div class="createtitle">Bestehendes Programm als Ausgangspunkt</div><div class="libnote">Du kannst auch dein aktives Programm einer KI geben und gezielte Änderungen beschreiben.</div><div class="librow"><button class="smallbtn" id="expcopy">Aktuelles kopieren</button><button class="smallbtn" id="expfile">Als Datei</button><button class="smallbtn" id="explink">Link teilen</button></div></div>';
- h+='<div class="createblock"><div class="createtitle">2 · Fertiges Ergebnis zurückladen</div><div class="libnote">Wenn die KI fertig ist, öffne den geprüften Import.</div><div class="librow"><button class="smallbtn go" id="importbtn">Zum Import</button></div></div></div>';document.getElementById("lib").innerHTML=h;
+ var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Mit ChatGPT &amp; Co.</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">In drei Schritten zu deinem Programm. Satzkraft liefert den vollständigen Auftrag und prüft das Ergebnis vor dem Speichern.</div>';
+ h+='<div class="createblock"><div class="createtitle">1 · Auftrag + Vorlage kopieren</div><div class="librow"><button class="smallbtn go" id="tplpromptcopy">Auftrag + Vorlage kopieren</button><button class="smallbtn" id="tplcopy">Nur Vorlage kopieren</button><button class="smallbtn" id="tplfile">Vorlage als Datei</button></div></div>';
+ h+='<div class="createblock"><div class="createtitle">2 · Bei der KI einfügen und Wünsche ausfüllen</div><div class="libnote">Füge alles bei ChatGPT, Claude oder einer anderen KI ein und ersetze die Platzhalter in „Meine Wünsche“.</div></div>';
+ h+='<div class="createblock"><div class="createtitle">3 · Ergebnis importieren</div><div class="libnote">Kopiere das fertige JSON der KI und öffne den geprüften Import.</div><div class="librow"><button class="smallbtn go" id="importbtn">Zum Import</button></div></div><div class="createfoot libnote">Du willst dein aktuelles Programm umbauen lassen? Kopiere es unter Programme → Exportieren &amp; Teilen.</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportEntry(){
- var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück" style="font-size:22px">‹</button><h1>Programm importieren</h1><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div><div class="subviewlead">Füge das JSON einer beliebigen KI ein oder wähle eine Datei. Es wird zunächst nur geprüft – dein aktives Programm und dein Fortschritt bleiben unverändert.</div>';
- h+='<textarea class="libta" id="libpaste" aria-label="Programm-JSON einfügen" placeholder="JSON hier einfügen …">'+esc(importInputText)+'</textarea>';
- h+='<div class="importdrop"><div><strong>'+(importSourceName?esc(importSourceName):'JSON-Datei auswählen')+'</strong><small>Bis 5 MB · JSON oder Textdatei</small></div><label class="smallbtn" style="display:inline-flex;align-items:center">Datei wählen<input type="file" id="libfile" accept=".json,application/json,text/plain" style="display:none"></label></div>';
+ var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm importieren</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Füge das JSON einer beliebigen KI ein oder wähle eine Datei. Es wird zunächst nur geprüft – dein aktives Programm und dein Fortschritt bleiben unverändert.</div>';
+ h+='<div class="importtextwrap"><textarea class="libta" id="libpaste" aria-label="Programm-JSON einfügen" placeholder="JSON hier einfügen …">'+esc(importInputText)+'</textarea><button class="importclear" id="importclear"'+(importInputText?'':' hidden')+'>'+icon("close")+' Leeren</button></div>';
+ h+='<div class="importdrop" id="importdrop"><div><strong>'+(importSourceName?esc(importSourceName):'JSON-Datei auswählen')+'</strong><small>Bis 5 MB · JSON oder Textdatei</small></div><label class="smallbtn" style="display:inline-flex;align-items:center">Datei wählen<input type="file" id="libfile" accept=".json,application/json,text/plain" style="display:none"></label></div>';
  h+='<div class="librow"><button class="smallbtn go" id="libload">Prüfen &amp; Vorschau</button><button class="smallbtn" id="tplcopy">Vorlage kopieren</button></div><div class="importnotice"><strong>Noch nichts wird gespeichert</strong>Erst in der nächsten Ansicht entscheidest du zwischen „Nur speichern“, „Speichern &amp; aktivieren“ oder „Vorher bearbeiten“.</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportError(){
- var issue=importIssue&&importIssue.error?importIssue.error:explainProgramError("Das Programm konnte nicht geprüft werden."),origin=importIssue&&importIssue.origin||"json",corrections=importIssue&&importIssue.corrections||[],h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importback" aria-label="Zurück" style="font-size:22px">‹</button><h1>Import korrigieren</h1><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div><span class="sourcepill">'+esc(programSourceLabel(origin))+(importIssue&&importIssue.sourceName?' · '+esc(importIssue.sourceName):'')+'</span>';
+ var issue=importIssue&&importIssue.error?importIssue.error:explainProgramError("Das Programm konnte nicht geprüft werden."),origin=importIssue&&importIssue.origin||"json",corrections=importIssue&&importIssue.corrections||[],h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Import korrigieren</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(origin))+(importIssue&&importIssue.sourceName?' · '+esc(importIssue.sourceName):'')+'</span>';
  h+='<div class="importnotice err"><strong>'+esc(issue.area)+'</strong>'+esc(issue.message)+'<br><br><b>So behebst du es:</b> '+esc(issue.remedy)+'</div>';
  if(corrections.length)h+='<div class="importnotice ok"><strong>Bereits sicher bereinigt</strong>'+corrections.map(esc).join('<br>')+'</div>';
  h+='<details class="importtechnical"><summary>Technische Details anzeigen</summary><pre>'+esc(issue.technical)+'</pre></details><div class="librow"><button class="smallbtn go" id="importeditjson">JSON weiter bearbeiten</button><button class="smallbtn" id="tplcopy">Vorlage kopieren</button></div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportPreview(){
- var prepared=pendingProgramImport;if(!prepared||!prepared.program){renderImportEntry();return;}var p=prepared.program,exerciseCount=p.days.reduce(function(sum,day){return sum+day.ex.length;},0),h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importpreviewback" aria-label="Zurück" style="font-size:22px">‹</button><h1>Programm prüfen</h1><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div><span class="sourcepill">'+esc(programSourceLabel(prepared.origin))+(prepared.sourceName?' · '+esc(prepared.sourceName):'')+'</span>';
+ var prepared=pendingProgramImport;if(!prepared||!prepared.program){renderImportEntry();return;}var p=prepared.program,exerciseCount=p.days.reduce(function(sum,day){return sum+day.ex.length;},0),h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importpreviewback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm prüfen</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(prepared.origin))+(prepared.sourceName?' · '+esc(prepared.sourceName):'')+'</span>';
  h+='<div class="previewhero"><h2>'+esc(p.name)+'</h2><p>'+(p.description?esc(p.description):'Keine Beschreibung hinterlegt.')+'</p><div class="previewstats"><div class="previewstat"><b>'+p.weeks.length+'</b><span>Wochen</span></div><div class="previewstat"><b>'+p.days.length+'</b><span>Trainingstage</span></div><div class="previewstat"><b>'+exerciseCount+'</b><span>Übungen</span></div></div></div>';
  h+='<div class="libsec" style="margin-top:14px">Trainingstage</div><div class="previewdays">';p.days.forEach(function(day){h+='<div class="previewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><span>'+day.ex.length+' Übungen'+((day.wu&&day.wu.length)||(day.cd&&day.cd.length)?' · Warm-up/Cool-down':'')+'</span></div>';});h+='</div>';
  if(prepared.corrections.length)h+='<div class="importnotice ok"><strong>Sicher automatisch bereinigt</strong>'+prepared.corrections.map(esc).join('<br>')+'</div>';
@@ -2336,7 +2422,7 @@ function returnFromImportFlow(){var origin=(pendingProgramImport&&pendingProgram
 var manualCreatorState={name:"",description:"",weeks:8,days:[0,2,4]};
 function syncManualCreatorForm(){var name=document.getElementById("manualname"),description=document.getElementById("manualdescription"),weeks=document.getElementById("manualweeks");if(name)manualCreatorState.name=name.value;if(description)manualCreatorState.description=description.value;if(weeks)manualCreatorState.weeks=Math.max(1,Math.min(LIMITS.maxWeeks,Math.round(Number(weeks.value)||8)));}
 function renderManualCreator(){
- var s=manualCreatorState,h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück" style="font-size:22px">‹</button><h1>Manuell erstellen</h1><button class="iconbtn" id="libclose" aria-label="Schließen" style="font-size:22px">✕</button></div><div class="subviewlead">Lege nur die Grundlage fest. Übungen, Sätze und Wiederholungen bearbeitest du danach in der gewohnten Trainingsansicht.</div><div class="manualgrid">';
+ var s=manualCreatorState,h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Manuell erstellen</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Lege nur die Grundlage fest. Übungen, Sätze und Wiederholungen bearbeitest du danach in der gewohnten Trainingsansicht.</div><div class="manualgrid">';
  h+=editorInput('Programmname',s.name,'id="manualname"',{max:LIMITS.maxNameLen});h+=editorInput('Wochen',s.weeks,'id="manualweeks"',{type:'number',min:1,max:LIMITS.maxWeeks,step:'1'});h+='</div>';
  h+='<div class="edgrid" style="margin-top:10px">'+editorInput('Beschreibung (optional)',s.description,'id="manualdescription"',{wide:true,area:true,max:200})+'</div><div class="libsec" style="margin-top:16px">An welchen Tagen wird trainiert?</div><div class="manualdays" role="group" aria-label="Trainingstage auswählen">';
  WD_ABBR.forEach(function(label,index){h+='<button class="manualday'+(s.days.indexOf(index)>=0?' sel':'')+'" data-manual-day="'+index+'" aria-pressed="'+(s.days.indexOf(index)>=0)+'">'+label+'</button>';});h+='</div><div class="manualhint">Mindestens ein Trainingstag. Die Reihenfolge folgt Montag bis Sonntag und kann später im Editor geändert werden.</div>';
@@ -2364,6 +2450,8 @@ app.addEventListener("click",function(e){
  if(b.id==="themebtn"){toggleTheme();return;}
  if(b.dataset.step){onStep(b);return;}
  if(b.dataset.rest){startRest(+b.dataset.rest,b.dataset.restEx);return;}
+ if(b.dataset.holdEx){startHold(b.dataset.holdEx);return;}
+ if(b.dataset.expandDone){var expanded=findEx(b.dataset.expandDone);if(expanded){expandedDoneExercises[expanded.id]=true;var compact=document.getElementById("card-"+expanded.id);if(compact)compact.outerHTML=exCardHtml(expanded);applyLocks(expanded);}return;}
  if(b.dataset.hist){var hex=findEx(b.dataset.hist);if(hex)showHistory(hex);return;}
  if(b.id==="pausew"){pauseWorkout();return;}
  if(b.id==="resumew"){resumeWorkout();return;}
@@ -2384,15 +2472,18 @@ document.getElementById("bar").addEventListener("click",function(e){
  else if(b.id==="barresumew"){resumeWorkout();}
  else if(b.id==="barstopw"){confirmStop();}
  else if(b.id==="stopr"){stopRest();}
+ else if(b.id==="stophold"){finishHold();}
+ else if(b.id==="cancelhold"){cancelHold();}
  else if(b.id==="nextpause"){startRest(restBaseSec,restExId);}
  else if(b.dataset.radj){adjustRest(+b.dataset.radj);}
 });
-document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose")closeReport();else if(b.id==="reprint")window.print();});
+document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose")closeReport();else if(b.id==="reprint")printReport();});
 window.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("report").classList.contains("open")){e.preventDefault();closeReport();}});
 document.getElementById("lib").addEventListener("click",function(e){
  if(e.target.id==="lib"){closeLib();return;}
  var b=e.target.closest("button");if(!b)return;
  if(b.id==="libclose"){closeLib();return;}
+ if(b.id==="themebtn"){toggleTheme();renderLib();return;}
  if(b.id==="editorback"){returnToProgramList(false);return;}
  if(b.dataset.edit){openProgramEditor(b.dataset.edit);return;}
  if(b.id==="editorhelp"){showEditorHelp();return;}
@@ -2413,6 +2504,9 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="edaddday"){editorPushUndo("Trainingstag hinzugefügt");var di=editorAddDay();renderProgramEditor("days",di);return;}
  if(b.dataset.edDelday!=null){confirmEditorDeleteDay(+b.dataset.edDelday);return;}
  if(b.dataset.edAddex!=null){var adi=+b.dataset.edAddex;editorPushUndo("Übung hinzugefügt");editorAddExercise(adi);renderProgramEditor("days",adi,editorDraft.days[adi].exercises.length-1);return;}
+ if(b.dataset.edWucdAdd){var awd=+b.dataset.edDay,awk=b.dataset.edWucdAdd,awl=editorDraft.days[awd][awk]||(editorDraft.days[awd][awk]=[]);if(awl.length<8){editorPushUndo((awk==="warmup"?"Warm-up":"Cool-down")+" ergänzt");awl.push({name:WUCD_LIB[awk][0],seconds:45});renderProgramEditor("days",awd,editorExerciseIndex);}return;}
+ if(b.dataset.edWucdDelete){var dwd=+b.dataset.edDay,dwk=b.dataset.edWucdDelete,dwi=+b.dataset.edWucdIndex,dwl=editorDraft.days[dwd][dwk];if(dwl&&dwl[dwi]){editorPushUndo("Timer-Eintrag gelöscht");dwl.splice(dwi,1);renderProgramEditor("days",dwd,editorExerciseIndex);}return;}
+ if(b.dataset.edWucdMove){var mwd=+b.dataset.edDay,mwk=b.dataset.edWucdKind,mwi=+b.dataset.edWucdIndex,mto=mwi+(+b.dataset.edWucdMove),mwl=editorDraft.days[mwd][mwk];if(mwl&&mto>=0&&mto<mwl.length){editorPushUndo("Timer-Eintrag verschoben");var mit=mwl.splice(mwi,1)[0];mwl.splice(mto,0,mit);renderProgramEditor("days",mwd,editorExerciseIndex);}return;}
  if(b.dataset.edDelex){var ddi=+b.dataset.edDay,dei=+b.dataset.edEx;editorPushUndo("Übung gelöscht");editorDraft.days[ddi].exercises.splice(dei,1);editorExerciseIndex=null;renderProgramEditor("days",ddi,null);return;}
  if(b.dataset.edMoveex){var mdi=+b.dataset.edDay,mei=+b.dataset.edEx,move=+b.dataset.edMoveex;editorPushUndo("Übung verschoben");editorMoveExercise(mdi,mei,move);renderProgramEditor("days",mdi,mei+move);return;}
  if(b.id==="eddeleteprogram"){confirmEditorDeleteProgram();return;}
@@ -2426,6 +2520,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.dataset.manualDay!=null){syncManualCreatorForm();var md=+b.dataset.manualDay,pos=manualCreatorState.days.indexOf(md);if(pos>=0)manualCreatorState.days.splice(pos,1);else manualCreatorState.days.push(md);manualCreatorState.days.sort(function(a,b){return a-b;});renderManualCreator();return;}
  if(b.id==="externalaibtn"){renderExternalAiCreate();return;}
  if(b.id==="importbtn"){renderImportEntry();return;}
+ if(b.id==="importclear"){importInputText="";importSourceName="";renderImportEntry();var cleared=document.getElementById("libpaste");if(cleared)cleared.focus();return;}
  if(b.id==="importback"||b.id==="importeditjson"||b.id==="importpreviewback"||b.id==="importcancel"){returnFromImportFlow();return;}
  if(b.id==="importactivate"){storeImportedProgram(true,false);return;}
  if(b.id==="importsave"){storeImportedProgram(false,false);return;}
@@ -2447,12 +2542,13 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="libload"){var ta=document.getElementById("libpaste");beginProgramImport(ta?ta.value:importInputText,"json","");return;}
  if(b.id==="explink"){var eo=exportTranslate(PROG());delete eo._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(eo))));var okl=copyText(u);showModal(okl?"Link kopiert":"Kopieren nicht möglich",okl?"Wer den Link öffnet, bekommt dein Programm zum Laden angeboten (ohne deinen Fortschritt). Bei sehr großen Programmen kann der Link von Messengern gekürzt werden – dann Datei-Export nutzen.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);return;}
  if(b.id==="expfile"){downloadText((PROG().name||"programm").replace(/[^a-z0-9]+/gi,"_")+".json",exportCurrentJSON());return;}
- if(b.id==="expcopy"){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – jetzt einer KI geben oder selbst bearbeiten, dann unter „2 · Programm laden“ einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);return;}
+ if(b.id==="expcopy"){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);return;}
  if(b.id==="tplcopy"){copyText(JSON.stringify(BLANK_TEMPLATE,null,2));showModal("Beispiel-Vorlage kopiert","Eine vollständige, korrekte Beispiel-Vorlage liegt in der Zwischenablage – ideal als Muster für die KI.",[{label:"OK",action:null}]);return;}
+ if(b.id==="tplpromptcopy"){var promptOk=copyText(externalAiPrompt());showModal(promptOk?"Auftrag + Vorlage kopiert":"Kopieren nicht möglich",promptOk?"Füge den Inhalt jetzt bei ChatGPT, Claude oder einer anderen KI ein und ersetze dort die Platzhalter unter „Meine Wünsche“.":"Nutze stattdessen „Vorlage als Datei“ und ergänze deinen Auftrag bei der KI.",[{label:"OK",cls:promptOk?"primary":"",action:null}]);return;}
  if(b.id==="tplfile"){downloadText("vorlage-trainings-block.json",JSON.stringify(BLANK_TEMPLATE,null,2));return;}
 });
 document.getElementById("lib").addEventListener("focusin",function(e){
- var t=e.target;if(!editorDraft||!/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)||!(t.dataset.edProgram||t.dataset.edOwn||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null))return;
+ var t=e.target;if(!editorDraft||!/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)||!(t.dataset.edProgram||t.dataset.edOwn||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null||t.dataset.edWucd))return;
  if(editorUndoField!==t){editorPushUndo("Eingabe geändert");editorUndoField=t;}
 });
 document.getElementById("lib").addEventListener("focusout",function(e){if(editorUndoField===e.target)editorUndoField=null;});
@@ -2470,8 +2566,8 @@ document.getElementById("lib").addEventListener("pointermove",function(e){
 document.getElementById("lib").addEventListener("pointerup",function(e){if(editorDragState&&e.pointerId===editorDragState.pointerId)finishEditorDrag(e,false);});
 document.getElementById("lib").addEventListener("pointercancel",function(e){if(editorDragState&&e.pointerId===editorDragState.pointerId)finishEditorDrag(e,true);});
 document.getElementById("lib").addEventListener("keydown",function(e){if(!e.target||e.key!=="Enter")return;if(e.target.id==="adjinp"){e.preventDefault();coachSendAdj();}else if(e.target.id==="freeinp"){e.preventDefault();var nb=document.getElementById("coachnext");if(nb)nb.click();}});
-document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var file=t.files[0];importSourceName=file.name||"Ausgewählte Datei";if(file.size>5000000){importIssue={error:explainProgramError("Die Datei ist größer als 5 MB."),sourceText:"",corrections:[],origin:"file",sourceName:importSourceName};renderImportError();return;}var r=new FileReader();r.onload=function(){beginProgramImport(String(r.result),"file",importSourceName);};r.onerror=function(){importIssue={error:explainProgramError("Die Datei konnte nicht gelesen werden."),sourceText:"",corrections:[],origin:"file",sourceName:importSourceName};renderImportError();};r.readAsText(file);return;}if(t.id==="backupfile"&&t.files&&t.files[0]){var br=new FileReader();br.onload=function(){importBackup(String(br.result));};br.readAsText(t.files[0]);return;}if(editorDraft&&(t.dataset.edProgram||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null)){var rerender=updateEditorInput(t);if(t.dataset.edReps){renderProgramEditor("details");return;}if(t.dataset.edWeek!=null&&t.dataset.edField==="phase"){renderProgramEditor("weeks",+t.dataset.edWeek);return;}if(t.dataset.edDay!=null&&(rerender||t.dataset.edField==="weekday"||t.dataset.edField==="category"||t.dataset.edField==="unit")){renderProgramEditor("days",+t.dataset.edDay,t.dataset.edEx==null?null:+t.dataset.edEx);}}});
-document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="libpaste"){importInputText=t.value;return;}if(t.id==="manualname"||t.id==="manualdescription"||t.id==="manualweeks"){syncManualCreatorForm();return;}if(editorDraft&&t.type!=="checkbox"&&t.tagName!=="SELECT"&&(t.dataset.edProgram||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null))updateEditorInput(t);});
+document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var file=t.files[0];importSourceName=file.name||"Ausgewählte Datei";if(file.size>5000000){importIssue={error:explainProgramError("Die Datei ist größer als 5 MB."),sourceText:"",corrections:[],origin:"file",sourceName:importSourceName};renderImportError();return;}var r=new FileReader();r.onload=function(){beginProgramImport(String(r.result),"file",importSourceName);};r.onerror=function(){importIssue={error:explainProgramError("Die Datei konnte nicht gelesen werden."),sourceText:"",corrections:[],origin:"file",sourceName:importSourceName};renderImportError();};r.readAsText(file);return;}if(t.id==="backupfile"&&t.files&&t.files[0]){var br=new FileReader();br.onload=function(){importBackup(String(br.result));};br.readAsText(t.files[0]);return;}if(editorDraft&&(t.dataset.edProgram||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null||t.dataset.edWucd)){var rerender=updateEditorInput(t);if(t.dataset.edReps){renderProgramEditor("details");return;}if(t.dataset.edWeek!=null&&t.dataset.edField==="phase"){renderProgramEditor("weeks",+t.dataset.edWeek);return;}if(t.dataset.edDay!=null&&(rerender||t.dataset.edField==="weekday"||t.dataset.edField==="category"||t.dataset.edField==="exerciseType")){renderProgramEditor("days",+t.dataset.edDay,t.dataset.edEx==null?null:+t.dataset.edEx);}}});
+document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="libpaste"){importInputText=t.value;var clear=document.getElementById("importclear");if(clear)clear.hidden=!t.value;return;}if(t.id==="manualname"||t.id==="manualdescription"||t.id==="manualweeks"){syncManualCreatorForm();return;}if(editorDraft&&t.type!=="checkbox"&&t.tagName!=="SELECT"&&(t.dataset.edProgram||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null))updateEditorInput(t);});
 window.addEventListener("beforeunload",function(e){if(!editorHasUnsavedChanges())return;e.preventDefault();e.returnValue="";});
 
 // ---------- PWA ----------
