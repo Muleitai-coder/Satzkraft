@@ -55,6 +55,9 @@ test('copies the planned weight when repetitions are entered', () => {
     findEx: () => ({ id: 'squat', w: true }),
     sanDec: value => value,
     sanInt: value => value,
+    isTime: () => false,
+    timeInputSeconds: input => input.value,
+    setTimeInputValue: (input, _ex, value) => { input.value = String(value); },
     active: () => true,
     getSets: () => [{ reps: '', weight: '' }],
     round: value => value,
@@ -92,6 +95,9 @@ test('completes repetitions from weight input and queues automatic rest', () => 
     findEx: () => exercise,
     sanDec: value => value,
     sanInt: value => value,
+    isTime: () => false,
+    timeInputSeconds: input => input.value,
+    setTimeInputValue: (input, _ex, value) => { input.value = String(value); },
     active: () => true,
     getSets: () => [{ reps: '', weight: '' }, { reps: '', weight: '' }],
     round: value => value,
@@ -133,6 +139,9 @@ test('keeps zero targets empty and reuses a previous calibration weight', () => 
     findEx: () => exercise,
     sanDec: value => value,
     sanInt: value => value,
+    isTime: () => false,
+    timeInputSeconds: input => input.value,
+    setTimeInputValue: (input, _ex, value) => { input.value = String(value); },
     active: () => true,
     getSets: () => sets.map(set => ({ ...set })),
     round: value => value,
@@ -171,6 +180,9 @@ test('formats long time prescriptions in minutes without changing stored seconds
   assert.equal(context.fmtSeconds(900), '15 min');
   assert.equal(context.fmtSecondsRange(30, 60), '30–60 Sek');
   assert.equal(context.fmtSecondsRange(780, 900), '13–15 min');
+  assert.equal(context.fmtMinuteInput(1200), '20,0');
+  assert.match(html, /data-time-scale="60"/);
+  assert.match(html, /minuteStep\?\.5:1/);
 });
 
 test('guards the delayed automatic rest and keeps the page scrollable', () => {
@@ -196,10 +208,13 @@ test('runs timed holds in the shared bar and records them before the set rest', 
   assert.match(html, /Timer starten/);
   assert.doesNotMatch(html, /class="holdbtn"/);
   assert.match(html, /Stopp &amp; eintragen/);
-  assert.match(html, /Zielbereich erreicht/);
-  assert.match(html, /Bestwert: /);
+  assert.match(html, /Ziel erreicht · Ende bei/);
+  assert.match(html, /Maximalzeit · Bestwert/);
   assert.match(html, /if\(next<sets\.length\)startRest\(pause,exid\)/);
   assert.match(html, /holdMaxAlerted=true;beep\(\)/);
+  assert.match(html, /holdTimerMode==="target"/);
+  assert.match(html, /finishHold\(holdMax\)/);
+  assert.match(html, /timerMode:\["target","max"\]/);
 });
 
 test('compacts completed exercise cards only during an active workout', () => {
@@ -212,6 +227,8 @@ test('compacts completed exercise cards only during an active workout', () => {
   assert.match(html, /expandedDoneExercises\[expanded\.id\]=true/);
   assert.match(html, /data-collapse-done=/);
   assert.match(html, /delete expandedDoneExercises\[collapsed\.id\]/);
+  assert.match(html, /function replaceCardKeepingViewport\(card,html\)/);
+  assert.match(html, /window\.scrollBy\(0,delta\)/);
 });
 
 test('uses one SVG icon system, larger training text and subtle completion feedback', () => {

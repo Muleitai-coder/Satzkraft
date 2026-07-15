@@ -90,6 +90,26 @@ test("accepts arbitrary exercise names and preserves supported fields", () => {
   assert.equal(result.prog.description, "Ein frei benannter Plan aus einer beliebigen KI.");
 });
 
+test("preserves target and max timer modes only for time exercises", () => {
+  const target = validProgram();
+  const exercise = target.days[0].exercises[0];
+  delete exercise.weighted;
+  delete exercise.increment;
+  delete exercise.startWeight;
+  exercise.unit = "seconds";
+  exercise.timerMode = "target";
+  exercise.reps = [30, 60];
+  const parsed = parse(target);
+  assert.equal(parsed.err, undefined);
+  assert.equal(parsed.prog.days[0].ex[0].tmode, "target");
+
+  exercise.timerMode = "forever";
+  assert.match(parse(target).err, /timerMode/);
+  exercise.timerMode = "max";
+  exercise.unit = "reps";
+  assert.match(parse(target).err, /benötigt.*seconds/);
+});
+
 test("rejects invalid phases, weekdays and negative sets", () => {
   const phase = validProgram();
   phase.weeks[0].phase = "banana";
@@ -202,6 +222,8 @@ test("loads the complete manual test program with all exercise scenarios", () =>
   assert.equal(checked.err, undefined);
   const exercises = checked.prog.days.flatMap(day => day.ex);
   assert.ok(exercises.some(ex => ex.name === "Stairmaster" && ex.unit === "seconds" && ex.reps[0] === 1200));
+  assert.ok(exercises.some(ex => ex.name === "Stairmaster" && ex.tmode === "target"));
+  assert.ok(exercises.some(ex => ex.name === "Dead Hang" && ex.tmode === "max"));
   assert.ok(exercises.some(ex => ex.w && ex.bw));
   assert.ok(exercises.some(ex => ex.w && ex.def === 0 && !ex.bw));
   assert.ok(exercises.some(ex => ex.pmode === "reps"));

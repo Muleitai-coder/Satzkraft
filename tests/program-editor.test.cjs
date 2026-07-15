@@ -169,6 +169,13 @@ test('maps the four novice exercise types without rewriting exotic settings', ()
   assert.doesNotMatch(html, /> Gewicht erfassen</);
 });
 
+test('offers target and maximum timer modes while creating time exercises', () => {
+  assert.match(html, /Timer-Modus/);
+  assert.match(html, /Zielzeit · stoppt am oberen Ziel automatisch/);
+  assert.match(html, /Maximalzeit · läuft bis zu meinem Stopp/);
+  assert.match(html, /if\(ex\.unit==="seconds"&&!ex\.timerMode\)ex\.timerMode="target"/);
+});
+
 test('edits guided warm-up and cool-down blocks with undo and limits', () => {
   assert.match(html, /Warm-up &amp; Cool-down/);
   assert.match(html, /Rein zeitbasiert, geführt mit Timer/);
@@ -181,7 +188,7 @@ test('edits guided warm-up and cool-down blocks with undo and limits', () => {
 
 test('centers disclosure arrows and uses a plain information glyph', () => {
   assert.match(html, /\.edadvanced>summary:after\{[^}]*top:50%[^}]*translateY\(-50%\)/);
-  assert.match(html, /info:'<path d="M12 10\.5V18M12 6\.5h\.01"\/>/);
+  assert.match(html, /info:'<path fill="currentColor" stroke="none" d="[^"]+"\/>/);
   assert.doesNotMatch(html, /info:'<circle/);
 });
 
