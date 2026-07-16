@@ -626,6 +626,93 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 
 ### Nicht Bestandteil von Paket H (Ausblick, separat entscheiden)
 
-- **Folgeblock starten** (Programm duplizieren, zuletzt gehobene Gewichte als neue Startgewichte).
-- **Übung im laufenden Training tauschen** („Bank belegt“) – baut auf der `_ref`-Identität auf, kommt frühestens danach.
-- **Backup-Schutz** (`navigator.storage.persist()` + Hinweis „Letztes Backup vor X Tagen“).
+- **Folgeblock starten** (Programm duplizieren, zuletzt gehobene Gewichte als neue Startgewichte). *(Inzwischen beschlossen → Abschnitt 14, Paket J.)*
+- **Übung im laufenden Training tauschen** („Bank belegt“) – baut auf der `_ref`-Identität auf, kommt frühestens danach. *(Inzwischen beschlossen → Abschnitt 14, Paket K.)*
+- **Backup-Schutz** (`navigator.storage.persist()` + Hinweis „Letztes Backup vor X Tagen“). *(Inzwischen beschlossen → Abschnitt 14, Paket I.)*
+
+---
+
+## 14. Beschlossene Produkt-Roadmap · Pakete I–K (Stand 16.07.2026)
+
+**Status: Spezifiziert und vom Produktverantwortlichen beschlossen am 16.07.2026 – noch NICHT umgesetzt.** Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Reihenfolge verbindlich: **I → J → K**, jeweils ein eigenes Release (Zielversionen 0.20.0 / 0.21.0 / 0.22.0). **Kein Sammel-Release** – bewusst entschieden: jedes Paket wird einzeln umgesetzt, geprüft und abgenommen (Ablauf Abschnitt 10). Paket H muss vor Paket I abgeschlossen sein; K1 baut auf der `_ref`-Identität aus H auf.
+
+**Strategische Leitlinie:** Satzkraft differenziert sich über vier Achsen – Trainingsintelligenz (Blockperiodisierung + Progression), „Bring your own AI“, komplett lokal ohne Konto/Abo, deutsch & laientauglich. Die Pakete vertiefen diese Achsen. Social Feeds, Gamification, Muskel-Heatmaps bleiben Nicht-Ziele (Abschnitt 4).
+
+---
+
+### Paket I – Trainings-Alltag & Vertrauen · Ziel v0.20.0
+
+#### I1 · Scheibenrechner · `FB-20260716-04`
+- **Ist:** Gewichtsziele (z. B. „Ziel 43,5 kg“) müssen im Kopf in Scheiben pro Seite umgerechnet werden.
+- **Soll:** Antippen des Gewichtsziels in der Vorgabezeile öffnet ein kleines Modal „Scheiben pro Seite“: Belegung aus dem Standard-Scheibensatz 25 / 20 / 15 / 10 / 5 / 2,5 / 1,25 kg, z. B. „43,5 kg · Stange 20 kg → pro Seite: 10 + 1,25“. Im Modal eine kompakte Stangen-Auswahl (20 / 15 / 10 kg / eigenes Feld); die Wahl wird **pro Übung gemerkt** (neues optionales Store-Feld, z. B. `store.barw[exId]`; Standard 20 kg). Ist das Ziel nicht exakt legbar, die nächstliegende legbare Last samt Belegung anzeigen. Rein informativ, ändert keine Daten; nur bei Gewichtsübungen (`ex.w`).
+- **Datenregeln:** Neues Store-Feld optional und abwärtskompatibel; `validateBackupStore` toleriert es; in der H-Migration (`migrateReplaceStore`) wie `tg` per Übungs-ID mitmigrieren.
+- **Akzeptanz:** 43,5 kg / 20-kg-Stange → „pro Seite: 10 + 1,25“; SZ-Curls einmal auf 10 kg umgestellt → bleibt beim nächsten Öffnen; hell/dunkel geprüft.
+
+#### I2 · Übungsnotizen · `FB-20260716-05`
+- **Ist:** Keine Möglichkeit, sich Geräte-Einstellungen oder Technik-Beobachtungen zu merken.
+- **Soll (Nutzerentscheidung: „auf Notiz klicken und eine machen“):** Kleiner Button „Notiz“ an der Übungskarte (im und außerhalb des Trainings, Stil wie „Verlauf“). Öffnet Modal mit Textfeld (max. 500 Zeichen). Vorhandene Notiz erscheint als dezente Zeile auf der Karte (antippen = bearbeiten, leeren = löschen). Speicherort `store.notes[exId]` – persistent über Wochen, gehört zum Fortschritt (nicht zum Programm-Austauschformat). Ausgabe über `esc()`.
+- **Datenregeln:** wie I1 (optional, Backup-kompatibel, H-Migration analog `tg`).
+- **Akzeptanz:** Notiz anlegen/ändern/löschen; nach „Ersetzen & Fortschritt behalten“ (H) hängt die Notiz an der richtigen Übung; Backup/Restore erhält Notizen.
+
+#### I3 · Backup-Schutz · `FB-20260716-06`
+- **Ist:** localStorage kann vom Browser bei langer Nichtnutzung geräumt werden; Erinnerung ans Backup gibt es nicht (nur Statustext in der Programmverwaltung).
+- **Soll (Nutzerentscheidung: „muss einfach sein, kein Aufwand“):**
+  1. `navigator.storage.persist()` **einmalig still im Hintergrund** anfragen, sobald erste echte Trainingsdaten existieren (erster abgeschlossener Satz). Kein eigener Dialog, Ergebnis nur intern merken.
+  2. Erinnerung nur, wenn das letzte Backup älter als **14 Tage** ist UND seither mindestens eine Einheit abgeschlossen wurde: dezente Zeile nach Trainingsende und in der Programmverwaltung mit **genau zwei Aktionen**: „Backup herunterladen“ (ein Klick = `downloadFullBackup()`, Meta aktualisiert, Zeile verschwindet) und „Später“ (7 Tage Ruhe). Kein Modal-Zwang, kein Formular.
+- **Akzeptanz:** Frisches Profil → keine Erinnerung; simuliertes altes Backup-Datum → Zeile erscheint; Ein-Klick-Download beendet sie; „Später“ pausiert 7 Tage.
+
+#### I4 · Politur · `FB-20260716-07`
+1. **Info-Interaktion neu (Nutzerentscheidung):** Die ⓘ-Knöpfe entfallen. Stattdessen ist der **Begriff selbst antippbar** (dezente gepunktete Unterstreichung, ausreichend große Touch-Fläche, tastaturbedienbar, `aria-label="Erklärung: …"`). Die `EDITOR_INFO`-Texte bleiben unverändert. Ersetzt die Optik aus `FB-20260715-06`/G3.
+2. **Timer-Farbe (Nutzerentscheidung):** Der Fortschrittsbalken des Halte-Timers behält durchgehend **eine** Farbe; Erreichen von Ziel/Maximum wird nur über Text, Ton und Vibration kommuniziert. Revidiert den Bernstein-Wechsel aus `FB-20260715-04`.
+3. **Accessible Names:** Erstellen-Hub-Karten, Verlauf-Chevron und alle unbenannten Icon-Buttons erhalten `aria-label`s (Satz-Eingaben sind bereits vorbildlich beschriftet).
+4. **Vorgabezeile 390 px:** Hartes Abschneiden („Pause 2:3…“) entschärfen – Fade-Kante als Scroll-Hinweis oder kompaktere Abstände. Einzeilig-scrollbar (G3) bleibt gültig.
+
+#### I5 · Eindeutige Programmnamen bei Kopien · `FB-20260716-08`
+- **Ist:** „Als Kopie speichern“ erzeugt namensgleiche Programme – nicht unterscheidbar.
+- **Soll (Nutzerentscheidung: „Datums-Schlüssel oder sowas“):** Automatische Kopien erhalten eindeutige Namen mit Datum, z. B. „Name (Kopie 16.07.)“; bei Namenskollision zusätzlich Zähler. Namenslimit (30 Zeichen) beachten: Basisname wird gekürzt, das Suffix nie. Gilt für Editor-Kopien; Folgeblöcke nutzen das eigene Schema aus J2 („… · Block 2“).
+- **Akzeptanz:** Zwei Kopien nacheinander → eindeutig unterscheidbare Namen ≤ 30 Zeichen.
+
+---
+
+### Paket J – Block-Lebenszyklus · Ziel v0.21.0
+
+**Produktentscheidungen (16.07.2026):** Erfolgs-Fenster beim Blockabschluss; „Absolviert“-Markierung am Programm; Folgeblock-Namen als „… · Block 2“; Archiv schreibgeschützt mit einsehbarer Auswertung.
+
+#### J1 · Block-Abschluss & Absolviert-Status · `FB-20260716-09`
+- **Ist:** Nach der letzten Einheit des Blocks passiert nichts – kein Abschluss, kein Übergang.
+- **Soll:** Wird mit dem Beenden eines Trainings die letzte offene Einheit des Blocks abgeschlossen (alle vorgesehenen Einheiten aller Wochen komplett), erscheint ein **Erfolgs-Modal**: Glückwunsch, Kernzahlen (Einheiten, Trainingszeit, 2–3 größte Verbesserungen aus `buildReportData`) und die Buttons „Folgeblock starten“ (→ J2), „Auswertung ansehen“, „Später“. In der Programmverwaltung erhält das Programm ein Badge **„✓ Absolviert“** (Zustand aus den Logs berechnen, nicht separat speichern).
+- **Akzeptanz:** Testbackup: Woche 8 zu Ende trainieren → Modal erscheint genau einmal; Badge sichtbar; „Später“ erlaubt jederzeit „Folgeblock starten“ aus der Programmverwaltung.
+
+#### J2 · Folgeblock starten · `FB-20260716-09`
+- **Soll:** Erzeugt eine Kopie des Programms als neuen Block: Name „… · Block 2“ (Zähler erhöhen, Namenslimit beachten). **Startgewichte** je Gewichts-Übung = Empfehlung der Progression auf Basis der letzten Nicht-Deload-Woche mit Daten (bestehende `calculateNextRecommendation`-Logik: letztes Arbeitsgewicht, bei erreichtem oberen Wiederholungsziel + Steigerung). Reine Wiederholungs-/Zeit-Übungen bleiben unverändert. Das neue Programm wird aktiv; das alte wird automatisch archiviert (J3) – mitsamt Fortschritt. Internes optionales Feld `parent` (Programm-ID des Vorblocks) für J4; nicht Teil des Austauschformats.
+- **Akzeptanz:** 8-Wochen-Testblock → Folgeblock: Kniebeuge-Startgewicht entspricht dem letzten Aufbau-Arbeitsgewicht (+ Steigerung, wenn oben erreicht); alter Block im Archiv, Auswertung dort intakt; `js/progression.js` unverändert.
+
+#### J3 · Block-Archiv · `FB-20260716-10`
+- **Soll:** Optionales Flag `archived` am Programm (abwärtskompatibel, `normalize` toleriert es). Programmverwaltung: eigene Sektion „Archiv (n)“ unter „Weitere Programme“. Archivierte Programme sind nicht aktivierbar und nicht bearbeitbar, bieten aber „Auswertung ansehen“ (bestehender Report, read-only gegen deren Store) und „Aus dem Archiv holen“. Manuelles Archivieren ist auch ohne Folgeblock möglich. Backups enthalten Archiv-Programme automatisch (gleiche Struktur).
+- **Akzeptanz:** Archivieren → erscheint in Sektion, Training/Editor gesperrt, Auswertung vollständig; „Aus dem Archiv holen“ stellt Normalzustand her.
+
+#### J4 · Langzeit-Blick (bewusst klein) · `FB-20260716-10`
+- **Soll:** Hat das aktive Programm über die `parent`-Kette archivierte Vorblöcke, zeigt jede Übungskarte der Auswertung bei Namensübereinstimmung **eine** Zusatzzeile: „Vorblock: 82,5 kg“ (letzter Trend-Wert des Vorblocks). Keine neuen Diagrammtypen, keine wählbaren Zeiträume – das Nicht-Ziel aus Abschnitt 4 bleibt bestehen.
+- **Akzeptanz:** Block 2 aktiv → Kniebeuge-Karte zeigt Vorblock-Wert; Übungen ohne Namens-Match zeigen nichts.
+
+---
+
+### Paket K – Flexibilität · Ziel v0.22.0
+
+#### K1 · Übung heute tauschen · `FB-20260716-11`
+- **Kontext:** Häufigster Realitätsbruch im Gym („Bank ist belegt“). Baut auf der `_ref`-Identität aus Paket H auf; Detailregeln beim Paketstart gegen die dann aktuelle Codebasis prüfen.
+- **Soll:** Im aktiven Training bietet jede offene Übungskarte „Übung tauschen“: Feld für den Namen der Ersatzübung (vorbelegt mit dem gepflegten Feld „Ersatzübung“/`proxy`, falls vorhanden) und zwei Wege:
+  1. **„Nur heute“:** Karte zeigt den Ersatznamen mit Vermerk „getauscht“. Eingetragene Sätze werden im Log der Übung mit Vermerk (z. B. `swap:"Name"`) gespeichert; diese Einheit zählt **nicht** in Progressionsempfehlung und Übungstrend der Original-Übung, erscheint aber im Trainingsprotokoll mit Ersatznamen. Nächste Woche gilt wieder das Original.
+  2. **„Dauerhaft ersetzen“:** führt in den Editor zur geöffneten Übung; über den H-Pfad „Ersetzen & Fortschritt behalten“ bleibt bei gleichem Übungstyp der Fortschritt erhalten.
+- **Akzeptanz:** „Nur heute“-Tausch → Werte im Protokoll unter Ersatznamen, Empfehlung der Original-Übung unbeeinflusst, Folgewoche wieder Original; „Dauerhaft“ → wie H-Abnahme.
+
+#### K2 · KI-Coach-Antworten speichern · `FB-20260716-12`
+- **Ist:** Abbruch des 17-Fragen-Wizards verwirft alle Antworten (`coachReset`).
+- **Soll:** Antworten (`coachAns`) lokal speichern (eigener localStorage-Key, z. B. `satzkraft-coach-prefs`) – bei Abbruch und nach Programm-Übernahme. Beim nächsten Wizard-Start: Hinweiszeile „Antworten vom letzten Mal übernehmen?“ [Übernehmen / Neu starten]; übernommene Antworten sind normal änderbar. Verzahnung mit J1: Stammt das absolvierte Programm vom Coach, bietet das Erfolgs-Modal zusätzlich „Mit KI-Coach neu planen“ (Wizard vorausgefüllt). Alles bleibt lokal; keine Übertragung außerhalb des bestehenden Coach-Aufrufs.
+- **Akzeptanz:** Wizard abbrechen → erneut öffnen → Antworten vorhanden; „Neu starten“ leert sie; Erfolgs-Modal-Weg funktioniert vorausgefüllt.
+
+---
+
+### Abnahme-Grundsatz Pakete I–K
+
+Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; Versionsziele I = 0.20.0, J = 0.21.0, K = 0.22.0 (verschieben sich entsprechend, falls dazwischen Patches nötig werden). Neue Store-Felder (`barw`, `notes`) müssen in Backup-Validierung und H-Migration berücksichtigt sein, bevor das jeweilige Paket released wird.
