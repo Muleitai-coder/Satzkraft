@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.19.1
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.20.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.19.1
+**Aktueller Produktstand:** Satzkraft v0.20.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -642,13 +642,15 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 
 ## 14. Beschlossene Produkt-Roadmap · Pakete I–K (Stand 16.07.2026)
 
-**Status: Spezifiziert und vom Produktverantwortlichen beschlossen am 16.07.2026 – noch NICHT umgesetzt.** Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Reihenfolge verbindlich: **I → J → K**, jeweils ein eigenes Release (Zielversionen 0.20.0 / 0.21.0 / 0.22.0). **Kein Sammel-Release** – bewusst entschieden: jedes Paket wird einzeln umgesetzt, geprüft und abgenommen (Ablauf Abschnitt 10). Paket H ist seit v0.19.0 umgesetzt (v0.19.1 ergänzte den Trainings-Schreibschutz); **Paket I ist das nächste Arbeitspaket.** K1 baut auf der `_ref`-Identität aus H auf.
+**Status:** Paket I ist seit v0.20.0 umgesetzt. Pakete J und K sind spezifiziert und noch nicht umgesetzt. Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Reihenfolge verbindlich: **I → J → K**, jeweils ein eigenes Release (Zielversionen 0.20.0 / 0.21.0 / 0.22.0). **Kein Sammel-Release** – jedes Paket wird einzeln umgesetzt und geprüft. K1 baut auf der `_ref`-Identität aus H auf.
 
 **Strategische Leitlinie:** Satzkraft differenziert sich über vier Achsen – Trainingsintelligenz (Blockperiodisierung + Progression), „Bring your own AI“, komplett lokal ohne Konto/Abo, deutsch & laientauglich. Die Pakete vertiefen diese Achsen. Social Feeds, Gamification, Muskel-Heatmaps bleiben Nicht-Ziele (Abschnitt 4).
 
 ---
 
 ### Paket I – Trainings-Alltag & Vertrauen · Ziel v0.20.0
+
+**Umgesetzt in v0.20.0 am 16.07.2026.**
 
 #### I1 · Scheibenrechner · `FB-20260716-04`
 - **Ist:** Gewichtsziele (z. B. „Ziel 43,5 kg“) müssen im Kopf in Scheiben pro Seite umgerechnet werden.

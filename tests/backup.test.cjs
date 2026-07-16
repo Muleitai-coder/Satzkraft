@@ -74,11 +74,13 @@ function validBackup() {
     schemaVersion: 4,
     active: 'default',
     programs: {
-      default: { name: 'Testplan', weeks: [{}], days: [{ key: 'A' }] }
+      default: { name: 'Testplan', weeks: [{}], days: [{ key: 'A', ex: [{ id: 'a1' }] }] }
     },
     store: {
       default: {
         tg: { '1|a1': '20' },
+        barw: { a1: 15 },
+        notes: { a1: 'Rack 4' },
         logs: { '1|A|a1': { sets: [{ reps: '10', weight: '20' }] } },
         history: [{ week: 1, day: 'A', start: 100, end: 200, dur: 100, complete: true }],
         workout: null,
@@ -106,6 +108,14 @@ test('validates full backup structure and recorded values', () => {
   vm.runInContext(html.slice(start, end), context);
 
   assert.equal(context.validateBackupFile(validBackup()), null);
+
+  const invalidBar = validBackup();
+  invalidBar.store.default.barw.a1 = 0;
+  assert.match(context.validateBackupFile(invalidBar), /ungültiges Stangengewicht/);
+
+  const invalidNote = validBackup();
+  invalidNote.store.default.notes.a1 = 'x'.repeat(501);
+  assert.match(context.validateBackupFile(invalidNote), /ungültige Übungsnotiz/);
 
   const invalidValue = validBackup();
   invalidValue.store.default.logs['1|A|a1'].sets[0].weight = '-20';

@@ -125,6 +125,21 @@ test('drops values from deleted days, selects the first remaining day and clears
   assert.deepEqual({ ...migrated.tg }, { '1|B_0': '60' });
 });
 
+test('migrates bar weights and notes with the stable exercise reference', () => {
+  const oldProgram = program(2, [{ key: 'A', ex: [exercise('A_0'), exercise('A_1')] }]);
+  const newProgram = program(2, [{ key: 'B', ex: [exercise('B_0'), exercise('B_1', { w: false })] }]);
+  const oldStore = store({
+    barw: { A_0: 15, A_1: 10 },
+    notes: { A_0: 'Rack 4', A_1: 'wird verworfen' }
+  });
+  const migrated = context.migrateReplaceStore(oldProgram, oldStore, newProgram, {
+    A_0: { day: 'B', id: 'B_0' },
+    A_1: { day: 'B', id: 'B_1' }
+  });
+  assert.deepEqual({ ...migrated.barw }, { B_0: 15 });
+  assert.deepEqual({ ...migrated.notes }, { B_0: 'Rack 4' });
+});
+
 test('exposes the keep-progress dialog and blocks replacing the active program during training', () => {
   assert.match(html, /Ersetzen & Fortschritt behalten/);
   assert.match(html, /Ersetzen & Fortschritt zurücksetzen/);

@@ -6,6 +6,23 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.20.0] – 2026-07-16
+
+### Hinzugefügt
+
+- `FB-20260716-04`: Antippbare Gewichtsziele öffnen einen Scheibenrechner mit Standard-Scheiben und einer pro Übung gespeicherten Stangenauswahl.
+- `FB-20260716-05`: Übungsnotizen speichern bis zu 500 Zeichen für Geräte-Einstellungen und Technik-Beobachtungen direkt am lokalen Fortschritt.
+- `FB-20260716-06`: Nach dem ersten vollständigen Satz fragt Satzkraft den Browser still nach dauerhaftem Speicher. Eine dezente Backup-Zeile erinnert erst nach 14 Tagen und einer weiteren Einheit; „Später“ pausiert sieben Tage.
+
+### Geändert
+
+- `FB-20260716-07`: Erklärbegriffe im Editor sind selbst antippbar, der Halte-Timer behält durchgehend dieselbe Farbe, wichtige Bedienelemente haben eindeutige zugängliche Namen und die mobile Vorgabezeile zeigt ihre horizontale Scrollbarkeit deutlicher.
+- `FB-20260716-08`: Editor-Kopien erhalten automatisch einen eindeutigen Datumsnamen mit Kollisionszähler und bleiben innerhalb des 30-Zeichen-Limits.
+
+### Daten & Kompatibilität
+
+- Die optionalen lokalen Felder `barw` und `notes` werden in Backups validiert und beim Ersetzen eines Programms anhand der stabilen Übungsidentität mitgenommen.
+
 ## [0.19.1] – 2026-07-16
 
 ### Geändert
