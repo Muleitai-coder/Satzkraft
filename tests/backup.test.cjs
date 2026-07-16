@@ -182,6 +182,8 @@ test('restore blocks stale autosaves until the restored state reloads', () => {
     backupRestorePending: false,
     clone: value => JSON.parse(JSON.stringify(value)),
     downloadFullBackup: () => true,
+    programWriteLocked: () => false,
+    showProgramWriteLocked() {},
     showModal: (_title, _body, modalActions) => { actions = modalActions; },
     clearTimeout: () => { cleared = true; },
     setTimeout() {},

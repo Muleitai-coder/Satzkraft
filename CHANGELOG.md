@@ -6,6 +6,34 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.19.1] – 2026-07-16
+
+### Geändert
+
+- `FB-20260716-13`: Während eines laufenden Trainings ist die Programmverwaltung für strukturelle Änderungen schreibgeschützt. Bearbeiten, Aktivieren, Erstellen/Importieren, Fortschritts-Reset und Backup-Wiederherstellung sind sichtbar deaktiviert.
+- Exportieren und Teilen, vollständiger Backup-Download, Auswertung, Theme und Versionshistorie bleiben während des Trainings erreichbar.
+
+### Sicherheit
+
+- Die gesperrten Aktionen prüfen den Trainingszustand zusätzlich in ihren Funktionspfaden. Dadurch können bereits geöffnete oder veraltete Ansichten den Schreibschutz nicht umgehen.
+
+## [0.19.0] – 2026-07-16
+
+### Hinzugefügt
+
+- `FB-20260716-03`: „Original ersetzen“ übernimmt standardmäßig den bisherigen Fortschritt eines bestehenden Programms. Eingetragene Sätze, Trainingsverlauf und manuelle Gewichtsziele bleiben beim Einfügen, Verschieben und Umbenennen von Übungen korrekt zugeordnet.
+- Der bisherige vollständige Fortschritts-Reset bleibt im Ersetzen-Dialog als bewusst wählbare Alternative erhalten.
+
+### Geändert
+
+- Gelöschte Übungen verlieren ihre Werte; bei einem Wechsel zwischen Gewichts-, Körpergewichts- und Zeitübung beginnt nur die betroffene Übung neu.
+- Beim Kürzen eines Trainingsblocks werden Werte entfallener Wochen entfernt und die aktuelle Woche auf den verbleibenden Bereich begrenzt.
+- Die Editor-Hilfe erklärt den Unterschied zwischen „Als Kopie speichern“ und „Original ersetzen“.
+
+### Sicherheit
+
+- Das aktive Programm kann während eines laufenden Trainings nicht ersetzt werden. Der Editor fordert zuerst zum Beenden des Trainings auf.
+
 ## [0.18.0] – 2026-07-16
 
 ### Hinzugefügt
