@@ -121,6 +121,6 @@ test('renders a responsive and accessible report with local-data and print guida
   assert.match(html, /function printReport\(\)/);
   assert.match(html, /b\.id==="reprint"\)printReport\(\)/);
   assert.doesNotMatch(html, /window\.open\("","_blank"\)/);
-  assert.match(html, /document\.title=\(PROG\(\)\.name\|\|"Satzkraft"\)\+" – Auswertung"/);
+  assert.match(html, /var program=S\.programs\[reportProgramId\]\|\|PROG\(\);document\.title=\(program\.name\|\|"Satzkraft"\)\+" – Auswertung"/);
   assert.match(html, /e\.key==="Escape".*closeReport/s);
 });

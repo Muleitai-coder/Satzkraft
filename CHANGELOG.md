@@ -6,6 +6,19 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.21.0] – 2026-07-16
+
+### Hinzugefügt
+
+- `FB-20260716-09`: Nach der letzten vollständig absolvierten Einheit erscheint einmalig ein Erfolgsfenster mit Block-Kennzahlen, Verbesserungen sowie direkten Wegen zum Folgeblock und zur Auswertung.
+- Absolvierte Programme erhalten einen aus den vorhandenen Satzdaten berechneten Status. Ein Folgeblock übernimmt Aufbau und empfehlenswerte Startgewichte aus der letzten belastbaren Nicht-Deload-Einheit.
+- `FB-20260716-10`: Die Programmverwaltung hat ein eigenes schreibgeschütztes Archiv mit vollständiger Auswertung und Wiederherstellung.
+- Aktive Folgeblöcke zeigen bei gleichnamigen Übungen den letzten Vergleichswert ihres archivierten Vorblocks.
+
+### Daten & Kompatibilität
+
+- Die optionalen internen Felder `archived`, `parent` und `blockCelebrated` werden normalisiert und in vollständigen Backups geprüft, aber nicht in das Austauschformat einzelner Programme exportiert.
+
 ## [0.20.0] – 2026-07-16
 
 ### Hinzugefügt

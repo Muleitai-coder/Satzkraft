@@ -125,6 +125,25 @@ test('validates full backup structure and recorded values', () => {
   invalidDay.store.default.day = 'Z';
   assert.match(context.validateBackupFile(invalidDay), /ungültige Woche oder einen ungültigen Tag/);
 
+  const validBlockChain = validBackup();
+  validBlockChain.store.default.blockCelebrated = true;
+  validBlockChain.programs.previous = { name: 'Vorblock', archived: true, weeks: [{}], days: [{ key: 'A', ex: [{ id: 'a1' }] }] };
+  validBlockChain.store.previous = JSON.parse(JSON.stringify(validBlockChain.store.default));
+  validBlockChain.programs.default.parent = 'previous';
+  assert.equal(context.validateBackupFile(validBlockChain), null);
+
+  const invalidCelebration = validBackup();
+  invalidCelebration.store.default.blockCelebrated = 'ja';
+  assert.match(context.validateBackupFile(invalidCelebration), /ungültigen Blockabschluss/);
+
+  const invalidArchive = validBackup();
+  invalidArchive.programs.default.archived = true;
+  assert.match(context.validateBackupFile(invalidArchive), /aktive Programm im Backup ist ungültig/);
+
+  const invalidParent = validBackup();
+  invalidParent.programs.default.parent = 'fehlt';
+  assert.match(context.validateBackupFile(invalidParent), /ungültigen Vorblock-Verweis/);
+
   const unsafeId = validBackup();
   unsafeId.programs = JSON.parse('{"__proto__":{"name":"X","weeks":[{}],"days":[{"key":"A"}]}}');
   unsafeId.active = '__proto__';

@@ -50,7 +50,7 @@ test('renders a clear read-only notice and disables all structural library actio
 });
 
 test('guards stale or indirect mutation paths in addition to disabled controls', () => {
-  assert.match(html, /function setActive\(id\)\{\s*if\(!S\.programs\[id\]\)return false;\s*if\(programWriteLocked\(\)&&id!==S\.active\)/);
+  assert.match(html, /function setActive\(id\)\{\s*if\(!S\.programs\[id\]\)return false;\s*if\(S\.programs\[id\]\.archived===true\)return false;\s*if\(programWriteLocked\(\)&&id!==S\.active\)/);
   assert.match(html, /function openProgramEditor\(id\)\{\s*if\(programWriteLocked\(\)\)/);
   assert.match(html, /function storeImportedProgram\(activate,allowDuplicate\)\{\s*if\(programWriteLocked\(\)\)/);
   assert.match(html, /function importBackup\(text\)\{\s*if\(programWriteLocked\(\)\)/);
