@@ -131,16 +131,28 @@ test('accepts the complete report example backup with recorded training values',
   const backup = JSON.parse(fs.readFileSync(new URL('../TESTBACKUP-AUSWERTUNG.json', `file://${__filename}`), 'utf8'));
   const context = loadRealBackupValidator();
   assert.equal(context.validateBackupFile(backup), null);
+  const program = backup.programs[backup.active];
   const store = backup.store[backup.active];
-  assert.equal(backup.programs[backup.active].weeks.length, 4);
-  assert.equal(store.history.length, 8);
-  assert.ok(Object.keys(store.logs).length >= 20);
-  assert.ok(store.history.some(entry => entry.complete === false));
-  assert.equal(Object.keys(store.tg).length, 8);
-  const currentDay = backup.programs[backup.active].days.find(day => day.key === store.day);
-  for (const exercise of currentDay.ex) {
-    const cell = store.logs[`${store.week}|${store.day}|${exercise.id}`];
-    assert.ok(cell && cell.sets.some(set => set.reps !== ''), `${exercise.name} braucht sichtbare Satzwerte`);
+  assert.equal(program.weeks.length, 8);
+  assert.equal(program.days.length, 3);
+  assert.equal(store.history.length, 21);
+  assert.equal(Object.keys(store.logs).length, 63);
+  assert.ok(store.history.every(entry => entry.complete === true));
+  assert.equal(store.week, 7);
+  assert.equal(store.day, 'C');
+  assert.equal(Object.keys(store.tg).length, 5);
+
+  for (let week = 1; week <= 7; week++) {
+    for (const day of program.days) {
+      for (const exercise of day.ex) {
+        const expectedSets = exercise.sets == null ? program.weeks[week - 1].sets[exercise.cat] : exercise.sets;
+        const cell = store.logs[`${week}|${day.key}|${exercise.id}`];
+        assert.ok(cell, `Woche ${week}, ${day.key}, ${exercise.name} braucht Satzwerte`);
+        assert.equal(cell.sets.length, expectedSets, `Woche ${week}, ${exercise.name} braucht alle Sätze`);
+        assert.ok(cell.sets.every(set => set.reps !== ''), `Woche ${week}, ${exercise.name} braucht vollständige Wiederholungen oder Zeiten`);
+        if (exercise.w) assert.ok(cell.sets.every(set => set.weight !== ''), `Woche ${week}, ${exercise.name} braucht eingetragene Gewichte`);
+      }
+    }
   }
-  assert.equal(store.logs['4|B|B_2'].sets[1].reps, '', 'Nur der letzte Satz soll noch offen sein');
+  assert.ok(!Object.keys(store.logs).some(key => key.startsWith('8|')), 'Woche 8 soll vollständig offen bleiben');
 });

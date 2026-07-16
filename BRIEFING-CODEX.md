@@ -20,7 +20,7 @@ Satzkraft ist eine deutschsprachige Krafttrainings-PWA, komplett lokal (localSto
 | `tests/*.test.cjs / *.mjs` | Node-Tests (`node --test tests/`), schneiden Funktionen per String-Anker aus `index.html` |
 | `CHANGELOG.md` | Verbindliche Versionshistorie; laufende Änderungen zuerst unter `Unreleased` |
 | `TESTPROGRAMM-ALLE-SZENARIEN.json` | Valides Importprogramm für manuelle Tests aller wichtigen Übungs- und Editorvarianten |
-| `TESTBACKUP-AUSWERTUNG.json` | Vollständiges, wiederherstellbares Test-Backup mit Satzwerten und Verlauf über vier Wochen für die Auswertung |
+| `TESTBACKUP-AUSWERTUNG.json` | Vollständiges, wiederherstellbares Test-Backup eines achtwöchigen Blocks; Wochen 1–7 sind mit allen Satzwerten abgeschlossen, Woche 8 ist offen |
 
 Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen mit Standardwerten), `weeks` (Phasen `aufbau|intensiv|deload`, RIR, Satzzahlen je Kategorie), `days` mit `ex` (Übungen). Übung: `w` (weighted), `bw` (bodyweight = Zusatzgewicht), `unit` (`reps|seconds`), `sets`/`reps` als eigene Vorgabe, optional `wu`/`cd` (Warm-up/Cool-down, zeitbasiert, Whitelist `WUCD_LIB`). Externes Austauschformat: `format:"trainings-block"`, `version:2` (siehe `BLANK_TEMPLATE` und `parseProgram`).
 
@@ -523,7 +523,7 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 
 | Feedback-ID | Priorität | Status | Verbindliches Verhalten |
 |---|---|---|---|
-| `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Es enthält vier Wochen mit ausdrücklich gesetzten Arbeitsgewichten sowie eingetragenen Gewichts-, Wiederholungs-, Zielzeit- und Maximalzeitwerten. Sieben Einheiten sind vollständig; in der geöffneten letzten Einheit ist nur der zweite Dead-Hang-Satz leer. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
+| `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Der achtwöchige Block hat drei Trainingstage pro Woche und neun Übungen. Wochen 1–7 enthalten für jeden vorgesehenen Satz realistisch simulierte Gewichte, Wiederholungen oder Zeiten und insgesamt 21 vollständig abgeschlossene Trainingstage; Woche 8 ist noch komplett offen. Das Backup öffnet Woche 7, Freitag, damit sofort gefüllte Satzfelder sichtbar sind. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
 
 ### Sportliche Leitentscheidung für Zeitübungen
 
