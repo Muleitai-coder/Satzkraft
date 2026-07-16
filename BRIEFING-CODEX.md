@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.19.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.19.1
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.19.0
+**Aktueller Produktstand:** Satzkraft v0.19.1
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -629,6 +629,14 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 - **Folgeblock starten** (Programm duplizieren, zuletzt gehobene Gewichte als neue Startgewichte). *(Inzwischen beschlossen → Abschnitt 14, Paket J.)*
 - **Übung im laufenden Training tauschen** („Bank belegt“) – baut auf der `_ref`-Identität auf, kommt frühestens danach. *(Inzwischen beschlossen → Abschnitt 14, Paket K.)*
 - **Backup-Schutz** (`navigator.storage.persist()` + Hinweis „Letztes Backup vor X Tagen“). *(Inzwischen beschlossen → Abschnitt 14, Paket I.)*
+
+### Patch v0.19.1 · Programmverwaltung während des Trainings schreibgeschützt · `FB-20260716-13`
+
+- Solange `S.workout` gesetzt ist, sind Bearbeiten, Aktivieren, Erstellen/Importieren, Fortschritts-Reset und Backup-Wiederherstellung in der Programmverwaltung sichtbar deaktiviert.
+- Ein klarer Hinweis erklärt, dass zuerst das Training beendet werden muss.
+- Export/Teilen, vollständiger Backup-Download, Auswertung, Theme und Versionshistorie bleiben erlaubt.
+- Die Mutationspfade prüfen den Trainingszustand zusätzlich funktional; bereits geöffnete oder veraltete Ansichten können die UI-Sperre nicht umgehen.
+- Der Patch ändert weder Datenformat noch Progressionslogik und ist als v0.19.1 veröffentlicht.
 
 ---
 

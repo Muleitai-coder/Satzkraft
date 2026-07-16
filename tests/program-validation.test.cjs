@@ -25,6 +25,8 @@ const context = {
   renderLib() {},
   closeLib() {},
   showModal() {},
+  programWriteLocked: () => false,
+  showProgramWriteLocked() {},
   setActive(id) { context.S.active = id; }
 };
 vm.createContext(context);

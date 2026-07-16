@@ -320,6 +320,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .progitem .pm{font-size:11px;color:#71717a}
 .progactions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:7px;margin-top:11px}
 .progaction{width:100%;min-height:38px;background:#242b35;color:#fafafa;border:1px solid transparent;border-radius:8px;padding:7px 10px;font-size:12px;font-weight:650;cursor:pointer;white-space:nowrap}
+.progaction:disabled,.createchoice:disabled,.smallbtn.disabled{opacity:.38;cursor:default;filter:none}
 .progaction.edit-only{grid-column:2}
 .progaction.go{background:#10b981;color:#052e16}
 .progaction.del{background:transparent;border-color:#3f1d1d;color:#fca5a5;padding:6px 9px}
@@ -850,7 +851,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.19.0";
+var APP_VERSION="0.19.1";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -1366,6 +1367,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";
 }
 var VERSION_HISTORY=[
+ {version:"v0.19.1",date:"16.07.2026",changes:["Während eines laufenden Trainings ist die Programmverwaltung für strukturelle Änderungen schreibgeschützt.","Bearbeiten, Aktivieren, Erstellen, Fortschritts-Reset und Backup-Wiederherstellung sind sichtbar deaktiviert.","Export, Backup-Download, Auswertung, Theme und Versionshistorie bleiben weiterhin erreichbar.","Zusätzliche Funktionssperren verhindern Änderungen auch über bereits geöffnete oder veraltete Ansichten."]},
  {version:"v0.19.0",date:"16.07.2026",changes:["Bestehende Programme lassen sich ändern, ohne den bisherigen Fortschritt zurückzusetzen.","Satzwerte und manuelle Gewichtsziele bleiben beim Einfügen, Verschieben und Umbenennen an der richtigen Übung.","Gelöschte Übungen verlieren ihre Werte; bei einem geänderten Übungstyp beginnt nur die betroffene Übung neu.","Gekürzte Trainingsblöcke entfernen nicht mehr erreichbare Wochenwerte und öffnen die letzte verbleibende Woche.","Der bisherige vollständige Fortschritts-Reset bleibt als bewusst wählbare Alternative erhalten.","Während eines laufenden Trainings kann das aktive Programm nicht ersetzt werden."]},
  {version:"v0.18.0",date:"16.07.2026",changes:["Zielzeit- und Maximalzeit-Timer mit Auswahl im Editor, JSON-Import und allen Erstellwegen.","Automatischer Stopp am oberen Zeitziel; Maximaltests laufen bis zum manuellen Stopp.","Lange Zeitwerte werden in Satzfeldern als Minuten mit einer Nachkommastelle angezeigt.","Nach erreichter Zielzeit empfiehlt Satzkraft mehr Widerstand, Tempo oder eine schwierigere Variante.","Kontrastreichere mobile Timerleiste und bernsteinfarbener Zielzustand.","Erledigte Übungen klappen ohne Bildschirmsprung ein.","Vollständige Backups ersetzen zuverlässig alle vorhandenen Programme und Fortschrittsdaten.","Deutliches Info-Symbol ohne Kreis.","Entwickler-Nennung ohne Veröffentlichung privater Kontaktdaten.","Verbindlicher Ablauf für Feedback, Tests, Dokumentation und Versionsentscheidungen."]},
  {version:"v0.17.0",date:"15.07.2026",changes:["Vollständiges Import-Testprogramm für Gewichte, Körpergewicht, Zusatzgewicht, Timer, eigene Vorgaben sowie Warm-up und Cool-down.","Automatischer Test des vollständigen Testprogramms über die echte Programmprüfung.","Erledigte Übungen bleiben nach dem letzten Satz zunächst geöffnet und klappen verzögert oder beim Wechsel zur nächsten Übung ein.","Timerknopf für Zeitübungen direkt im Eingabefeld; zusätzlicher Startknopf entfernt.","Sätze, Ziel, Gewicht und Pause bleiben gemeinsam in der Vorgabezeile.","Editor zeigt Trainingsgruppe und Übungsparameter einheitlicher.","Aufklapp-Pfeile wurden vertikal vereinheitlicht.","Info-Schaltflächen ohne umgebenden Kreis.","Verständlicher Dreischritt für Programme mit ChatGPT und anderen KIs.","Import erklärt die benötigte vollständige JSON-Antwort und prüft fehlende Felder.","KI-Coach bleibt ohne zusätzlichen Beta-Zugangscode."]},
@@ -1832,14 +1834,15 @@ function parseProgram(text){
  return{prog:importTranslate(ext)};
 }
 function setActive(id){
- if(!S.programs[id])return;
+ if(!S.programs[id])return false;
+ if(programWriteLocked()&&id!==S.active){showProgramWriteLocked();return false;}
  S.store[S.active]={tg:S.tg,logs:S.logs,history:S.history,workout:S.workout,week:S.week,day:S.day};
  S.active=id;
  var st=S.store[id];if(!st){st=newStore(S.programs[id]);S.store[id]=st;}
  S.tg=st.tg;S.logs=st.logs;S.history=st.history;S.workout=st.workout;S.week=st.week;S.day=st.day;
  var keys=dayKeys();if(keys.indexOf(S.day)<0)S.day=keys[0];
  if(S.week>PROG().weeks.length)S.week=PROG().weeks.length;if(S.week<1)S.week=1;
- save();renderView();renderBar();
+ save();renderView();renderBar();return true;
 }
 function validBackupNumber(v,max){if(v==="")return true;if(typeof v==="number")return isFinite(v)&&v>=0&&v<=max;if(typeof v==="string"&&v.length<=20)return /^\d+(?:\.\d+)?$/.test(v)&&Number(v)<=max;return false;}
 function validateBackupStore(st,id,program){
@@ -1875,12 +1878,14 @@ function validateBackupFile(raw){
  return null;
 }
 function confirmBackupRestore(raw){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
  showModal("Backup wiederherstellen?","Diese Datei ersetzt <b>alle Programme und den gesamten Fortschritt</b> auf diesem Gerät. Vorher lädt Satzkraft automatisch eine Sicherheitskopie des aktuellen Stands herunter.",[
   {label:"Sichern & wiederherstellen",cls:"danger",action:function(){if(!downloadFullBackup("satzkraft-vor-wiederherstellung")){showModal("Wiederherstellung abgebrochen","Die Sicherheitskopie konnte nicht heruntergeladen werden. Deine aktuellen Daten wurden nicht verändert.",[{label:"OK",action:null}]);return;}try{var restored=clone(raw);restored.schemaVersion=DATA_SCHEMA_VERSION;clearTimeout(saveT);saveT=null;backupRestorePending=true;localStorage.setItem(KEY,JSON.stringify(restored));setTimeout(function(){location.reload();},350);}catch(e){backupRestorePending=false;showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
   {label:"Abbrechen",action:null}
  ]);
 }
 function importBackup(text){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
  if(typeof text!=="string"||!text.length||text.length>5000000){showModal("Backup nicht geladen","Die Datei ist leer oder größer als 5 MB.",[{label:"OK",action:null}]);return;}
  var raw;try{raw=JSON.parse(text);}catch(e){showModal("Backup nicht geladen","Die Datei enthält kein gültiges JSON. Deine aktuellen Daten bleiben unverändert.",[{label:"OK",action:null}]);return;}
  if(!raw||!raw.programs||!raw.store){showModal("Backup nicht geladen","Die Datei ist kein vollständiges Satzkraft-Backup. Für einzelne Programme nutze bitte „Programm laden“.",[{label:"OK",action:null}]);return;}
@@ -1964,6 +1969,7 @@ function beginProgramImport(text,origin,sourceName){
  importIssue=null;pendingProgramImport=prepared;renderImportPreview();
 }
 function storeImportedProgram(activate,allowDuplicate){
+ if(programWriteLocked()){showProgramWriteLocked();return null;}
  var prepared=pendingProgramImport;if(!prepared||!prepared.program)return null;if(prepared.duplicateId&&!allowDuplicate)return null;
  var p=cloneJSON(prepared.program);p.id=genId();while(S.programs[p.id])p.id=genId();S.programs[p.id]=p;S.store[p.id]=newStore(p);
  pendingProgramImport=null;importIssue=null;
@@ -1971,9 +1977,10 @@ function storeImportedProgram(activate,allowDuplicate){
  else{flushSave();renderLib();showModal("Programm gespeichert","„"+esc(p.name)+"“ wurde unter „Weitere Programme“ gespeichert. Dein aktives Programm bleibt unverändert.",[{label:"OK",cls:"primary",action:null}]);}
  return p.id;
 }
-function useExistingDuplicate(){var id=pendingProgramImport&&pendingProgramImport.duplicateId;if(!id||!S.programs[id])return;if(id===S.active){pendingProgramImport=null;openProgramEditor(id);return;}pendingProgramImport=null;setActive(id);closeLib(true);}
+function useExistingDuplicate(){if(programWriteLocked()){showProgramWriteLocked();return;}var id=pendingProgramImport&&pendingProgramImport.duplicateId;if(!id||!S.programs[id])return;if(id===S.active){pendingProgramImport=null;openProgramEditor(id);return;}pendingProgramImport=null;if(setActive(id))closeLib(true);}
 function importProgram(text){beginProgramImport(text,"json","");}
 function deleteProgram(id){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
  if(id==="default")return;
  if(S.active===id)setActive("default");
  delete S.programs[id];delete S.store[id];save();renderLib();
@@ -1983,6 +1990,7 @@ function downloadText(name,t){try{var blob=new Blob([t],{type:"application/json"
 function exportCurrentJSON(){return JSON.stringify(exportTranslate(PROG()),null,2);}
 function externalAiPrompt(wish){return "Du bist ein erfahrener Krafttrainings-Coach. Erstelle mir ein Trainingsprogramm\nim Format der folgenden Satzkraft-Vorlage (JSON). Halte dich exakt an Struktur,\nFeldnamen und erlaubte Werte aus \"_anleitung\" – erfinde keine neuen Felder.\nBeachte die Trainings-Richtlinien in der Vorlage. Antworte NUR mit dem\nvollständigen fertigen JSON, vom ersten { bis zum letzten }, ohne Erklärung oder\nMarkdown-Codeblock. Alle Pflichtfelder und alle verwendeten Kategorien müssen\nenthalten sein.\n\nMEIN TRAININGSWUNSCH:\n"+String(wish||"").trim()+"\n\nVOLLSTÄNDIGE SATZKRAFT-VORLAGE:\n"+JSON.stringify(BLANK_TEMPLATE,null,2);}
 function confirmReset(){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
  showModal("Fortschritt zurücksetzen?","Eingetragene Sätze & Verlauf des aktiven Programms („"+esc(PROG().name)+"“) werden gelöscht. Das Programm selbst bleibt.",[{label:"Zurücksetzen",cls:"danger",action:function(){var st=newStore(PROG());S.store[S.active]=st;S.tg=st.tg;S.logs=st.logs;S.history=st.history;S.workout=st.workout;S.week=1;S.day=dayKeys()[0];save();closeLib();renderView();renderBar();}},{label:"Abbrechen",action:null}]);
 }
 // ---------- Warm-up & Cool-down (zeitbasiert, Whitelist) ----------
@@ -2260,6 +2268,7 @@ function migrateReplaceStore(oldProg,oldStore,newProg,refMap){
  return{tg:tg,logs:logs,history:copy((oldStore&&oldStore.history)||[]),workout:null,week:Math.max(1,Math.min(maxWeek,Math.round(oldWeek))),day:day};
 }
 function openProgramEditor(id){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
  var p=S.programs[id];if(!p)return;
  editorSourceId=id;editorUnsavedDraft=false;editorReturnView="library";editorDraft=cloneJSON(exportTranslate(p));delete editorDraft._anleitung;
  editorDraft.days.forEach(function(draftDay,di){var internalDay=p.days[di];if(!internalDay)return;(draftDay.exercises||[]).forEach(function(draftEx,ei){if(internalDay.ex[ei])draftEx._ref=internalDay.ex[ei].id;});});
@@ -2494,7 +2503,7 @@ function confirmEditorExit(exitMode){
 function returnToProgramList(force){if(!force&&editorHasUnsavedChanges()){confirmEditorExit("back");return;}discardEditorAndReturn("back");}
 function editorStoreProgram(replaceOriginal,exitMode,activateNew){
  syncEditorForm();
- if(replaceOriginal&&editorSourceId===S.active&&S.workout){showModal("Training läuft","Training läuft – beende zuerst dein Training, dann kannst du das Programm ersetzen.",[{label:"OK",cls:"primary",action:null}]);return;}
+ if(programWriteLocked()){showProgramWriteLocked();return;}
  var checked=parseProgram(JSON.stringify(editorDraft));if(checked.err){showModal("Programm noch nicht gespeichert",checked.err+"<br><br><span style=\"color:#71717a\">Deine Änderungen bleiben im Editor erhalten.</span>",[{label:"Weiter bearbeiten",action:null}]);return;}
  var p=checked.prog;
  if(!replaceOriginal){var wasNew=!editorSourceId,shouldActivate=wasNew?!!activateNew:true;while(S.programs[p.id])p.id=genId();S.programs[p.id]=p;S.store[p.id]=newStore(p);if(shouldActivate)setActive(p.id);else flushSave();if(wasNew){pendingProgramImport=null;importIssue=null;}editorUnsavedDraft=false;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);showModal("Programm gespeichert 💾","„"+esc(p.name)+"“ wurde "+(shouldActivate?"gespeichert und aktiviert.":"unter „Weitere Programme“ gespeichert. Dein aktives Programm bleibt unverändert."),[{label:shouldActivate?"Los geht's":"OK",cls:"primary",action:null}]);return;}
@@ -2503,24 +2512,27 @@ function editorStoreProgram(replaceOriginal,exitMode,activateNew){
  showModal("Original ersetzen?","„"+esc(sourceName)+"“ wird durch deine bearbeitete Version ersetzt. Dein bisheriger Fortschritt bleibt dabei erhalten. Werte gelöschter Übungen gehen verloren; bei geändertem Übungstyp beginnt die Übung neu.",[{label:"Ersetzen & Fortschritt behalten",cls:"primary",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=migrateReplaceStore(oldProg,oldStore,p,refMap);if(S.active===sourceId)alias(S);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Dein bisheriger Fortschritt wurde übernommen.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Ersetzen & Fortschritt zurücksetzen",cls:"danger",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId)alias(S);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Der Fortschritt dieses Programms wurde zurückgesetzt.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
 }
 
+function programWriteLocked(){return !!S.workout;}
+function showProgramWriteLocked(){showModal("Training läuft","Beende zuerst dein Training, um Programme zu bearbeiten, zu aktivieren, zu erstellen, zurückzusetzen oder ein Backup wiederherzustellen.",[{label:"OK",cls:"primary",action:null}]);}
 function programItemHtml(id,p){
- var active=id===S.active;
- return '<div class="progitem'+(active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(active?'<span class="statuspill">● Aktiv</span>':'')+'</div><div class="progactions">'+(active?'':'<button class="progaction go" data-sel="'+attr(id)+'">Aktivieren</button>')+'<button class="progaction'+(active?' edit-only':'')+'" data-edit="'+attr(id)+'">Bearbeiten</button></div></div>';
+ var active=id===S.active,locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'';
+ return '<div class="progitem'+(active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div><div class="pm">'+p.days.length+' Tage · '+p.weeks.length+' Wochen</div></div>'+(active?'<span class="statuspill">● Aktiv</span>':'')+'</div><div class="progactions">'+(active?'':'<button class="progaction go" data-sel="'+attr(id)+'"'+lockedAttr+'>Aktivieren</button>')+'<button class="progaction'+(active?' edit-only':'')+'" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button></div></div>';
 }
 function renderLib(){
- var h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><div class="programheadtools">'+themeButtonHtml()+'<button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div></div>';
+ var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',h='<div class="libbox"><div class="ohdr"><h1>Programme</h1><div class="programheadtools">'+themeButtonHtml()+'<button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div></div>';
  h+='<div class="libnote" style="margin:0 0 8px">Dein aktives Programm steht immer oben. Name und Löschen findest du gesammelt unter „Bearbeiten“.</div>';
+ if(locked)h+='<div class="importnotice warn"><strong>Training läuft</strong>Beende zuerst dein Training, um Programme zu ändern, ein anderes zu aktivieren, den Fortschritt zurückzusetzen oder ein Backup wiederherzustellen.</div>';
  var activeProgram=S.programs[S.active];if(activeProgram)h+=programItemHtml(S.active,activeProgram);
  var otherIds=Object.keys(S.programs).filter(function(id){return id!==S.active;});
  if(otherIds.length){h+='<details class="programothers"><summary>Weitere Programme ('+otherIds.length+')</summary><div class="programothersbody">';otherIds.forEach(function(id){h+=programItemHtml(id,S.programs[id]);});h+='</div></details>';}
- h+='<button class="createchoice primary" id="createhubbtn" style="width:100%;min-height:0;margin:15px 0 5px"><span class="createicon" aria-hidden="true">'+icon("plus")+'</span><b>Neues Programm erstellen</b><small>Manuell, mit dem KI-Coach, über eine externe KI oder aus einer fertigen Datei.</small></button>';
+ h+='<button class="createchoice primary" id="createhubbtn"'+lockedAttr+' style="width:100%;min-height:0;margin:15px 0 5px"><span class="createicon" aria-hidden="true">'+icon("plus")+'</span><b>Neues Programm erstellen</b><small>Manuell, mit dem KI-Coach, über eine externe KI oder aus einer fertigen Datei.</small></button>';
  h+='<div class="libsec">Exportieren &amp; Teilen</div><div class="libnote">Aktives Programm „'+esc(PROG().name)+'“ als Datei oder Link – ohne deinen Fortschritt.</div><div class="librow"><button class="smallbtn" id="expcopy">Aktuelles kopieren</button><button class="smallbtn" id="expfile">Als Datei</button><button class="smallbtn" id="explink">Link teilen</button></div>';
  h+='<div class="libsec">Daten sichern</div>';
  h+='<div class="libnote"><b>'+esc(backupStatusText())+'</b><br>Das vollständige Backup enthält alle Programme, Satzwerte und Trainingsverläufe. Es bleibt als Datei bei dir und wird nicht an einen Server gesendet.</div>';
- h+='<div class="librow"><button class="smallbtn go" id="libbackup">Vollständiges Backup</button><label class="smallbtn" style="display:inline-flex;align-items:center">Backup wiederherstellen<input type="file" id="backupfile" accept=".json,application/json" style="display:none"></label></div>';
+ h+='<div class="librow"><button class="smallbtn go" id="libbackup">Vollständiges Backup</button><label class="smallbtn'+(locked?' disabled':'')+'"'+(locked?' aria-disabled="true" title="Training läuft – zuerst beenden"':'')+' style="display:inline-flex;align-items:center">Backup wiederherstellen<input type="file" id="backupfile" accept=".json,application/json"'+lockedAttr+' style="display:none"></label></div>';
  h+='<div class="libsec">Fortschritt zurücksetzen</div>';
  h+='<div class="libnote">Löscht eingetragene Sätze &amp; Verlauf des aktiven Programms („'+esc(PROG().name)+'"). Das Programm selbst bleibt erhalten.</div>';
- h+='<div class="librow"><button class="smallbtn del" id="libreset">Fortschritt zurücksetzen</button></div>';
+ h+='<div class="librow"><button class="smallbtn del" id="libreset"'+lockedAttr+'>Fortschritt zurücksetzen</button></div>';
  h+='<button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
@@ -2660,7 +2672,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.dataset.edDelex){var ddi=+b.dataset.edDay,dei=+b.dataset.edEx;editorPushUndo("Übung gelöscht");editorDraft.days[ddi].exercises.splice(dei,1);editorExerciseIndex=null;renderProgramEditor("days",ddi,null);return;}
  if(b.dataset.edMoveex){var mdi=+b.dataset.edDay,mei=+b.dataset.edEx,move=+b.dataset.edMoveex;editorPushUndo("Übung verschoben");editorMoveExercise(mdi,mei,move);renderProgramEditor("days",mdi,mei+move);return;}
  if(b.id==="eddeleteprogram"){confirmEditorDeleteProgram();return;}
- if(b.dataset.sel){setActive(b.dataset.sel);closeLib();return;}
+ if(b.dataset.sel){if(setActive(b.dataset.sel))closeLib();return;}
  if(b.id==="createhubbtn"){renderCreateHub();return;}
  if(b.id==="createback"){renderLib();return;}
  if(b.id==="createhubback"){syncManualCreatorForm();renderCreateHub();return;}

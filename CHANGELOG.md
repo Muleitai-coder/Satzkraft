@@ -6,6 +6,17 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.19.1] – 2026-07-16
+
+### Geändert
+
+- `FB-20260716-13`: Während eines laufenden Trainings ist die Programmverwaltung für strukturelle Änderungen schreibgeschützt. Bearbeiten, Aktivieren, Erstellen/Importieren, Fortschritts-Reset und Backup-Wiederherstellung sind sichtbar deaktiviert.
+- Exportieren und Teilen, vollständiger Backup-Download, Auswertung, Theme und Versionshistorie bleiben während des Trainings erreichbar.
+
+### Sicherheit
+
+- Die gesperrten Aktionen prüfen den Trainingszustand zusätzlich in ihren Funktionspfaden. Dadurch können bereits geöffnete oder veraltete Ansichten den Schreibschutz nicht umgehen.
+
 ## [0.19.0] – 2026-07-16
 
 ### Hinzugefügt

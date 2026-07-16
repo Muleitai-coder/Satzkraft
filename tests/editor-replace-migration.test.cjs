@@ -128,8 +128,8 @@ test('drops values from deleted days, selects the first remaining day and clears
 test('exposes the keep-progress dialog and blocks replacing the active program during training', () => {
   assert.match(html, /Ersetzen & Fortschritt behalten/);
   assert.match(html, /Ersetzen & Fortschritt zurücksetzen/);
-  assert.match(html, /Training läuft – beende zuerst dein Training/);
-  assert.match(html, /editorSourceId===S\.active&&S\.workout/);
+  assert.match(html, /function programWriteLocked\(\)\{return !!S\.workout;\}/);
+  assert.match(html, /if\(programWriteLocked\(\)\)\{showProgramWriteLocked\(\);return;\}/);
 });
 
 test('keeps refs editor-only and documents the replace behavior in the help text', () => {
