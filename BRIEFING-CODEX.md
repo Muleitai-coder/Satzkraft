@@ -20,6 +20,7 @@ Satzkraft ist eine deutschsprachige Krafttrainings-PWA, komplett lokal (localSto
 | `tests/*.test.cjs / *.mjs` | Node-Tests (`node --test tests/`), schneiden Funktionen per String-Anker aus `index.html` |
 | `CHANGELOG.md` | Verbindliche Versionshistorie; laufende Änderungen zuerst unter `Unreleased` |
 | `TESTPROGRAMM-ALLE-SZENARIEN.json` | Valides Importprogramm für manuelle Tests aller wichtigen Übungs- und Editorvarianten |
+| `TESTBACKUP-AUSWERTUNG.json` | Vollständiges, wiederherstellbares Test-Backup mit Satzwerten und Verlauf über vier Wochen für die Auswertung |
 
 Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen mit Standardwerten), `weeks` (Phasen `aufbau|intensiv|deload`, RIR, Satzzahlen je Kategorie), `days` mit `ex` (Übungen). Übung: `w` (weighted), `bw` (bodyweight = Zusatzgewicht), `unit` (`reps|seconds`), `sets`/`reps` als eigene Vorgabe, optional `wu`/`cd` (Warm-up/Cool-down, zeitbasiert, Whitelist `WUCD_LIB`). Externes Austauschformat: `format:"trainings-block"`, `version:2` (siehe `BLANK_TEMPLATE` und `parseProgram`).
 
@@ -517,6 +518,12 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 | `FB-20260715-09` | Wunsch | umgesetzt | In Trainingsfußzeile, Programmverwaltung und Versions-Popup steht „Entwickelt von Christian Woyack“. Die Nennung enthält bewusst keine Adresse oder Kontaktdaten. |
 | `FB-20260715-10` | störend | umgesetzt | Timer-Modi sind in allen Erstellwegen berücksichtigt: manuelle Erstellung führt in den Editor, Zeitübungen zeigen dort die Moduswahl; externe KI-Vorlage und integrierter KI-Coach erzeugen bzw. erhalten `timerMode`. Zielzeit benötigt `sets` und `reps:[minSekunden,maxSekunden]`; Maximalzeit läuft bis zum eigenen Stopp. |
 | `FB-20260715-11` | Wunsch | umgesetzt | Die anklickbare Version öffnet eine vollständige, scrollbar aufgebaute Historie: aktuelle unveröffentlichte Testfassung, jede dokumentierte Version von v0.14.1 bis v0.17.0 sowie die rekonstruierten und frühen Entwicklungsstände. Rekonstruierte Einträge sind als solche gekennzeichnet. |
+
+## 12. Testdaten für die Auswertung · 16.07.2026
+
+| Feedback-ID | Priorität | Status | Verbindliches Verhalten |
+|---|---|---|---|
+| `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Es enthält vier Wochen mit Gewichts-, Wiederholungs-, Zielzeit- und Maximalzeitwerten, sieben vollständige sowie eine bewusst unvollständige Einheit und eine Deload-Woche. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
 
 ### Sportliche Leitentscheidung für Zeitübungen
 

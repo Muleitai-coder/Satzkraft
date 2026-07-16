@@ -9,6 +9,30 @@ function finiteNumber(value, min, max, integer) {
   return typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max && (!integer || Math.floor(value) === value);
 }
 
+function loadRealBackupValidator() {
+  const context = {
+    DATA_SCHEMA_VERSION: 4,
+    CAT_COLORS: ['amber', 'emerald', 'violet', 'sky', 'orange', 'rose', 'slate'],
+    LIMITS: { maxDays: 7, maxWeeks: 16, maxExPerDay: 12, maxSets: 10, maxNameLen: 30, maxLabelLen: 16 },
+    WD_MAP: { montag: 0, dienstag: 1, mittwoch: 2, donnerstag: 3, freitag: 4, samstag: 5, sonntag: 6 },
+    VALID_PROGRESSION_MODES: ['weight', 'added_weight', 'reps', 'seconds', 'progression', 'none'],
+    WUCD_SET: {},
+    ANLEITUNG: {},
+    esc: value => String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+    wucdSan: list => Array.isArray(list) ? list.map(item => ({ name: item.name, sec: item.seconds })) : []
+  };
+  vm.createContext(context);
+  const programStart = html.indexOf('function genId()');
+  const programEnd = html.indexOf('function setActive(', programStart);
+  const backupStart = html.indexOf('function validBackupNumber');
+  const backupEnd = html.indexOf('function confirmBackupRestore', backupStart);
+  assert.ok(programStart >= 0 && programEnd > programStart, 'Programmvalidierung wurde nicht gefunden');
+  assert.ok(backupStart >= 0 && backupEnd > backupStart, 'Backup-Validierung wurde nicht gefunden');
+  vm.runInContext(html.slice(programStart, programEnd), context);
+  vm.runInContext(html.slice(backupStart, backupEnd), context);
+  return context;
+}
+
 test('records full backups across all programs', () => {
   const storage = new Map();
   const start = html.indexOf('function readBackupMeta');
@@ -101,4 +125,15 @@ test('validates full backup structure and recorded values', () => {
 test('restore flow always creates a safety backup first', () => {
   assert.match(html, /downloadFullBackup\("satzkraft-vor-wiederherstellung"\)/);
   assert.match(html, /Sichern &amp; wiederherstellen|Sichern & wiederherstellen/);
+});
+
+test('accepts the complete report example backup with recorded training values', () => {
+  const backup = JSON.parse(fs.readFileSync(new URL('../TESTBACKUP-AUSWERTUNG.json', `file://${__filename}`), 'utf8'));
+  const context = loadRealBackupValidator();
+  assert.equal(context.validateBackupFile(backup), null);
+  const store = backup.store[backup.active];
+  assert.equal(backup.programs[backup.active].weeks.length, 4);
+  assert.equal(store.history.length, 8);
+  assert.ok(Object.keys(store.logs).length >= 20);
+  assert.ok(store.history.some(entry => entry.complete === false));
 });

@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 4,
+  "programs": {
+    "auswertungstest": {
+      "id": "auswertungstest",
+      "name": "Satzkraft Auswertungstest",
+      "description": "Beispieldaten über vier Wochen für Gewichts-, Wiederholungs- und Zeitverläufe.",
+      "settings": {
+        "progressionSystem": "double_progression",
+        "deloadMultiplier": 0.6,
+        "requireAllSetsForIncrease": true,
+        "allowAutoDecrease": true,
+        "postDeloadReturnMultiplier": 0.925
+      },
+      "categories": {
+        "kraft": {
+          "label": "Kraft",
+          "color": "amber",
+          "rest": 150,
+          "reps": {
+            "aufbau": [6, 10],
+            "intensiv": [4, 6],
+            "deload": [8, 8]
+          }
+        },
+        "eigengewicht": {
+          "label": "Eigengewicht",
+          "color": "emerald",
+          "rest": 90,
+          "reps": {
+            "aufbau": [8, 15],
+            "intensiv": [10, 20],
+            "deload": [12, 18]
+          }
+        },
+        "zeit": {
+          "label": "Zeit und Ausdauer",
+          "color": "sky",
+          "rest": 60
+        }
+      },
+      "weeks": [
+        {
+          "n": 1,
+          "phase": "aufbau",
+          "label": "Aufbau 1",
+          "rir": "3",
+          "note": "Ruhiger Einstieg mit sauberen Wiederholungen.",
+          "sets": { "kraft": 3, "eigengewicht": 3, "zeit": 2 }
+        },
+        {
+          "n": 2,
+          "phase": "aufbau",
+          "label": "Aufbau 2",
+          "rir": "2",
+          "note": "Gewicht und Wiederholungen leicht steigern.",
+          "sets": { "kraft": 3, "eigengewicht": 3, "zeit": 2 }
+        },
+        {
+          "n": 3,
+          "phase": "intensiv",
+          "label": "Intensiv",
+          "rir": "1-2",
+          "note": "Höhere Intensität bei weniger Wiederholungen.",
+          "sets": { "kraft": 3, "eigengewicht": 3, "zeit": 2 }
+        },
+        {
+          "n": 4,
+          "phase": "deload",
+          "label": "Deload",
+          "rir": "4-5",
+          "note": "Reduziertes Gewicht und eine bewusst unvollständige Einheit.",
+          "sets": { "kraft": 2, "eigengewicht": 2, "zeit": 1 }
+        }
+      ],
+      "days": [
+        {
+          "key": "A",
+          "wd": "Montag",
+          "title": "Kraft und Rumpf",
+          "ex": [
+            {
+              "id": "A_0",
+              "name": "Langhantel-Kniebeuge",
+              "cat": "kraft",
+              "w": true,
+              "inc": 5,
+              "def": 60,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "A_1",
+              "name": "Liegestütze",
+              "cat": "eigengewicht",
+              "w": false,
+              "unit": "reps",
+              "pmode": "reps",
+              "target": "Saubere Wiederholungen"
+            },
+            {
+              "id": "A_2",
+              "name": "Plank",
+              "cat": "zeit",
+              "w": false,
+              "unit": "seconds",
+              "sets": 2,
+              "reps": [30, 60],
+              "pmode": "seconds",
+              "tmode": "target",
+              "target": "30 bis 60 Sekunden sauber halten"
+            }
+          ]
+        },
+        {
+          "key": "B",
+          "wd": "Donnerstag",
+          "title": "Oberkörper und Ausdauer",
+          "ex": [
+            {
+              "id": "B_0",
+              "name": "Bankdrücken",
+              "cat": "kraft",
+              "w": true,
+              "inc": 2.5,
+              "def": 40,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "B_1",
+              "name": "Stairmaster",
+              "cat": "zeit",
+              "w": false,
+              "unit": "seconds",
+              "sets": 1,
+              "reps": [1200, 1200],
+              "pmode": "none",
+              "tmode": "target",
+              "target": "20 Minuten gleichmäßiges Tempo"
+            },
+            {
+              "id": "B_2",
+              "name": "Dead Hang",
+              "cat": "zeit",
+              "w": false,
+              "unit": "seconds",
+              "sets": 2,
+              "reps": [30, 90],
+              "pmode": "seconds",
+              "tmode": "max",
+              "target": "Maximalzeit für die Griffkraft"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "active": "auswertungstest",
+  "store": {
+    "auswertungstest": {
+      "tg": {},
+      "logs": {
+        "1|A|A_0": {
+          "sets": [
+            { "reps": "8", "weight": "60" },
+            { "reps": "8", "weight": "60" },
+            { "reps": "7", "weight": "60" }
+          ]
+        },
+        "1|A|A_1": {
+          "sets": [
+            { "reps": "12", "weight": "" },
+            { "reps": "11", "weight": "" },
+            { "reps": "10", "weight": "" }
+          ]
+        },
+        "1|A|A_2": {
+          "sets": [
+            { "reps": "40", "weight": "" },
+            { "reps": "38", "weight": "" }
+          ]
+        },
+        "1|B|B_0": {
+          "sets": [
+            { "reps": "10", "weight": "40" },
+            { "reps": "10", "weight": "40" },
+            { "reps": "9", "weight": "40" }
+          ]
+        },
+        "1|B|B_1": {
+          "sets": [
+            { "reps": "1200", "weight": "" }
+          ]
+        },
+        "1|B|B_2": {
+          "sets": [
+            { "reps": "42", "weight": "" },
+            { "reps": "38", "weight": "" }
+          ]
+        },
+        "2|A|A_0": {
+          "sets": [
+            { "reps": "8", "weight": "65" },
+            { "reps": "8", "weight": "65" },
+            { "reps": "8", "weight": "65" }
+          ]
+        },
+        "2|A|A_1": {
+          "sets": [
+            { "reps": "15", "weight": "" },
+            { "reps": "14", "weight": "" },
+            { "reps": "13", "weight": "" }
+          ]
+        },
+        "2|A|A_2": {
+          "sets": [
+            { "reps": "50", "weight": "" },
+            { "reps": "47", "weight": "" }
+          ]
+        },
+        "2|B|B_0": {
+          "sets": [
+            { "reps": "10", "weight": "42.5" },
+            { "reps": "10", "weight": "42.5" },
+            { "reps": "9", "weight": "42.5" }
+          ]
+        },
+        "2|B|B_1": {
+          "sets": [
+            { "reps": "1200", "weight": "" }
+          ]
+        },
+        "2|B|B_2": {
+          "sets": [
+            { "reps": "50", "weight": "" },
+            { "reps": "46", "weight": "" }
+          ]
+        },
+        "3|A|A_0": {
+          "sets": [
+            { "reps": "6", "weight": "70" },
+            { "reps": "6", "weight": "70" },
+            { "reps": "5", "weight": "70" }
+          ]
+        },
+        "3|A|A_1": {
+          "sets": [
+            { "reps": "18", "weight": "" },
+            { "reps": "17", "weight": "" },
+            { "reps": "16", "weight": "" }
+          ]
+        },
+        "3|A|A_2": {
+          "sets": [
+            { "reps": "60", "weight": "" },
+            { "reps": "58", "weight": "" }
+          ]
+        },
+        "3|B|B_0": {
+          "sets": [
+            { "reps": "6", "weight": "47.5" },
+            { "reps": "6", "weight": "47.5" },
+            { "reps": "5", "weight": "47.5" }
+          ]
+        },
+        "3|B|B_1": {
+          "sets": [
+            { "reps": "1200", "weight": "" }
+          ]
+        },
+        "3|B|B_2": {
+          "sets": [
+            { "reps": "60", "weight": "" },
+            { "reps": "56", "weight": "" }
+          ]
+        },
+        "4|A|A_0": {
+          "sets": [
+            { "reps": "8", "weight": "42" },
+            { "reps": "8", "weight": "42" }
+          ]
+        },
+        "4|A|A_1": {
+          "sets": [
+            { "reps": "18", "weight": "" },
+            { "reps": "17", "weight": "" }
+          ]
+        },
+        "4|A|A_2": {
+          "sets": [
+            { "reps": "60", "weight": "" },
+            { "reps": "60", "weight": "" }
+          ]
+        },
+        "4|B|B_0": {
+          "sets": [
+            { "reps": "8", "weight": "28.5" }
+          ]
+        },
+        "4|B|B_2": {
+          "sets": [
+            { "reps": "65", "weight": "" }
+          ]
+        }
+      },
+      "history": [
+        { "week": 1, "day": "A", "start": 1781535600000, "end": 1781539500000, "dur": 3900, "complete": true, "segments": 1 },
+        { "week": 1, "day": "B", "start": 1781794800000, "end": 1781798100000, "dur": 3300, "complete": true, "segments": 1 },
+        { "week": 2, "day": "A", "start": 1782140400000, "end": 1782144420000, "dur": 4020, "complete": true, "segments": 1 },
+        { "week": 2, "day": "B", "start": 1782399600000, "end": 1782403020000, "dur": 3420, "complete": true, "segments": 1 },
+        { "week": 3, "day": "A", "start": 1782745200000, "end": 1782748980000, "dur": 3780, "complete": true, "segments": 1 },
+        { "week": 3, "day": "B", "start": 1783004400000, "end": 1783008000000, "dur": 3600, "complete": true, "segments": 1 },
+        { "week": 4, "day": "A", "start": 1783350000000, "end": 1783352700000, "dur": 2700, "complete": true, "segments": 1 },
+        { "week": 4, "day": "B", "start": 1783609200000, "end": 1783610700000, "dur": 1500, "complete": false, "segments": 1 }
+      ],
+      "workout": null,
+      "week": 4,
+      "day": "B"
+    }
+  }
+}
