@@ -34,6 +34,6 @@ test('report example backup produces useful weight, repetition and time trends',
   assert.equal(squat.bestWeek, 3);
   assert.deepEqual(Array.from(pushups.points, point => point.value), [12, 15, 18, 18]);
   assert.deepEqual(Array.from(plank.points, point => point.value), [40, 50, 60, 60]);
-  assert.deepEqual(Array.from(stairmaster.points, point => point.value), [1200, 1200, 1200]);
+  assert.deepEqual(Array.from(stairmaster.points, point => point.value), [1200, 1200, 1200, 1200]);
   assert.deepEqual(Array.from(deadHang.points, point => point.value), [42, 50, 60, 65]);
 });

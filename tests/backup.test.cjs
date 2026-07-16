@@ -136,4 +136,11 @@ test('accepts the complete report example backup with recorded training values',
   assert.equal(store.history.length, 8);
   assert.ok(Object.keys(store.logs).length >= 20);
   assert.ok(store.history.some(entry => entry.complete === false));
+  assert.equal(Object.keys(store.tg).length, 8);
+  const currentDay = backup.programs[backup.active].days.find(day => day.key === store.day);
+  for (const exercise of currentDay.ex) {
+    const cell = store.logs[`${store.week}|${store.day}|${exercise.id}`];
+    assert.ok(cell && cell.sets.some(set => set.reps !== ''), `${exercise.name} braucht sichtbare Satzwerte`);
+  }
+  assert.equal(store.logs['4|B|B_2'].sets[1].reps, '', 'Nur der letzte Satz soll noch offen sein');
 });

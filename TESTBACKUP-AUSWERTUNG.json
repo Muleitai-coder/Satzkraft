@@ -4,7 +4,7 @@
     "auswertungstest": {
       "id": "auswertungstest",
       "name": "Satzkraft Auswertungstest",
-      "description": "Beispieldaten über vier Wochen für Gewichts-, Wiederholungs- und Zeitverläufe.",
+      "description": "Fast abgeschlossener Block: Nur der letzte Dead-Hang-Satz in Woche 4 fehlt.",
       "settings": {
         "progressionSystem": "double_progression",
         "deloadMultiplier": 0.6,
@@ -159,7 +159,16 @@
   "active": "auswertungstest",
   "store": {
     "auswertungstest": {
-      "tg": {},
+      "tg": {
+        "1|A_0": "60",
+        "2|A_0": "65",
+        "3|A_0": "70",
+        "4|A_0": "70",
+        "1|B_0": "40",
+        "2|B_0": "42.5",
+        "3|B_0": "47.5",
+        "4|B_0": "47.5"
+      },
       "logs": {
         "1|A|A_0": {
           "sets": [
@@ -295,12 +304,19 @@
         },
         "4|B|B_0": {
           "sets": [
+            { "reps": "8", "weight": "28.5" },
             { "reps": "8", "weight": "28.5" }
+          ]
+        },
+        "4|B|B_1": {
+          "sets": [
+            { "reps": "1200", "weight": "" }
           ]
         },
         "4|B|B_2": {
           "sets": [
-            { "reps": "65", "weight": "" }
+            { "reps": "65", "weight": "" },
+            { "reps": "", "weight": "" }
           ]
         }
       },

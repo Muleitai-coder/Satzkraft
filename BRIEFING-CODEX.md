@@ -523,7 +523,7 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 
 | Feedback-ID | Priorität | Status | Verbindliches Verhalten |
 |---|---|---|---|
-| `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Es enthält vier Wochen mit Gewichts-, Wiederholungs-, Zielzeit- und Maximalzeitwerten, sieben vollständige sowie eine bewusst unvollständige Einheit und eine Deload-Woche. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
+| `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Es enthält vier Wochen mit ausdrücklich gesetzten Arbeitsgewichten sowie eingetragenen Gewichts-, Wiederholungs-, Zielzeit- und Maximalzeitwerten. Sieben Einheiten sind vollständig; in der geöffneten letzten Einheit ist nur der zweite Dead-Hang-Satz leer. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
 
 ### Sportliche Leitentscheidung für Zeitübungen
 
