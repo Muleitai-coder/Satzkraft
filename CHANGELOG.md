@@ -8,8 +8,25 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Offen
 
-- `FB-20260716-22`: Für vorgemerkte dauerhafte Übungswechsel ist noch zu entscheiden, ob nach Trainingsende ein Abschluss-Popup oder ein weniger aufdringlicher Hinweis erscheint. Auch die weitergehende Reportstruktur ist noch nicht festgelegt.
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
+
+## [0.22.3] – 2026-07-16
+
+### Behoben
+
+- `FB-20260716-26`: Gehört der laufende Satz-, Pausen- oder Halte-Timer zu einer Übung, sind Satz- und Arbeitsgewichtseingaben aller anderen Übungen konsequent gesperrt. Eine zusätzliche Prüfung im Speicherpfad verhindert auch über bereits fokussierte Eingabefelder fremde Einträge.
+
+### Geändert
+
+- `FB-20260716-27`: Vorgemerkte dauerhafte Übungstausche öffnen nach Trainingsende verpflichtend die Auswahl „Zum Editor“ oder „Vormerkungen verwerfen“. Die frühere Später-Möglichkeit entfällt; beim Verwerfen bleibt das beendete Training protokolliert, zukünftige Einheiten verwenden die Originalübungen.
+- `FB-20260716-27`: Der Editor übernimmt alle Vormerkungen gemeinsam, öffnet die erste betroffene Übung und markiert sämtliche betroffenen Übungen gelb, bis die Änderungen übernommen oder verworfen wurden.
+- `FB-20260716-28`: Übungsnotizen werden im vollständigen Trainingsprotokoll direkt angezeigt und nicht mehr hinter einer Aufklappaktion verborgen.
+- `FB-20260716-28`: Editor-Kopien und ersetzte Programme werden nicht automatisch aktiviert; nach dem Speichern führt der Ablauf zurück in die Programmübersicht. Die ausdrückliche Aktion „Speichern & aktivieren“ für neue Programme bleibt bestehen.
+- `FB-20260716-28`: Die Einstellung für den Dunkelmodus steht in der Fußzeile der Hauptseite und nicht mehr innerhalb der Programmverwaltung.
+
+### Daten & Kompatibilität
+
+- Bestehende Tauschprotokolle und Vormerkungen bleiben kompatibel. Bestätigte Vormerkungen werden über die vorhandene stabile Übungszuordnung übernommen; verworfene Vormerkungen ändern ausschließlich zukünftige Einheiten. Datenformat, Schema und Progressionslogik bleiben unverändert.
 
 ## [0.22.2] – 2026-07-16
 

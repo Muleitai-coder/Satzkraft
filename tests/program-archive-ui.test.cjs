@@ -161,7 +161,7 @@ function libraryContext() {
   return { context, library, active, archived };
 }
 
-test('öffnet das Archiv als eigene Unteransicht und verschiebt den Dunkelmodus in die Fußzeile', () => {
+test('öffnet das Archiv separat und zeigt den Dunkelmodus nur in der Hauptseiten-Fußzeile', () => {
   const { context, library } = libraryContext();
 
   context.renderLib();
@@ -170,8 +170,7 @@ test('öffnet das Archiv als eigene Unteransicht und verschiebt den Dunkelmodus 
   const header = main.slice(0, headerEnd + 12);
   assert.match(header, /id="archivebtn"/);
   assert.match(header, /Archiv/);
-  assert.doesNotMatch(header, /id="themebtn"/);
-  assert.ok(main.indexOf('id="themebtn"') > main.indexOf('Daten sichern'), 'Dunkelmodus muss in der Fußzeile stehen');
+  assert.doesNotMatch(main, /id="themebtn"/, 'Programme dürfen keinen Dunkelmodus-Knopf enthalten');
   assert.doesNotMatch(main, /Alter Block|programarchive|<summary>Archiv/);
 
   context.renderArchive();
@@ -180,6 +179,12 @@ test('öffnet das Archiv als eigene Unteransicht und verschiebt den Dunkelmodus 
   assert.match(archive, /id="archiveback"[^>]+aria-label="Zurück"/);
   assert.match(archive, /Alter Block/);
   assert.doesNotMatch(archive, /Kraftbasis|Zweiter Plan/);
+  assert.doesNotMatch(archive, /id="themebtn"/, 'das Archiv darf keinen Dunkelmodus-Knopf enthalten');
+
+  const mainView = functionSource('renderView');
+  const libraryFooter = functionSource('libraryFooterHtml');
+  assert.match(mainView, /themeButtonHtml\(\)/, 'der Dunkelmodus gehört in die Fußzeile der Hauptseite');
+  assert.doesNotMatch(libraryFooter, /themeButtonHtml\(\)/, 'die Programm-Fußzeile darf keinen Dunkelmodus enthalten');
 
   const libraryEvents = sourceBetween(
     'document.getElementById("lib").addEventListener("click"',

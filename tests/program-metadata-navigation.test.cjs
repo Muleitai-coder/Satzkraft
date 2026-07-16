@@ -40,6 +40,8 @@ function internalProgram(id, name) {
 
 function loadEditorStoreContext(sourceProgram) {
   const modals = [];
+  const activations = [];
+  const editorExits = [];
   const parsedProgram = internalProgram('copy', sourceProgram.name);
   const context = {
     Date: FixedDate,
@@ -61,11 +63,12 @@ function loadEditorStoreContext(sourceProgram) {
     showModal(title, message, actions) { modals.push({ title, message, actions }); },
     esc: value => String(value == null ? '' : value),
     newStore: () => ({ logs: {} }),
-    setActive(id) { context.S.active = id; return true; },
+    setActive(id) { activations.push(id); context.S.active = id; return true; },
     flushSave() {},
     genId: () => 'generated',
-    finishEditorSave() {},
+    finishEditorSave(exitMode) { editorExits.push(exitMode); },
     saveCoachPreferences() {},
+    editorHasPendingReplacements: () => false,
     editorBuildRefMap: () => ({}),
     migrateReplaceStore: () => ({ logs: { migrated: true } }),
     alias() {},
@@ -77,30 +80,56 @@ function loadEditorStoreContext(sourceProgram) {
   };
   vm.createContext(context);
   vm.runInContext(sourceBetween('function programNameWithSuffix', 'function programWriteLocked'), context);
-  return { context, modals };
+  return { context, modals, activations, editorExits };
 }
 
-test('stores local creation and update timestamps for copies and replacements', () => {
+test('stores timestamps while copies and replacements return to the list without activating themselves', () => {
   const source = internalProgram('source', 'Kraftbasis');
   source.createdAt = NOW - 10_000;
   source.updatedAt = NOW - 5_000;
+  const active = internalProgram('active', 'Aktiver Plan');
 
   const copyRun = loadEditorStoreContext(JSON.parse(JSON.stringify(source)));
-  copyRun.context.editorStoreProgram(false);
+  copyRun.context.S.programs.active = active;
+  copyRun.context.S.store.active = { logs: {} };
+  copyRun.context.S.active = 'active';
+  copyRun.context.editorStoreProgram(false, 'back', false);
   const copy = copyRun.context.S.programs.copy;
   assert.ok(copy, 'Programmkopie wurde nicht gespeichert');
   assert.match(copy.name, / \(Kopie\)$/);
   assert.equal(copy.createdAt, NOW);
   assert.equal(copy.updatedAt, NOW);
+  assert.equal(copyRun.context.S.active, 'active', 'eine Editor-Kopie darf das aktive Programm nicht wechseln');
+  assert.deepEqual(copyRun.activations, []);
+  assert.deepEqual(copyRun.editorExits, ['back'], 'nach dem Speichern der Kopie muss die Programmübersicht folgen');
+  assert.match(copyRun.modals.at(-1).message, /aktives Programm bleibt unverändert/);
 
   const replaceRun = loadEditorStoreContext(JSON.parse(JSON.stringify(source)));
-  replaceRun.context.editorStoreProgram(true);
+  replaceRun.context.S.programs.active = active;
+  replaceRun.context.S.store.active = { logs: {} };
+  replaceRun.context.S.active = 'active';
+  replaceRun.context.editorStoreProgram(true, 'back', false);
   const replacementPrompt = replaceRun.modals.find(modal => modal.title === 'Original ersetzen?');
   assert.ok(replacementPrompt, 'Ersetzen-Rückfrage fehlt');
   replacementPrompt.actions[0].action();
   const replaced = replaceRun.context.S.programs.source;
   assert.equal(replaced.createdAt, source.createdAt, 'Erstellungsdatum des Originals muss erhalten bleiben');
   assert.equal(replaced.updatedAt, NOW, 'Änderungsdatum muss beim Ersetzen erneuert werden');
+  assert.equal(replaceRun.context.S.active, 'active', 'das Ersetzen eines anderen Programms darf es nicht aktivieren');
+  assert.deepEqual(replaceRun.activations, []);
+  assert.deepEqual(replaceRun.editorExits, ['back'], 'nach dem Ersetzen muss die Programmübersicht folgen');
+});
+
+test('wires copy and replace actions to the non-activating back path', () => {
+  const events = sourceBetween(
+    'document.getElementById("lib").addEventListener("click"',
+    'document.getElementById("lib").addEventListener("toggle"'
+  );
+  assert.match(events, /b\.id==="edsavecopy"\)\{editorStoreProgram\(false,"back",false\)/);
+  assert.match(events, /b\.id==="edreplace"\)\{editorStoreProgram\(true,"back",false\)/);
+
+  const navigation = sourceBetween('function resetProgramEditorState', 'function discardEditorAndReturn');
+  assert.match(navigation, /function finishEditorSave\(exitMode\).*exitMode==="back".*renderLib\(\)/s);
 });
 
 test('keeps local program timestamps out of the version-2 exchange format', () => {

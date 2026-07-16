@@ -296,7 +296,8 @@ test('shows block success exactly once and persists only the celebration marker'
   assert.deepEqual(Array.from(modals[0].actions, action => action.label), [
     'Folgeblock starten', 'Auswertung ansehen', 'Später'
   ]);
-  assert.match(functionSource('stopWorkout'), /maybeShowBlockSuccess\(/);
+  assert.match(functionSource('stopWorkout'), /continuePostWorkoutFlow\(/);
+  assert.match(functionSource('continuePostWorkoutFlow'), /showPendingReplacementDecision\(programId\).*maybeShowBlockSuccess\(programId\)/s);
   assert.match(functionSource('newStore'), /blockCelebrated:false/);
   assert.match(functionSource('syncStore'), /blockCelebrated:S\.blockCelebrated===true/);
 });

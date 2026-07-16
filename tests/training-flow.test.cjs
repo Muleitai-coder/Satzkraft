@@ -60,6 +60,8 @@ test('copies the planned weight when repetitions are entered', () => {
     setTimeInputValue: (input, _ex, value) => { input.value = String(value); },
     active: () => true,
     getSets: () => [{ reps: '', weight: '' }],
+    firstOpenSet: () => 0,
+    setInputLocked: () => false,
     round: value => value,
     targetWeight: () => 80,
     writeSets: (_ex, sets) => { written = sets; },
@@ -100,6 +102,8 @@ test('completes repetitions from weight input and queues automatic rest', () => 
     setTimeInputValue: (input, _ex, value) => { input.value = String(value); },
     active: () => true,
     getSets: () => [{ reps: '', weight: '' }, { reps: '', weight: '' }],
+    firstOpenSet: () => 0,
+    setInputLocked: () => false,
     round: value => value,
     targetWeight: () => 0,
     catReps: () => [8, 12],
@@ -144,6 +148,8 @@ test('keeps zero targets empty and reuses a previous calibration weight', () => 
     setTimeInputValue: (input, _ex, value) => { input.value = String(value); },
     active: () => true,
     getSets: () => sets.map(set => ({ ...set })),
+    firstOpenSet: () => 0,
+    setInputLocked: () => false,
     round: value => value,
     targetWeight: () => 0,
     writeSets: (_ex, next) => { written = next; },
@@ -167,6 +173,129 @@ test('keeps zero targets empty and reuses a previous calibration weight', () => 
   context.onSetInput({ id: 'rep-squat-1', value: '12' });
   assert.equal(written[1].weight, '');
   assert.equal(weightInput.value, '');
+});
+
+test('locks focused inputs and steppers of other exercises throughout every set phase', () => {
+  const start = html.indexOf('function setInputLocked');
+  const end = html.indexOf('function applyAllLocks', start);
+  assert.ok(start >= 0 && end > start, 'zentrale Eingabesperre wurde nicht gefunden');
+
+  const exercise = { id: 'row', name: 'Rudern', w: true };
+  const rep = { id: 'rep-row-0', disabled: false };
+  const weight = { id: 'wt-row-0', disabled: false };
+  const workingWeight = { id: 'ww-row', disabled: false };
+  const controls = new Map([
+    [rep.id, rep],
+    [weight.id, weight],
+    [workingWeight.id, workingWeight]
+  ]);
+  const steppers = [
+    { dataset: { step: 'rep' }, disabled: false },
+    { dataset: { step: 'wt' }, disabled: false }
+  ];
+  const context = {
+    restPhase: null,
+    restExId: 'plank',
+    restNextSet: 0,
+    active: () => true,
+    getSets: () => [{ reps: '', weight: '' }],
+    firstOpenSet: () => 0,
+    updatePauseButton() {},
+    document: {
+      activeElement: rep,
+      getElementById: id => controls.get(id) || null,
+      querySelectorAll: selector => selector.includes('data-ex="row"') ? steppers : []
+    }
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+
+  for (const phase of ['countdown', 'set', 'hold']) {
+    for (const focused of [rep, weight, workingWeight]) {
+      rep.disabled = false;
+      weight.disabled = false;
+      workingWeight.disabled = false;
+      steppers.forEach(button => { button.disabled = false; });
+      context.restPhase = phase;
+      context.document.activeElement = focused;
+
+      context.applyLocks(exercise);
+
+      assert.equal(rep.disabled, true, `${phase}: fokussierte fremde Wiederholungen müssen gesperrt sein`);
+      assert.equal(weight.disabled, true, `${phase}: fokussiertes fremdes Satzgewicht muss gesperrt sein`);
+      assert.equal(workingWeight.disabled, true, `${phase}: fremdes Arbeitsgewicht muss gesperrt sein`);
+      assert.deepEqual(steppers.map(button => button.disabled), [true, true], `${phase}: fremde Stepper müssen gesperrt sein`);
+    }
+  }
+});
+
+test('onSetInput rejects stale writes from other exercises during countdown, set and hold', () => {
+  const lockStart = html.indexOf('function setInputLocked');
+  const lockEnd = html.indexOf('function workWeightInputLocked', lockStart);
+  const inputStart = html.indexOf('function onSetInput');
+  const inputEnd = html.indexOf('function onSetChange', inputStart);
+  assert.ok(lockStart >= 0 && lockEnd > lockStart, 'zentrale Eingabesperre wurde nicht gefunden');
+  assert.ok(inputStart >= 0 && inputEnd > inputStart, 'Satzeingabe wurde nicht gefunden');
+
+  const exercise = { id: 'row', name: 'Rudern', w: false, unit: 'reps' };
+  const storedSets = [{ reps: '', weight: '' }];
+  let writes = 0;
+  let saves = 0;
+  let reappliedLocks = 0;
+  const context = {
+    restPhase: null,
+    restExId: 'plank',
+    restNextSet: 0,
+    active: () => true,
+    findEx: id => id === exercise.id ? exercise : null,
+    getSets: () => storedSets.map(set => ({ ...set })),
+    firstOpenSet: () => 0,
+    sanDec: value => value,
+    timeInputSeconds: input => input.value,
+    isTime: () => false,
+    setTimeInputValue: (input, _exercise, value) => { input.value = String(value); },
+    applyLocks: () => { reappliedLocks++; },
+    writeSets: () => { writes++; },
+    save: () => { saves++; },
+    collapseDoneExcept() {},
+    setComplete: (_exercise, set) => set.reps !== '',
+    round: value => value,
+    targetWeight: () => 0,
+    scheduleAutoRest() {},
+    updateCard() {},
+    updateProgressUI() {},
+    renderBar() {},
+    maybeAskDone() {},
+    document: { getElementById: () => null }
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(lockStart, lockEnd), context);
+  vm.runInContext(html.slice(inputStart, inputEnd), context);
+
+  for (const phase of ['countdown', 'set', 'hold']) {
+    const input = { id: 'rep-row-0', value: '8' };
+    context.restPhase = phase;
+    context.onSetInput(input);
+
+    assert.equal(input.value, '', `${phase}: der sichtbare Fremdwert muss verworfen werden`);
+    assert.equal(writes, 0, `${phase}: fremde Übung darf nicht in den Store schreiben`);
+    assert.equal(saves, 0, `${phase}: fremde Übung darf keinen Save auslösen`);
+  }
+
+  context.restExId = exercise.id;
+  context.restPhase = 'hold';
+  const runningHoldInput = { id: 'rep-row-0', value: '8' };
+  context.onSetInput(runningHoldInput);
+  assert.equal(runningHoldInput.value, '', 'der laufende Halte-Timer muss seine eigene Satzeingabe kontrollieren');
+  assert.equal(writes, 0);
+  assert.equal(saves, 0);
+  assert.equal(reappliedLocks, 4, 'nach jedem abgewiesenen Event muss die DOM-Sperre erneuert werden');
+
+  context.restPhase = 'set';
+  const activeSetInput = { id: 'rep-row-0', value: '8' };
+  context.onSetInput(activeSetInput);
+  assert.equal(writes, 1, 'der freigegebene Satz der aktiven Übung muss beschreibbar bleiben');
+  assert.equal(saves, 1);
 });
 
 test('formats long time prescriptions in minutes without changing stored seconds', () => {

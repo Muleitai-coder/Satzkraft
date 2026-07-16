@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.2
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.3
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.22.2
+**Aktueller Produktstand:** Satzkraft v0.22.3
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -742,7 +742,7 @@ Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; V
 
 ## 15. Patch-Runde nach dem Praxistest von v0.22.0 · v0.22.1
 
-**Status:** Die beschlossenen Korrekturen `FB-20260716-14` bis `FB-20260716-21` sind in v0.22.1 umgesetzt und technisch geprüft. `FB-20260716-22` sowie der ausführliche Leitfaden zum ersten Arbeitsgewicht bleiben Produktentscheidungen für eine spätere Runde.
+**Status:** Die beschlossenen Korrekturen `FB-20260716-14` bis `FB-20260716-21` sind in v0.22.1 umgesetzt und technisch geprüft. `FB-20260716-22` war in dieser Runde noch offen und wurde später durch `FB-20260716-27` in v0.22.3 entschieden. Der ausführliche Leitfaden zum ersten Arbeitsgewicht bleibt eine spätere Produktentscheidung.
 
 | Feedback-ID | Status | Verbindliches Verhalten |
 |---|---|---|
@@ -754,12 +754,12 @@ Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; V
 | `FB-20260716-19` | beschlossen | Nach dem bestätigten Löschen eines Programms führt der Ablauf in die Programmverwaltung beziehungsweise bleibt dort; die App wechselt nicht ungefragt in eine andere Hauptansicht. |
 | `FB-20260716-20` | beschlossen | Beim Abschließen einer Übung, beim Wechsel zur nächsten Karte und beim späteren Einklappen bleibt die sichtbare Position stabil; es gibt kein wahrnehmbares Hin-und-her-Springen. Das Erscheinen des Einklapp-Symbols darf die Vorgabezeile auch vorübergehend nicht umformatieren. Die Zeile „Sätze · Wdh. · Ziel · Pause“ endet ohne Fade oder verschwommenen Rand. Anstelle des ausgeschriebenen Pausenworts steht ein Uhrsymbol mit eindeutigem zugänglichem Namen; Spalten und Abstände bleiben vor und nach dem Übungsabschluss identisch. |
 | `FB-20260716-21` | beschlossen | Im vollständigen Trainingsprotokoll wird ein heutiger Übungstausch in einer eindeutigen Zeile als „Original → Ersatz“ gekennzeichnet; die ausgeführten Sätze gehören sichtbar zum Ersatz. Existiert eine Übungsnotiz, bietet die Zeile eine klar beschriftete Aufklappaktion und zeigt die Notiz nach dem Öffnen inline. Ohne Notiz erscheint keine leere Notizaktion. Die bestehende Regel, Tauschwerte nicht in Progression und Trend der Originalübung einzurechnen, bleibt bestehen. |
-| `FB-20260716-22` | offene Produktentscheidung | Noch nicht festgelegt ist, ob eine vorgemerkte dauerhafte Ersetzung nach Trainingsende in einem Abschluss-Popup oder als nicht modaler Hinweis angeboten wird. Ebenfalls offen bleibt, welche weitergehenden Tausch- und Notizdetails außerhalb des vollständigen Protokolls in „Fortschritt im Trainingsblock“ oder anderen Reportbereichen erscheinen. Bis zur Entscheidung darf weder ein Popup als verbindlicher Standard noch eine weitergehende Reportstruktur festgeschrieben werden. |
+| `FB-20260716-22` | historisch offen; in v0.22.3 entschieden | In v0.22.1 war die Darstellung nach Trainingsende noch nicht festgelegt. `FB-20260716-27` ersetzt diesen offenen Stand durch einen verbindlichen Abschlussdialog. Eine darüber hinausgehende Reportstruktur außerhalb des vollständigen Protokolls ist weiterhin nicht beschlossen. |
 
 ### Abgrenzung dieser Patch-Runde
 
 - `FB-20260716-14` bis `FB-20260716-21` sind als einzeln prüfbare UX-Korrekturen in v0.22.1 umgesetzt.
-- `FB-20260716-22` bleibt ausdrücklich offen und ist keine Freigabe zur Umsetzung einer der genannten Varianten.
+- Der damalige offene Punkt `FB-20260716-22` wurde erst in v0.22.3 durch `FB-20260716-27` verbindlich entschieden.
 - Auch der detaillierte Kalibrier-Leitfaden ist nicht Teil des beschlossenen Patch-Umfangs. Festgelegt sind bei `FB-20260716-18` ausschließlich Typografie und linksbündige Darstellung der bereits vorhandenen Hinweise.
 
 ---
@@ -776,5 +776,22 @@ Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; V
 
 ### Weiterhin offen
 
-- `FB-20260716-22`: Darstellung einer vorgemerkten dauerhaften Ersetzung nach Trainingsende sowie weitergehende Tausch- und Notizdetails in der Auswertung.
 - Der ausführliche Leitfaden zur Ermittlung des ersten Arbeitsgewichts.
+
+---
+
+## 17. Trainingssicherheit und Abschlussfluss · v0.22.3
+
+**Status:** `FB-20260716-26` bis `FB-20260716-28` sind in v0.22.3 umgesetzt. `FB-20260716-27` entscheidet den zuvor offenen Teil von `FB-20260716-22` zum Umgang mit dauerhaften Tauschvormerkungen nach Trainingsende. Datenformat, `DATA_SCHEMA_VERSION` und Progressionsmodul bleiben unverändert.
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260716-26` | umgesetzt | Während eine Satzpause, ein fokussierter Folgesatz oder ein Halte-Timer einer Übung aktiv ist, können nur Werte dieser Übung erfasst werden. Satzfelder, Stepper und Arbeitsgewicht aller anderen Übungen sind gesperrt. Die Sperre wird zusätzlich im Schreibpfad geprüft, damit ein zuvor fokussiertes oder veraltetes Eingabefeld keine fremden Werte speichern kann. |
+| `FB-20260716-27` | umgesetzt; entscheidet `FB-20260716-22` | Nach Trainingsende erscheint bei dauerhaften Tauschvormerkungen zwingend ein Dialog mit genau den Wegen „Zum Editor“ und „Vormerkungen verwerfen“; eine Später-Funktion gibt es nicht. Verwerfen entfernt nur die dauerhafte Änderung für kommende Einheiten, nicht den Tausch im abgeschlossenen Trainingsprotokoll. Der Editor übernimmt alle Vormerkungen gemeinsam und markiert jede betroffene Übung gelb, bis die Änderung gespeichert oder bewusst verworfen wurde. Ausstehende Vormerkungen überstehen einen Neustart. Erst nach dieser Entscheidung folgt gegebenenfalls der Blockabschluss. |
+| `FB-20260716-28` | umgesetzt | Eine vorhandene Übungsnotiz steht im vollständigen Trainingsprotokoll direkt unter der Übung und benötigt keine Aufklappaktion. Beim Speichern einer Editor-Kopie oder beim Ersetzen eines bestehenden Programms bleibt der bisherige Aktivstatus unverändert; der Ablauf führt in die Programmübersicht zurück. Nur die ausdrücklich benannte Aktion für ein neues Programm darf dieses aktivieren. Die Theme-Einstellung steht ausschließlich in der Fußzeile der Hauptseite, nicht in Programme oder Archiv. |
+
+### Abgrenzung
+
+- Tausch- und Notizdetails werden in v0.22.3 im vollständigen Trainingsprotokoll eindeutig dargestellt. Neue Kennzahlen oder zusätzliche Darstellungen im Bereich „Fortschritt im Trainingsblock“ sind nicht beschlossen.
+- Das Verwerfen einer dauerhaften Vormerkung darf den bereits dokumentierten Ersatznamen und dessen Sätze im beendeten Training nicht verändern.
+- Der ausführliche Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt offen.

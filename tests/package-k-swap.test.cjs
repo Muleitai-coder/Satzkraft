@@ -170,6 +170,8 @@ test('keeps a replacement working weight out of the original exercise target', (
   };
   context.PROG = () => program;
   context.findEx = id => id === exercise.id ? exercise : null;
+  context.active = () => true;
+  context.restPhase = null;
   context.save = () => {};
   context.document.getElementById = () => null;
 
@@ -258,8 +260,12 @@ test('shows the original and replacement names in the detailed training protocol
   assert.match(protocol, /10×100/);
 });
 
-test('queues permanent replacement during training and opens the exact _ref only after explicit action', () => {
+test('queues permanent replacements during training and opens every exact _ref only after explicit action', () => {
   const program = programFixture();
+  program.days[0].ex.push(
+    { id: 'row', name: 'Langhantelrudern', cat: 'kraft', w: true, unit: 'reps', def: 60, inc: 2.5 },
+    { id: 'press', name: 'Schulterdrücken', cat: 'kraft', w: true, unit: 'reps', def: 40, inc: 2.5 }
+  );
   const exercise = program.days[0].ex[0];
   const context = appContext();
   context.S = {
@@ -277,10 +283,21 @@ test('queues permanent replacement during training and opens the exact _ref only
     editorOpened++;
     assert.equal(id, 'basis');
     context.editorDraft = {
-      days: [{ key: 'A', exercises: [{ _ref: 'bench', name: 'Bankdrücken' }] }]
+      name: 'Kraftbasis',
+      categories: { kraft: { label: 'Kraft', color: 'amber', rest: 90, reps: { aufbau: [5, 8] } } },
+      weeks: [{ n: 1, phase: 'aufbau', label: 'Aufbau', sets: { kraft: 1 } }],
+      days: [{
+        key: 'A', weekday: 'Montag', title: 'Drücken',
+        exercises: [
+          { _ref: 'bench', name: 'Bankdrücken', category: 'kraft', weighted: true, unit: 'reps', startWeight: 80, increment: 2.5 },
+          { _ref: 'row', name: 'Langhantelrudern', category: 'kraft', weighted: true, unit: 'reps', startWeight: 60, increment: 2.5 },
+          { _ref: 'press', name: 'Schulterdrücken', category: 'kraft', weighted: true, unit: 'reps', startWeight: 40, increment: 2.5 }
+        ]
+      }]
     };
   };
-  context.editorPushUndo = () => {};
+  let undoSteps = 0;
+  context.editorPushUndo = () => { undoSteps++; };
   context.renderProgramEditor = () => {};
 
   assert.equal(typeof context.queuePermanentExerciseReplacement, 'function');
@@ -297,12 +314,48 @@ test('queues permanent replacement during training and opens the exact _ref only
   assert.match(JSON.stringify(pending[0]), /Brustpresse/);
   assert.equal(saved > 0, true, 'die Vormerkung muss mit dem laufenden Training gespeichert werden');
 
+  const requests = pending.concat([
+    { programId: 'basis', day: 'A', exId: 'row', name: 'Kabelrudern' }
+  ]);
   context.S.workout = null;
-  context.openPendingReplacement(pending[0]);
+  context.openPendingReplacementsInEditor(requests);
   assert.equal(editorOpened, 1, 'erst die bewusste Folgeaktion öffnet den Editor');
   assert.equal(context.editorDraft.days[0].exercises[0]._ref, 'bench');
   assert.equal(context.editorDraft.days[0].exercises[0].name, 'Brustpresse');
+  assert.equal(context.editorDraft.days[0].exercises[1]._ref, 'row');
+  assert.equal(context.editorDraft.days[0].exercises[1].name, 'Kabelrudern');
+  assert.equal(context.editorDraft.days[0].exercises[2].name, 'Schulterdrücken');
+  assert.deepEqual({ ...context.editorPendingReplacementRefs }, {
+    bench: 'Brustpresse',
+    row: 'Kabelrudern'
+  });
+  assert.equal(undoSteps, 1, 'alle Vormerkungen müssen einen gemeinsamen Rückgängig-Schritt bilden');
   assert.equal(context.editorExerciseIndex, 0);
+
+  context.EDITOR_WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+  context.WD_ABBR = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  context.WUCD_LIB = { warmup: [], cooldown: [] };
+  context.editorWeekIndex = 0;
+  context.editorOpenSections = {};
+  context.LIMITS.maxDays = 7;
+  context.LIMITS.maxExPerDay = 20;
+  const editorTraining = context.renderEditorTraining(context.editorDraft, ['kraft']);
+  assert.equal((editorTraining.match(/class="edexercise[^"]*pendingreplacement/g) || []).length, 2, 'jede vorgemerkte _ref muss eine gelbe Karte erhalten');
+  assert.equal((editorTraining.match(/class="pendingreplacementbadge"/g) || []).length, 2);
+  const untouchedCard = editorTraining.match(/<div class="edexercise([^"]*)" data-ed-ex-card="2">/);
+  assert.ok(untouchedCard, 'nicht vorgemerkte Vergleichsübung fehlt');
+  assert.doesNotMatch(untouchedCard[1], /pendingreplacement/);
+
+  const editorRoot = { innerHTML: '' };
+  context.document = { getElementById: id => id === 'lib' ? editorRoot : null };
+  context.editorSourceId = 'basis';
+  context.editorView = 'training';
+  context.editorUndoStack = [];
+  vm.runInContext(`renderProgramEditor = ${functionSource('renderProgramEditor')}`, context);
+  context.renderProgramEditor('training', 0, 0);
+  assert.match(editorRoot.innerHTML, /editorpendingnotice/);
+  assert.match(editorRoot.innerHTML, /id="edreplace">Vorgemerkte Tausche übernehmen/);
+  assert.doesNotMatch(editorRoot.innerHTML, /id="edsavecopy"/);
 });
 
 test('turns a matching today-only swap into normal history when the replacement is saved permanently', () => {
@@ -347,33 +400,64 @@ test('keeps deferred permanent replacements in the persisted program store', () 
   assert.deepEqual(Array.from(context.postWorkoutReplacements, request => ({ ...request })), pending);
 });
 
-test('stopWorkout preserves pending replacements for an explicit post-workout offer', () => {
+test('stopWorkout requires Editor or Verwerfen for pending replacements and offers no Später path', () => {
   const program = programFixture();
   const pending = [{ programId: 'basis', day: 'A', exId: 'bench', name: 'Brustpresse' }];
   const context = appContext();
   context.S = {
-    active: 'basis', programs: { basis: program }, week: 1, day: 'A', logs: {},
+    active: 'basis', programs: { basis: program }, week: 1, day: 'A', logs: {}, pendingReplacements: [],
     workout: {
       running: false, accrued: 60, firstStart: 1, week: 1, day: 'A',
       segmentsBase: 0, pendingReplacements: pending
     }
   };
-  let offered = null;
+  context.postWorkoutReplacements = [];
+  context.pendingReplacementCompletionProgramId = null;
+  context.PROG = () => program;
+  context.active = () => !!context.S.workout;
+  const modals = [];
+  let flushed = 0;
   let editorOpened = 0;
+  let completedFlow = 0;
+  let rendered = 0;
   context.clearDonePrompt = context.cancelAllAutoRest = context.resetRestState = () => {};
   context.clearRestFocus = context.releaseWakeLock = context.cancelAllDoneCollapse = () => {};
-  context.replaceDayHistory = context.save = context.renderBar = context.renderView = () => {};
+  context.replaceDayHistory = context.renderBar = () => {};
+  context.renderView = () => { rendered++; };
+  context.flushSave = () => { flushed++; };
   context.dayComplete = () => false;
-  context.maybeShowBlockSuccess = () => false;
-  context.offerPendingReplacements = requests => { offered = requests; };
-  context.openProgramEditor = () => { editorOpened++; };
+  context.maybeShowBlockSuccess = () => { completedFlow++; return false; };
+  context.showModal = (title, message, actions) => modals.push({ title, message, actions });
+  let editorRequests = null;
+  context.openPendingReplacementsInEditor = requests => {
+    editorOpened++;
+    editorRequests = requests;
+    return true;
+  };
 
   context.stopWorkout();
 
   assert.equal(context.S.workout, null);
   assert.equal(editorOpened, 0, 'Trainingsende darf den Editor nicht automatisch öffnen');
-  assert.ok(Array.isArray(offered), 'nach Trainingsende muss ein explizites Angebot ausgelöst werden');
-  assert.deepEqual(Array.from(offered, request => ({ ...request })), pending);
+  assert.deepEqual(Array.from(context.S.pendingReplacements, request => ({ ...request })), pending);
+  assert.ok(flushed >= 1, 'Vormerkungen müssen vor der Entscheidung dauerhaft gespeichert sein');
+  assert.equal(modals.length, 1);
+  assert.match(modals[0].title, /Dauerhafte Übungstausche prüfen/);
+  assert.match(modals[0].message, /Bankdrücken.*Brustpresse/s);
+  assert.deepEqual(Array.from(modals[0].actions, action => action.label), [
+    'Zum Editor', 'Vormerkungen verwerfen'
+  ]);
+  assert.doesNotMatch(JSON.stringify(modals[0]), /Später/);
+
+  modals[0].actions[0].action();
+  assert.equal(editorOpened, 1);
+  assert.deepEqual(Array.from(editorRequests, request => ({ ...request })), pending);
+
+  modals[0].actions[1].action();
+  assert.deepEqual(Array.from(context.S.pendingReplacements), []);
+  assert.deepEqual(Array.from(context.postWorkoutReplacements), []);
+  assert.ok(rendered >= 2);
+  assert.equal(completedFlow, 1, 'erst nach der Entscheidung darf der übrige Abschlussfluss weiterlaufen');
 });
 
 test('validates optional swap markers in backups without breaking older logs', () => {

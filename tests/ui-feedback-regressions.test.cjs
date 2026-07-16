@@ -219,7 +219,7 @@ test('aktualisiert und speichert nur ein Standard-Stangengewicht', () => {
   assert.equal(opens, 1);
 });
 
-test('zeigt im Protokoll Original und Ersatz sowie Notizen nur aufklappbar bei Inhalt', () => {
+test('zeigt im Protokoll Original und Ersatz sowie vorhandene Notizen direkt inline', () => {
   const program = programFixture();
   const context = appContext({
     dDate: () => '16.07.2026',
@@ -236,9 +236,11 @@ test('zeigt im Protokoll Original und Ersatz sowie Notizen nur aufklappbar bei I
   const withoutNote = context.reportDetailedProtocol(program, logs, history, {});
 
   assert.match(withNote, /Bankdrücken[\s\S]*→[\s\S]*Brustpresse/);
-  assert.match(withNote, /<details(?![^>]*\bopen\b)[^>]*>[\s\S]*<summary[^>]*>[\s\S]*Notiz/i);
+  assert.match(withNote, /class="[^"]*rprotocolnote[^"]*"[\s\S]*Sitzhöhe 4 · Schulterblätter fixieren/);
+  assert.doesNotMatch(withNote, /<details[^>]*class="[^"]*rprotocolnote/i);
+  assert.doesNotMatch(withNote, /<summary[^>]*>[\s\S]*Notiz/i);
   assert.match(withNote, /Sitzhöhe 4 · Schulterblätter fixieren/);
-  assert.doesNotMatch(withoutNote, /<details[^>]*>[\s\S]*<summary[^>]*>[\s\S]*Notiz/i);
+  assert.doesNotMatch(withoutNote, /class="[^"]*rprotocolnote[^"]*"/i);
   assert.match(
     html,
     /reportDetailedProtocol\(\s*program\s*,\s*store\.logs\s*,\s*store\.history\s*,\s*store\.notes\s*\)/,
