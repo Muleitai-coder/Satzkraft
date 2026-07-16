@@ -175,54 +175,48 @@ test('verweigert das Zurücksetzen eines Übungstauschs nach der ersten Satzeing
   );
 });
 
-test('berechnet hohe Hantellasten mit mehrfach verwendbaren Scheiben', () => {
-  const context = appContext({ STANDARD_PLATES: [25, 20, 15, 10, 5, 2.5, 1.25] });
+test('berechnet das mathematische Gewicht pro Seite ohne Scheibenannahmen', () => {
+  const context = appContext();
   const result = context.calculatePlateLoad(180, 20);
 
-  assert.equal(result.exact, true);
-  assert.equal(result.total, 180);
-  assert.equal(
-    result.plates.length > new Set(Array.from(result.plates)).size,
-    true,
-    'mindestens eine Scheibengröße muss pro Seite mehrfach nutzbar sein'
-  );
+  assert.equal(result.side, 80);
+  assert.equal(result.below, false);
+  assert.equal(result.plates, undefined, 'verfügbare Scheiben unterscheiden sich je nach Studio');
 });
 
-test('zeigt die Stangenauswahl 10, 15, 20 kg und eine klar sichtbare eigene Option', () => {
-  const context = appContext({ STANDARD_PLATES: [25, 20, 15, 10, 5, 2.5, 1.25] });
+test('zeigt ausschließlich die Stangenauswahl 10, 15 und 20 kg', () => {
+  const context = appContext();
   context.S = { barw: {} };
   context.targetWeight = () => 80;
   const output = context.plateCalculatorHtml({ id: 'bench', w: true });
-  const customOutput = context.plateCalculatorHtml({ id: 'bench', w: true }, true);
   const labels = [...output.matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/g)]
     .map(match => match[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
 
-  assert.deepEqual(labels.slice(0, 4), ['10 kg', '15 kg', '20 kg', 'Anderes']);
-  assert.match(output, /data-plate-custom-open=/, '„Anderes“ muss die Eingabe des eigenen Stangengewichts öffnen');
-  assert.match(customOutput, /Eigenes Stangengewicht/);
-  assert.match(customOutput, /data-plate-custom=/);
+  assert.deepEqual(labels, ['10 kg', '15 kg', '20 kg']);
+  assert.doesNotMatch(output, /Anderes|Eigenes Stangengewicht|data-plate-custom/i);
+  assert.match(output, /30 kg pro Seite/);
 });
 
-test('aktualisiert und speichert ein eigenes Stangengewicht direkt', () => {
+test('aktualisiert und speichert nur ein Standard-Stangengewicht', () => {
   const exercise = { id: 'bench', w: true };
-  const result = { outerHTML: '' };
   let saves = 0;
+  let opens = 0;
   const context = appContext({
-    STANDARD_PLATES: [25, 20, 15, 10, 5, 2.5, 1.25],
     S: { barw: {} },
     findEx: id => id === exercise.id ? exercise : null,
-    targetWeight: () => 50,
     save: () => { saves++; },
-    document: { querySelector: selector => selector === '#modal .plateresult' ? result : null }
+    showPlateCalculator: () => { opens++; }
   });
 
-  assert.equal(context.updateCustomPlateBar('bench', '12.5'), true);
-  assert.equal(context.S.barw.bench, 12.5);
+  context.selectPlateBar('bench', '15');
+  assert.equal(context.S.barw.bench, 15);
   assert.equal(saves, 1);
-  assert.match(result.outerHTML, /12,5 kg Stange \+ 2 × 18,75 kg = 50 kg gesamt/);
+  assert.equal(opens, 1);
 
-  assert.equal(context.updateCustomPlateBar('bench', '0'), false);
-  assert.equal(saves, 1, 'ungültige Werte dürfen nicht gespeichert werden');
+  context.selectPlateBar('bench', '12.5');
+  assert.equal(context.S.barw.bench, 15);
+  assert.equal(saves, 1, 'ein eigenes Stangengewicht darf nicht gespeichert werden');
+  assert.equal(opens, 1);
 });
 
 test('zeigt im Protokoll Original und Ersatz sowie Notizen nur aufklappbar bei Inhalt', () => {

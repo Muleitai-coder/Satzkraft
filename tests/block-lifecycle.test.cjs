@@ -353,7 +353,9 @@ test('separates archived programs, exposes read-only actions and blocks stale ac
   const programMetaCss = html.match(/\.progitem \.pm\{([^}]*)\}/);
   assert.ok(programMetaCss, 'Metazeile der Programmkarte fehlt');
   assert.match(programMetaCss[1], /display:flex/);
-  assert.match(programMetaCss[1], /justify-content:space-between/);
+  const programDateCss = html.match(/\.programdate\{([^}]*)\}/);
+  assert.ok(programDateCss, 'Datumsregel der Programmkarte fehlt');
+  assert.match(programDateCss[1], /margin-left:auto/);
   assert.equal(context.setActive('old'), false);
   assert.equal(context.S.active, 'basis');
   assert.match(functionSource('openProgramEditor'), /archived/);

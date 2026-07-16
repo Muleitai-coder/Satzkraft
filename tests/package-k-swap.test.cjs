@@ -410,11 +410,13 @@ test('validates optional swap markers in backups without breaking older logs', (
   assert.match(context.validateBackupStore(stalePending, 'basis', program), /vorgemerkte Übungstausche/);
 });
 
-test('renders the swap workflow only as an active-training card action', () => {
+test('renders the temporary swap before and during training while permanent replacement stays workout-only', () => {
   assert.match(html, /Übung tauschen/);
-  assert.match(html, /Nur heute/);
+  assert.match(html, /Für dieses Training/);
   assert.match(html, /Dauerhaft ersetzen/);
-  assert.match(functionSource('exCardHtml'), /currentExerciseSwap\(ex\)/);
-  assert.match(functionSource('exCardHtml'), /getauscht/);
-  assert.match(functionSource('exCardHtml'), /active\(\)/);
+  const cardSource = functionSource('exCardHtml');
+  assert.match(cardSource, /currentExerciseSwap\(ex\)/);
+  assert.match(cardSource, /getauscht/);
+  assert.doesNotMatch(cardSource, /if\(active\(\)&&!done&&!hasEntered\)/);
+  assert.match(functionSource('showExerciseSwap'), /if\(active\(\)\)actions\.push/);
 });

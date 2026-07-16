@@ -5,23 +5,22 @@ const vm = require('node:vm');
 
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 
-test('calculates the nearest load from the standard plate set', () => {
-  const start = html.indexOf('var STANDARD_PLATES');
+test('calculates the mathematical weight per side without assuming available plates', () => {
+  const start = html.indexOf('function calculatePlateLoad');
   const end = html.indexOf('function plateCalculatorHtml', start);
   assert.ok(start >= 0 && end > start, 'Scheibenrechner wurde nicht gefunden');
   const context = {};
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
 
-  const nearest = context.calculatePlateLoad(43.5, 20);
-  assert.equal(nearest.total, 42.5);
-  assert.deepEqual(Array.from(nearest.plates), [10, 1.25]);
-  assert.equal(nearest.exact, false);
+  const result = context.calculatePlateLoad(43.5, 20);
+  assert.equal(result.side, 11.75);
+  assert.equal(result.below, false);
+  assert.equal(result.plates, undefined);
 
-  const exact = context.calculatePlateLoad(45, 20);
-  assert.equal(exact.total, 45);
-  assert.deepEqual(Array.from(exact.plates), [10, 2.5]);
-  assert.equal(exact.exact, true);
+  const belowBar = context.calculatePlateLoad(15, 20);
+  assert.equal(belowBar.side, 0);
+  assert.equal(belowBar.below, true);
 });
 
 test('keeps bar weights and notes in every store lifecycle path', () => {

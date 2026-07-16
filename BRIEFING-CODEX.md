@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.1
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.2
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.22.1
+**Aktueller Produktstand:** Satzkraft v0.22.2
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -653,6 +653,8 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 **Umgesetzt in v0.20.0 am 16.07.2026.**
 
 #### I1 · Scheibenrechner · `FB-20260716-04`
+> Historischer Stand von v0.20.0; die aktuelle, vereinfachte Produktregel aus `FB-20260716-24` in Abschnitt 16 ersetzt Auswahl und Ergebnisdarstellung.
+
 - **Ist:** Gewichtsziele (z. B. „Ziel 43,5 kg“) müssen im Kopf in Scheiben pro Seite umgerechnet werden.
 - **Soll:** Antippen des Gewichtsziels in der Vorgabezeile öffnet ein kleines Modal „Scheiben pro Seite“: Belegung aus dem Standard-Scheibensatz 25 / 20 / 15 / 10 / 5 / 2,5 / 1,25 kg, z. B. „43,5 kg · Stange 20 kg → pro Seite: 10 + 1,25“. Im Modal eine kompakte Stangen-Auswahl (20 / 15 / 10 kg / eigenes Feld); die Wahl wird **pro Übung gemerkt** (neues optionales Store-Feld, z. B. `store.barw[exId]`; Standard 20 kg). Ist das Ziel nicht exakt legbar, die nächstliegende legbare Last samt Belegung anzeigen. Rein informativ, ändert keine Daten; nur bei Gewichtsübungen (`ex.w`).
 - **Datenregeln:** Neues Store-Feld optional und abwärtskompatibel; `validateBackupStore` toleriert es; in der H-Migration (`migrateReplaceStore`) wie `tg` per Übungs-ID mitmigrieren.
@@ -700,6 +702,8 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 - **Akzeptanz:** 8-Wochen-Testblock → Folgeblock: Kniebeuge-Startgewicht entspricht dem letzten Aufbau-Arbeitsgewicht (+ Steigerung, wenn oben erreicht); alter Block im Archiv, Auswertung dort intakt; `js/progression.js` unverändert.
 
 #### J3 · Block-Archiv · `FB-20260716-10`
+> Historischer Stand von v0.21.0; die aktuelle Navigation und Kartendarstellung aus `FB-20260716-23` in Abschnitt 16 ersetzt die eingebettete Archivsektion.
+
 - **Soll:** Optionales Flag `archived` am Programm (abwärtskompatibel, `normalize` toleriert es). Programmverwaltung: eigene Sektion „Archiv (n)“ unter „Weitere Programme“. Archivierte Programme sind nicht aktivierbar und nicht bearbeitbar, bieten aber „Auswertung ansehen“ (bestehender Report, read-only gegen deren Store) und „Aus dem Archiv holen“. Manuelles Archivieren ist auch ohne Folgeblock möglich. Backups enthalten Archiv-Programme automatisch (gleiche Struktur).
 - **Akzeptanz:** Archivieren → erscheint in Sektion, Training/Editor gesperrt, Auswertung vollständig; „Aus dem Archiv holen“ stellt Normalzustand her.
 
@@ -714,6 +718,8 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 **Umgesetzt in v0.22.0 am 16.07.2026.**
 
 #### K1 · Übung heute tauschen · `FB-20260716-11`
+> Historischer Stand von v0.22.0; `FB-20260716-25` in Abschnitt 16 erweitert den temporären Tausch auf die Vorbereitung vor Trainingsbeginn.
+
 - **Kontext:** Häufigster Realitätsbruch im Gym („Bank ist belegt“). Baut auf der `_ref`-Identität aus Paket H auf; Detailregeln beim Paketstart gegen die dann aktuelle Codebasis prüfen.
 - **Soll:** Im aktiven Training bietet jede offene Übungskarte „Übung tauschen“: Feld für den Namen der Ersatzübung (vorbelegt mit dem gepflegten Feld „Ersatzübung“/`proxy`, falls vorhanden) und zwei Wege:
   1. **„Nur heute“:** Karte zeigt den Ersatznamen mit Vermerk „getauscht“. Eingetragene Sätze werden im Log der Übung mit Vermerk (z. B. `swap:"Name"`) gespeichert; diese Einheit zählt **nicht** in Progressionsempfehlung und Übungstrend der Original-Übung, erscheint aber im Trainingsprotokoll mit Ersatznamen. Nächste Woche gilt wieder das Original.
@@ -755,3 +761,20 @@ Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; V
 - `FB-20260716-14` bis `FB-20260716-21` sind als einzeln prüfbare UX-Korrekturen in v0.22.1 umgesetzt.
 - `FB-20260716-22` bleibt ausdrücklich offen und ist keine Freigabe zur Umsetzung einer der genannten Varianten.
 - Auch der detaillierte Kalibrier-Leitfaden ist nicht Teil des beschlossenen Patch-Umfangs. Festgelegt sind bei `FB-20260716-18` ausschließlich Typografie und linksbündige Darstellung der bereits vorhandenen Hinweise.
+
+---
+
+## 16. Kleine Oberflächenrunde · v0.22.2
+
+**Status:** Die Entscheidungen `FB-20260716-23` bis `FB-20260716-25` sind in v0.22.2 umgesetzt und geprüft. Sie ersetzen in den genannten Punkten die frühere Darstellung aus den Paketen I, J und K, ohne das Datenformat zu ändern.
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260716-23` | umgesetzt | Die Programmverwaltung zeigt den Archivzugang anstelle des früheren Theme-Knopfs in der Kopfzeile. Das Archiv ist eine eigene Unteransicht mit Zurück-Funktion; eine dort geöffnete Auswertung hat ebenfalls Zurück statt Kreuz und kehrt ins Archiv zurück. Der Theme-Knopf steht in der Fußzeile. Programmkarten zeigen kein zusätzliches Aktiv-Symbol und kein Archiv-Badge. Nur vollständig absolvierte Programme erhalten ein goldenes „Abgeschlossen“-Badge. Das Erstellungs- beziehungsweise Änderungsdatum steht in der Metazeile ganz rechts. Bearbeiten, Archivieren, Auswertung ansehen und Aus dem Archiv holen bleiben semantische, ausreichend große Buttons, erscheinen aber als zurückgenommener klickbarer Text. |
+| `FB-20260716-24` | umgesetzt; ersetzt `FB-20260716-15` | „Scheiben pro Seite“ zeigt das Zielgesamtgewicht, genau die Stangenwahl 10 kg, 15 kg oder 20 kg und das Ergebnis `(Zielgewicht − Stangengewicht) ÷ 2` als Gewicht pro Seite. Ein eigenes Stangengewicht, einzelne Scheiben, eine Stückliste und ein Beladungsvorschlag entfallen bewusst, weil die vorhandenen Scheiben je Studio variieren. Die Wahl bleibt wie bisher pro Übung gespeichert; alte freie Werte fallen beim Öffnen auf den Standard 20 kg zurück. |
+| `FB-20260716-25` | umgesetzt; erweitert `FB-20260716-11` | „Übung tauschen“ ist für die aktuell ausgewählte Woche, den ausgewählten Trainingstag und eine offene Übung auch ohne laufendes Training verfügbar. Der temporäre Tausch lässt sich bis zur ersten Satzeingabe über „Original verwenden“ zurücksetzen. Während eines laufenden Trainings bleibt „Dauerhaft ersetzen“ eine Vormerkung für die spätere bewusste Editor-Aktion; vor Trainingsstart wird kein dauerhafter Ersatz angeboten. |
+
+### Weiterhin offen
+
+- `FB-20260716-22`: Darstellung einer vorgemerkten dauerhaften Ersetzung nach Trainingsende sowie weitergehende Tausch- und Notizdetails in der Auswertung.
+- Der ausführliche Leitfaden zur Ermittlung des ersten Arbeitsgewichts.

@@ -11,6 +11,15 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - `FB-20260716-22`: Für vorgemerkte dauerhafte Übungswechsel ist noch zu entscheiden, ob nach Trainingsende ein Abschluss-Popup oder ein weniger aufdringlicher Hinweis erscheint. Auch die weitergehende Reportstruktur ist noch nicht festgelegt.
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
 
+## [0.22.2] – 2026-07-16
+
+### Geändert
+
+- `FB-20260716-23`: Das Archiv öffnet als eigene Unteransicht mit Zurück-Funktion und sitzt nun in der Kopfzeile der Programmverwaltung; der Dunkelmodus ist in die Fußzeile gewandert. Eine aus dem Archiv geöffnete Auswertung verwendet ebenfalls Zurück statt Schließen.
+- `FB-20260716-23`: Programmkarten verzichten auf das redundante Aktiv-Symbol. Vollständig absolvierte Programme erhalten ein goldenes „Abgeschlossen“-Badge, das Erstellungs- oder Änderungsdatum steht ganz rechts und Bearbeiten, Auswertung, Wiederherstellen sowie Archivieren erscheinen als kompakte, zugängliche Textaktionen.
+- `FB-20260716-24`: Der Scheibenrechner bietet ausschließlich 10-, 15- und 20-kg-Stangen und zeigt nur das mathematische Gewicht pro Seite; freie Stangengewichte, Scheibenstücklisten und studioabhängige Beladungsvorschläge entfallen.
+- `FB-20260716-25`: Eine Übung kann für die ausgewählte Einheit schon vor Trainingsbeginn getauscht und bis zur ersten Satzeingabe wieder auf das Original zurückgesetzt werden. Der dauerhafte Ersatz bleibt an ein laufendes Training und die anschließende bewusste Editor-Aktion gebunden.
+
 ## [0.22.1] – 2026-07-16
 
 ### Geändert

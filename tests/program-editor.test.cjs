@@ -76,7 +76,7 @@ test('uses one clear rename path and compact program actions', () => {
   assert.doesNotMatch(html, /libRenameId/);
   assert.match(html, /Name und Löschen findest du gesammelt unter „Bearbeiten“/);
   assert.match(html, /data-edit=/);
-  assert.match(html, /edit-only/);
+  assert.match(html, /progtextaction/);
   assert.match(html, /Weitere Programme \('/);
   assert.doesNotMatch(html, /class="progaction del"/);
 });
@@ -102,10 +102,11 @@ test('warns about unsaved changes and locks the page behind the editor', () => {
   assert.match(html, /lockSurfaceScroll/);
 });
 
-test('uses a flat secondary program list and a stronger active state', () => {
+test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /\.programothersbody \.progitem\{border:0/);
   assert.match(html, /\.progitem\.active\{[^}]*background:linear-gradient/);
-  assert.match(html, /\.progactions\{display:grid;grid-template-columns:repeat\(2/);
+  assert.match(html, /\.progactions\{display:flex/);
+  assert.match(html, /\.progtextaction\{[^}]*background:transparent/);
   assert.match(html, /html\[data-theme="light"\] \.progitem\.active/);
   assert.match(html, /id="createhubbtn"/);
   assert.match(html, /Neues Programm erstellen/);
