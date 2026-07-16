@@ -111,18 +111,19 @@ test('uses one hold-timer color and tappable explanation terms', () => {
   assert.match(html, /id="coachbtn" aria-label=/);
 });
 
-test('creates unique dated copy names without truncating the suffix', () => {
+test('creates unique copy names without putting the date into the title', () => {
   const start = html.indexOf('function programNameWithSuffix');
   const end = html.indexOf('function returnToProgramList', start);
   const context = { LIMITS: { maxNameLen: 30 } };
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
-  const date = new Date(2026, 6, 16, 12).getTime();
-  const first = context.editorUniqueCopyName('Sehr langes Trainingsprogramm', {}, date);
+  const first = context.editorUniqueCopyName('Sehr langes Trainingsprogramm', {});
   assert.equal(first.length <= 30, true);
-  assert.match(first, / \(Kopie 16\.07\.\)$/);
-  const second = context.editorUniqueCopyName('Sehr langes Trainingsprogramm', { one: { name: first } }, date);
+  assert.match(first, / \(Kopie\)$/);
+  assert.doesNotMatch(first, /\d{2}\.\d{2}/);
+  const second = context.editorUniqueCopyName('Sehr langes Trainingsprogramm', { one: { name: first } });
   assert.notEqual(second, first);
   assert.equal(second.length <= 30, true);
-  assert.match(second, / \(Kopie 16\.07\. 2\)$/);
+  assert.match(second, / \(Kopie 2\)$/);
+  assert.doesNotMatch(second, /\d{2}\.\d{2}/);
 });

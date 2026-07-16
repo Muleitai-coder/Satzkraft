@@ -170,6 +170,24 @@ test('validates full backup structure and recorded values', () => {
   invalidSource.programs.default.source = 'extern';
   assert.match(context.validateBackupFile(invalidSource), /ungültige Herkunft/);
 
+  const validProgramDates = validBackup();
+  validProgramDates.programs.default.createdAt = 1_752_662_400_000;
+  validProgramDates.programs.default.updatedAt = 1_752_748_800_000;
+  assert.equal(context.validateBackupFile(validProgramDates), null);
+
+  const invalidCreatedAt = validBackup();
+  invalidCreatedAt.programs.default.createdAt = '16.07.2025';
+  assert.match(context.validateBackupFile(invalidCreatedAt), /ungültig.*(?:Datum|Zeitpunkt|Zeitstempel)|(?:Datum|Zeitpunkt|Zeitstempel).*ungültig/i);
+
+  const invalidUpdatedAt = validBackup();
+  invalidUpdatedAt.programs.default.updatedAt = -1;
+  assert.match(context.validateBackupFile(invalidUpdatedAt), /ungültig.*(?:Datum|Zeitpunkt|Zeitstempel)|(?:Datum|Zeitpunkt|Zeitstempel).*ungültig/i);
+
+  const reversedProgramDates = validBackup();
+  reversedProgramDates.programs.default.createdAt = 200;
+  reversedProgramDates.programs.default.updatedAt = 100;
+  assert.match(context.validateBackupFile(reversedProgramDates), /ungültig.*(?:Datum|Zeitpunkt|Zeitstempel)|(?:Datum|Zeitpunkt|Zeitstempel).*ungültig/i);
+
   const unsafeId = validBackup();
   unsafeId.programs = JSON.parse('{"__proto__":{"name":"X","weeks":[{}],"days":[{"key":"A"}]}}');
   unsafeId.active = '__proto__';

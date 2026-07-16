@@ -242,7 +242,7 @@ test('counts swapped sets in report totals but not in the original exercise tren
   assert.equal(metric.latest, 93.5, 'der hohe Ersatzwert darf den Originaltrend nicht verändern');
 });
 
-test('shows the replacement name in the detailed training protocol', () => {
+test('shows the original and replacement names in the detailed training protocol', () => {
   const program = programFixture();
   const context = appContext({
     dDate: () => '16.07.2026',
@@ -253,9 +253,8 @@ test('shows the replacement name in the detailed training protocol', () => {
     '1|A|bench': { sets: [{ reps: '10', weight: '100' }], swap: 'Brustpresse' }
   }, [{ week: 1, day: 'A', start: 1, dur: 600, complete: true }]);
 
-  assert.match(protocol, /<td class="exn">Brustpresse/);
-  assert.match(protocol, /getauscht/);
-  assert.doesNotMatch(protocol, /<td class="exn">Bankdrücken<\/td>/);
+  assert.match(protocol, /Bankdrücken<\/span>.*→.*<b>Brustpresse<\/b>/);
+  assert.match(protocol, /Getauscht/);
   assert.match(protocol, /10×100/);
 });
 

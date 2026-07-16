@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.1
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.22.0
+**Aktueller Produktstand:** Satzkraft v0.22.1
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -731,3 +731,27 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 ### Abnahme-Grundsatz Pakete I–K
 
 Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; Versionsziele I = 0.20.0, J = 0.21.0, K = 0.22.0 (verschieben sich entsprechend, falls dazwischen Patches nötig werden). Neue Store-Felder (`barw`, `notes`) müssen in Backup-Validierung und H-Migration berücksichtigt sein, bevor das jeweilige Paket released wird.
+
+---
+
+## 15. Patch-Runde nach dem Praxistest von v0.22.0 · v0.22.1
+
+**Status:** Die beschlossenen Korrekturen `FB-20260716-14` bis `FB-20260716-21` sind in v0.22.1 umgesetzt und technisch geprüft. `FB-20260716-22` sowie der ausführliche Leitfaden zum ersten Arbeitsgewicht bleiben Produktentscheidungen für eine spätere Runde.
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260716-14` | beschlossen | Ein für heute gesetzter Übungstausch lässt sich zurücksetzen, solange für diese Übung noch kein Satzwert eingetragen wurde. Die Karte kehrt vollständig zur Originalübung zurück. Gehört zum Tausch eine Vormerkung „Dauerhaft ersetzen“, wird auch diese Vormerkung entfernt. |
+| `FB-20260716-15` | beschlossen | Das Modal „Scheiben pro Seite“ stellt die Beladung visuell und zusätzlich als eindeutige Stückliste je Seite dar. Die Stangenwahl 10 kg, 15 kg und 20 kg sowie „Eigenes Gewicht“ ist ohne Umweg sichtbar; 20 kg bleibt der Standard. Bei eigenem Gewicht erscheint direkt ein numerisches Eingabefeld. Zielgesamtgewicht, Stangengewicht und tatsächlich legbares Gewicht bleiben klar unterscheidbar; eine nur näherungsweise mögliche Last wird ausdrücklich gekennzeichnet. Das Modal bleibt auf kleinen Bildschirmen kompakt und ohne horizontales Abschneiden bedienbar. |
+| `FB-20260716-16` | beschlossen | „Archivieren“ bleibt verfügbar, wird auf Programmkarten aber als kleine, visuell zurückgenommene Nebenaktion statt als großer, aufdringlicher Button dargestellt. |
+| `FB-20260716-17` | beschlossen | Das bei einer Kopie oder Änderung ergänzte Datum steht nicht mehr im Namensbereich. Es erscheint als sekundäre Metainformation in derselben Zeile wie Tage und Wochen und ist dort rechts angeordnet. Ist ein Programm vollständig absolviert, steht in dieser Metazeile ebenfalls der Status „Abgeschlossen“. |
+| `FB-20260716-18` | beschlossen mit offener Detailfrage | Der Informationstext zu „Eigene Vorgabe“ verwendet dieselbe zurückgenommene Schriftgröße wie vergleichbare Editorhinweise. Der Hinweis „Noch kein Arbeitsgewicht“ und die vorhandene Kalibrierinformation sind linksbündig. Der genaue Inhalt eines weiterführenden Leitfadens zur Ermittlung des ersten Arbeitsgewichts ist noch nicht beschlossen und darf in diesem Patch nicht vorweggenommen werden. |
+| `FB-20260716-19` | beschlossen | Nach dem bestätigten Löschen eines Programms führt der Ablauf in die Programmverwaltung beziehungsweise bleibt dort; die App wechselt nicht ungefragt in eine andere Hauptansicht. |
+| `FB-20260716-20` | beschlossen | Beim Abschließen einer Übung, beim Wechsel zur nächsten Karte und beim späteren Einklappen bleibt die sichtbare Position stabil; es gibt kein wahrnehmbares Hin-und-her-Springen. Das Erscheinen des Einklapp-Symbols darf die Vorgabezeile auch vorübergehend nicht umformatieren. Die Zeile „Sätze · Wdh. · Ziel · Pause“ endet ohne Fade oder verschwommenen Rand. Anstelle des ausgeschriebenen Pausenworts steht ein Uhrsymbol mit eindeutigem zugänglichem Namen; Spalten und Abstände bleiben vor und nach dem Übungsabschluss identisch. |
+| `FB-20260716-21` | beschlossen | Im vollständigen Trainingsprotokoll wird ein heutiger Übungstausch in einer eindeutigen Zeile als „Original → Ersatz“ gekennzeichnet; die ausgeführten Sätze gehören sichtbar zum Ersatz. Existiert eine Übungsnotiz, bietet die Zeile eine klar beschriftete Aufklappaktion und zeigt die Notiz nach dem Öffnen inline. Ohne Notiz erscheint keine leere Notizaktion. Die bestehende Regel, Tauschwerte nicht in Progression und Trend der Originalübung einzurechnen, bleibt bestehen. |
+| `FB-20260716-22` | offene Produktentscheidung | Noch nicht festgelegt ist, ob eine vorgemerkte dauerhafte Ersetzung nach Trainingsende in einem Abschluss-Popup oder als nicht modaler Hinweis angeboten wird. Ebenfalls offen bleibt, welche weitergehenden Tausch- und Notizdetails außerhalb des vollständigen Protokolls in „Fortschritt im Trainingsblock“ oder anderen Reportbereichen erscheinen. Bis zur Entscheidung darf weder ein Popup als verbindlicher Standard noch eine weitergehende Reportstruktur festgeschrieben werden. |
+
+### Abgrenzung dieser Patch-Runde
+
+- `FB-20260716-14` bis `FB-20260716-21` sind als einzeln prüfbare UX-Korrekturen in v0.22.1 umgesetzt.
+- `FB-20260716-22` bleibt ausdrücklich offen und ist keine Freigabe zur Umsetzung einer der genannten Varianten.
+- Auch der detaillierte Kalibrier-Leitfaden ist nicht Teil des beschlossenen Patch-Umfangs. Festgelegt sind bei `FB-20260716-18` ausschließlich Typografie und linksbündige Darstellung der bereits vorhandenen Hinweise.

@@ -6,6 +6,24 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+### Offen
+
+- `FB-20260716-22`: Für vorgemerkte dauerhafte Übungswechsel ist noch zu entscheiden, ob nach Trainingsende ein Abschluss-Popup oder ein weniger aufdringlicher Hinweis erscheint. Auch die weitergehende Reportstruktur ist noch nicht festgelegt.
+- Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
+
+## [0.22.1] – 2026-07-16
+
+### Geändert
+
+- `FB-20260716-14`: Ein heutiger Übungstausch kann vor der ersten Satzeingabe wieder auf das Original zurückgesetzt werden; eine zugehörige Vormerkung zur dauerhaften Ersetzung wird dabei ebenfalls entfernt.
+- `FB-20260716-15`: Der Scheibenrechner erhält eine klarere visuelle Beladung pro Seite sowie die direkt sichtbare Stangenwahl 10, 15, 20 kg oder eigenes Gewicht.
+- `FB-20260716-16`: „Archivieren“ wird in der Programmverwaltung als kleinere, dezente Nebenaktion dargestellt.
+- `FB-20260716-17`: Das Erstellungs- beziehungsweise Änderungsdatum wandert als Nebeninformation in die Metazeile bei Tagen und Wochen; dort steht bei vollständig absolvierten Programmen auch „Abgeschlossen“.
+- `FB-20260716-18`: Editor-Hinweistexte verwenden eine einheitliche Schriftgröße; der Hinweis zu fehlendem Arbeitsgewicht und die vorhandene Kalibrierinformation werden linksbündig dargestellt.
+- `FB-20260716-19`: Nach dem Löschen eines Programms bleibt die App in der Programmverwaltung.
+- `FB-20260716-20`: Der Abschluss und das Einklappen einer Übung bleiben ohne sichtbares Springen stabil. Die Vorgabezeile hat keinen Fade-Abschluss mehr und verwendet für die Pause ein zugänglich beschriftetes Uhrsymbol.
+- `FB-20260716-21`: Das vollständige Trainingsprotokoll kennzeichnet einen Tausch als „Original → Ersatz“ und zeigt eine vorhandene Übungsnotiz aufklappbar an.
+
 ## [0.22.0] – 2026-07-16
 
 ### Hinzugefügt

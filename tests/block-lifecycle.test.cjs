@@ -304,6 +304,8 @@ test('shows block success exactly once and persists only the celebration marker'
 test('separates archived programs, exposes read-only actions and blocks stale activation/edit paths', () => {
   const context = appContext();
   const active = blockProgram();
+  active.createdAt = Date.UTC(2026, 6, 15, 12);
+  active.updatedAt = Date.UTC(2026, 6, 16, 12);
   const other = Object.assign({}, blockProgram(), { id: 'other', name: 'Noch offen' });
   const archived = Object.assign({}, blockProgram(), { id: 'old', name: 'Alter Block', archived: true });
   const activeStore = { logs: completeLogs(active), history: [], tg: {}, barw: {}, notes: {}, workout: null, week: 1, day: 'A', blockCelebrated: false };
@@ -331,7 +333,27 @@ test('separates archived programs, exposes read-only actions and blocks stale ac
   assert.doesNotMatch(archivedCard, /data-edit=/);
 
   const activeCard = context.programItemHtml('basis', active);
-  assert.match(activeCard, /Absolviert/);
+  assert.match(activeCard, /Abgeschlossen/);
+  assert.doesNotMatch(activeCard, /Absolviert/);
+  const programNameEnd = activeCard.indexOf('</div>', activeCard.indexOf('class="pn"'));
+  const programActionsStart = activeCard.indexOf('class="progactions"');
+  const secondaryMeta = activeCard.slice(programNameEnd, programActionsStart);
+  assert.match(secondaryMeta, /1 Tag(?:e)? · 3 Wochen/);
+  assert.match(secondaryMeta, /16\.07\.2026/);
+  assert.doesNotMatch(secondaryMeta, /15\.07\.2026/);
+  assert.match(secondaryMeta, /Abgeschlossen/);
+
+  const copyWithoutUpdate = Object.assign({}, other, { createdAt: Date.UTC(2026, 6, 14, 12) });
+  const copyCard = context.programItemHtml('other', copyWithoutUpdate);
+  assert.match(copyCard, /14\.07\.2026/);
+
+  const legacyCard = context.programItemHtml('other', other);
+  assert.doesNotMatch(legacyCard, /Invalid Date|01\.01\.1970/);
+
+  const programMetaCss = html.match(/\.progitem \.pm\{([^}]*)\}/);
+  assert.ok(programMetaCss, 'Metazeile der Programmkarte fehlt');
+  assert.match(programMetaCss[1], /display:flex/);
+  assert.match(programMetaCss[1], /justify-content:space-between/);
   assert.equal(context.setActive('old'), false);
   assert.equal(context.S.active, 'basis');
   assert.match(functionSource('openProgramEditor'), /archived/);
