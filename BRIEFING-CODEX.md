@@ -524,6 +524,7 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 | Feedback-ID | Priorität | Status | Verbindliches Verhalten |
 |---|---|---|---|
 | `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Der achtwöchige Block hat drei Trainingstage pro Woche und neun Übungen. Wochen 1–7 enthalten für jeden vorgesehenen Satz realistisch simulierte Gewichte, Wiederholungen oder Zeiten und insgesamt 21 vollständig abgeschlossene Trainingstage; Woche 8 ist noch komplett offen. Das Backup öffnet Woche 7, Freitag, damit sofort gefüllte Satzfelder sichtbar sind. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
+| `FB-20260716-02` | blockierend | umgesetzt | Eine vollständige Backup-Wiederherstellung ersetzt exakt die im Gerät gespeicherten Programme und Fortschrittsdaten. `normalize` ergänzt das Standardprogramm nur noch bei einem wirklich leeren Programmstand. Sobald das geprüfte Backup gespeichert wird, werden ausstehender Autosave sowie `visibilitychange`-/`pagehide`-Speicherungen bis zum Neuladen blockiert, damit der alte In-Memory-Stand das Backup nicht zurücküberschreibt. |
 
 ### Sportliche Leitentscheidung für Zeitübungen
 

@@ -127,6 +127,79 @@ test('restore flow always creates a safety backup first', () => {
   assert.match(html, /Sichern &amp; wiederherstellen|Sichern & wiederherstellen/);
 });
 
+test('normalization keeps the exact program set from a non-empty backup', () => {
+  const start = html.indexOf('function migrateProgram');
+  const end = html.indexOf('function syncStore', start);
+  assert.ok(start >= 0 && end > start, 'Normalisierung wurde nicht gefunden');
+  const context = {
+    DEFAULT_PROGRAM: { name: 'Standard' },
+    DATA_SCHEMA_VERSION: 4,
+    clone: value => JSON.parse(JSON.stringify(value)),
+    newStore: program => ({ tg: {}, logs: {}, history: [], workout: null, week: 1, day: program.days[0].key }),
+    alias: state => {
+      const store = state.store[state.active];
+      state.tg = store.tg;
+      state.logs = store.logs;
+      state.history = store.history;
+      state.workout = store.workout;
+      state.week = store.week;
+      state.day = store.day;
+    }
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  const program = { name: 'Nur Backup', categories: {}, weeks: [{}], days: [{ key: 'A', ex: [] }] };
+  const store = { tg: {}, logs: {}, history: [], workout: null, week: 1, day: 'A' };
+  const normalized = context.normalize({ programs: { backup: program }, active: 'fehlt', store: { backup: store } });
+  assert.deepEqual(Object.keys(normalized.programs), ['backup']);
+  assert.equal(normalized.active, 'backup');
+  assert.equal(normalized.programs.default, undefined);
+});
+
+test('restore blocks stale autosaves until the restored state reloads', () => {
+  const saveStart = html.indexOf('var saveT');
+  const saveEnd = html.indexOf('document.addEventListener', saveStart);
+  assert.ok(saveStart >= 0 && saveEnd > saveStart, 'Speichersperre wurde nicht gefunden');
+  let persisted = 0;
+  const saveContext = { syncStore() {}, persist() { persisted++; }, clearTimeout() {}, setTimeout() { return 1; } };
+  vm.createContext(saveContext);
+  vm.runInContext(html.slice(saveStart, saveEnd), saveContext);
+  saveContext.backupRestorePending = true;
+  saveContext.save();
+  saveContext.flushSave();
+  assert.equal(persisted, 0);
+
+  const restoreStart = html.indexOf('function confirmBackupRestore');
+  const restoreEnd = html.indexOf('function importBackup', restoreStart);
+  assert.ok(restoreStart >= 0 && restoreEnd > restoreStart, 'Wiederherstellungsaktion wurde nicht gefunden');
+  let actions;
+  let stored;
+  let cleared = false;
+  const restoreContext = {
+    DATA_SCHEMA_VERSION: 4,
+    KEY: 'state',
+    saveT: 123,
+    backupRestorePending: false,
+    clone: value => JSON.parse(JSON.stringify(value)),
+    downloadFullBackup: () => true,
+    showModal: (_title, _body, modalActions) => { actions = modalActions; },
+    clearTimeout: () => { cleared = true; },
+    setTimeout() {},
+    location: { reload() {} },
+    localStorage: { setItem: (_key, value) => { stored = JSON.parse(value); } }
+  };
+  vm.createContext(restoreContext);
+  vm.runInContext(html.slice(restoreStart, restoreEnd), restoreContext);
+  const backup = { schemaVersion: 3, programs: { only: {} }, active: 'only', store: { only: {} } };
+  restoreContext.confirmBackupRestore(backup);
+  actions[0].action();
+  assert.equal(cleared, true);
+  assert.equal(restoreContext.saveT, null);
+  assert.equal(restoreContext.backupRestorePending, true);
+  assert.equal(stored.schemaVersion, 4);
+  assert.deepEqual(Object.keys(stored.programs), ['only']);
+});
+
 test('accepts the complete report example backup with recorded training values', () => {
   const backup = JSON.parse(fs.readFileSync(new URL('../TESTBACKUP-AUSWERTUNG.json', `file://${__filename}`), 'utf8'));
   const context = loadRealBackupValidator();

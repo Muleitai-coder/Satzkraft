@@ -545,10 +545,11 @@ function migrateProgram(p){
 }
 function normalize(v){
  if(!v.programs)v.programs={};
- if(!v.programs["default"])v.programs["default"]=clone(DEFAULT_PROGRAM);
+ var programIds=Object.keys(v.programs);
+ if(!programIds.length){v.programs["default"]=clone(DEFAULT_PROGRAM);programIds=["default"];}
  for(var pid in v.programs)migrateProgram(v.programs[pid]);
  if(!v.store)v.store={};
- if(!v.active||!v.programs[v.active])v.active="default";
+ if(!v.active||!v.programs[v.active])v.active=programIds[0];
  var p=v.programs[v.active];
  if(!v.store[v.active])v.store[v.active]=newStore(p);
  var st=v.store[v.active];
@@ -576,8 +577,8 @@ function persist(){
   return false;
  }
 }
-var saveT;function save(){syncStore();clearTimeout(saveT);saveT=setTimeout(persist,400);}
-function flushSave(){syncStore();clearTimeout(saveT);saveT=null;persist();}
+var saveT,backupRestorePending=false;function save(){if(backupRestorePending)return;syncStore();clearTimeout(saveT);saveT=setTimeout(persist,400);}
+function flushSave(){if(backupRestorePending)return;syncStore();clearTimeout(saveT);saveT=null;persist();}
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")flushSave();});
 window.addEventListener("pagehide",flushSave);
 
@@ -1333,7 +1334,7 @@ function validateBackupFile(raw){
 }
 function confirmBackupRestore(raw){
  showModal("Backup wiederherstellen?","Diese Datei ersetzt <b>alle Programme und den gesamten Fortschritt</b> auf diesem Gerät. Vorher lädt Satzkraft automatisch eine Sicherheitskopie des aktuellen Stands herunter.",[
-  {label:"Sichern & wiederherstellen",cls:"danger",action:function(){if(!downloadFullBackup("satzkraft-vor-wiederherstellung")){showModal("Wiederherstellung abgebrochen","Die Sicherheitskopie konnte nicht heruntergeladen werden. Deine aktuellen Daten wurden nicht verändert.",[{label:"OK",action:null}]);return;}try{var restored=clone(raw);restored.schemaVersion=DATA_SCHEMA_VERSION;localStorage.setItem(KEY,JSON.stringify(restored));setTimeout(function(){location.reload();},350);}catch(e){showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
+  {label:"Sichern & wiederherstellen",cls:"danger",action:function(){if(!downloadFullBackup("satzkraft-vor-wiederherstellung")){showModal("Wiederherstellung abgebrochen","Die Sicherheitskopie konnte nicht heruntergeladen werden. Deine aktuellen Daten wurden nicht verändert.",[{label:"OK",action:null}]);return;}try{var restored=clone(raw);restored.schemaVersion=DATA_SCHEMA_VERSION;clearTimeout(saveT);saveT=null;backupRestorePending=true;localStorage.setItem(KEY,JSON.stringify(restored));setTimeout(function(){location.reload();},350);}catch(e){backupRestorePending=false;showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
   {label:"Abbrechen",action:null}
  ]);
 }
