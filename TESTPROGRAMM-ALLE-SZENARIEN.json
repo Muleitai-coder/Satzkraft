@@ -1,0 +1,241 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Satzkraft Kompletttest",
+  "description": "Testplan für Gewichte, Körpergewicht, Zusatzgewicht, Wiederholungen, kurze und lange Timer sowie Warm-up und Cool-down.",
+  "settings": {
+    "progressionSystem": "double_progression",
+    "deloadMultiplier": 0.6,
+    "requireAllSetsForIncrease": true,
+    "allowAutoDecrease": true,
+    "postDeloadReturnMultiplier": 0.925
+  },
+  "categories": {
+    "grunduebung": {
+      "label": "Grundübung",
+      "color": "amber",
+      "rest": 180,
+      "reps": {
+        "aufbau": [5, 8],
+        "intensiv": [3, 5],
+        "deload": [5, 5]
+      }
+    },
+    "isolation": {
+      "label": "Isolation · Oberkörper",
+      "color": "emerald",
+      "rest": 75,
+      "reps": {
+        "aufbau": [10, 15],
+        "intensiv": [8, 12],
+        "deload": [12, 12]
+      }
+    },
+    "koerpergewicht": {
+      "label": "Körpergewicht + Zusatz",
+      "color": "violet",
+      "rest": 90,
+      "reps": {
+        "aufbau": [6, 12],
+        "intensiv": [5, 8],
+        "deload": [8, 8]
+      }
+    },
+    "zeit": {
+      "label": "Zeit / Ausdauer",
+      "color": "sky",
+      "rest": 60
+    },
+    "technik": {
+      "label": "Technik & Rumpf",
+      "color": "orange",
+      "rest": 45
+    }
+  },
+  "weeks": [
+    {
+      "n": 1,
+      "phase": "aufbau",
+      "label": "Aufbau 1",
+      "rir": "3",
+      "sets": { "grunduebung": 3, "isolation": 3, "koerpergewicht": 3, "zeit": 2, "technik": 3 },
+      "note": "Technik und Bedienung testen."
+    },
+    {
+      "n": 2,
+      "phase": "aufbau",
+      "label": "Aufbau 2",
+      "rir": "2",
+      "sets": { "grunduebung": 4, "isolation": 3, "koerpergewicht": 3, "zeit": 2, "technik": 3 },
+      "note": "Vollständige Sätze und Progression testen."
+    },
+    {
+      "n": 3,
+      "phase": "intensiv",
+      "label": "Intensiv",
+      "rir": "1-2",
+      "sets": { "grunduebung": 3, "isolation": 3, "koerpergewicht": 3, "zeit": 2, "technik": 3 },
+      "note": "Andere Wiederholungsbereiche prüfen."
+    },
+    {
+      "n": 4,
+      "phase": "deload",
+      "label": "Deload",
+      "rir": "4-5",
+      "sets": { "grunduebung": 2, "isolation": 2, "koerpergewicht": 2, "zeit": 1, "technik": 2 },
+      "note": "Weniger Sätze und Deload-Werte testen."
+    }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Kraft & Körpergewicht",
+      "warmup": [
+        { "name": "Armkreisen", "seconds": 30 },
+        { "name": "Kniebeugen ohne Gewicht", "seconds": 45 },
+        { "name": "Cat-Cow", "seconds": 40 }
+      ],
+      "cooldown": [
+        { "name": "Brustdehnung Türrahmen", "seconds": 30 },
+        { "name": "Kindhaltung", "seconds": 45 }
+      ],
+      "exercises": [
+        {
+          "name": "Langhantel-Kniebeuge",
+          "category": "grunduebung",
+          "weighted": true,
+          "increment": 5,
+          "startWeight": 0,
+          "cue": "Knie folgen den Fußspitzen",
+          "video": "Langhantel Kniebeuge Technik",
+          "garmin": "Barbell Squat"
+        },
+        {
+          "name": "Bankdrücken",
+          "category": "grunduebung",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 40,
+          "cue": "Schulterblätter hinten halten",
+          "garmin": "Barbell Bench Press"
+        },
+        {
+          "name": "Klimmzug mit Zusatzgewicht",
+          "category": "koerpergewicht",
+          "weighted": true,
+          "bodyweight": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "target": "Saubere volle Wiederholungen",
+          "progressionMode": "added_weight"
+        },
+        {
+          "name": "Liegestütze",
+          "category": "koerpergewicht",
+          "sets": 2,
+          "reps": [8, 20],
+          "progressionMode": "reps",
+          "target": "Technisch saubere Wiederholungen"
+        },
+        {
+          "name": "Plank",
+          "category": "technik",
+          "unit": "seconds",
+          "timerMode": "target",
+          "sets": 3,
+          "reps": [30, 60],
+          "progressionMode": "seconds",
+          "target": "30–60 Sekunden sauber halten"
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "weekday": "Mittwoch",
+      "title": "Timer & Isolation",
+      "warmup": [
+        { "name": "Armkreisen", "seconds": 30 },
+        { "name": "Cat-Cow", "seconds": 40 }
+      ],
+      "cooldown": [
+        { "name": "Kindhaltung", "seconds": 45 }
+      ],
+      "exercises": [
+        {
+          "name": "Stairmaster",
+          "category": "zeit",
+          "unit": "seconds",
+          "timerMode": "target",
+          "sets": 1,
+          "reps": [1200, 1200],
+          "progressionMode": "none",
+          "target": "20 Minuten gleichmäßiges Tempo"
+        },
+        {
+          "name": "Hollow Body Hold",
+          "category": "technik",
+          "unit": "seconds",
+          "timerMode": "target",
+          "sets": 2,
+          "reps": [20, 45],
+          "target": "Rücken bleibt am Boden"
+        },
+        {
+          "name": "Kurzhantel-Seitheben",
+          "category": "isolation",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 6,
+          "cue": "Kontrolliert ohne Schwung"
+        },
+        {
+          "name": "Kabelzug-Trizepsdrücken",
+          "category": "isolation",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 20,
+          "proxy": "Band-Trizepsdrücken"
+        }
+      ]
+    },
+    {
+      "key": "C",
+      "weekday": "Freitag",
+      "title": "Überschreibungen & Abschluss",
+      "exercises": [
+        {
+          "name": "Rumänisches Kreuzheben",
+          "category": "grunduebung",
+          "weighted": true,
+          "increment": 5,
+          "startWeight": 50,
+          "sets": 4,
+          "reps": [6, 10]
+        },
+        {
+          "name": "Kurzhantel-Curls",
+          "category": "isolation",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 8
+        },
+        {
+          "name": "Ausfallschritte",
+          "category": "koerpergewicht",
+          "progressionMode": "reps",
+          "target": "Je Seite zählen"
+        },
+        {
+          "name": "Dead Hang",
+          "category": "zeit",
+          "unit": "seconds",
+          "timerMode": "max",
+          "sets": 2,
+          "reps": [30, 90],
+          "target": "Griffkraft testen"
+        }
+      ]
+    }
+  ]
+}

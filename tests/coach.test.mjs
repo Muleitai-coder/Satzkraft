@@ -66,6 +66,9 @@ test("coach endpoint security", async t => {
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("cache-control"), "no-store");
     assert.equal(providerBody.messages.length, 1);
+    assert.match(providerBody.system, /"timerMode":"target"/);
+    assert.match(providerBody.system, /"timerMode":"max"/);
+    assert.match(providerBody.system, /"reps":\[minSekunden,maxSekunden\]/);
   });
 
   await t.test("keeps provider errors generic", async () => {

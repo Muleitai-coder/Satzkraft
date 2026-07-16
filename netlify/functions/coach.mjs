@@ -35,7 +35,8 @@ JSON-FORMAT (exakt einhalten):
 "exercises":[
  {"name":"...","category":"<key>","weighted":true,"increment":2.5,"startWeight":40,"garmin":"...","cue":"Technik-Hinweis","video":"YouTube-Suchbegriff"},
  {"name":"Klimmzug mit Zusatz","category":"<key>","weighted":true,"bodyweight":true,"increment":2.5,"startWeight":0},
- {"name":"Plank","category":"core","unit":"seconds","target":"3 x 30-60 s"},
+ {"name":"Plank","category":"core","unit":"seconds","timerMode":"target","sets":3,"reps":[30,60],"target":"Sauber halten"},
+ {"name":"Dead Hang","category":"core","unit":"seconds","timerMode":"max","sets":2,"target":"So lange wie sauber moeglich"},
  {"name":"Liegestuetze","category":"<key>","progressionMode":"reps","target":"3 x max"}
 ]}]}
 
@@ -43,6 +44,7 @@ AUSGABE KOMPAKT HALTEN (Zeitlimit!): JSON minifiziert ohne Zeilenumbrueche/Leerz
 
 REGELN:
 - "reps" in categories nur fuer Kategorien mit automatischer Gewichtssteigerung (Kraft/Hypertrophie). Core/Skill ohne "reps", dafuer "target" an der Uebung.
+- Jede Zeituebung verwendet "unit":"seconds". Feste Zielzeiten verwenden zusaetzlich "timerMode":"target", "sets" und "reps":[minSekunden,maxSekunden]; der Timer stoppt am oberen Wert. Tests bis zum eigenen Abbruch verwenden "timerMode":"max" und einen klaren target-Hinweis.
 - Jeder category-Wert (Uebungen UND weeks[].sets) muss unter categories definiert sein.
 - weekday: echter deutscher Wochentag. Jeder day-key eindeutig.
 - Grenzen: max 7 Tage, max 16 Wochen, max 12 Uebungen/Tag, max 10 Saetze je Kategorie/Woche, name max 30 Zeichen, weekday max 16 Zeichen.
