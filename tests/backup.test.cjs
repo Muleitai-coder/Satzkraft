@@ -127,6 +127,7 @@ test('validates full backup structure and recorded values', () => {
 
   const validBlockChain = validBackup();
   validBlockChain.store.default.blockCelebrated = true;
+  validBlockChain.programs.default.source = 'coach';
   validBlockChain.programs.previous = { name: 'Vorblock', archived: true, weeks: [{}], days: [{ key: 'A', ex: [{ id: 'a1' }] }] };
   validBlockChain.store.previous = JSON.parse(JSON.stringify(validBlockChain.store.default));
   validBlockChain.programs.default.parent = 'previous';
@@ -143,6 +144,31 @@ test('validates full backup structure and recorded values', () => {
   const invalidParent = validBackup();
   invalidParent.programs.default.parent = 'fehlt';
   assert.match(context.validateBackupFile(invalidParent), /ungültigen Vorblock-Verweis/);
+
+  const validPendingSwap = validBackup();
+  validPendingSwap.store.default.pendingReplacements = [
+    { programId: 'default', day: 'A', exId: 'a1', name: 'Brustpresse' }
+  ];
+  validPendingSwap.store.default.workout = {
+    pendingReplacements: [{ programId: 'default', day: 'A', exId: 'a1', name: 'Brustpresse' }]
+  };
+  assert.equal(context.validateBackupFile(validPendingSwap), null);
+
+  const invalidPendingSwap = validBackup();
+  invalidPendingSwap.store.default.pendingReplacements = [
+    { programId: 'default', day: 'A', exId: 'fehlt', name: 'Brustpresse' }
+  ];
+  assert.match(context.validateBackupFile(invalidPendingSwap), /vorgemerkte Übungstausche/);
+
+  const invalidWorkoutPendingSwap = validBackup();
+  invalidWorkoutPendingSwap.store.default.workout = {
+    pendingReplacements: [{ programId: 'default', day: 'A', exId: 'fehlt', name: 'Brustpresse' }]
+  };
+  assert.match(context.validateBackupFile(invalidWorkoutPendingSwap), /vorgemerkten Übungstausch/);
+
+  const invalidSource = validBackup();
+  invalidSource.programs.default.source = 'extern';
+  assert.match(context.validateBackupFile(invalidSource), /ungültige Herkunft/);
 
   const unsafeId = validBackup();
   unsafeId.programs = JSON.parse('{"__proto__":{"name":"X","weeks":[{}],"days":[{"key":"A"}]}}');

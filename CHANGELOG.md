@@ -6,6 +6,20 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.22.0] – 2026-07-16
+
+### Hinzugefügt
+
+- `FB-20260716-11`: Jede offene Übung kann im laufenden Training vor der ersten Satzeingabe für heute getauscht werden. Ersatzsätze zählen für Einheit, Satzsumme und Gesamtvolumen, bleiben aber aus Progression, Trend und Folgeblock-Empfehlung der Originalübung heraus.
+- Dauerhafte Ersetzungen werden während des Trainings nur vorgemerkt. Nach Trainingsende führt eine bewusste Aktion zur richtigen Übung im Editor; erst „Original ersetzen“ ändert das Programm.
+- `FB-20260716-12`: Der KI-Coach speichert bereinigte Wizard-Antworten versioniert in einem eigenen lokalen Schlüssel und bietet beim nächsten Start „Übernehmen“ oder „Neu starten“ an.
+- Absolvierte Coach-Programme bieten eine direkte Neuplanung mit den gespeicherten Antworten an.
+
+### Daten & Kompatibilität
+
+- Ein heutiger Tausch liegt optional als `swap` an der vorhandenen Log-Zelle; ein abweichendes Arbeitsgewicht bleibt ausschließlich bei der Ersatzübung. Dauerhafte Vormerkungen überstehen „Später“ und einen Neustart. Alte Logs bleiben unverändert gültig, vollständige Backups prüfen die neuen optionalen Werte.
+- Coach-Herkunft wird intern als `source:"coach"` erhalten, aber weder Antworten noch Herkunft werden in das Austauschformat einzelner Programme exportiert.
+
 ## [0.21.0] – 2026-07-16
 
 ### Hinzugefügt

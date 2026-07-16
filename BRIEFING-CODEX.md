@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.21.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.22.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.21.0
+**Aktueller Produktstand:** Satzkraft v0.22.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -642,7 +642,7 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 
 ## 14. Beschlossene Produkt-Roadmap · Pakete I–K (Stand 16.07.2026)
 
-**Status:** Pakete I und J sind seit v0.20.0 beziehungsweise v0.21.0 umgesetzt. Paket K ist spezifiziert und noch nicht umgesetzt. Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Reihenfolge verbindlich: **I → J → K**, jeweils ein eigenes Release (Zielversionen 0.20.0 / 0.21.0 / 0.22.0). **Kein Sammel-Release** – jedes Paket wird einzeln umgesetzt und geprüft. K1 baut auf der `_ref`-Identität aus H auf.
+**Status:** Pakete I, J und K sind seit v0.20.0, v0.21.0 beziehungsweise v0.22.0 umgesetzt. Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Die verbindliche Reihenfolge **I → J → K** wurde mit jeweils eigenem Release eingehalten. K1 baut auf der `_ref`-Identität aus H auf.
 
 **Strategische Leitlinie:** Satzkraft differenziert sich über vier Achsen – Trainingsintelligenz (Blockperiodisierung + Progression), „Bring your own AI“, komplett lokal ohne Konto/Abo, deutsch & laientauglich. Die Pakete vertiefen diese Achsen. Social Feeds, Gamification, Muskel-Heatmaps bleiben Nicht-Ziele (Abschnitt 4).
 
@@ -710,6 +710,8 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 ---
 
 ### Paket K – Flexibilität · Ziel v0.22.0
+
+**Umgesetzt in v0.22.0 am 16.07.2026.**
 
 #### K1 · Übung heute tauschen · `FB-20260716-11`
 - **Kontext:** Häufigster Realitätsbruch im Gym („Bank ist belegt“). Baut auf der `_ref`-Identität aus Paket H auf; Detailregeln beim Paketstart gegen die dann aktuelle Codebasis prüfen.

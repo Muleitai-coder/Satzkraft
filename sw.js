@@ -1,4 +1,4 @@
-var CACHE = "satzkraft-v0.21.0";
+var CACHE = "satzkraft-v0.22.0";
 var ASSETS = ["./", "./index.html", "./js/progression.js", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", function (e) {
