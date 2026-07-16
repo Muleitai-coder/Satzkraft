@@ -642,7 +642,7 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 
 ## 14. Beschlossene Produkt-Roadmap · Pakete I–K (Stand 16.07.2026)
 
-**Status: Spezifiziert und vom Produktverantwortlichen beschlossen am 16.07.2026 – noch NICHT umgesetzt.** Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Reihenfolge verbindlich: **I → J → K**, jeweils ein eigenes Release (Zielversionen 0.20.0 / 0.21.0 / 0.22.0). **Kein Sammel-Release** – bewusst entschieden: jedes Paket wird einzeln umgesetzt, geprüft und abgenommen (Ablauf Abschnitt 10). Paket H muss vor Paket I abgeschlossen sein; K1 baut auf der `_ref`-Identität aus H auf.
+**Status: Spezifiziert und vom Produktverantwortlichen beschlossen am 16.07.2026 – noch NICHT umgesetzt.** Grundlage: vollständige Produktanalyse (Code-Review v0.18/0.19 + Praxis-Durchlauf auf 390 px) mit Einzelabstimmung jedes Punkts. Reihenfolge verbindlich: **I → J → K**, jeweils ein eigenes Release (Zielversionen 0.20.0 / 0.21.0 / 0.22.0). **Kein Sammel-Release** – bewusst entschieden: jedes Paket wird einzeln umgesetzt, geprüft und abgenommen (Ablauf Abschnitt 10). Paket H ist seit v0.19.0 umgesetzt (v0.19.1 ergänzte den Trainings-Schreibschutz); **Paket I ist das nächste Arbeitspaket.** K1 baut auf der `_ref`-Identität aus H auf.
 
 **Strategische Leitlinie:** Satzkraft differenziert sich über vier Achsen – Trainingsintelligenz (Blockperiodisierung + Progression), „Bring your own AI“, komplett lokal ohne Konto/Abo, deutsch & laientauglich. Die Pakete vertiefen diese Achsen. Social Feeds, Gamification, Muskel-Heatmaps bleiben Nicht-Ziele (Abschnitt 4).
 
@@ -712,6 +712,7 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 - **Soll:** Im aktiven Training bietet jede offene Übungskarte „Übung tauschen“: Feld für den Namen der Ersatzübung (vorbelegt mit dem gepflegten Feld „Ersatzübung“/`proxy`, falls vorhanden) und zwei Wege:
   1. **„Nur heute“:** Karte zeigt den Ersatznamen mit Vermerk „getauscht“. Eingetragene Sätze werden im Log der Übung mit Vermerk (z. B. `swap:"Name"`) gespeichert; diese Einheit zählt **nicht** in Progressionsempfehlung und Übungstrend der Original-Übung, erscheint aber im Trainingsprotokoll mit Ersatznamen. Nächste Woche gilt wieder das Original.
   2. **„Dauerhaft ersetzen“:** führt in den Editor zur geöffneten Übung; über den H-Pfad „Ersetzen & Fortschritt behalten“ bleibt bei gleichem Übungstyp der Fortschritt erhalten.
+- **Abstimmung mit `FB-20260716-13` (Trainings-Schreibschutz):** Der Schreibschutz bleibt unangetastet – im aktiven Training ist nur „Nur heute“ direkt ausführbar. „Dauerhaft ersetzen“ wird im Training lediglich vorgemerkt und nach Trainingsende im Editor ausgeführt (Hinweis an der Karte, kein stiller Automatismus).
 - **Akzeptanz:** „Nur heute“-Tausch → Werte im Protokoll unter Ersatznamen, Empfehlung der Original-Übung unbeeinflusst, Folgewoche wieder Original; „Dauerhaft“ → wie H-Abnahme.
 
 #### K2 · KI-Coach-Antworten speichern · `FB-20260716-12`
