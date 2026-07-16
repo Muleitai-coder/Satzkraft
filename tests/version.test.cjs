@@ -14,6 +14,14 @@ test('shows one app version and uses it for the service-worker cache', () => {
   assert.match(html, /class="[^"]*appversion[^"]*"/);
   assert.match(html, /class="[^"]*versionfoot[^"]*"/);
   assert.match(html, /function showVersionInfo\(\)/);
+  assert.match(html, /function versionHistoryHtml\(\)/);
+  assert.match(html, /Aktuelle stabile Version/);
+  const documentedVersions = [...changelog.matchAll(/^## \[(\d+\.\d+\.\d+)\]/gm)].map(item => item[1]);
+  for (const documentedVersion of documentedVersions) {
+    assert.ok(html.includes(`version:"v${documentedVersion}"`), `v${documentedVersion} fehlt in der App-Historie`);
+  }
+  assert.doesNotMatch(html, /Aktuelle Testfassung|noch nicht veröffentlichten Testfassung/);
+  assert.match(html, /version:"Vor v0\.14\.1"/);
   assert.doesNotMatch(html, /<h1>Programme<\/h1>[^\n]*<span class="appversion"/);
   assert.match(html, /Entwickelt von Christian Woyack/);
   assert.match(html, /document\.title="Satzkraft · v"\+APP_VERSION/);

@@ -503,7 +503,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .manualhint{color:#71717a;font-size:10px;line-height:1.45;margin-top:7px}
 .sourcepill{display:inline-flex;align-items:center;border:1px solid #313a46;border-radius:999px;padding:4px 8px;color:#a1a1aa;font-size:9px;font-weight:750;margin-bottom:8px}
 .versionfoot{display:flex;justify-content:center;margin:22px auto 2px;color:#71717a;font-size:10px;font-weight:650;letter-spacing:.03em;background:none;border:0;padding:4px;cursor:pointer;text-decoration:underline;text-decoration-color:#3f4652;text-underline-offset:3px}
-.releasehighlights{margin:10px 0 0;padding-left:20px;text-align:left}.releasehighlights li{margin:0 0 9px;line-height:1.45}.legendversion{display:inline;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-color:#3f4652;text-underline-offset:3px}
+.versionintro{margin:9px 0 12px;line-height:1.5}.versionhistory{display:grid;gap:8px;text-align:left}.versionentry{border:1px solid #313a46;border-radius:11px;background:#10151b;overflow:hidden}.versionentry>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}.versionentry>summary::-webkit-details-marker{display:none}.versionentry>summary:after{content:"";width:7px;height:7px;flex:none;border-right:2px solid #71717a;border-bottom:2px solid #71717a;transform:rotate(45deg);transition:transform .15s}.versionentry[open]>summary:after{transform:rotate(225deg)}.versionentry[open]>summary{border-bottom:1px solid #313a46}.versiontitle{display:block;color:#e4e4e7;font-size:12px}.versiondate{display:block;color:#71717a;font-size:9px;margin-top:2px}.versionbody{padding:10px 12px}.versionbody p{margin:0 0 8px;color:#a1a1aa;font-size:10px;line-height:1.45}.versionbody ul{margin:0;padding-left:18px}.versionbody li{margin:0 0 7px;line-height:1.45;font-size:11px}.legendversion{display:inline;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-color:#3f4652;text-underline-offset:3px}
 .developercredit{display:block;margin-top:5px;color:#a1a1aa;font-size:10px;font-weight:650;letter-spacing:.02em}
 :focus-visible{outline:2px solid #34d399;outline-offset:2px}
 .inp:focus-visible,.libta:focus-visible{outline:none}
@@ -850,7 +850,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.17.0";
+var APP_VERSION="0.18.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -929,10 +929,11 @@ function migrateProgram(p){
 }
 function normalize(v){
  if(!v.programs)v.programs={};
- if(!v.programs["default"])v.programs["default"]=clone(DEFAULT_PROGRAM);
+ var programIds=Object.keys(v.programs);
+ if(!programIds.length){v.programs["default"]=clone(DEFAULT_PROGRAM);programIds=["default"];}
  for(var pid in v.programs)migrateProgram(v.programs[pid]);
  if(!v.store)v.store={};
- if(!v.active||!v.programs[v.active])v.active="default";
+ if(!v.active||!v.programs[v.active])v.active=programIds[0];
  var p=v.programs[v.active];
  if(!v.store[v.active])v.store[v.active]=newStore(p);
  var st=v.store[v.active];
@@ -960,8 +961,8 @@ function persist(){
   return false;
  }
 }
-var saveT;function save(){syncStore();clearTimeout(saveT);saveT=setTimeout(persist,400);}
-function flushSave(){syncStore();clearTimeout(saveT);saveT=null;persist();}
+var saveT,backupRestorePending=false;function save(){if(backupRestorePending)return;syncStore();clearTimeout(saveT);saveT=setTimeout(persist,400);}
+function flushSave(){if(backupRestorePending)return;syncStore();clearTimeout(saveT);saveT=null;persist();}
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")flushSave();});
 window.addEventListener("pagehide",flushSave);
 
@@ -1364,9 +1365,21 @@ function showModal(title,msg,btns){
  btns.forEach(function(b,i){h+='<button class="mbtn '+(b.cls||"")+'" data-mi="'+i+'">'+b.label+'</button>';});
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";
 }
+var VERSION_HISTORY=[
+ {version:"v0.18.0",date:"16.07.2026",changes:["Zielzeit- und Maximalzeit-Timer mit Auswahl im Editor, JSON-Import und allen Erstellwegen.","Automatischer Stopp am oberen Zeitziel; Maximaltests laufen bis zum manuellen Stopp.","Lange Zeitwerte werden in Satzfeldern als Minuten mit einer Nachkommastelle angezeigt.","Nach erreichter Zielzeit empfiehlt Satzkraft mehr Widerstand, Tempo oder eine schwierigere Variante.","Kontrastreichere mobile Timerleiste und bernsteinfarbener Zielzustand.","Erledigte Übungen klappen ohne Bildschirmsprung ein.","Vollständige Backups ersetzen zuverlässig alle vorhandenen Programme und Fortschrittsdaten.","Deutliches Info-Symbol ohne Kreis.","Entwickler-Nennung ohne Veröffentlichung privater Kontaktdaten.","Verbindlicher Ablauf für Feedback, Tests, Dokumentation und Versionsentscheidungen."]},
+ {version:"v0.17.0",date:"15.07.2026",changes:["Vollständiges Import-Testprogramm für Gewichte, Körpergewicht, Zusatzgewicht, Timer, eigene Vorgaben sowie Warm-up und Cool-down.","Automatischer Test des vollständigen Testprogramms über die echte Programmprüfung.","Erledigte Übungen bleiben nach dem letzten Satz zunächst geöffnet und klappen verzögert oder beim Wechsel zur nächsten Übung ein.","Timerknopf für Zeitübungen direkt im Eingabefeld; zusätzlicher Startknopf entfernt.","Sätze, Ziel, Gewicht und Pause bleiben gemeinsam in der Vorgabezeile.","Editor zeigt Trainingsgruppe und Übungsparameter einheitlicher.","Aufklapp-Pfeile wurden vertikal vereinheitlicht.","Info-Schaltflächen ohne umgebenden Kreis.","Verständlicher Dreischritt für Programme mit ChatGPT und anderen KIs.","Import erklärt die benötigte vollständige JSON-Antwort und prüft fehlende Felder.","KI-Coach bleibt ohne zusätzlichen Beta-Zugangscode."]},
+ {version:"v0.16.0",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert; kein eigener sicher belegter Veröffentlichungstag oder Git-Tag.",changes:["Erledigte Übungskarten lassen sich im Training öffnen und einklappen.","Satzpause startet zwei Sekunden nach einem vervollständigten Satz automatisch.","Hilfetexte für Trainingsgruppen, Übungstypen, RIR, Phasen, Vorgaben, Startgewichte und Warm-up/Cool-down.","Kalibrierungshinweise für Programme ohne voreingestellte Arbeitsgewichte.","Gewicht und Wiederholungen ergänzen sich beim ersten Eintrag sinnvoll; 0 kg wird nicht als Arbeitsgewicht übernommen.","Trainingsansicht bleibt während der Satzpause scrollbar.","Lange Zeitvorgaben werden lesbar in Minuten dargestellt.","Editorbereiche behalten ihren Aufklappzustand; geöffnete Übungen zeigen keinen irritierenden Verschiebegriff.","Editor-Anleitung und Import wurden verständlicher formuliert."]},
+ {version:"v0.15.4",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert.",changes:["Einheitliches SVG-Icon-System statt plattformabhängiger Unicode-Symbole.","Größere trainingsrelevante Schriften.","Hauptkopfzeile auf Programme und Auswertung reduziert.","Dezentes Feedback für Satz- und Übungsabschlüsse."]},
+ {version:"v0.15.3",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert.",changes:["Geführter Halte-Timer mit Zielbereich, Bestwert, Ton, Vibration und Übergang in die Satzpause.","Kompakte Darstellung erledigter Übungen im laufenden Training."]},
+ {version:"v0.15.2",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert.",changes:["Dreistufige Programmerstellung mit ChatGPT und anderen externen KIs.","Trainingswissenschaftliche Leitplanken in der exportierten KI-Vorlage.","Zentraler Bereich Exportieren und Teilen.","Erstellen-Hub und Importwege verständlicher benannt und geordnet."]},
+ {version:"v0.15.1",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert.",changes:["Verständliche Auswahl des Übungstyps statt abhängiger Checkboxen.","Warm-up und Cool-down mit Übungsauswahl, Sekunden, Reihenfolge und Rückgängig-Funktion im Editor."]},
+ {version:"v0.15.0",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert.",changes:["Direkter Leeren-Button für eingefügtes Programm-JSON.","Bestwerte und zugehörige Wochen in der Auswertung.","Direkter Druck- und PDF-Export.","Auswertung auf drei zentrale Kennzahlen reduziert; Deload-Wochen verzerren gewichtete Trends nicht.","Importtexte, Editor-Hilfen und Trainingslegende aktualisiert.","Doppelte Workout-Steuerung entfernt; die untere Leiste ist die einzige Trainingssteuerung."]},
+ {version:"v0.14.1",date:"13.07.2026",changes:["Sicherer visueller Programmeditor mit Kopie- und Ersetzen-Ablauf.","Vollständige Backups aller Programme und Trainingsdaten mit abgesicherter Wiederherstellung.","Tests für Trainingsdaten, Editor und Backup-Verwaltung.","Erneuerter PWA-Cache für zuverlässigere Aktualisierungen."]},
+ {version:"Vor v0.14.1",date:"Frühe Entwicklungsstände",changes:["Aufbau der lokalen Satzkraft-PWA.","Grundlegende Programm- und Trainingslogik.","Serverseitige KI-Coach-Funktion.","Noch keine konsistent gepflegten App-Versionen oder Release-Tags."]}
+];
+function versionHistoryHtml(){return'<div class="versionhistory">'+VERSION_HISTORY.map(function(entry,index){return'<details class="versionentry"'+(index===0?' open':'')+'><summary><span><b class="versiontitle">'+esc(entry.version)+'</b><span class="versiondate">'+esc(entry.date)+'</span></span></summary><div class="versionbody">'+(entry.note?'<p>'+esc(entry.note)+'</p>':'')+'<ul><li>'+entry.changes.map(esc).join('</li><li>')+'</li></ul></div></details>';}).join('')+'</div>';}
 function showVersionInfo(){
- var items=["Zielzeit- und Maximalzeit-Timer arbeiten jetzt unterschiedlich und passend zur Vorgabe.","Lange Zeitwerte werden in der Satzeingabe als Minuten mit einer Nachkommastelle angezeigt.","Erledigte Übungen klappen ohne sichtbaren Sprung ein; Timer und Info-Symbol sind klarer erkennbar."];
- showModal("Satzkraft v"+esc(APP_VERSION),"<span class=\"developercredit\">Entwickelt von Christian Woyack</span><br><b>Die drei wichtigsten Änderungen dieser Testfassung:</b><ol class=\"releasehighlights\"><li>"+items.map(esc).join("</li><li>")+"</li></ol>",[{label:"Schließen",cls:"primary",action:null}]);
+ showModal("Versionshistorie","<span class=\"developercredit\">Entwickelt von Christian Woyack</span><div class=\"versionintro\"><b>Aktuelle stabile Version: v"+esc(APP_VERSION)+"</b><br>Vollständige Historie aller dokumentierten Veröffentlichungen.</div>"+versionHistoryHtml(),[{label:"Schließen",cls:"primary",action:null}]);
 }
 function hideModal(){var m=document.getElementById("modal");m.style.display="none";m.innerHTML="";modalActions=[];}
 document.getElementById("modal").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var i=+b.dataset.mi,act=modalActions[i];hideModal();if(typeof act==="function")act();});
@@ -1862,7 +1875,7 @@ function validateBackupFile(raw){
 }
 function confirmBackupRestore(raw){
  showModal("Backup wiederherstellen?","Diese Datei ersetzt <b>alle Programme und den gesamten Fortschritt</b> auf diesem Gerät. Vorher lädt Satzkraft automatisch eine Sicherheitskopie des aktuellen Stands herunter.",[
-  {label:"Sichern & wiederherstellen",cls:"danger",action:function(){if(!downloadFullBackup("satzkraft-vor-wiederherstellung")){showModal("Wiederherstellung abgebrochen","Die Sicherheitskopie konnte nicht heruntergeladen werden. Deine aktuellen Daten wurden nicht verändert.",[{label:"OK",action:null}]);return;}try{var restored=clone(raw);restored.schemaVersion=DATA_SCHEMA_VERSION;localStorage.setItem(KEY,JSON.stringify(restored));setTimeout(function(){location.reload();},350);}catch(e){showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
+  {label:"Sichern & wiederherstellen",cls:"danger",action:function(){if(!downloadFullBackup("satzkraft-vor-wiederherstellung")){showModal("Wiederherstellung abgebrochen","Die Sicherheitskopie konnte nicht heruntergeladen werden. Deine aktuellen Daten wurden nicht verändert.",[{label:"OK",action:null}]);return;}try{var restored=clone(raw);restored.schemaVersion=DATA_SCHEMA_VERSION;clearTimeout(saveT);saveT=null;backupRestorePending=true;localStorage.setItem(KEY,JSON.stringify(restored));setTimeout(function(){location.reload();},350);}catch(e){backupRestorePending=false;showModal("Wiederherstellung fehlgeschlagen","Das Backup konnte nicht gespeichert werden. Deine bisherigen Daten wurden nicht verändert.",[{label:"OK",action:null}]);}}},
   {label:"Abbrechen",action:null}
  ]);
 }
@@ -2490,7 +2503,7 @@ function renderLib(){
  h+='<div class="libsec">Fortschritt zurücksetzen</div>';
  h+='<div class="libnote">Löscht eingetragene Sätze &amp; Verlauf des aktiven Programms („'+esc(PROG().name)+'"). Das Programm selbst bleibt erhalten.</div>';
  h+='<div class="librow"><button class="smallbtn del" id="libreset">Fortschritt zurücksetzen</button></div>';
- h+='<button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Änderungen anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span>';
+ h+='<button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
 function renderCreateHub(){
@@ -2499,7 +2512,7 @@ function renderCreateHub(){
  h+='<button class="createchoice" id="coachbtn"><span class="createicon" aria-hidden="true">'+icon("sparkle")+'</span><b>Satzkraft KI-Coach <span style="color:#71717a;font-size:10px">Beta</span></b><small>Beantworte die ausführlichen Fragen und lass dir einen gezielten Trainingsplan erstellen.</small></button>';
  h+='<button class="createchoice" id="externalaibtn"><span class="createicon" aria-hidden="true">'+icon("external")+'</span><b>Mit ChatGPT &amp; Co. erstellen</b><small>Fertigen Anweisungstext kopieren, bei einer beliebigen KI einfügen, Ergebnis importieren.</small></button>';
  h+='<button class="createchoice" id="importbtn"><span class="createicon" aria-hidden="true">'+icon("download")+'</span><b>Fertiges Programm importieren</b><small>Programm-Datei oder kopiertes JSON einfügen. Satzkraft prüft alles vor dem Speichern.</small></button>';
- h+='</div><button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Änderungen anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span></div>';document.getElementById("lib").innerHTML=h;
+ h+='</div><button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderExternalAiCreate(){
  var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Mit ChatGPT &amp; Co.</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">In drei Schritten zu deinem Programm. Satzkraft liefert einen fertigen Text für die KI und prüft das Ergebnis vor dem Speichern.</div>';

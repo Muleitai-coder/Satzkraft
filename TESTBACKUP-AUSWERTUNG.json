@@ -1,0 +1,1394 @@
+{
+  "schemaVersion": 4,
+  "programs": {
+    "auswertungstest8": {
+      "id": "auswertungstest8",
+      "name": "Satzkraft 8-Wochen-Test",
+      "description": "Acht Wochen mit drei Tagen: Wochen 1 bis 7 vollständig, Woche 8 offen.",
+      "settings": {
+        "progressionSystem": "double_progression",
+        "deloadMultiplier": 0.6,
+        "requireAllSetsForIncrease": true,
+        "allowAutoDecrease": true,
+        "postDeloadReturnMultiplier": 0.925
+      },
+      "categories": {
+        "kraft": {
+          "label": "Grundübungen",
+          "color": "amber",
+          "rest": 150,
+          "reps": {
+            "aufbau": [
+              6,
+              10
+            ],
+            "intensiv": [
+              4,
+              6
+            ],
+            "deload": [
+              8,
+              8
+            ]
+          }
+        },
+        "assistenz": {
+          "label": "Assistenz",
+          "color": "emerald",
+          "rest": 90,
+          "reps": {
+            "aufbau": [
+              8,
+              12
+            ],
+            "intensiv": [
+              5,
+              8
+            ],
+            "deload": [
+              10,
+              10
+            ]
+          }
+        },
+        "eigengewicht": {
+          "label": "Eigengewicht",
+          "color": "violet",
+          "rest": 75,
+          "reps": {
+            "aufbau": [
+              10,
+              20
+            ],
+            "intensiv": [
+              12,
+              25
+            ],
+            "deload": [
+              12,
+              15
+            ]
+          }
+        },
+        "zeit": {
+          "label": "Zeit und Ausdauer",
+          "color": "sky",
+          "rest": 60
+        }
+      },
+      "weeks": [
+        {
+          "n": 1,
+          "phase": "aufbau",
+          "label": "Aufbau 1",
+          "rir": "3",
+          "note": "Technik festigen und konservativ starten.",
+          "sets": {
+            "kraft": 3,
+            "assistenz": 3,
+            "eigengewicht": 3,
+            "zeit": 2
+          }
+        },
+        {
+          "n": 2,
+          "phase": "aufbau",
+          "label": "Aufbau 2",
+          "rir": "3",
+          "note": "Kleine Steigerung bei stabiler Technik.",
+          "sets": {
+            "kraft": 3,
+            "assistenz": 3,
+            "eigengewicht": 3,
+            "zeit": 2
+          }
+        },
+        {
+          "n": 3,
+          "phase": "aufbau",
+          "label": "Aufbau 3",
+          "rir": "2",
+          "note": "Volumen und Gewichte weiter steigern.",
+          "sets": {
+            "kraft": 3,
+            "assistenz": 3,
+            "eigengewicht": 3,
+            "zeit": 2
+          }
+        },
+        {
+          "n": 4,
+          "phase": "deload",
+          "label": "Deload 1",
+          "rir": "4-5",
+          "note": "Weniger Sätze und deutlich reduzierte Gewichte.",
+          "sets": {
+            "kraft": 2,
+            "assistenz": 2,
+            "eigengewicht": 2,
+            "zeit": 1
+          }
+        },
+        {
+          "n": 5,
+          "phase": "aufbau",
+          "label": "Aufbau 4",
+          "rir": "2",
+          "note": "Erholt in den zweiten Aufbau starten.",
+          "sets": {
+            "kraft": 3,
+            "assistenz": 3,
+            "eigengewicht": 3,
+            "zeit": 2
+          }
+        },
+        {
+          "n": 6,
+          "phase": "aufbau",
+          "label": "Aufbau 5",
+          "rir": "1-2",
+          "note": "Letzte volle Aufbauwoche.",
+          "sets": {
+            "kraft": 3,
+            "assistenz": 3,
+            "eigengewicht": 3,
+            "zeit": 2
+          }
+        },
+        {
+          "n": 7,
+          "phase": "intensiv",
+          "label": "Intensiv",
+          "rir": "1",
+          "note": "Schwerere Gewichte bei niedrigeren Wiederholungen.",
+          "sets": {
+            "kraft": 3,
+            "assistenz": 3,
+            "eigengewicht": 3,
+            "zeit": 2
+          }
+        },
+        {
+          "n": 8,
+          "phase": "deload",
+          "label": "Deload 2",
+          "rir": "4-5",
+          "note": "Noch vollständig offen für den eigenen Test.",
+          "sets": {
+            "kraft": 2,
+            "assistenz": 2,
+            "eigengewicht": 2,
+            "zeit": 1
+          }
+        }
+      ],
+      "days": [
+        {
+          "key": "A",
+          "wd": "Montag",
+          "title": "Unterkörper und Druck",
+          "ex": [
+            {
+              "id": "A_0",
+              "name": "Langhantel-Kniebeuge",
+              "cat": "kraft",
+              "w": true,
+              "inc": 2.5,
+              "def": 60,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "A_1",
+              "name": "Bankdrücken",
+              "cat": "kraft",
+              "w": true,
+              "inc": 2.5,
+              "def": 40,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "A_2",
+              "name": "Plank",
+              "cat": "zeit",
+              "w": false,
+              "unit": "seconds",
+              "sets": 2,
+              "reps": [
+                30,
+                75
+              ],
+              "pmode": "seconds",
+              "tmode": "target",
+              "target": "30 bis 75 Sekunden sauber halten"
+            }
+          ]
+        },
+        {
+          "key": "B",
+          "wd": "Mittwoch",
+          "title": "Hintere Kette und Zug",
+          "ex": [
+            {
+              "id": "B_0",
+              "name": "Rumänisches Kreuzheben",
+              "cat": "kraft",
+              "w": true,
+              "inc": 2.5,
+              "def": 70,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "B_1",
+              "name": "Langhantel-Rudern",
+              "cat": "assistenz",
+              "w": true,
+              "inc": 2.5,
+              "def": 45,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "B_2",
+              "name": "Dead Hang",
+              "cat": "zeit",
+              "w": false,
+              "unit": "seconds",
+              "sets": 2,
+              "reps": [
+                30,
+                90
+              ],
+              "pmode": "seconds",
+              "tmode": "max",
+              "target": "Maximalzeit für die Griffkraft"
+            }
+          ]
+        },
+        {
+          "key": "C",
+          "wd": "Freitag",
+          "title": "Oberkörper und Ausdauer",
+          "ex": [
+            {
+              "id": "C_0",
+              "name": "Schulterdrücken",
+              "cat": "assistenz",
+              "w": true,
+              "inc": 2.5,
+              "def": 25,
+              "bw": false,
+              "unit": "reps"
+            },
+            {
+              "id": "C_1",
+              "name": "Liegestütze",
+              "cat": "eigengewicht",
+              "w": false,
+              "unit": "reps",
+              "pmode": "reps",
+              "target": "Technisch saubere Wiederholungen"
+            },
+            {
+              "id": "C_2",
+              "name": "Stairmaster",
+              "cat": "zeit",
+              "w": false,
+              "unit": "seconds",
+              "sets": 1,
+              "reps": [
+                900,
+                1200
+              ],
+              "pmode": "none",
+              "tmode": "target",
+              "target": "15 bis 20 Minuten gleichmäßiges Tempo"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "active": "auswertungstest8",
+  "store": {
+    "auswertungstest8": {
+      "tg": {
+        "7|A_0": "72.5",
+        "7|A_1": "52.5",
+        "7|B_0": "90",
+        "7|B_1": "57.5",
+        "7|C_0": "35"
+      },
+      "logs": {
+        "1|A|A_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "60"
+            },
+            {
+              "reps": "8",
+              "weight": "60"
+            },
+            {
+              "reps": "7",
+              "weight": "60"
+            }
+          ]
+        },
+        "1|A|A_1": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "40"
+            },
+            {
+              "reps": "8",
+              "weight": "40"
+            },
+            {
+              "reps": "7",
+              "weight": "40"
+            }
+          ]
+        },
+        "1|A|A_2": {
+          "sets": [
+            {
+              "reps": "40",
+              "weight": ""
+            },
+            {
+              "reps": "38",
+              "weight": ""
+            }
+          ]
+        },
+        "1|B|B_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "70"
+            },
+            {
+              "reps": "8",
+              "weight": "70"
+            },
+            {
+              "reps": "7",
+              "weight": "70"
+            }
+          ]
+        },
+        "1|B|B_1": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "45"
+            },
+            {
+              "reps": "8",
+              "weight": "45"
+            },
+            {
+              "reps": "7",
+              "weight": "45"
+            }
+          ]
+        },
+        "1|B|B_2": {
+          "sets": [
+            {
+              "reps": "35",
+              "weight": ""
+            },
+            {
+              "reps": "32",
+              "weight": ""
+            }
+          ]
+        },
+        "1|C|C_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "25"
+            },
+            {
+              "reps": "8",
+              "weight": "25"
+            },
+            {
+              "reps": "7",
+              "weight": "25"
+            }
+          ]
+        },
+        "1|C|C_1": {
+          "sets": [
+            {
+              "reps": "12",
+              "weight": ""
+            },
+            {
+              "reps": "11",
+              "weight": ""
+            },
+            {
+              "reps": "10",
+              "weight": ""
+            }
+          ]
+        },
+        "1|C|C_2": {
+          "sets": [
+            {
+              "reps": "900",
+              "weight": ""
+            }
+          ]
+        },
+        "2|A|A_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "62.5"
+            },
+            {
+              "reps": "8",
+              "weight": "62.5"
+            },
+            {
+              "reps": "8",
+              "weight": "62.5"
+            }
+          ]
+        },
+        "2|A|A_1": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "42.5"
+            },
+            {
+              "reps": "8",
+              "weight": "42.5"
+            },
+            {
+              "reps": "8",
+              "weight": "42.5"
+            }
+          ]
+        },
+        "2|A|A_2": {
+          "sets": [
+            {
+              "reps": "45",
+              "weight": ""
+            },
+            {
+              "reps": "43",
+              "weight": ""
+            }
+          ]
+        },
+        "2|B|B_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "75"
+            },
+            {
+              "reps": "8",
+              "weight": "75"
+            },
+            {
+              "reps": "8",
+              "weight": "75"
+            }
+          ]
+        },
+        "2|B|B_1": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "47.5"
+            },
+            {
+              "reps": "8",
+              "weight": "47.5"
+            },
+            {
+              "reps": "8",
+              "weight": "47.5"
+            }
+          ]
+        },
+        "2|B|B_2": {
+          "sets": [
+            {
+              "reps": "40",
+              "weight": ""
+            },
+            {
+              "reps": "37",
+              "weight": ""
+            }
+          ]
+        },
+        "2|C|C_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "27.5"
+            },
+            {
+              "reps": "8",
+              "weight": "27.5"
+            },
+            {
+              "reps": "8",
+              "weight": "27.5"
+            }
+          ]
+        },
+        "2|C|C_1": {
+          "sets": [
+            {
+              "reps": "14",
+              "weight": ""
+            },
+            {
+              "reps": "13",
+              "weight": ""
+            },
+            {
+              "reps": "12",
+              "weight": ""
+            }
+          ]
+        },
+        "2|C|C_2": {
+          "sets": [
+            {
+              "reps": "960",
+              "weight": ""
+            }
+          ]
+        },
+        "3|A|A_0": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "65"
+            },
+            {
+              "reps": "8",
+              "weight": "65"
+            },
+            {
+              "reps": "8",
+              "weight": "65"
+            }
+          ]
+        },
+        "3|A|A_1": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "45"
+            },
+            {
+              "reps": "8",
+              "weight": "45"
+            },
+            {
+              "reps": "8",
+              "weight": "45"
+            }
+          ]
+        },
+        "3|A|A_2": {
+          "sets": [
+            {
+              "reps": "50",
+              "weight": ""
+            },
+            {
+              "reps": "48",
+              "weight": ""
+            }
+          ]
+        },
+        "3|B|B_0": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "80"
+            },
+            {
+              "reps": "8",
+              "weight": "80"
+            },
+            {
+              "reps": "8",
+              "weight": "80"
+            }
+          ]
+        },
+        "3|B|B_1": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "50"
+            },
+            {
+              "reps": "8",
+              "weight": "50"
+            },
+            {
+              "reps": "8",
+              "weight": "50"
+            }
+          ]
+        },
+        "3|B|B_2": {
+          "sets": [
+            {
+              "reps": "45",
+              "weight": ""
+            },
+            {
+              "reps": "42",
+              "weight": ""
+            }
+          ]
+        },
+        "3|C|C_0": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "30"
+            },
+            {
+              "reps": "8",
+              "weight": "30"
+            },
+            {
+              "reps": "8",
+              "weight": "30"
+            }
+          ]
+        },
+        "3|C|C_1": {
+          "sets": [
+            {
+              "reps": "16",
+              "weight": ""
+            },
+            {
+              "reps": "15",
+              "weight": ""
+            },
+            {
+              "reps": "14",
+              "weight": ""
+            }
+          ]
+        },
+        "3|C|C_2": {
+          "sets": [
+            {
+              "reps": "1020",
+              "weight": ""
+            }
+          ]
+        },
+        "4|A|A_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "40"
+            },
+            {
+              "reps": "8",
+              "weight": "40"
+            }
+          ]
+        },
+        "4|A|A_1": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "27.5"
+            },
+            {
+              "reps": "8",
+              "weight": "27.5"
+            }
+          ]
+        },
+        "4|A|A_2": {
+          "sets": [
+            {
+              "reps": "42",
+              "weight": ""
+            },
+            {
+              "reps": "40",
+              "weight": ""
+            }
+          ]
+        },
+        "4|B|B_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "47.5"
+            },
+            {
+              "reps": "8",
+              "weight": "47.5"
+            }
+          ]
+        },
+        "4|B|B_1": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "30"
+            },
+            {
+              "reps": "8",
+              "weight": "30"
+            }
+          ]
+        },
+        "4|B|B_2": {
+          "sets": [
+            {
+              "reps": "36",
+              "weight": ""
+            },
+            {
+              "reps": "34",
+              "weight": ""
+            }
+          ]
+        },
+        "4|C|C_0": {
+          "sets": [
+            {
+              "reps": "8",
+              "weight": "17.5"
+            },
+            {
+              "reps": "8",
+              "weight": "17.5"
+            }
+          ]
+        },
+        "4|C|C_1": {
+          "sets": [
+            {
+              "reps": "12",
+              "weight": ""
+            },
+            {
+              "reps": "12",
+              "weight": ""
+            }
+          ]
+        },
+        "4|C|C_2": {
+          "sets": [
+            {
+              "reps": "900",
+              "weight": ""
+            }
+          ]
+        },
+        "5|A|A_0": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "67.5"
+            },
+            {
+              "reps": "9",
+              "weight": "67.5"
+            },
+            {
+              "reps": "8",
+              "weight": "67.5"
+            }
+          ]
+        },
+        "5|A|A_1": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "47.5"
+            },
+            {
+              "reps": "9",
+              "weight": "47.5"
+            },
+            {
+              "reps": "8",
+              "weight": "47.5"
+            }
+          ]
+        },
+        "5|A|A_2": {
+          "sets": [
+            {
+              "reps": "55",
+              "weight": ""
+            },
+            {
+              "reps": "52",
+              "weight": ""
+            }
+          ]
+        },
+        "5|B|B_0": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "82.5"
+            },
+            {
+              "reps": "9",
+              "weight": "82.5"
+            },
+            {
+              "reps": "8",
+              "weight": "82.5"
+            }
+          ]
+        },
+        "5|B|B_1": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "52.5"
+            },
+            {
+              "reps": "9",
+              "weight": "52.5"
+            },
+            {
+              "reps": "8",
+              "weight": "52.5"
+            }
+          ]
+        },
+        "5|B|B_2": {
+          "sets": [
+            {
+              "reps": "50",
+              "weight": ""
+            },
+            {
+              "reps": "47",
+              "weight": ""
+            }
+          ]
+        },
+        "5|C|C_0": {
+          "sets": [
+            {
+              "reps": "9",
+              "weight": "30"
+            },
+            {
+              "reps": "9",
+              "weight": "30"
+            },
+            {
+              "reps": "8",
+              "weight": "30"
+            }
+          ]
+        },
+        "5|C|C_1": {
+          "sets": [
+            {
+              "reps": "18",
+              "weight": ""
+            },
+            {
+              "reps": "17",
+              "weight": ""
+            },
+            {
+              "reps": "16",
+              "weight": ""
+            }
+          ]
+        },
+        "5|C|C_2": {
+          "sets": [
+            {
+              "reps": "1080",
+              "weight": ""
+            }
+          ]
+        },
+        "6|A|A_0": {
+          "sets": [
+            {
+              "reps": "10",
+              "weight": "70"
+            },
+            {
+              "reps": "9",
+              "weight": "70"
+            },
+            {
+              "reps": "9",
+              "weight": "70"
+            }
+          ]
+        },
+        "6|A|A_1": {
+          "sets": [
+            {
+              "reps": "10",
+              "weight": "50"
+            },
+            {
+              "reps": "9",
+              "weight": "50"
+            },
+            {
+              "reps": "9",
+              "weight": "50"
+            }
+          ]
+        },
+        "6|A|A_2": {
+          "sets": [
+            {
+              "reps": "60",
+              "weight": ""
+            },
+            {
+              "reps": "58",
+              "weight": ""
+            }
+          ]
+        },
+        "6|B|B_0": {
+          "sets": [
+            {
+              "reps": "10",
+              "weight": "87.5"
+            },
+            {
+              "reps": "9",
+              "weight": "87.5"
+            },
+            {
+              "reps": "9",
+              "weight": "87.5"
+            }
+          ]
+        },
+        "6|B|B_1": {
+          "sets": [
+            {
+              "reps": "10",
+              "weight": "55"
+            },
+            {
+              "reps": "9",
+              "weight": "55"
+            },
+            {
+              "reps": "9",
+              "weight": "55"
+            }
+          ]
+        },
+        "6|B|B_2": {
+          "sets": [
+            {
+              "reps": "55",
+              "weight": ""
+            },
+            {
+              "reps": "52",
+              "weight": ""
+            }
+          ]
+        },
+        "6|C|C_0": {
+          "sets": [
+            {
+              "reps": "10",
+              "weight": "32.5"
+            },
+            {
+              "reps": "9",
+              "weight": "32.5"
+            },
+            {
+              "reps": "9",
+              "weight": "32.5"
+            }
+          ]
+        },
+        "6|C|C_1": {
+          "sets": [
+            {
+              "reps": "20",
+              "weight": ""
+            },
+            {
+              "reps": "19",
+              "weight": ""
+            },
+            {
+              "reps": "18",
+              "weight": ""
+            }
+          ]
+        },
+        "6|C|C_2": {
+          "sets": [
+            {
+              "reps": "1140",
+              "weight": ""
+            }
+          ]
+        },
+        "7|A|A_0": {
+          "sets": [
+            {
+              "reps": "6",
+              "weight": "72.5"
+            },
+            {
+              "reps": "6",
+              "weight": "72.5"
+            },
+            {
+              "reps": "5",
+              "weight": "72.5"
+            }
+          ]
+        },
+        "7|A|A_1": {
+          "sets": [
+            {
+              "reps": "6",
+              "weight": "52.5"
+            },
+            {
+              "reps": "6",
+              "weight": "52.5"
+            },
+            {
+              "reps": "5",
+              "weight": "52.5"
+            }
+          ]
+        },
+        "7|A|A_2": {
+          "sets": [
+            {
+              "reps": "65",
+              "weight": ""
+            },
+            {
+              "reps": "62",
+              "weight": ""
+            }
+          ]
+        },
+        "7|B|B_0": {
+          "sets": [
+            {
+              "reps": "6",
+              "weight": "90"
+            },
+            {
+              "reps": "6",
+              "weight": "90"
+            },
+            {
+              "reps": "5",
+              "weight": "90"
+            }
+          ]
+        },
+        "7|B|B_1": {
+          "sets": [
+            {
+              "reps": "6",
+              "weight": "57.5"
+            },
+            {
+              "reps": "6",
+              "weight": "57.5"
+            },
+            {
+              "reps": "5",
+              "weight": "57.5"
+            }
+          ]
+        },
+        "7|B|B_2": {
+          "sets": [
+            {
+              "reps": "60",
+              "weight": ""
+            },
+            {
+              "reps": "57",
+              "weight": ""
+            }
+          ]
+        },
+        "7|C|C_0": {
+          "sets": [
+            {
+              "reps": "6",
+              "weight": "35"
+            },
+            {
+              "reps": "6",
+              "weight": "35"
+            },
+            {
+              "reps": "5",
+              "weight": "35"
+            }
+          ]
+        },
+        "7|C|C_1": {
+          "sets": [
+            {
+              "reps": "22",
+              "weight": ""
+            },
+            {
+              "reps": "21",
+              "weight": ""
+            },
+            {
+              "reps": "20",
+              "weight": ""
+            }
+          ]
+        },
+        "7|C|C_2": {
+          "sets": [
+            {
+              "reps": "1200",
+              "weight": ""
+            }
+          ]
+        }
+      },
+      "history": [
+        {
+          "week": 1,
+          "day": "A",
+          "start": 1777910400000,
+          "end": 1777913790000,
+          "dur": 3390,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 1,
+          "day": "B",
+          "start": 1778083200000,
+          "end": 1778086830000,
+          "dur": 3630,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 1,
+          "day": "C",
+          "start": 1778256000000,
+          "end": 1778259870000,
+          "dur": 3870,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 2,
+          "day": "A",
+          "start": 1778515200000,
+          "end": 1778518680000,
+          "dur": 3480,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 2,
+          "day": "B",
+          "start": 1778688000000,
+          "end": 1778691720000,
+          "dur": 3720,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 2,
+          "day": "C",
+          "start": 1778860800000,
+          "end": 1778864760000,
+          "dur": 3960,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 3,
+          "day": "A",
+          "start": 1779120000000,
+          "end": 1779123570000,
+          "dur": 3570,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 3,
+          "day": "B",
+          "start": 1779292800000,
+          "end": 1779296610000,
+          "dur": 3810,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 3,
+          "day": "C",
+          "start": 1779465600000,
+          "end": 1779469650000,
+          "dur": 4050,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 4,
+          "day": "A",
+          "start": 1779724800000,
+          "end": 1779728460000,
+          "dur": 3660,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 4,
+          "day": "B",
+          "start": 1779897600000,
+          "end": 1779901500000,
+          "dur": 3900,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 4,
+          "day": "C",
+          "start": 1780070400000,
+          "end": 1780074540000,
+          "dur": 4140,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 5,
+          "day": "A",
+          "start": 1780329600000,
+          "end": 1780333350000,
+          "dur": 3750,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 5,
+          "day": "B",
+          "start": 1780502400000,
+          "end": 1780506390000,
+          "dur": 3990,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 5,
+          "day": "C",
+          "start": 1780675200000,
+          "end": 1780679430000,
+          "dur": 4230,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 6,
+          "day": "A",
+          "start": 1780934400000,
+          "end": 1780938240000,
+          "dur": 3840,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 6,
+          "day": "B",
+          "start": 1781107200000,
+          "end": 1781111280000,
+          "dur": 4080,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 6,
+          "day": "C",
+          "start": 1781280000000,
+          "end": 1781284320000,
+          "dur": 4320,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 7,
+          "day": "A",
+          "start": 1781539200000,
+          "end": 1781543130000,
+          "dur": 3930,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 7,
+          "day": "B",
+          "start": 1781712000000,
+          "end": 1781716170000,
+          "dur": 4170,
+          "complete": true,
+          "segments": 1
+        },
+        {
+          "week": 7,
+          "day": "C",
+          "start": 1781884800000,
+          "end": 1781889210000,
+          "dur": 4410,
+          "complete": true,
+          "segments": 1
+        }
+      ],
+      "workout": null,
+      "week": 7,
+      "day": "C"
+    }
+  }
+}

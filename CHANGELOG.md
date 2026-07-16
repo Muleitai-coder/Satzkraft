@@ -6,11 +6,14 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.18.0] – 2026-07-16
+
 ### Hinzugefügt
 
 - `FB-20260715-01`: Zeitübungen unterstützen jetzt die Modi `target` (automatischer Stopp am oberen Ziel) und `max` (manueller Stopp). Der Modus kann im Programmeditor gewählt und im JSON mit `timerMode` importiert/exportiert werden.
-- `FB-20260715-07`: Ein Klick auf die Versionsnummer in der Fußzeile öffnet ein Popup mit den drei wichtigsten Änderungen der aktuellen Testfassung.
+- `FB-20260715-07`: Ein Klick auf die Versionsnummer in der Fußzeile öffnet die Versionsübersicht.
 - `FB-20260715-09`: Fußbereiche und Versions-Popup nennen Christian Woyack als Entwickler, ohne Adresse oder Kontaktdaten zu veröffentlichen.
+- `FB-20260715-11`: Die Versionsübersicht zeigt für Tester und Dritte die vollständige dokumentierte Historie von den frühen Entwicklungsständen bis zur aktuellen unveröffentlichten Testfassung.
 
 ### Geändert
 
@@ -24,6 +27,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 ### Behoben
 
 - `FB-20260715-05`: Beim automatischen Einklappen einer erledigten Übung wird die Position der aktuell bearbeiteten Übung erhalten, sodass der Bildschirm nicht mehr springt.
+- `FB-20260716-02`: Eine vollständige Backup-Wiederherstellung ersetzt jetzt tatsächlich alle vorhandenen Programme und Fortschrittsdaten. Das Standardprogramm wird nicht mehr ungefragt ergänzt, und ein ausstehender Autosave kann das gerade eingespielte Backup nicht mehr mit dem alten Stand überschreiben.
 
 ### Offen
 

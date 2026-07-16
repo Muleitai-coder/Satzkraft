@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.17.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.18.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.17.0
+**Aktueller Produktstand:** Satzkraft v0.18.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -20,6 +20,7 @@ Satzkraft ist eine deutschsprachige Krafttrainings-PWA, komplett lokal (localSto
 | `tests/*.test.cjs / *.mjs` | Node-Tests (`node --test tests/`), schneiden Funktionen per String-Anker aus `index.html` |
 | `CHANGELOG.md` | Verbindliche Versionshistorie; laufende Änderungen zuerst unter `Unreleased` |
 | `TESTPROGRAMM-ALLE-SZENARIEN.json` | Valides Importprogramm für manuelle Tests aller wichtigen Übungs- und Editorvarianten |
+| `TESTBACKUP-AUSWERTUNG.json` | Vollständiges, wiederherstellbares Test-Backup eines achtwöchigen Blocks; Wochen 1–7 sind mit allen Satzwerten abgeschlossen, Woche 8 ist offen |
 
 Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen mit Standardwerten), `weeks` (Phasen `aufbau|intensiv|deload`, RIR, Satzzahlen je Kategorie), `days` mit `ex` (Übungen). Übung: `w` (weighted), `bw` (bodyweight = Zusatzgewicht), `unit` (`reps|seconds`), `sets`/`reps` als eigene Vorgabe, optional `wu`/`cd` (Warm-up/Cool-down, zeitbasiert, Whitelist `WUCD_LIB`). Externes Austauschformat: `format:"trainings-block"`, `version:2` (siehe `BLANK_TEMPLATE` und `parseProgram`).
 
@@ -406,6 +407,16 @@ Die folgenden Punkte sind **umgesetzt und abgenommen**. Bei Widersprüchen zu ä
 5. **Briefing pflegen:** Bei neuen verbindlichen Produktentscheidungen oder Architekturregeln diesen aktuellen Statusabschnitt erweitern. Detailtickets gehören ins Briefing, nutzerorientierte Zusammenfassungen ins Changelog.
 6. **Prüfen:** Gesamte Node-Testsuite, `git diff --check` und risikogerechte manuelle Browserprüfung ausführen. Der aktuelle Versions-Test muss zusätzlich sicherstellen, dass die Version im Changelog vorkommt.
 7. **Git-Abschluss:** Zusammenhängend committen; bei echten veröffentlichten Releases künftig einen Git-Tag `vVERSION` anlegen. Historische Versionen ohne vorhandenen Tag werden nicht nachträglich als angeblich veröffentlichte Tags ausgegeben.
+8. **Automatischer GitHub-Abschluss:** Nach vollständig umgesetzter und technisch erfolgreich geprüfter Arbeit die zum Auftrag gehörenden Dateien zusammenhängend committen und den Commit automatisch auf den aktuellen Arbeitsbranch von `origin` hochladen. Die Produktabnahme durch den Nutzer darf danach auf diesem hochgeladenen Arbeitsstand erfolgen; ein Push ist noch kein Merge und kein Release. Die ausführlichen Sicherheitsgrenzen stehen in `AGENTS.md`.
+
+### 9.1 · Grenzen des automatischen Uploads
+
+- Der Nutzer kann den Upload für jeden Auftrag mit „nicht hochladen“ oder „nur lokal“ aussetzen.
+- Fehlgeschlagene Tests, unklarer Dateiumfang, mögliche Geheimnisse oder fehlende Berechtigungen stoppen Commit beziehungsweise Upload.
+- Bereits vorhandene, nicht zum Auftrag gehörende Änderungen werden nicht ungefragt aufgenommen.
+- Kein Force-Push, kein automatischer Wechsel auf `main`, kein Merge, kein Release und kein Tag ohne den dafür vorgesehenen Release-Schritt.
+- Wird der Push wegen eines abweichenden Remote-Stands abgelehnt, wird nichts erzwungen; der Stand wird sicher geprüft und der Konflikt gemeldet.
+- Der Abschlussbericht nennt Commit, Branch, Tests und den tatsächlichen Upload-Status.
 
 ---
 
@@ -492,7 +503,7 @@ Erst die erfolgreiche technische Prüfung beendet die Umsetzung. Die Rückmeldun
 
 ## 11. Aktuelle Feedback-Runde · Kompletttest vom 15.07.2026
 
-Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nicht als neue sichtbare Version veröffentlicht. Bis zur Nutzerabnahme bleibt `APP_VERSION` bei v0.17.0.
+Die folgenden Punkte sind umgesetzt, technisch geprüft und mit Satzkraft v0.18.0 veröffentlicht.
 
 | Feedback-ID | Priorität | Status | Verbindliches Verhalten |
 |---|---|---|---|
@@ -502,10 +513,18 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 | `FB-20260715-04` | störend | umgesetzt | Der Zielzustand des Halte-Timers ist bernsteinfarben statt grün; die Stopp-Schaltfläche bleibt kontrastreich. Auf kleinen Bildschirmen stehen Timerstatus und Aktionen in zwei klaren Zeilen. |
 | `FB-20260715-05` | störend | umgesetzt | Beim Einklappen einer vorherigen erledigten Übung wird die Bildschirmposition der aktuell fokussierten Übung ausgeglichen. |
 | `FB-20260715-06` | Wunsch | umgesetzt | Info-Schaltflächen verwenden ein deutliches gefülltes `i` ohne Kreis. |
-| `FB-20260715-07` | Wunsch | umgesetzt | Kein Versions-Chip mehr neben „Programme“. Die anklickbare Version steht im Fußbereich und öffnet genau drei aktuelle Änderungshöhepunkte. |
+| `FB-20260715-07` | Wunsch | umgesetzt/erweitert | Kein Versions-Chip mehr neben „Programme“. Die anklickbare Version steht im Fußbereich und öffnet die Versionsübersicht. Die frühere Begrenzung auf drei Höhepunkte wurde durch `FB-20260715-11` ersetzt. |
 | `FB-20260715-08` | Produktentscheidung | entschieden/offen | Aktuelle Entscheidung: keine Adresse veröffentlichen. Ein vollständiges Impressum bleibt vorerst offen; keine Privatadresse oder private Kontaktdaten in App, Briefing, Changelog oder Tests aufnehmen. |
 | `FB-20260715-09` | Wunsch | umgesetzt | In Trainingsfußzeile, Programmverwaltung und Versions-Popup steht „Entwickelt von Christian Woyack“. Die Nennung enthält bewusst keine Adresse oder Kontaktdaten. |
 | `FB-20260715-10` | störend | umgesetzt | Timer-Modi sind in allen Erstellwegen berücksichtigt: manuelle Erstellung führt in den Editor, Zeitübungen zeigen dort die Moduswahl; externe KI-Vorlage und integrierter KI-Coach erzeugen bzw. erhalten `timerMode`. Zielzeit benötigt `sets` und `reps:[minSekunden,maxSekunden]`; Maximalzeit läuft bis zum eigenen Stopp. |
+| `FB-20260715-11` | Wunsch | umgesetzt | Die anklickbare Version öffnet eine vollständige, scrollbar aufgebaute Historie: jede dokumentierte Version von v0.14.1 bis zur aktuellen v0.18.0 sowie die rekonstruierten und frühen Entwicklungsstände. Rekonstruierte Einträge sind als solche gekennzeichnet. |
+
+## 12. Testdaten für die Auswertung · 16.07.2026
+
+| Feedback-ID | Priorität | Status | Verbindliches Verhalten |
+|---|---|---|---|
+| `FB-20260716-01` | Wunsch | umgesetzt | `TESTBACKUP-AUSWERTUNG.json` lässt sich über „Programme → Daten sichern → Backup wiederherstellen“ laden. Der achtwöchige Block hat drei Trainingstage pro Woche und neun Übungen. Wochen 1–7 enthalten für jeden vorgesehenen Satz realistisch simulierte Gewichte, Wiederholungen oder Zeiten und insgesamt 21 vollständig abgeschlossene Trainingstage; Woche 8 ist noch komplett offen. Das Backup öffnet Woche 7, Freitag, damit sofort gefüllte Satzfelder sichtbar sind. Die Wiederherstellung erzeugt vorher automatisch eine Sicherheitskopie des aktuellen Gerätestands. |
+| `FB-20260716-02` | blockierend | umgesetzt | Eine vollständige Backup-Wiederherstellung ersetzt exakt die im Gerät gespeicherten Programme und Fortschrittsdaten. `normalize` ergänzt das Standardprogramm nur noch bei einem wirklich leeren Programmstand. Sobald das geprüfte Backup gespeichert wird, werden ausstehender Autosave sowie `visibilitychange`-/`pagehide`-Speicherungen bis zum Neuladen blockiert, damit der alte In-Memory-Stand das Backup nicht zurücküberschreibt. |
 
 ### Sportliche Leitentscheidung für Zeitübungen
 
@@ -518,4 +537,4 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 
 - Testszenarien: Plank (`target`, 30–60 Sek), Stairmaster (`target`, 20,0 min) und Dead Hang (`max`) aus `TESTPROGRAMM-ALLE-SZENARIEN.json`.
 - Mobile Browserprüfung: 390 × 844 px; Minutenfeld, Timerleiste, Versions-Popup und Konsole prüfen.
-- Release nach Nutzerabnahme voraussichtlich als zusammenhängendes UX-Paket; Versionsnummer erst dann festlegen und mit Service-Worker-Cache synchron erhöhen.
+- Release als zusammenhängendes UX-Paket v0.18.0; `APP_VERSION`, Service-Worker-Cache, Changelog und sichtbare Versionshistorie sind synchron.
