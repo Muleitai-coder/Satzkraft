@@ -850,7 +850,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.18.0";
+var APP_VERSION="0.19.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -1366,6 +1366,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";
 }
 var VERSION_HISTORY=[
+ {version:"v0.19.0",date:"16.07.2026",changes:["Bestehende Programme lassen sich ändern, ohne den bisherigen Fortschritt zurückzusetzen.","Satzwerte und manuelle Gewichtsziele bleiben beim Einfügen, Verschieben und Umbenennen an der richtigen Übung.","Gelöschte Übungen verlieren ihre Werte; bei einem geänderten Übungstyp beginnt nur die betroffene Übung neu.","Gekürzte Trainingsblöcke entfernen nicht mehr erreichbare Wochenwerte und öffnen die letzte verbleibende Woche.","Der bisherige vollständige Fortschritts-Reset bleibt als bewusst wählbare Alternative erhalten.","Während eines laufenden Trainings kann das aktive Programm nicht ersetzt werden."]},
  {version:"v0.18.0",date:"16.07.2026",changes:["Zielzeit- und Maximalzeit-Timer mit Auswahl im Editor, JSON-Import und allen Erstellwegen.","Automatischer Stopp am oberen Zeitziel; Maximaltests laufen bis zum manuellen Stopp.","Lange Zeitwerte werden in Satzfeldern als Minuten mit einer Nachkommastelle angezeigt.","Nach erreichter Zielzeit empfiehlt Satzkraft mehr Widerstand, Tempo oder eine schwierigere Variante.","Kontrastreichere mobile Timerleiste und bernsteinfarbener Zielzustand.","Erledigte Übungen klappen ohne Bildschirmsprung ein.","Vollständige Backups ersetzen zuverlässig alle vorhandenen Programme und Fortschrittsdaten.","Deutliches Info-Symbol ohne Kreis.","Entwickler-Nennung ohne Veröffentlichung privater Kontaktdaten.","Verbindlicher Ablauf für Feedback, Tests, Dokumentation und Versionsentscheidungen."]},
  {version:"v0.17.0",date:"15.07.2026",changes:["Vollständiges Import-Testprogramm für Gewichte, Körpergewicht, Zusatzgewicht, Timer, eigene Vorgaben sowie Warm-up und Cool-down.","Automatischer Test des vollständigen Testprogramms über die echte Programmprüfung.","Erledigte Übungen bleiben nach dem letzten Satz zunächst geöffnet und klappen verzögert oder beim Wechsel zur nächsten Übung ein.","Timerknopf für Zeitübungen direkt im Eingabefeld; zusätzlicher Startknopf entfernt.","Sätze, Ziel, Gewicht und Pause bleiben gemeinsam in der Vorgabezeile.","Editor zeigt Trainingsgruppe und Übungsparameter einheitlicher.","Aufklapp-Pfeile wurden vertikal vereinheitlicht.","Info-Schaltflächen ohne umgebenden Kreis.","Verständlicher Dreischritt für Programme mit ChatGPT und anderen KIs.","Import erklärt die benötigte vollständige JSON-Antwort und prüft fehlende Felder.","KI-Coach bleibt ohne zusätzlichen Beta-Zugangscode."]},
  {version:"v0.16.0",date:"Nachträglich rekonstruiert",note:"Aus dem Projektbriefing rekonstruiert; kein eigener sicher belegter Veröffentlichungstag oder Git-Tag.",changes:["Erledigte Übungskarten lassen sich im Training öffnen und einklappen.","Satzpause startet zwei Sekunden nach einem vervollständigten Satz automatisch.","Hilfetexte für Trainingsgruppen, Übungstypen, RIR, Phasen, Vorgaben, Startgewichte und Warm-up/Cool-down.","Kalibrierungshinweise für Programme ohne voreingestellte Arbeitsgewichte.","Gewicht und Wiederholungen ergänzen sich beim ersten Eintrag sinnvoll; 0 kg wird nicht als Arbeitsgewicht übernommen.","Trainingsansicht bleibt während der Satzpause scrollbar.","Lange Zeitvorgaben werden lesbar in Minuten dargestellt.","Editorbereiche behalten ihren Aufklappzustand; geöffnete Übungen zeigen keinen irritierenden Verschiebegriff.","Editor-Anleitung und Import wurden verständlicher formuliert."]},
@@ -2243,9 +2244,25 @@ function editorWeekdayOptions(days,currentIndex){
  EDITOR_WEEKDAYS.forEach(function(wd){h+='<option value="'+attr(wd)+'"'+(wd===current?' selected':'')+(used[wd]?' disabled':'')+'>'+esc(wd)+(used[wd]?' · bereits belegt':'')+'</option>';});
  return h;
 }
+function editorBuildRefMap(draft){
+ var map=Object.create(null);if(!draft||!Array.isArray(draft.days))return map;
+ draft.days.forEach(function(day){(day.exercises||[]).forEach(function(ex,index){if(typeof ex._ref==="string"&&ex._ref)map[ex._ref]={day:String(day.key),id:String(day.key)+"_"+index};});});
+ return map;
+}
+function editorExerciseTypeSignature(ex){return(!!(ex&&ex.w)?"1":"0")+"|"+(!!(ex&&ex.bw)?"1":"0")+"|"+(ex&&ex.unit==="seconds"?"seconds":"reps");}
+function migrateReplaceStore(oldProg,oldStore,newProg,refMap){
+ var copy=function(value){return value&&typeof value==="object"?JSON.parse(JSON.stringify(value)):value;},oldById=Object.create(null),newById=Object.create(null),newDays=Object.create(null),logs=Object.create(null),tg=Object.create(null),maxWeek=newProg.weeks.length;
+ (oldProg.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){oldById[ex.id]=ex;});});
+ (newProg.days||[]).forEach(function(day){newDays[day.key]=true;(day.ex||[]).forEach(function(ex){newById[ex.id]={day:day.key,exercise:ex};});});
+ Object.keys((oldStore&&oldStore.logs)||{}).forEach(function(key){var parts=key.split("|"),week=Number(parts[0]),oldId=parts[2],target=parts.length===3&&refMap&&refMap[oldId],newInfo=target&&newById[target.id];if(week>=1&&week<=maxWeek&&Math.floor(week)===week&&oldById[oldId]&&newInfo&&newInfo.day===target.day&&editorExerciseTypeSignature(oldById[oldId])===editorExerciseTypeSignature(newInfo.exercise))logs[week+"|"+target.day+"|"+target.id]=copy(oldStore.logs[key]);});
+ Object.keys((oldStore&&oldStore.tg)||{}).forEach(function(key){var parts=key.split("|"),week=Number(parts[0]),oldId=parts[1],target=parts.length===2&&refMap&&refMap[oldId],newInfo=target&&newById[target.id];if(week>=1&&week<=maxWeek&&Math.floor(week)===week&&oldById[oldId]&&newInfo&&newInfo.day===target.day&&editorExerciseTypeSignature(oldById[oldId])===editorExerciseTypeSignature(newInfo.exercise))tg[week+"|"+target.id]=copy(oldStore.tg[key]);});
+ var oldWeek=Number(oldStore&&oldStore.week)||1,day=oldStore&&newDays[oldStore.day]?oldStore.day:newProg.days[0].key;
+ return{tg:tg,logs:logs,history:copy((oldStore&&oldStore.history)||[]),workout:null,week:Math.max(1,Math.min(maxWeek,Math.round(oldWeek))),day:day};
+}
 function openProgramEditor(id){
  var p=S.programs[id];if(!p)return;
  editorSourceId=id;editorUnsavedDraft=false;editorReturnView="library";editorDraft=cloneJSON(exportTranslate(p));delete editorDraft._anleitung;
+ editorDraft.days.forEach(function(draftDay,di){var internalDay=p.days[di];if(!internalDay)return;(draftDay.exercises||[]).forEach(function(draftEx,ei){if(internalDay.ex[ei])draftEx._ref=internalDay.ex[ei].id;});});
  editorInitialJSON=JSON.stringify(editorDraft);
  editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorOpenSections={};
  renderProgramEditor();
@@ -2392,7 +2409,7 @@ function renderProgramEditor(view,index,exercise){
  h+=editorSourceId?'<div class="edsticky"><button class="smallbtn go" id="edsavecopy">Als Kopie speichern</button>'+(editorSourceId!=="default"?'<button class="smallbtn" id="edreplace">Original ersetzen</button>':'')+'</div>':'<div class="edsticky"><button class="smallbtn" id="edsavenew">Nur speichern</button><button class="smallbtn go" id="edsavenewactive">Speichern &amp; aktivieren</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
-function showEditorHelp(){showModal("So funktioniert der Editor","<b>Training:</b> Hier baust du die Trainingstage. Tag oben auswählen, Übung mit ‚Bearbeiten‘ öffnen, Werte einstellen. Reihenfolge ändern: Punkt-Griff rechts halten und ziehen – oder ‚Nach oben/unten‘ in der geöffneten Übung. Einen Tag verschiebst du, indem du ihn in der Wochenleiste hältst und auf einen anderen Wochentag ziehst.<br><br><b>Wochen:</b> Jede Woche hat einen Schwerpunkt (Aufbau, Intensiv, Erholung) und eine Anstrengung (RIR). Die Satzzahlen der Trainingsgruppen brauchst du nur, wenn Wochen unterschiedlich viele Sätze haben sollen.<br><br><b>Details:</b> Name, Beschreibung und die Trainingsgruppen des Programms.<br><br><b>Überall gilt:</b> ⓘ-Knöpfe erklären die jeweilige Einstellung. ‚Rückgängig‘ oben nimmt jeden Schritt zurück. Mit ‚Als Kopie speichern‘ bleiben Original und bisheriger Fortschritt unangetastet.",[{label:"OK",cls:"primary",action:null}]);}
+function showEditorHelp(){showModal("So funktioniert der Editor","<b>Training:</b> Hier baust du die Trainingstage. Tag oben auswählen, Übung mit ‚Bearbeiten‘ öffnen, Werte einstellen. Reihenfolge ändern: Punkt-Griff rechts halten und ziehen – oder ‚Nach oben/unten‘ in der geöffneten Übung. Einen Tag verschiebst du, indem du ihn in der Wochenleiste hältst und auf einen anderen Wochentag ziehst.<br><br><b>Wochen:</b> Jede Woche hat einen Schwerpunkt (Aufbau, Intensiv, Erholung) und eine Anstrengung (RIR). Die Satzzahlen der Trainingsgruppen brauchst du nur, wenn Wochen unterschiedlich viele Sätze haben sollen.<br><br><b>Details:</b> Name, Beschreibung und die Trainingsgruppen des Programms.<br><br><b>Überall gilt:</b> ⓘ-Knöpfe erklären die jeweilige Einstellung. ‚Rückgängig‘ oben nimmt jeden Schritt zurück. Mit ‚Als Kopie speichern‘ bleiben Original und bisheriger Fortschritt unangetastet. „Original ersetzen“ übernimmt deine Änderungen in das laufende Programm – dein bisheriger Fortschritt bleibt erhalten.",[{label:"OK",cls:"primary",action:null}]);}
 function editorFieldValue(t){return t.type==="checkbox"?t.checked:(t.type==="number"?(t.value===""?"":Number(t.value)):t.value);}
 function updateEditorInput(t){
  if(!editorDraft)return false;var value=editorFieldValue(t);
@@ -2477,12 +2494,13 @@ function confirmEditorExit(exitMode){
 function returnToProgramList(force){if(!force&&editorHasUnsavedChanges()){confirmEditorExit("back");return;}discardEditorAndReturn("back");}
 function editorStoreProgram(replaceOriginal,exitMode,activateNew){
  syncEditorForm();
+ if(replaceOriginal&&editorSourceId===S.active&&S.workout){showModal("Training läuft","Training läuft – beende zuerst dein Training, dann kannst du das Programm ersetzen.",[{label:"OK",cls:"primary",action:null}]);return;}
  var checked=parseProgram(JSON.stringify(editorDraft));if(checked.err){showModal("Programm noch nicht gespeichert",checked.err+"<br><br><span style=\"color:#71717a\">Deine Änderungen bleiben im Editor erhalten.</span>",[{label:"Weiter bearbeiten",action:null}]);return;}
  var p=checked.prog;
  if(!replaceOriginal){var wasNew=!editorSourceId,shouldActivate=wasNew?!!activateNew:true;while(S.programs[p.id])p.id=genId();S.programs[p.id]=p;S.store[p.id]=newStore(p);if(shouldActivate)setActive(p.id);else flushSave();if(wasNew){pendingProgramImport=null;importIssue=null;}editorUnsavedDraft=false;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);showModal("Programm gespeichert 💾","„"+esc(p.name)+"“ wurde "+(shouldActivate?"gespeichert und aktiviert.":"unter „Weitere Programme“ gespeichert. Dein aktives Programm bleibt unverändert."),[{label:shouldActivate?"Los geht's":"OK",cls:"primary",action:null}]);return;}
  if(editorSourceId==="default"||!S.programs[editorSourceId])return;
- var sourceId=editorSourceId,sourceName=S.programs[sourceId].name;
- showModal("Original wirklich ersetzen?","„"+esc(sourceName)+"“ wird durch deine bearbeitete Version ersetzt. <b>Nur der Fortschritt dieses Programms</b> wird dabei zurückgesetzt.",[{label:"Ersetzen & Fortschritt löschen",cls:"danger",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId)alias(S);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Andere Programme und deren Fortschritt wurden nicht verändert.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
+ var sourceId=editorSourceId,oldProg=S.programs[sourceId],oldStore=S.store[sourceId]||newStore(oldProg),sourceName=oldProg.name,refMap=editorBuildRefMap(editorDraft);
+ showModal("Original ersetzen?","„"+esc(sourceName)+"“ wird durch deine bearbeitete Version ersetzt. Dein bisheriger Fortschritt bleibt dabei erhalten. Werte gelöschter Übungen gehen verloren; bei geändertem Übungstyp beginnt die Übung neu.",[{label:"Ersetzen & Fortschritt behalten",cls:"primary",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=migrateReplaceStore(oldProg,oldStore,p,refMap);if(S.active===sourceId)alias(S);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Dein bisheriger Fortschritt wurde übernommen.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Ersetzen & Fortschritt zurücksetzen",cls:"danger",action:function(){p.id=sourceId;S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId)alias(S);flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Der Fortschritt dieses Programms wurde zurückgesetzt.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
 }
 
 function programItemHtml(id,p){

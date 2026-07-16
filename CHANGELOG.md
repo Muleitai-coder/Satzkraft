@@ -6,6 +6,23 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.19.0] – 2026-07-16
+
+### Hinzugefügt
+
+- `FB-20260716-03`: „Original ersetzen“ übernimmt standardmäßig den bisherigen Fortschritt eines bestehenden Programms. Eingetragene Sätze, Trainingsverlauf und manuelle Gewichtsziele bleiben beim Einfügen, Verschieben und Umbenennen von Übungen korrekt zugeordnet.
+- Der bisherige vollständige Fortschritts-Reset bleibt im Ersetzen-Dialog als bewusst wählbare Alternative erhalten.
+
+### Geändert
+
+- Gelöschte Übungen verlieren ihre Werte; bei einem Wechsel zwischen Gewichts-, Körpergewichts- und Zeitübung beginnt nur die betroffene Übung neu.
+- Beim Kürzen eines Trainingsblocks werden Werte entfallener Wochen entfernt und die aktuelle Woche auf den verbleibenden Bereich begrenzt.
+- Die Editor-Hilfe erklärt den Unterschied zwischen „Als Kopie speichern“ und „Original ersetzen“.
+
+### Sicherheit
+
+- Das aktive Programm kann während eines laufenden Trainings nicht ersetzt werden. Der Editor fordert zuerst zum Beenden des Trainings auf.
+
 ## [0.18.0] – 2026-07-16
 
 ### Hinzugefügt

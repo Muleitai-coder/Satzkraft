@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.18.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.19.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.18.0
+**Aktueller Produktstand:** Satzkraft v0.19.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -538,3 +538,94 @@ Die folgenden Punkte sind umgesetzt, technisch geprüft und mit Satzkraft v0.18.
 - Testszenarien: Plank (`target`, 30–60 Sek), Stairmaster (`target`, 20,0 min) und Dead Hang (`max`) aus `TESTPROGRAMM-ALLE-SZENARIEN.json`.
 - Mobile Browserprüfung: 390 × 844 px; Minutenfeld, Timerleiste, Versions-Popup und Konsole prüfen.
 - Release als zusammenhängendes UX-Paket v0.18.0; `APP_VERSION`, Service-Worker-Cache, Changelog und sichtbare Versionshistorie sind synchron.
+
+---
+
+## 13. Paket H – Laufende Programme bearbeiten ohne Fortschrittsverlust · Feedback-ID `FB-20260716-03`
+
+**Status: Umgesetzt und technisch geprüft am 16.07.2026 mit v0.19.0; Produktabnahme steht noch aus.** Die Umsetzung erfolgte als eigenes, zusammenhängendes Arbeitspaket nach dem Ablauf in Abschnitt 10. Basis dieses Pakets ist der Quellstand v0.18.0.
+
+```text
+Titel: Aktives/bestehendes Programm im Editor ändern, ohne den Fortschritt zu verlieren
+Typ: neue Funktion
+Betroffene App-Version: 0.18.0
+Bereich: Editor | Programme
+Ist-Verhalten: „Original ersetzen“ setzt den Fortschritt des Programms komplett zurück.
+Erwartetes Verhalten: Übungen ergänzen/ändern/verschieben im laufenden Programm; eingetragene Sätze,
+Verlauf und Progression bleiben erhalten.
+Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
+```
+
+### Produktentscheidungen (vom Produktverantwortlichen entschieden, nicht erneut diskutieren)
+
+1. „Original ersetzen“ bekommt als **neuen Standardweg „Ersetzen & Fortschritt behalten“**; das bisherige Zurücksetzen bleibt als zweite, bewusst wählbare Option erhalten.
+2. **Gelöschte Übungen verlieren ihre eingetragenen Werte endgültig** (sie verschwinden auch aus der Auswertung). Der Dialog sagt das klar.
+3. **Typwechsel einer Übung** (Gewicht ↔ Körpergewicht ↔ Zeit, d. h. `w`/`bw`/`unit` ändern sich) setzt **nur die Werte dieser einen Übung** zurück – kg und Sekunden sind nicht vergleichbar. Änderungen an `sets`, `reps`, `timerMode`, `increment`, `startWeight`, Name oder Kategorie sind **kein** Reset.
+4. **Wochen werden nicht umgemappt:** Woche 3 bleibt Woche 3. Werden Wochen entfernt, verfallen Werte jenseits der neuen Blocklänge.
+5. Ersetzen des aktiven Programms **während eines laufenden Trainings ist gesperrt** („Erst Training beenden“).
+6. „Als Kopie speichern“ bleibt unverändert (Kopie startet ohne Fortschritt) – das ist weiterhin der bewusste Neustart-Weg.
+
+### Technischer Kontext (warum der Fortschritt heute verloren geht)
+
+- Satzdaten liegen in `S.logs` unter Keys `Woche|TagKey|ÜbungsID` (`getSets`/`writeSets`); manuelle Gewichts-Overrides in `S.tg` unter `Woche|ÜbungsID` (siehe `targetWeight`).
+- Übungs-IDs sind **positionsbasiert**: `importTranslate` vergibt `id = TagKey + "_" + Index`. Der Editor speichert immer über `parseProgram(JSON.stringify(editorDraft))` → IDs werden bei jedem Speichern neu vergeben. Nach einer Strukturänderung (Übung eingefügt/verschoben/gelöscht) zeigen alte Log-Keys auf die **falschen Übungen**. Deshalb setzt der Replace-Pfad in `editorStoreProgram` heute bewusst `S.store[sourceId]=newStore(p)`.
+- **Stabil** sind dagegen: Tag-Keys (`editorMoveDayToWeekday` ändert nur `weekday`, nie `key`; `editorAddDay` vergibt neue eindeutige Keys; der Editor bewegt Übungen nicht zwischen Tagen), Wochen-Indizes und die `S.history`-Einträge `{week, day, start, dur}`.
+- `parseProgram` validiert nur bekannte Felder und `importTranslate` übernimmt nur bekannte Felder – ein editor-internes Zusatzfeld im Entwurf ist daher format-neutral und landet **nie** im gespeicherten Programm oder im Austauschformat. **Kein Schemabruch:** `cali-plan-v3`, `DATA_SCHEMA_VERSION` 4 und `trainings-block` Version 2 bleiben unverändert; `js/progression.js` bleibt unberührt.
+
+### H1 · Übungs-Identität im Editor verfolgen (`_ref`)
+
+- **Ist:** `openProgramEditor` baut den Entwurf über `cloneJSON(exportTranslate(p))` – die internen Übungs-IDs gehen dabei verloren; nach dem Speichern ist keine Zuordnung alt → neu mehr möglich.
+- **Soll:**
+  1. In `openProgramEditor` nach dem `exportTranslate` jeder Übung im Entwurf ein Feld **`_ref`** mit der alten internen ID geben (`p.days[di].ex[i].id`; `exportTranslate` bildet 1:1 in Reihenfolge ab). `editorInitialJSON` erst **danach** bilden (sonst falscher „ungespeichert“-Zustand).
+  2. `_ref` bleibt rein editor-intern: Neue Übungen (`editorAddExercise`) bekommen keins; Verschieben/Umbenennen/Undo erhalten es automatisch (Splice bewegt Objektreferenzen, Undo nutzt `cloneJSON`); `parseProgram`/`importTranslate` ignorieren es ohnehin. `openProgramDraft` (Import-Weg, neues Programm) braucht keine Refs.
+  3. **Achtung:** `openProgramEditor` ist Test-Anker (Abschnitt 2, Regel 6) – Funktion ändern ja, Name und relative Reihenfolge nicht.
+- **Akzeptanz:** Nach beliebiger Editor-Sitzung (Übung verschieben, umbenennen, hinzufügen, löschen, Tag verschieben, Undo) trägt jede aus dem Original stammende Übung noch ihr korrektes `_ref`; gespeicherte Programme, Exporte („Exportieren & Teilen“ nutzt `exportTranslate(PROG())`) und Backups enthalten niemals `_ref`.
+
+### H2 · „Original ersetzen“ mit Fortschritts-Migration
+
+- **Ist:** Der Replace-Pfad in `editorStoreProgram` zeigt „Nur der Fortschritt dieses Programms wird dabei zurückgesetzt“ mit Button „Ersetzen & Fortschritt löschen“ und setzt `newStore(p)`.
+- **Soll:**
+  1. **Zuordnung bauen** (kleine pure Funktion, z. B. `editorBuildRefMap(editorDraft)`): für jeden Tag mit Key `K` und jede Übung mit `_ref R` an Position `j`: `map[R] = {day: K, id: K + "_" + j}` – exakt die ID-Vergabe von `importTranslate`. `_ref` **nicht** aus der ID parsen (Tag-Keys dürfen `_` enthalten).
+  2. **Migration** (pure Funktion, z. B. `migrateReplaceStore(oldProg, oldStore, newProg, map)` → neuer Store):
+     - `logs`: Key `w|D|E` übernehmen, wenn `1 ≤ w ≤ newProg.weeks.length`, `map[E]` existiert und der Übungstyp unverändert ist (alte Übung per `E` in `oldProg` suchen, gegen neue Übung vergleichen: `w`/`bw`/`unit`). Neuer Key: `w|map[E].day|map[E].id`. **Alles Nicht-Zuordenbare verwerfen** – keine verwaisten Keys zurücklassen (positionsbasierte IDs könnten sonst später kollidieren, z. B. sucht `holdBestSeconds` per ID-Suffix über alle Log-Keys).
+     - `tg`: Keys `w|E` analog migrieren (`w|map[E].id`), gleiche Verwerfungsregeln inkl. Typwechsel.
+     - `history`: unverändert übernehmen (absolvierte Einheiten bleiben gezählt; Einträge gelöschter Tage erscheinen im Protokoll schlicht nicht mehr).
+     - `week`: auf `1…weeks.length` klemmen; `day`: behalten, wenn der Key noch existiert, sonst erster Tag; `workout`: `null` (laufendes Training ist per H3 ohnehin ausgeschlossen).
+  3. **Dialog neu** (ersetzt den bestehenden Bestätigungs-Modal): Titel „Original ersetzen?“, Text: „‚{Name}‘ wird durch deine bearbeitete Version ersetzt. Dein bisheriger Fortschritt bleibt dabei erhalten. Werte gelöschter Übungen gehen verloren; bei geändertem Übungstyp beginnt die Übung neu.“ Buttons: **„Ersetzen & Fortschritt behalten“** (primary), „Ersetzen & Fortschritt zurücksetzen“ (danger, bisheriges Verhalten), „Abbrechen“.
+  4. **Behalten-Pfad:** `p.id=sourceId; S.programs[sourceId]=p; S.store[sourceId]=migrateReplaceStore(…)`; wenn aktiv: `alias(S)` + `renderView()`/`renderBar()`; `flushSave()`; Erfolgs-Modal nennt, dass der Fortschritt übernommen wurde. Progression funktioniert danach ohne Sonderlogik weiter, weil `targetWeight`/`lastPerf` aus den migrierten Logs rechnen.
+- **Akzeptanz:**
+  - Übung oben in einen Tag einfügen → alte Werte hängen weiter an den **richtigen** Übungen (nicht positionsverschoben).
+  - Übung umbenennen/verschieben → Werte und „Zuletzt“-Zeile bleiben; Übung löschen → ihre Werte sind weg, Rest unverändert.
+  - Typwechsel (z. B. Gewicht → Zeit) → nur diese Übung beginnt leer.
+  - Wochen von 8 auf 6 kürzen bei `S.week=7` → App steht auf Woche 6, keine toten Log-Keys.
+  - Auswertung nach Migration konsistent (Einheiten-Zahl unverändert, Übungstrends korrekt); Woche N+1 empfiehlt das tatsächlich gehobene Gewicht weiter.
+
+### H3 · Sperre bei laufendem Training
+
+- **Ist:** Der Editor ist während eines laufenden Trainings erreichbar; ein Ersetzen des aktiven Programms würde `S.workout` auf veralteten Strukturen zurücklassen.
+- **Soll:** Am Anfang des Replace-Zweigs von `editorStoreProgram` (deckt Button **und** „Ungespeicherte Änderungen“-Dialog ab): wenn `editorSourceId===S.active && S.workout`, Modal „Training läuft – beende zuerst dein Training, dann kannst du das Programm ersetzen.“ (nur OK), kein Ersetzen. „Als Kopie speichern“ bleibt erlaubt.
+- **Akzeptanz:** Mit laufendem Training ist Ersetzen (beide Varianten) nicht möglich; nach „Training beenden“ funktioniert es normal.
+
+### H4 · Texte & Hilfe
+
+- `showEditorHelp`, Absatz „Überall gilt“, ergänzen: „‚Original ersetzen‘ übernimmt deine Änderungen in das laufende Programm – dein bisheriger Fortschritt bleibt erhalten.“
+- `CHANGELOG.md` → `Unreleased` bei Umsetzung mit Feedback-ID `FB-20260716-03` befüllen.
+
+### Tests (Paket H)
+
+- Neuer Test `editor-replace-migration.test.cjs` (Muster wie bestehende Tests: Funktionen per String-Anker aus `index.html` schneiden; `editorBuildRefMap` und `migrateReplaceStore` deshalb als eigenständige, pure Funktionen schreiben). Szenarien mindestens: einfügen, verschieben, löschen, umbenennen, Typwechsel, Wochen kürzen, `tg`-Override, Tag gelöscht.
+- Bestehende Anker-Funktionen nicht umbenennen; `node --test tests/` grün.
+
+### Abnahme Paket H (manuell, zusätzlich zu Abschnitt 6)
+
+1. `TESTBACKUP-AUSWERTUNG.json` wiederherstellen (Wochen 1–7 gefüllt) → Editor → an Tag 1 eine Übung **oben** einfügen, eine umbenennen, eine löschen → „Ersetzen & Fortschritt behalten“ → Trainingsansicht Woche 7: alte Werte an den richtigen Übungen; neue Übung leer (bei `startWeight:0` greift der Kalibrier-Hinweis aus F10); Auswertung: gelöschte Übung fehlt, Rest konsistent.
+2. „Ersetzen & Fortschritt zurücksetzen“ liefert weiterhin einen leeren Stand.
+3. Ersetzen-Versuch während laufendem Training → Sperr-Hinweis.
+4. Mobile Sichtprüfung 390 × 844 px: neuer Dialog vollständig lesbar und bedienbar.
+5. Release: `APP_VERSION`, `sw.js`-`CACHE` und Changelog synchron auf **0.19.0**.
+
+### Nicht Bestandteil von Paket H (Ausblick, separat entscheiden)
+
+- **Folgeblock starten** (Programm duplizieren, zuletzt gehobene Gewichte als neue Startgewichte).
+- **Übung im laufenden Training tauschen** („Bank belegt“) – baut auf der `_ref`-Identität auf, kommt frühestens danach.
+- **Backup-Schutz** (`navigator.storage.persist()` + Hinweis „Letztes Backup vor X Tagen“).
