@@ -6,6 +6,8 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.18.0] – 2026-07-16
+
 ### Hinzugefügt
 
 - `FB-20260715-01`: Zeitübungen unterstützen jetzt die Modi `target` (automatischer Stopp am oberen Ziel) und `max` (manueller Stopp). Der Modus kann im Programmeditor gewählt und im JSON mit `timerMode` importiert/exportiert werden.

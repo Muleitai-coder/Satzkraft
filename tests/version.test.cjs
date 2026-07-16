@@ -20,7 +20,7 @@ test('shows one app version and uses it for the service-worker cache', () => {
   for (const documentedVersion of documentedVersions) {
     assert.ok(html.includes(`version:"v${documentedVersion}"`), `v${documentedVersion} fehlt in der App-Historie`);
   }
-  assert.match(html, /version:"Aktuelle Testfassung"/);
+  assert.doesNotMatch(html, /Aktuelle Testfassung|noch nicht veröffentlichten Testfassung/);
   assert.match(html, /version:"Vor v0\.14\.1"/);
   assert.doesNotMatch(html, /<h1>Programme<\/h1>[^\n]*<span class="appversion"/);
   assert.match(html, /Entwickelt von Christian Woyack/);

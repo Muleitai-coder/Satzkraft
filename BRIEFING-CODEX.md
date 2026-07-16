@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.17.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.18.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.17.0
+**Aktueller Produktstand:** Satzkraft v0.18.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 ---
@@ -503,7 +503,7 @@ Erst die erfolgreiche technische Prüfung beendet die Umsetzung. Die Rückmeldun
 
 ## 11. Aktuelle Feedback-Runde · Kompletttest vom 15.07.2026
 
-Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nicht als neue sichtbare Version veröffentlicht. Bis zur Nutzerabnahme bleibt `APP_VERSION` bei v0.17.0.
+Die folgenden Punkte sind umgesetzt, technisch geprüft und mit Satzkraft v0.18.0 veröffentlicht.
 
 | Feedback-ID | Priorität | Status | Verbindliches Verhalten |
 |---|---|---|---|
@@ -517,7 +517,7 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 | `FB-20260715-08` | Produktentscheidung | entschieden/offen | Aktuelle Entscheidung: keine Adresse veröffentlichen. Ein vollständiges Impressum bleibt vorerst offen; keine Privatadresse oder private Kontaktdaten in App, Briefing, Changelog oder Tests aufnehmen. |
 | `FB-20260715-09` | Wunsch | umgesetzt | In Trainingsfußzeile, Programmverwaltung und Versions-Popup steht „Entwickelt von Christian Woyack“. Die Nennung enthält bewusst keine Adresse oder Kontaktdaten. |
 | `FB-20260715-10` | störend | umgesetzt | Timer-Modi sind in allen Erstellwegen berücksichtigt: manuelle Erstellung führt in den Editor, Zeitübungen zeigen dort die Moduswahl; externe KI-Vorlage und integrierter KI-Coach erzeugen bzw. erhalten `timerMode`. Zielzeit benötigt `sets` und `reps:[minSekunden,maxSekunden]`; Maximalzeit läuft bis zum eigenen Stopp. |
-| `FB-20260715-11` | Wunsch | umgesetzt | Die anklickbare Version öffnet eine vollständige, scrollbar aufgebaute Historie: aktuelle unveröffentlichte Testfassung, jede dokumentierte Version von v0.14.1 bis v0.17.0 sowie die rekonstruierten und frühen Entwicklungsstände. Rekonstruierte Einträge sind als solche gekennzeichnet. |
+| `FB-20260715-11` | Wunsch | umgesetzt | Die anklickbare Version öffnet eine vollständige, scrollbar aufgebaute Historie: jede dokumentierte Version von v0.14.1 bis zur aktuellen v0.18.0 sowie die rekonstruierten und frühen Entwicklungsstände. Rekonstruierte Einträge sind als solche gekennzeichnet. |
 
 ## 12. Testdaten für die Auswertung · 16.07.2026
 
@@ -537,4 +537,4 @@ Die folgenden Punkte sind lokal umgesetzt und technisch geprüft, aber noch nich
 
 - Testszenarien: Plank (`target`, 30–60 Sek), Stairmaster (`target`, 20,0 min) und Dead Hang (`max`) aus `TESTPROGRAMM-ALLE-SZENARIEN.json`.
 - Mobile Browserprüfung: 390 × 844 px; Minutenfeld, Timerleiste, Versions-Popup und Konsole prüfen.
-- Release nach Nutzerabnahme voraussichtlich als zusammenhängendes UX-Paket; Versionsnummer erst dann festlegen und mit Service-Worker-Cache synchron erhöhen.
+- Release als zusammenhängendes UX-Paket v0.18.0; `APP_VERSION`, Service-Worker-Cache, Changelog und sichtbare Versionshistorie sind synchron.
