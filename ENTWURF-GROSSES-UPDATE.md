@@ -151,7 +151,15 @@ Drei Schichten, drei Zeitrichtungen:
   1. Wiederholen-Dialog ergänzt, falls spätere Wochen Daten haben: „Empfehlungen der folgenden Wochen werden aus den neuen Werten neu berechnet. Deine eingetragenen Werte bleiben unverändert."
   2. Gesperrte alte Einheit: „Diese Einheit ist Teil deines Protokolls." + Aktionen „Werte korrigieren", „Diesen Inhalt heute trainieren" (wechselt zur aktuellen Woche, gleicher Tag), Hinweis auf Folgeblock.
   3. Durchgängige Benennung: „Werte korrigieren", „Training wiederholen (ersetzt die letzte Einheit)", „Übung nur heute tauschen", „Ab jetzt ersetzen".
-- **Akzeptanz:** Alle vier Formulierungen im Quelltext; kein generischer „Bearbeiten"-Einstieg für Protokoll-Aktionen; `ui-feedback-regressions.test.cjs` erweitert.
+  4. **Einmalige Hinweis-Box nach dem O-Kern-Update** (GF-3/GF-3a, Wortlaut ENTSCHIEDEN 17.07., erscheint einmal beim ersten Öffnen, Satzkraft-Modal-Optik):
+     - Titel: „Neu: Dein Trainingstagebuch ist geschützt"
+     - Untertitel: „Mit diesem Update passt Satzkraft besser auf deine Trainingsdaten auf."
+     - Punkt 1 (Schloss-Symbol): „Abgeschlossene Trainings bleiben genau so, wie du sie trainiert hast."
+     - Punkt 2 (Stift-Symbol): „Zahlen ausbessern geht weiterhin jederzeit – über ‚Werte korrigieren'."
+     - Punkt 3 (Play-Symbol): „Trainiert und wiederholt wird vorne – in deiner aktuellen Woche, Nachholen aus der Vorwoche inklusive."
+     - Schlusszeile: „Änderungen an deinem Plan gelten ab jetzt und lassen Vergangenes unverändert. Alles andere bleibt, wie du es kennst."
+     - Button: „Verstanden"
+- **Akzeptanz:** Alle vier Formulierungen im Quelltext; kein generischer „Bearbeiten"-Einstieg für Protokoll-Aktionen; Hinweis-Box erscheint genau einmal (Flag im Store); `ui-feedback-regressions.test.cjs` erweitert.
 
 ### Nicht-Ziele von O
 - Kein chronologisches Journal / Append-only-Umbau; das Zellenmodell (Woche×Tag) bleibt.
@@ -183,7 +191,7 @@ Neue Nutzer kommen heute nur über den 17-Fragen-Coach, ChatGPT oder manuelles B
 - **Alle vier Programmentwürfe liegen vor:** `ENTWURF-PROGRAMME/gym-ganzkoerper-beginner.json`, `gym-ganzkoerper-fortgeschritten.json`, `calisthenics-einstieg.json`, `hybrid-gym-calisthenics.json`. Je 3 Tage × 8 Wochen (2×-Aufbau-Deload, RIR 3→1), Warm-up/Cool-down je Tag, alle Geräte-Übungen mit `proxy`, englische Namen (`en`), Startgewichte 0.
 - **Validierung:** Alle vier bestehen die echte `parseProgram`-Prüfung (getestet in v0.19.x) sowie einen Regel-Nachbau (Whitelist, Limits, Satz-Abdeckung je Woche).
 - **Kalibrier-Anleitung:** Textentwurf in `ENTWURF-PROGRAMME/kalibrier-anleitung.md`.
-- **Nächster Schritt:** Studio-Abnahme durch den Produktverantwortlichen (**LF-1**, jede Datei lässt sich über „Fertiges Programm importieren" probetrainieren).
+- **Freigabe (17.07.2026):** Die vier Programme wurden vom Produktverantwortlichen überarbeitet und freigegeben (LF-1 erledigt). Erneute Vollvalidierung über den `parseProgram`-Test ist Teil der L-Umsetzung.
 
 ### Technische Eckpunkte (ENTSCHIEDEN 17.07., LF-2/LF-3)
 - Programme als statische JSON im Austauschformat `trainings-block` v2 (z. B. `programme/*.json`), vom Service Worker gecacht → offline verfügbar. Kein Build-Tool; `js/progression.js` zeigt, dass Zusatzdateien die Ein-Datei-Regel für die UI nicht verletzen.
@@ -255,12 +263,12 @@ Der Coach erstellt heute nur das Programm. Ausbaustufe: Mitten im Block kann der
 |---|---|---|
 | GF-1 | Gesamt-Reihenfolge bestätigen? | **ENTSCHIEDEN 17.07.:** O-Fix → L → O-Kern → M → N (Abschnitt 1). |
 | GF-2 | Release-Schnitt: O in zwei Releases (Fix vorgezogen + Kern)? | **ENTSCHIEDEN 17.07.:** Ja, zwei Releases – der Fix-Teil ist klein und schützt L-Neunutzer. |
-| GF-3 | Bestandsnutzer-Kommunikation: Nutzer mitten im Block erleben nach dem O-Kern-Update neue Sperren. Einmaliger Hinweis beim ersten Öffnen? | **ENTSCHIEDEN 17.07.:** Ja, einmaliges Info-Panel, kurz und beruhigend. **GF-3a offen:** Wortlaut und Gestaltung der Hinweis-Box werden vor der O-Kern-Umsetzung im Detail mit dem Produktverantwortlichen durchgegangen (konkreter Entwurf folgt bei den O-Fragen). |
+| GF-3 | Bestandsnutzer-Kommunikation: Nutzer mitten im Block erleben nach dem O-Kern-Update neue Sperren. Einmaliger Hinweis beim ersten Öffnen? | **ENTSCHIEDEN 17.07.:** Ja, einmaliges Info-Panel, kurz und beruhigend. **GF-3a ENTSCHIEDEN 17.07.:** Wortlaut und Aufbau vom Produktverantwortlichen freigegeben – finale Fassung siehe O6, Punkt 4. |
 
 ### Paket L
 | # | Frage | Vorschlag |
 |---|---|---|
-| LF-1 | Studio-Abnahme der vier Programme (Gate, keine Designfrage). | **OFFEN (Aktion):** Praxistest durch den Produktverantwortlichen; Programme sind importierbar und probetrainierbar. |
+| LF-1 | Studio-Abnahme der vier Programme (Gate, keine Designfrage). | **ERLEDIGT 17.07.:** Programme vom Produktverantwortlichen überarbeitet und freigegeben (Stand in `ENTWURF-PROGRAMME/`). JSON-Syntax nach Überarbeitung geprüft; die volle `parseProgram`-Validierung läuft als automatischer Test in der L-Umsetzung. |
 | LF-2 | Technische Eckpunkte bestätigen (statische JSONs `programme/*.json`, SW-Cache, `parseProgram`-Pfad)? | **ENTSCHIEDEN 17.07.:** Separate mitgelieferte JSON-Dateien, offline gecacht, Übernahme über den `parseProgram`-Pfad. |
 | LF-3 | Herkunfts-Kennzeichnung: Ort und Wortlaut? | **ENTSCHIEDEN 17.07.:** Kleine Zeile „Offizielles Satzkraft-Programm" auf der Programmkarte in der Verwaltung; kein Kennzeichen im Training. |
 
@@ -270,12 +278,12 @@ Der Coach erstellt heute nur das Programm. Ausbaustufe: Mitten im Block kann der
 | MF-1 | Speicherort der Liste? | **ENTSCHIEDEN 17.07.:** Separate mitgelieferte JSON-Datei, offline gecacht (bei ~200 Übungen ohnehin geboten; konsistent mit LF-2). |
 | MF-2 | Zielumfang je Bereich? | **ENTSCHIEDEN 17.07.:** ~200 Übungen: Gym 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5 (siehe M-E1, erweitert). |
 | MF-3 | Qualitätssicherung der Technik-Hinweise und Video-Suchbegriffe? | **ENTSCHIEDEN 17.07.:** Komplette Liste als Review-Dokument (Formulierung durch Agenten nach `trainings_richtlinien`), Abnahme durch den Produktverantwortlichen vor Aufnahme in die App. |
-| MF-4 | Startzeitpunkt des Recherche-Dokuments? | **ENTSCHIEDEN 17.07.:** Parallel zu Schritt 2–3 (reine Dokumentenarbeit, kein Code). |
+| MF-4 | Startzeitpunkt des Recherche-Dokuments? | **ENTSCHIEDEN 17.07.:** Parallel zu Schritt 2–3 (reine Dokumentenarbeit, kein Code). Start am 17.07. freigegeben. |
 
 ### Paket N
 | # | Frage | Vorschlag |
 |---|---|---|
-| NF-1 | Kostenmodell / „Bring your own AI" (aus N-E5). | **RICHTUNG ENTSCHIEDEN 17.07.:** BYO-AI ist die bevorzugte Richtung. **Ausdrücklicher Wunsch des Produktverantwortlichen:** Paket N bleibt bewusst ganz am Ende der Reihenfolge; vor jeder weiteren N-Festlegung wird zuerst ein Detailkonzept ausgearbeitet, wie BYO-AI konkret umsetzbar ist (Ablauf, Kopiertext, Antwort-Einfügen, Fehlerfälle). Keine N-Umsetzung ohne dieses Konzept und dessen Freigabe. |
+| NF-1 | Kostenmodell / „Bring your own AI" (aus N-E5). | **RICHTUNG ENTSCHIEDEN 17.07.:** BYO-AI ist die bevorzugte Richtung. **Ausdrücklicher Wunsch des Produktverantwortlichen:** Paket N bleibt bewusst ganz am Ende der Reihenfolge; das Detailkonzept (Ablauf, Kopiertext, Antwort-Einfügen, Fehlerfälle) wird **am Ende als eigener Chat/Termin** ausgearbeitet, bevor N startet. Keine N-Umsetzung ohne dieses Konzept und dessen Freigabe. |
 | NF-2 | Übernahme-Pfad auf O4-Mechanik umstellen (statt H-Migration)? | **ENTSCHIEDEN 17.07.:** Ja – die Garantie „trainierte Wochen bleiben unberührt" wird vom Datenmodell erzwungen. |
 | NF-3 | Schwelle für den proaktiven Hinweis? | **ENTSCHIEDEN 17.07.:** „Übung zweimal in Folge unter Zielbereich" als Startdefinition; Feinjustierung bei der N-Feinspezifikation. |
 
@@ -293,9 +301,9 @@ Der Coach erstellt heute nur das Programm. Ausbaustufe: Mitten im Block kann der
 
 Erst wenn alle Punkte abgehakt sind, wird dieses Dokument als neuer Abschnitt („Großes Update: Pakete L–O") ins `BRIEFING-CODEX.md` übernommen und dort verbindlich:
 
-1. [ ] Alle offenen Fragen aus Abschnitt 8 entschieden und hier dokumentiert (GF, LF, MF, NF, OF).
-2. [ ] Studio-Abnahme der vier L-Programme erfolgt (LF-1).
-3. [ ] N-E5/NF-1-Termin (Kostenmodell/BYO-AI) durchgeführt und Ergebnis dokumentiert.
+1. [x] Alle offenen Fragen aus Abschnitt 8 entschieden und dokumentiert (GF, LF, MF, NF, OF) – erledigt 17.07.2026.
+2. [x] Studio-Abnahme der vier L-Programme erfolgt (LF-1) – erledigt 17.07.2026.
+3. [ ] NF-1-Detailkonzept (BYO-AI) als eigener Chat/Termin **am Ende, vor N-Start**. Blockiert nur Paket N: L, M und O können vorher ins Briefing übernommen und umgesetzt werden; N wird als Rahmen mit diesem Vorbehalt übernommen.
 4. [ ] Je Paket Feinspezifikation gegen den dann aktuellen Codestand abgeglichen (I–K-Änderungen an Editor/Store/Trainingsansicht).
 5. [ ] Test- und Abnahmeplan je Release benannt (betroffene Testdateien, manuelle Checks, Testdaten).
-6. [ ] Reihenfolge und Release-Schnitt final im Briefing verankert (GF-1/GF-2).
+6. [ ] Reihenfolge und Release-Schnitt final im Briefing verankert (entschieden via GF-1/GF-2; Verankerung erfolgt bei der Übernahme).

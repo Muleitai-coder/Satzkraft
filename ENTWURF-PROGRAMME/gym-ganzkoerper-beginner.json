@@ -1,0 +1,485 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Gym Ganzkörper Beginner",
+  "description": "Sicheres Ganzkörpertraining an Geräten und mit Kurzhanteln. 3 Tage pro Woche, etwa 50 bis 65 Minuten.",
+  "settings": {
+    "progressionSystem": "double_progression",
+    "deloadMultiplier": 0.6,
+    "requireAllSetsForIncrease": true,
+    "allowAutoDecrease": true,
+    "postDeloadReturnMultiplier": 0.925
+  },
+  "categories": {
+    "grund": {
+      "label": "Grundübungen",
+      "color": "amber",
+      "rest": 150,
+      "reps": {
+        "aufbau": [
+          6,
+          10
+        ],
+        "intensiv": [
+          5,
+          8
+        ],
+        "deload": [
+          8,
+          10
+        ]
+      }
+    },
+    "assistenz": {
+      "label": "Assistenz",
+      "color": "emerald",
+      "rest": 90,
+      "reps": {
+        "aufbau": [
+          8,
+          12
+        ],
+        "intensiv": [
+          6,
+          10
+        ],
+        "deload": [
+          10,
+          12
+        ]
+      }
+    },
+    "core": {
+      "label": "Core",
+      "color": "sky",
+      "rest": 60
+    }
+  },
+  "weeks": [
+    {
+      "n": 1,
+      "phase": "aufbau",
+      "label": "Einstieg",
+      "rir": "3-4",
+      "sets": {
+        "grund": 2,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Technik lernen, Startgewichte finden und jeden Satz sauber beenden."
+    },
+    {
+      "n": 2,
+      "phase": "aufbau",
+      "label": "Aufbau 1",
+      "rir": "3",
+      "sets": {
+        "grund": 3,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Erst Wiederholungen, danach das Gewicht steigern."
+    },
+    {
+      "n": 3,
+      "phase": "aufbau",
+      "label": "Aufbau 2",
+      "rir": "2-3",
+      "sets": {
+        "grund": 3,
+        "assistenz": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 4,
+      "phase": "aufbau",
+      "label": "Technik festigen",
+      "rir": "2-3",
+      "sets": {
+        "grund": 3,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Kein erzwungener Deload: nur steigern, wenn alle Wiederholungen kontrolliert sind."
+    },
+    {
+      "n": 5,
+      "phase": "aufbau",
+      "label": "Aufbau 3",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "assistenz": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 6,
+      "phase": "aufbau",
+      "label": "Volumenwoche",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "assistenz": 3,
+        "core": 2
+      },
+      "note": "Zusätzlicher Assistenzsatz nur bei guter Erholung und sauberer Technik."
+    },
+    {
+      "n": 7,
+      "phase": "intensiv",
+      "label": "Intensiv",
+      "rir": "1-2",
+      "sets": {
+        "grund": 3,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Nur der letzte Satz einer sicheren Übung darf bis RIR 1 gehen."
+    },
+    {
+      "n": 8,
+      "phase": "deload",
+      "label": "Erholung",
+      "rir": "4-5",
+      "sets": {
+        "grund": 2,
+        "assistenz": 1,
+        "core": 1
+      },
+      "note": "Gewicht reduzieren, Bewegungen sauber halten und den Block erholt beenden."
+    }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Ganzkörper A",
+      "warmup": [
+        {
+          "name": "Marschieren auf der Stelle",
+          "seconds": 60
+        },
+        {
+          "name": "Armkreisen",
+          "seconds": 30
+        },
+        {
+          "name": "Kniebeugen ohne Gewicht",
+          "seconds": 45
+        },
+        {
+          "name": "Glute Bridges",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterkreisen mit Band",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Beinrückseiten-Dehnung",
+          "seconds": 40
+        },
+        {
+          "name": "Brustdehnung Türrahmen",
+          "seconds": 40
+        },
+        {
+          "name": "Kindhaltung",
+          "seconds": 45
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Beinpresse",
+          "en": "Leg Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 5,
+          "startWeight": 0,
+          "cue": "Vorher 1 bis 3 leichte Aufwärmsätze; Knie kontrolliert in Fußrichtung führen",
+          "video": "Beinpresse Technik",
+          "proxy": "Goblet Squat mit Kurzhantel"
+        },
+        {
+          "name": "Brustpresse-Maschine",
+          "en": "Chest Press Machine",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Schulterblätter zurück",
+          "video": "Brustpresse Maschine Technik",
+          "proxy": "Kurzhantel-Bankdrücken"
+        },
+        {
+          "name": "Latzug breit",
+          "en": "Lat Pulldown",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Zur oberen Brust ziehen",
+          "video": "Latzug Technik",
+          "proxy": "Band-Klimmzüge"
+        },
+        {
+          "name": "Beinbeuger liegend",
+          "en": "Lying Leg Curl",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "video": "Beinbeuger liegend Technik",
+          "proxy": "Beinbeuger sitzend"
+        },
+        {
+          "name": "Kurzhantel-Seitheben",
+          "en": "Dumbbell Lateral Raise",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "cue": "Ohne Schwung heben",
+          "video": "Seitheben Technik",
+          "proxy": "Seitheben am Kabel"
+        },
+        {
+          "name": "Plank",
+          "en": "Plank",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            20,
+            45
+          ],
+          "target": "Körper in einer Linie",
+          "video": "Plank Technik",
+          "proxy": "Plank auf Knien"
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "weekday": "Mittwoch",
+      "title": "Ganzkörper B",
+      "warmup": [
+        {
+          "name": "Hampelmänner",
+          "seconds": 60
+        },
+        {
+          "name": "Hüftkreisen",
+          "seconds": 30
+        },
+        {
+          "name": "Ausfallschritte dynamisch",
+          "seconds": 45
+        },
+        {
+          "name": "Cat-Cow",
+          "seconds": 45
+        },
+        {
+          "name": "Band Pull-Aparts",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Quadrizeps-Dehnung stehend",
+          "seconds": 40
+        },
+        {
+          "name": "Gesäßdehnung liegend (Figur 4)",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterdehnung über Kreuz",
+          "seconds": 30
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Goblet Squat",
+          "en": "Goblet Squat",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Vorher 1 bis 2 leichte Aufwärmsätze; Brust aufrecht und kontrolliert tief hocken",
+          "video": "Goblet Squat Technik",
+          "proxy": "Beinpresse"
+        },
+        {
+          "name": "Rudern am Kabel",
+          "en": "Seated Cable Row",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Zum Bauchnabel ziehen",
+          "video": "Rudern am Kabel Technik",
+          "proxy": "Rudern-Maschine"
+        },
+        {
+          "name": "Schulterdrücken-Maschine",
+          "en": "Shoulder Press Machine",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "video": "Schulterdrücken Maschine Technik",
+          "proxy": "Kurzhantel-Schulterdrücken"
+        },
+        {
+          "name": "Beinstrecker",
+          "en": "Leg Extension",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "video": "Beinstrecker Technik",
+          "proxy": "Ausfallschritte mit Kurzhanteln"
+        },
+        {
+          "name": "Kabel-Curls",
+          "en": "Cable Biceps Curl",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "video": "Bizeps Curls Kabel Technik",
+          "proxy": "Kurzhantel-Curls"
+        },
+        {
+          "name": "Dead Bug",
+          "en": "Dead Bug",
+          "category": "core",
+          "reps": [
+            6,
+            10
+          ],
+          "cue": "Je Seite zählen, unteren Rücken durchgehend am Boden halten",
+          "video": "Dead Bug Technik",
+          "proxy": "Fersen abwechselnd zum Boden tippen"
+        }
+      ]
+    },
+    {
+      "key": "C",
+      "weekday": "Freitag",
+      "title": "Ganzkörper C",
+      "warmup": [
+        {
+          "name": "Seilspringen",
+          "seconds": 60
+        },
+        {
+          "name": "Beinpendeln",
+          "seconds": 30
+        },
+        {
+          "name": "Kniebeugen ohne Gewicht",
+          "seconds": 45
+        },
+        {
+          "name": "World's Greatest Stretch",
+          "seconds": 60
+        },
+        {
+          "name": "Schulterblatt-Liegestütze",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Hüftbeuger-Dehnung im Ausfallschritt",
+          "seconds": 45
+        },
+        {
+          "name": "Lat-Dehnung am Rack",
+          "seconds": 40
+        },
+        {
+          "name": "Wadendehnung an der Wand",
+          "seconds": 30
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Rumänisches Kreuzheben (KH)",
+          "en": "Dumbbell Romanian Deadlift",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Vorher 1 bis 2 leichte Aufwärmsätze; Hüfte nach hinten und Rücken neutral",
+          "video": "Rumänisches Kreuzheben Kurzhantel Technik",
+          "proxy": "Beinbeuger liegend"
+        },
+        {
+          "name": "Kurzhantel-Bankdrücken",
+          "en": "Dumbbell Bench Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Kontrolliert absenken",
+          "video": "Kurzhantel Bankdrücken Technik",
+          "proxy": "Brustpresse-Maschine"
+        },
+        {
+          "name": "Brustgestütztes Rudern-Maschine",
+          "en": "Chest-Supported Row Machine",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Brust am Polster lassen und Ellenbogen kontrolliert nach hinten ziehen",
+          "video": "Brustgestütztes Rudern Maschine Technik",
+          "proxy": "Rudern am Kabel"
+        },
+        {
+          "name": "Wadenheben stehend",
+          "en": "Standing Calf Raise",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Oben kurz halten",
+          "video": "Wadenheben Technik",
+          "proxy": "Wadenheben an der Beinpresse"
+        },
+        {
+          "name": "Trizepsdrücken am Kabel",
+          "en": "Cable Triceps Pushdown",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "video": "Trizepsdrücken Kabel Technik",
+          "proxy": "Kurzhantel-Trizepsdrücken"
+        },
+        {
+          "name": "Seitstütz",
+          "en": "Side Plank",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            15,
+            30
+          ],
+          "target": "Je Seite ein Satz",
+          "video": "Seitstütz Technik",
+          "proxy": "Plank"
+        }
+      ]
+    }
+  ]
+}

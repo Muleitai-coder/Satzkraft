@@ -1,0 +1,514 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Gym Ganzkörper Fortgeschritten",
+  "description": "Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende. 3 Tage pro Woche, etwa 65 bis 80 Minuten.",
+  "settings": {
+    "progressionSystem": "double_progression",
+    "deloadMultiplier": 0.6,
+    "requireAllSetsForIncrease": true,
+    "allowAutoDecrease": true,
+    "postDeloadReturnMultiplier": 0.925
+  },
+  "categories": {
+    "grund": {
+      "label": "Grundübungen",
+      "color": "amber",
+      "rest": 180,
+      "reps": {
+        "aufbau": [
+          5,
+          8
+        ],
+        "intensiv": [
+          3,
+          6
+        ],
+        "deload": [
+          6,
+          8
+        ]
+      }
+    },
+    "kreuzheben": {
+      "label": "Schweres Heben",
+      "color": "orange",
+      "rest": 210,
+      "reps": {
+        "aufbau": [
+          3,
+          6
+        ],
+        "intensiv": [
+          3,
+          5
+        ],
+        "deload": [
+          5,
+          6
+        ]
+      }
+    },
+    "assistenz": {
+      "label": "Assistenz",
+      "color": "emerald",
+      "rest": 90,
+      "reps": {
+        "aufbau": [
+          8,
+          12
+        ],
+        "intensiv": [
+          6,
+          10
+        ],
+        "deload": [
+          10,
+          12
+        ]
+      }
+    },
+    "core": {
+      "label": "Core",
+      "color": "sky",
+      "rest": 60
+    }
+  },
+  "weeks": [
+    {
+      "n": 1,
+      "phase": "aufbau",
+      "label": "Kalibrierung",
+      "rir": "3",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Arbeitsgewichte konservativ festlegen und Bewegungsqualität priorisieren."
+    },
+    {
+      "n": 2,
+      "phase": "aufbau",
+      "label": "Aufbau 1",
+      "rir": "2-3",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "assistenz": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 3,
+      "phase": "aufbau",
+      "label": "Volumen",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "assistenz": 3,
+        "core": 2
+      }
+    },
+    {
+      "n": 4,
+      "phase": "deload",
+      "label": "Erholung 1",
+      "rir": "4-5",
+      "sets": {
+        "grund": 2,
+        "kreuzheben": 1,
+        "assistenz": 1,
+        "core": 1
+      },
+      "note": "Satzanzahl und Last reduzieren, Bewegungsmuster beibehalten."
+    },
+    {
+      "n": 5,
+      "phase": "aufbau",
+      "label": "Aufbau 2",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "assistenz": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 6,
+      "phase": "aufbau",
+      "label": "Überlastung",
+      "rir": "2",
+      "sets": {
+        "grund": 4,
+        "kreuzheben": 2,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Vier Grundübungssätze nur bei stabiler Regeneration und gleichbleibender Technik."
+    },
+    {
+      "n": 7,
+      "phase": "intensiv",
+      "label": "Intensiv",
+      "rir": "1-2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Kreuzheben bei RIR 2 halten; RIR 1 nur im letzten Satz sicherer Übungen."
+    },
+    {
+      "n": 8,
+      "phase": "deload",
+      "label": "Erholung 2",
+      "rir": "4-5",
+      "sets": {
+        "grund": 2,
+        "kreuzheben": 1,
+        "assistenz": 1,
+        "core": 1
+      },
+      "note": "Erholt aus dem Block gehen und keine Leistungstests durchführen."
+    }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Kniebeuge & Drücken",
+      "warmup": [
+        {
+          "name": "Marschieren auf der Stelle",
+          "seconds": 45
+        },
+        {
+          "name": "Hüftkreisen",
+          "seconds": 30
+        },
+        {
+          "name": "Kniebeugen ohne Gewicht",
+          "seconds": 45
+        },
+        {
+          "name": "Ausfallschritte dynamisch",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterkreisen mit Band",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Quadrizeps-Dehnung stehend",
+          "seconds": 40
+        },
+        {
+          "name": "Brustdehnung Türrahmen",
+          "seconds": 40
+        },
+        {
+          "name": "Kindhaltung",
+          "seconds": 45
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Langhantel-Kniebeuge",
+          "en": "Barbell Back Squat",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Nach 3 bis 5 Aufwärmsätzen kontrolliert bis zur individuell stabilen Tiefe beugen",
+          "video": "Langhantel Kniebeuge Technik",
+          "proxy": "Beinpresse"
+        },
+        {
+          "name": "Bankdrücken",
+          "en": "Barbell Bench Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Schulterblätter zusammen",
+          "video": "Bankdrücken Technik",
+          "proxy": "Kurzhantel-Bankdrücken"
+        },
+        {
+          "name": "Langhantel-Rudern",
+          "en": "Barbell Row",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Rumpf stabil, zum Bauch ziehen",
+          "video": "Langhantel Rudern Technik",
+          "proxy": "Rudern am Kabel"
+        },
+        {
+          "name": "Beinbeuger liegend",
+          "en": "Lying Leg Curl",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "video": "Beinbeuger liegend Technik",
+          "proxy": "Rumänisches Kreuzheben"
+        },
+        {
+          "name": "Kurzhantel-Seitheben",
+          "en": "Dumbbell Lateral Raise",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "cue": "Ohne Schwung heben",
+          "video": "Seitheben Technik",
+          "proxy": "Seitheben am Kabel"
+        },
+        {
+          "name": "Plank",
+          "en": "Plank",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            30,
+            60
+          ],
+          "target": "Körper in einer Linie",
+          "video": "Plank Technik",
+          "proxy": "Plank auf Knien"
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "weekday": "Mittwoch",
+      "title": "Kreuzheben & Zug",
+      "warmup": [
+        {
+          "name": "Seilspringen",
+          "seconds": 60
+        },
+        {
+          "name": "Cat-Cow",
+          "seconds": 45
+        },
+        {
+          "name": "Glute Bridges",
+          "seconds": 45
+        },
+        {
+          "name": "Beinpendeln",
+          "seconds": 30
+        },
+        {
+          "name": "Band Pull-Aparts",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Beinrückseiten-Dehnung",
+          "seconds": 45
+        },
+        {
+          "name": "Lat-Dehnung am Rack",
+          "seconds": 40
+        },
+        {
+          "name": "Taubenhaltung",
+          "seconds": 45
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Kreuzheben",
+          "en": "Barbell Deadlift",
+          "category": "kreuzheben",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Nach 3 bis 5 Aufwärmsätzen Rücken neutral und Stange körpernah halten",
+          "video": "Kreuzheben Technik",
+          "proxy": "Rumänisches Kreuzheben"
+        },
+        {
+          "name": "Klimmzüge",
+          "en": "Pull-Up",
+          "category": "grund",
+          "weighted": true,
+          "bodyweight": true,
+          "increment": 1.25,
+          "startWeight": 0,
+          "cue": "Volle Streckung; 0 kg bedeutet Körpergewicht, danach Zusatzlast in kleinen Schritten",
+          "video": "Klimmzüge Technik",
+          "proxy": "Latzug breit"
+        },
+        {
+          "name": "Schulterdrücken Langhantel",
+          "en": "Barbell Overhead Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 1.25,
+          "startWeight": 0,
+          "cue": "Gesäß und Bauch fest",
+          "video": "Schulterdrücken Langhantel Technik",
+          "proxy": "Kurzhantel-Schulterdrücken"
+        },
+        {
+          "name": "Beinpresse",
+          "en": "Leg Press",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 5,
+          "startWeight": 0,
+          "video": "Beinpresse Technik",
+          "proxy": "Goblet Squat"
+        },
+        {
+          "name": "Kurzhantel-Curls",
+          "en": "Dumbbell Biceps Curl",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "video": "Kurzhantel Curls Technik",
+          "proxy": "Kabel-Curls"
+        },
+        {
+          "name": "Knieheben hängend",
+          "en": "Hanging Knee Raise",
+          "category": "core",
+          "reps": [
+            8,
+            15
+          ],
+          "cue": "Ohne Schwung anheben",
+          "video": "Knieheben hängend Technik",
+          "proxy": "Beinheben liegend"
+        }
+      ]
+    },
+    {
+      "key": "C",
+      "weekday": "Freitag",
+      "title": "Beine & Schrägbank",
+      "warmup": [
+        {
+          "name": "Hampelmänner",
+          "seconds": 60
+        },
+        {
+          "name": "World's Greatest Stretch",
+          "seconds": 60
+        },
+        {
+          "name": "Kniebeugen ohne Gewicht",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterblatt-Liegestütze",
+          "seconds": 30
+        },
+        {
+          "name": "Armkreisen",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Hüftbeuger-Dehnung im Ausfallschritt",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterdehnung über Kreuz",
+          "seconds": 30
+        },
+        {
+          "name": "Tiefe Hocke halten",
+          "seconds": 40
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Bulgarian Split Squats",
+          "en": "Bulgarian Split Squat",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Vorderes Bein arbeitet",
+          "video": "Bulgarian Split Squat Technik",
+          "proxy": "Ausfallschritte mit Kurzhanteln"
+        },
+        {
+          "name": "Schrägbankdrücken (KH)",
+          "en": "Incline Dumbbell Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Bank 30 Grad, Ellenbogen 45 Grad",
+          "video": "Schrägbankdrücken Kurzhantel Technik",
+          "proxy": "Brustpresse-Maschine"
+        },
+        {
+          "name": "Rudern am Kabel",
+          "en": "Seated Cable Row",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Zum Bauchnabel ziehen",
+          "video": "Rudern am Kabel Technik",
+          "proxy": "Kurzhantel-Rudern einarmig"
+        },
+        {
+          "name": "Rumänisches Kreuzheben",
+          "en": "Barbell Romanian Deadlift",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Hüfte weit nach hinten schieben und Hamstrings kontrolliert belasten",
+          "video": "Rumänisches Kreuzheben Technik",
+          "proxy": "Beinbeuger liegend"
+        },
+        {
+          "name": "Wadenheben stehend",
+          "en": "Standing Calf Raise",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Voller Bewegungsweg und oben eine Sekunde halten",
+          "video": "Wadenheben Technik",
+          "proxy": "Wadenheben an der Beinpresse"
+        },
+        {
+          "name": "Seitstütz",
+          "en": "Side Plank",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            20,
+            40
+          ],
+          "target": "Je Seite ein Satz",
+          "video": "Seitstütz Technik",
+          "proxy": "Plank"
+        }
+      ]
+    }
+  ]
+}

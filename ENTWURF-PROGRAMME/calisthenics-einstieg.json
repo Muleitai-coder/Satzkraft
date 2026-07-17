@@ -1,0 +1,432 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Calisthenics Einstieg",
+  "description": "Einsteiger-Ganzkörpertraining mit Boden, Bank, Klimmzugstange, Widerstandsband und niedriger Stange oder Ringen. 3 Tage, 40 bis 50 Minuten.",
+  "settings": {
+    "progressionSystem": "double_progression",
+    "deloadMultiplier": 0.6,
+    "requireAllSetsForIncrease": true,
+    "allowAutoDecrease": true,
+    "postDeloadReturnMultiplier": 0.925
+  },
+  "categories": {
+    "druck": {
+      "label": "Drücken",
+      "color": "emerald",
+      "rest": 120,
+      "reps": {
+        "aufbau": [
+          6,
+          12
+        ],
+        "intensiv": [
+          5,
+          10
+        ],
+        "deload": [
+          8,
+          12
+        ]
+      }
+    },
+    "zug": {
+      "label": "Ziehen",
+      "color": "amber",
+      "rest": 150,
+      "reps": {
+        "aufbau": [
+          4,
+          10
+        ],
+        "intensiv": [
+          3,
+          8
+        ],
+        "deload": [
+          6,
+          10
+        ]
+      }
+    },
+    "beine": {
+      "label": "Beine",
+      "color": "orange",
+      "rest": 90,
+      "reps": {
+        "aufbau": [
+          8,
+          15
+        ],
+        "intensiv": [
+          6,
+          12
+        ],
+        "deload": [
+          10,
+          15
+        ]
+      }
+    },
+    "core": {
+      "label": "Core",
+      "color": "sky",
+      "rest": 60
+    }
+  },
+  "weeks": [
+    {
+      "n": 1,
+      "phase": "aufbau",
+      "label": "Einstieg",
+      "rir": "3-4",
+      "sets": {
+        "druck": 2,
+        "zug": 2,
+        "beine": 2,
+        "core": 2
+      },
+      "note": "Wähle Varianten, die in jeder Wiederholung stabil und kontrolliert bleiben."
+    },
+    {
+      "n": 2,
+      "phase": "aufbau",
+      "label": "Aufbau 1",
+      "rir": "3",
+      "sets": {
+        "druck": 2,
+        "zug": 2,
+        "beine": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 3,
+      "phase": "aufbau",
+      "label": "Aufbau 2",
+      "rir": "2-3",
+      "sets": {
+        "druck": 3,
+        "zug": 3,
+        "beine": 3,
+        "core": 2
+      }
+    },
+    {
+      "n": 4,
+      "phase": "aufbau",
+      "label": "Technik festigen",
+      "rir": "2-3",
+      "sets": {
+        "druck": 3,
+        "zug": 3,
+        "beine": 3,
+        "core": 2
+      },
+      "note": "Schwierigere Varianten erst wählen, wenn die Obergrenze sauber erreicht wird."
+    },
+    {
+      "n": 5,
+      "phase": "aufbau",
+      "label": "Aufbau 3",
+      "rir": "2",
+      "sets": {
+        "druck": 3,
+        "zug": 3,
+        "beine": 3,
+        "core": 2
+      }
+    },
+    {
+      "n": 6,
+      "phase": "aufbau",
+      "label": "Aufbau 4",
+      "rir": "2",
+      "sets": {
+        "druck": 3,
+        "zug": 3,
+        "beine": 3,
+        "core": 3
+      }
+    },
+    {
+      "n": 7,
+      "phase": "intensiv",
+      "label": "Intensiv",
+      "rir": "1-2",
+      "sets": {
+        "druck": 3,
+        "zug": 3,
+        "beine": 3,
+        "core": 2
+      },
+      "note": "Nur der letzte Satz darf nahe an die technische Grenze gehen."
+    },
+    {
+      "n": 8,
+      "phase": "deload",
+      "label": "Erholung",
+      "rir": "4-5",
+      "sets": {
+        "druck": 2,
+        "zug": 2,
+        "beine": 2,
+        "core": 1
+      },
+      "note": "Leichtere Varianten nutzen und bewusst Reserven lassen."
+    }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Ganzkörper Grundlagen",
+      "warmup": [
+        {
+          "name": "Marschieren auf der Stelle",
+          "seconds": 60
+        },
+        {
+          "name": "Armkreisen",
+          "seconds": 30
+        },
+        {
+          "name": "Kniebeugen ohne Gewicht",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterblatt-Liegestütze",
+          "seconds": 30
+        },
+        {
+          "name": "Cat-Cow",
+          "seconds": 45
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Brustdehnung Türrahmen",
+          "seconds": 40
+        },
+        {
+          "name": "Lat-Dehnung an der Stange",
+          "seconds": 40
+        },
+        {
+          "name": "Tiefe Hocke halten",
+          "seconds": 40
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Erhöhte Liegestütze",
+          "en": "Incline Push-Up",
+          "category": "druck",
+          "cue": "Körper stabil; bei 12 sauberen Wiederholungen eine niedrigere Auflage wählen",
+          "video": "Erhöhte Liegestütze Technik",
+          "proxy": "Liegestütze an der Wand"
+        },
+        {
+          "name": "Rudern an niedriger Stange",
+          "en": "Inverted Row",
+          "category": "zug",
+          "cue": "Brust zur Stange; Füße weiter vor, sobald die Obergrenze sicher gelingt",
+          "video": "Inverted Row Technik",
+          "proxy": "Rudern an Ringen mit aufrechtem Körper"
+        },
+        {
+          "name": "Kniebeugen",
+          "en": "Bodyweight Squat",
+          "category": "beine",
+          "cue": "Kontrolliert tief; bei 15 Wiederholungen drei Sekunden absenken",
+          "video": "Kniebeugen ohne Gewicht Technik",
+          "proxy": "Box-Kniebeugen"
+        },
+        {
+          "name": "Dead Bug",
+          "en": "Dead Bug",
+          "category": "core",
+          "reps": [
+            6,
+            10
+          ],
+          "cue": "Je Seite zählen und den unteren Rücken am Boden halten",
+          "video": "Dead Bug Technik",
+          "proxy": "Fersen abwechselnd zum Boden tippen"
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "weekday": "Mittwoch",
+      "title": "Ganzkörper Stabilität",
+      "warmup": [
+        {
+          "name": "Hampelmänner oder Step Jacks",
+          "seconds": 60
+        },
+        {
+          "name": "Hüftkreisen",
+          "seconds": 30
+        },
+        {
+          "name": "Ausfallschritte dynamisch",
+          "seconds": 45
+        },
+        {
+          "name": "Band Pull-Aparts",
+          "seconds": 30
+        },
+        {
+          "name": "Handgelenkkreisen",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Schulterdehnung über Kreuz",
+          "seconds": 30
+        },
+        {
+          "name": "Hüftbeuger-Dehnung im Ausfallschritt",
+          "seconds": 45
+        },
+        {
+          "name": "Kindhaltung",
+          "seconds": 45
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Erhöhte Pike Liegestütze",
+          "en": "Incline Pike Push-Up",
+          "category": "druck",
+          "cue": "Hüfte hoch; Auflage schrittweise absenken, wenn die Obergrenze gelingt",
+          "video": "Erhöhte Pike Liegestütze Technik",
+          "proxy": "Pike Hold mit gebeugten Knien"
+        },
+        {
+          "name": "Band-Klimmzüge",
+          "en": "Band-Assisted Pull-Up",
+          "category": "zug",
+          "cue": "Volle Streckung; nach Erreichen der Obergrenze ein leichteres Band wählen",
+          "video": "Band Klimmzüge Technik",
+          "proxy": "Unterstützte Klimmzüge mit Fuß auf einer Bank"
+        },
+        {
+          "name": "Ausfallschritte rückwärts",
+          "en": "Reverse Lunge",
+          "category": "beine",
+          "cue": "Vorderes Knie stabil halten und kontrolliert zurücktreten",
+          "video": "Ausfallschritte rückwärts Technik",
+          "proxy": "Split Squats mit Festhalten"
+        },
+        {
+          "name": "Seitstütz",
+          "en": "Side Plank",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            15,
+            30
+          ],
+          "target": "Zeit je Seite; Hüfte durchgehend angehoben",
+          "video": "Seitstütz Technik",
+          "proxy": "Seitstütz auf dem Knie"
+        }
+      ]
+    },
+    {
+      "key": "C",
+      "weekday": "Freitag",
+      "title": "Ganzkörper Progression",
+      "warmup": [
+        {
+          "name": "Seilspringen ohne Seil",
+          "seconds": 60
+        },
+        {
+          "name": "World's Greatest Stretch",
+          "seconds": 60
+        },
+        {
+          "name": "Glute Bridges",
+          "seconds": 30
+        },
+        {
+          "name": "Schulterkreisen mit Band",
+          "seconds": 30
+        },
+        {
+          "name": "Inchworm",
+          "seconds": 45
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Gesäßdehnung liegend",
+          "seconds": 45
+        },
+        {
+          "name": "Brustdehnung Türrahmen",
+          "seconds": 40
+        },
+        {
+          "name": "Wadendehnung an der Wand",
+          "seconds": 30
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Liegestütze",
+          "en": "Push-Up",
+          "category": "druck",
+          "cue": "Passende Höhe wählen; bei 12 sauberen Wiederholungen schwerere Variante nutzen",
+          "video": "Liegestütze Technik",
+          "proxy": "Erhöhte Liegestütze"
+        },
+        {
+          "name": "Negative Klimmzüge",
+          "en": "Negative Pull-Up",
+          "category": "zug",
+          "reps": [
+            2,
+            5
+          ],
+          "cue": "Drei bis fünf Sekunden ablassen und abbrechen, sobald die Kontrolle nachlässt",
+          "video": "Negative Klimmzüge Technik",
+          "proxy": "Band-Klimmzüge"
+        },
+        {
+          "name": "Glute Bridge",
+          "en": "Glute Bridge",
+          "category": "beine",
+          "cue": "Oben eine Sekunde halten; bei 15 Wiederholungen einbeinig steigern",
+          "video": "Glute Bridge Technik",
+          "proxy": "Glute Bridge mit verkürztem Bewegungsweg"
+        },
+        {
+          "name": "Wadenheben einbeinig",
+          "en": "Single-Leg Calf Raise",
+          "category": "beine",
+          "cue": "Voller Bewegungsweg und oben kurz halten",
+          "video": "Wadenheben einbeinig Technik",
+          "proxy": "Wadenheben beidbeinig"
+        },
+        {
+          "name": "Bird Dog",
+          "en": "Bird Dog",
+          "category": "core",
+          "reps": [
+            6,
+            10
+          ],
+          "cue": "Je Seite zählen und Becken ruhig halten",
+          "video": "Bird Dog Technik",
+          "proxy": "Nur ein Bein oder einen Arm ausstrecken"
+        }
+      ]
+    }
+  ]
+}

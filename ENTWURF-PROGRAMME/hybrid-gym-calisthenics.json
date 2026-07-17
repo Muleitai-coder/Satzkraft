@@ -1,0 +1,538 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Hybrid: Gym + Calisthenics",
+  "description": "Langhantel, Kurzhanteln, Kabelzug und Körpergewicht für Trainierende mit Grundlagenerfahrung. 3 Tage pro Woche, etwa 60 bis 75 Minuten.",
+  "settings": {
+    "progressionSystem": "double_progression",
+    "deloadMultiplier": 0.6,
+    "requireAllSetsForIncrease": true,
+    "allowAutoDecrease": true,
+    "postDeloadReturnMultiplier": 0.925
+  },
+  "categories": {
+    "grund": {
+      "label": "Grundübungen",
+      "color": "amber",
+      "rest": 150,
+      "reps": {
+        "aufbau": [
+          5,
+          9
+        ],
+        "intensiv": [
+          4,
+          7
+        ],
+        "deload": [
+          7,
+          9
+        ]
+      }
+    },
+    "kreuzheben": {
+      "label": "Schweres Heben",
+      "color": "orange",
+      "rest": 180,
+      "reps": {
+        "aufbau": [
+          4,
+          6
+        ],
+        "intensiv": [
+          3,
+          5
+        ],
+        "deload": [
+          5,
+          6
+        ]
+      }
+    },
+    "koerper": {
+      "label": "Körpergewicht",
+      "color": "violet",
+      "rest": 120,
+      "reps": {
+        "aufbau": [
+          5,
+          12
+        ],
+        "intensiv": [
+          4,
+          8
+        ],
+        "deload": [
+          8,
+          12
+        ]
+      }
+    },
+    "assistenz": {
+      "label": "Assistenz",
+      "color": "emerald",
+      "rest": 90,
+      "reps": {
+        "aufbau": [
+          8,
+          12
+        ],
+        "intensiv": [
+          6,
+          10
+        ],
+        "deload": [
+          10,
+          12
+        ]
+      }
+    },
+    "core": {
+      "label": "Core",
+      "color": "sky",
+      "rest": 60
+    }
+  },
+  "weeks": [
+    {
+      "n": 1,
+      "phase": "aufbau",
+      "label": "Aufbau 1",
+      "rir": "3",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "koerper": 3,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Startgewichte und passende Körpergewichtsvarianten festlegen."
+    },
+    {
+      "n": 2,
+      "phase": "aufbau",
+      "label": "Aufbau 2",
+      "rir": "3",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "koerper": 3,
+        "assistenz": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 3,
+      "phase": "aufbau",
+      "label": "Volumen",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "koerper": 3,
+        "assistenz": 3,
+        "core": 2
+      }
+    },
+    {
+      "n": 4,
+      "phase": "deload",
+      "label": "Erholung 1",
+      "rir": "4-5",
+      "sets": {
+        "grund": 2,
+        "kreuzheben": 1,
+        "koerper": 2,
+        "assistenz": 1,
+        "core": 1
+      },
+      "note": "Gewicht und Varianten bewusst erleichtern."
+    },
+    {
+      "n": 5,
+      "phase": "aufbau",
+      "label": "Aufbau 3",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "koerper": 3,
+        "assistenz": 2,
+        "core": 2
+      }
+    },
+    {
+      "n": 6,
+      "phase": "aufbau",
+      "label": "Körpergewicht Fokus",
+      "rir": "2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "koerper": 4,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Den vierten Satz nur mit stabiler Technik ausführen."
+    },
+    {
+      "n": 7,
+      "phase": "intensiv",
+      "label": "Intensiv",
+      "rir": "1-2",
+      "sets": {
+        "grund": 3,
+        "kreuzheben": 2,
+        "koerper": 3,
+        "assistenz": 2,
+        "core": 2
+      },
+      "note": "Kreuzheben bei mindestens RIR 2 halten; nur sichere Übungen dürfen bis RIR 1 gehen."
+    },
+    {
+      "n": 8,
+      "phase": "deload",
+      "label": "Erholung 2",
+      "rir": "4-5",
+      "sets": {
+        "grund": 2,
+        "kreuzheben": 1,
+        "koerper": 2,
+        "assistenz": 1,
+        "core": 1
+      },
+      "note": "Leicht ausklingen und Technikqualität beibehalten."
+    }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Beine & Drücken",
+      "warmup": [
+        {
+          "name": "Marschieren auf der Stelle",
+          "seconds": 45
+        },
+        {
+          "name": "Hüftkreisen",
+          "seconds": 30
+        },
+        {
+          "name": "Kniebeugen ohne Gewicht",
+          "seconds": 45
+        },
+        {
+          "name": "Ausfallschritte dynamisch",
+          "seconds": 45
+        },
+        {
+          "name": "Handgelenkkreisen",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Quadrizeps-Dehnung stehend",
+          "seconds": 40
+        },
+        {
+          "name": "Brustdehnung Türrahmen",
+          "seconds": 40
+        },
+        {
+          "name": "Tiefe Hocke halten",
+          "seconds": 40
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Langhantel-Kniebeuge",
+          "en": "Barbell Back Squat",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Nach 2 bis 4 Aufwärmsätzen tief und kontrolliert beugen",
+          "video": "Langhantel Kniebeuge Technik",
+          "proxy": "Goblet Squat"
+        },
+        {
+          "name": "Dips am Barren",
+          "en": "Parallel Bar Dips",
+          "category": "koerper",
+          "cue": "Schultern tief; bei oberer Wiederholungsgrenze Zusatzgewicht ergänzen",
+          "video": "Dips Technik",
+          "proxy": "Dips an der Bank",
+          "weighted": true,
+          "bodyweight": true,
+          "increment": 1.25,
+          "startWeight": 0
+        },
+        {
+          "name": "Kurzhantel-Schulterdrücken",
+          "en": "Dumbbell Shoulder Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Rumpf fest, nicht überstrecken",
+          "video": "Kurzhantel Schulterdrücken Technik",
+          "proxy": "Schulterdrücken-Maschine"
+        },
+        {
+          "name": "Ausfallschritte (KH)",
+          "en": "Dumbbell Lunge",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "video": "Ausfallschritte Kurzhanteln Technik",
+          "proxy": "Beinpresse"
+        },
+        {
+          "name": "Kurzhantel-Seitheben",
+          "en": "Dumbbell Lateral Raise",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "cue": "Ohne Schwung heben",
+          "video": "Seitheben Technik",
+          "proxy": "Seitheben am Kabel"
+        },
+        {
+          "name": "Plank",
+          "en": "Plank",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            30,
+            60
+          ],
+          "target": "Körper in einer Linie",
+          "video": "Plank Technik",
+          "proxy": "Plank auf Knien"
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "weekday": "Mittwoch",
+      "title": "Zug & hintere Kette",
+      "warmup": [
+        {
+          "name": "Seilspringen",
+          "seconds": 60
+        },
+        {
+          "name": "Cat-Cow",
+          "seconds": 45
+        },
+        {
+          "name": "Glute Bridges",
+          "seconds": 45
+        },
+        {
+          "name": "Band Pull-Aparts",
+          "seconds": 30
+        },
+        {
+          "name": "Beinpendeln",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Lat-Dehnung am Rack",
+          "seconds": 40
+        },
+        {
+          "name": "Beinrückseiten-Dehnung",
+          "seconds": 45
+        },
+        {
+          "name": "Kindhaltung",
+          "seconds": 40
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Kreuzheben",
+          "en": "Barbell Deadlift",
+          "category": "kreuzheben",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Nach 2 bis 4 Aufwärmsätzen Rücken neutral und Stange körpernah halten",
+          "video": "Kreuzheben Technik",
+          "proxy": "Rumänisches Kreuzheben (KH)"
+        },
+        {
+          "name": "Klimmzüge",
+          "en": "Pull-Up",
+          "category": "koerper",
+          "weighted": true,
+          "bodyweight": true,
+          "increment": 1.25,
+          "startWeight": 0,
+          "cue": "Volle Streckung; bei oberer Wiederholungsgrenze Zusatzgewicht ergänzen",
+          "video": "Klimmzüge Technik",
+          "proxy": "Band-Klimmzüge"
+        },
+        {
+          "name": "Kurzhantel-Rudern einarmig",
+          "en": "One-Arm Dumbbell Row",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Rumpf stabil halten und Ellenbogen zum Becken ziehen",
+          "video": "Kurzhantel Rudern einarmig Technik",
+          "proxy": "Rudern am Kabel"
+        },
+        {
+          "name": "Step-ups mit Kurzhanteln",
+          "en": "Dumbbell Step-Up",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Über das obere Bein aufsteigen und kontrolliert absenken",
+          "video": "Step-ups Kurzhanteln Technik",
+          "proxy": "Ausfallschritte rückwärts"
+        },
+        {
+          "name": "Face Pulls am Kabel",
+          "en": "Cable Face Pull",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 1,
+          "startWeight": 0,
+          "cue": "Zur Stirn ziehen und Schulterblätter kontrolliert bewegen",
+          "video": "Face Pull Technik",
+          "proxy": "Band Face Pulls"
+        },
+        {
+          "name": "Pallof Press",
+          "en": "Pallof Press",
+          "category": "core",
+          "reps": [
+            8,
+            12
+          ],
+          "cue": "Je Seite zählen und Rotation des Rumpfes verhindern",
+          "video": "Pallof Press Technik",
+          "proxy": "Dead Bug"
+        }
+      ]
+    },
+    {
+      "key": "C",
+      "weekday": "Freitag",
+      "title": "Ganzkörper Mix",
+      "warmup": [
+        {
+          "name": "Hampelmänner",
+          "seconds": 60
+        },
+        {
+          "name": "World's Greatest Stretch",
+          "seconds": 60
+        },
+        {
+          "name": "Schulterblatt-Liegestütze",
+          "seconds": 30
+        },
+        {
+          "name": "Inchworm",
+          "seconds": 45
+        },
+        {
+          "name": "Fersenheben",
+          "seconds": 30
+        }
+      ],
+      "cooldown": [
+        {
+          "name": "Taubenhaltung",
+          "seconds": 45
+        },
+        {
+          "name": "Schulterdehnung über Kreuz",
+          "seconds": 30
+        },
+        {
+          "name": "Wadendehnung an der Wand",
+          "seconds": 30
+        }
+      ],
+      "exercises": [
+        {
+          "name": "Bankdrücken",
+          "en": "Barbell Bench Press",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Schulterblätter zusammen",
+          "video": "Bankdrücken Technik",
+          "proxy": "Kurzhantel-Bankdrücken"
+        },
+        {
+          "name": "Bulgarian Split Squats",
+          "en": "Bulgarian Split Squat",
+          "category": "grund",
+          "weighted": true,
+          "increment": 2,
+          "startWeight": 0,
+          "cue": "Vorderes Bein arbeitet",
+          "video": "Bulgarian Split Squat Technik",
+          "proxy": "Ausfallschritte mit Kurzhanteln"
+        },
+        {
+          "name": "Rudern an der Stange",
+          "en": "Inverted Row",
+          "category": "koerper",
+          "cue": "Körper stabil; Füße erhöhen oder Zusatzgewicht nutzen, sobald die Obergrenze gelingt",
+          "video": "Inverted Row Technik",
+          "proxy": "Rudern am Kabel"
+        },
+        {
+          "name": "Pike Liegestütze",
+          "en": "Pike Push-Up",
+          "category": "koerper",
+          "cue": "Hüfte hoch; Füße erhöhen, sobald die Obergrenze in allen Sätzen gelingt",
+          "video": "Pike Push-Up Technik",
+          "proxy": "Kurzhantel-Schulterdrücken"
+        },
+        {
+          "name": "Wadenheben stehend",
+          "en": "Standing Calf Raise",
+          "category": "assistenz",
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "cue": "Oben kurz halten",
+          "video": "Wadenheben Technik",
+          "proxy": "Wadenheben einbeinig"
+        },
+        {
+          "name": "Hollow Body Hold",
+          "en": "Hollow Body Hold",
+          "category": "core",
+          "unit": "seconds",
+          "timerMode": "target",
+          "reps": [
+            15,
+            30
+          ],
+          "target": "Unterer Rücken bleibt am Boden",
+          "video": "Hollow Body Hold Technik",
+          "proxy": "Beinheben liegend"
+        }
+      ]
+    }
+  ]
+}
