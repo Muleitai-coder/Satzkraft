@@ -221,6 +221,20 @@ test('uses frozen completion for day status, week progress and skipped-unit chec
   assert.equal(context.dayStatus(program.days[0]).complete, false);
 });
 
+test('derives the current training week from begun and completed units', () => {
+  const context = appContext();
+  const program = blockProgram();
+  assert.equal(context.currentTrainingWeekFor(program, { logs: {}, history: [] }), 1);
+  assert.equal(context.currentTrainingWeekFor(program, {
+    logs: {},
+    history: [{ week: 1, day: 'A', complete: true }]
+  }), 2);
+  assert.equal(context.currentTrainingWeekFor(program, {
+    logs: { '3|A|squat': { sets: [{ reps: '5', weight: '50' }] } },
+    history: [{ week: 1, day: 'A', complete: true }]
+  }), 3);
+});
+
 test('creates incrementing follow-up names and never truncates the block suffix', () => {
   const context = appContext();
   assert.equal(context.followupBlockName('Kraftbasis', {
@@ -261,6 +275,18 @@ test('builds a fresh follow-up program from the last non-deload work and leaves 
 
   next.days[0].ex[0].name = 'Geändert';
   assert.equal(source.days[0].ex[0].name, 'Kniebeuge', 'Folgeblock muss eine tiefe Kopie sein');
+});
+
+test('follow-up blocks keep only exercises active at the end of the block', () => {
+  const context = appContext();
+  const source = blockProgram();
+  source.days[0].ex[0].untilWeek = 2;
+  source.days[0].ex[1].fromWeek = 3;
+  source.days[0].ex[1].prevId = 'squat';
+  const next = context.buildFollowupProgram(source, { logs: completeLogs(source) }, { basis: source });
+  assert.deepEqual(Array.from(next.days[0].ex, ex => ex.id), ['row', 'push']);
+  assert.equal(next.days[0].ex[0].fromWeek, undefined);
+  assert.equal(next.days[0].ex[0].prevId, undefined);
 });
 
 test('activates a fresh follow-up block while archiving the source with all progress intact', () => {

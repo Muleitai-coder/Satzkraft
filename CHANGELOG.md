@@ -10,6 +10,18 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
 
+## [0.25.0] – 2026-07-17
+
+### Hinzugefügt
+
+- Neue Aktion „Werte korrigieren“: Zahlen abgeschlossener Trainings jederzeit ausbessern oder vergessene Sätze nachtragen – ohne die Trainingszeit zu verändern.
+
+### Geändert
+
+- Dein Protokoll ist jetzt geschützt: Abgeschlossene Trainings bleiben unverändert, Planänderungen gelten ab jetzt und nie rückwirkend.
+- Ersetzte Übungen behalten ihre Geschichte: Der Plan zeigt „seit Woche X“ samt Vorgängerin, die Auswertung führt beendete Übungen mit Zeitraum.
+- Trainiert wird vorne: Neue Einheiten starten in der aktuellen Woche, Vergessenes aus der Vorwoche lässt sich nachholen.
+
 ## [0.24.0] – 2026-07-17
 
 ### Hinzugefügt

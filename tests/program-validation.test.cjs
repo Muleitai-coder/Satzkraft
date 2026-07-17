@@ -92,6 +92,38 @@ test("accepts arbitrary exercise names and preserves supported fields", () => {
   assert.equal(result.prog.description, "Ein frei benannter Plan aus einer beliebigen KI.");
 });
 
+test("validates and roundtrips optional exercise timeline fields", () => {
+  const program = validProgram();
+  program.weeks = [1, 2, 3].map(n => ({ n, phase: "aufbau", label: `Woche ${n}`, rir: "2", note: "", sets: { frei: 3 } }));
+  program.days[0].exercises[0].untilWeek = 2;
+  program.days[0].exercises.push({
+    ...program.days[0].exercises[0],
+    name: "Nachfolger",
+    fromWeek: 3,
+    untilWeek: 3,
+    prevId: "A_0"
+  });
+  const result = parse(program);
+  assert.equal(result.err, undefined);
+  assert.equal(result.prog.days[0].ex[0].untilWeek, 2);
+  assert.equal(result.prog.days[0].ex[1].fromWeek, 3);
+  assert.equal(result.prog.days[0].ex[1].prevId, "A_0");
+  const exported = context.exportTranslate(result.prog);
+  assert.equal(exported.days[0].exercises[0].untilWeek, 2);
+  assert.equal(exported.days[0].exercises[1].fromWeek, 3);
+  assert.equal(exported.days[0].exercises[1].prevId, "A_0");
+  assert.equal(parse(exported).err, undefined);
+
+  program.days[0].exercises[1].fromWeek = 0;
+  assert.match(parse(program).err, /fromWeek/);
+  program.days[0].exercises[1].fromWeek = 3;
+  program.days[0].exercises[1].untilWeek = 2;
+  assert.match(parse(program).err, /fromWeek/);
+  program.days[0].exercises[1].untilWeek = 3;
+  program.days[0].exercises[1].prevId = "B_0";
+  assert.match(parse(program).err, /prevId/);
+});
+
 test("preserves target and max timer modes only for time exercises", () => {
   const target = validProgram();
   const exercise = target.days[0].exercises[0];

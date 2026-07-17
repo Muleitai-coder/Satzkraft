@@ -361,8 +361,14 @@ test('queues permanent replacements during training and opens every exact _ref o
 test('turns a matching today-only swap into normal history when the replacement is saved permanently', () => {
   const oldProgram = programFixture();
   const newProgram = JSON.parse(JSON.stringify(oldProgram));
-  newProgram.days[0].ex[0].id = 'A_0';
-  newProgram.days[0].ex[0].name = 'Brustpresse';
+  newProgram.days[0].ex[0].untilWeek = 0;
+  newProgram.days[0].ex.push({
+    ...newProgram.days[0].ex[0],
+    id: 'bench_v1',
+    name: 'Brustpresse',
+    fromWeek: 1,
+    prevId: 'bench'
+  });
   const oldStore = {
     tg: {}, barw: {}, notes: {},
     logs: { '1|A|bench': { sets: [{ reps: '10', weight: '100' }], swap: 'Brustpresse', swapWeight: '100' } },
@@ -375,12 +381,13 @@ test('turns a matching today-only swap into normal history when the replacement 
     bench: { day: 'A', id: 'A_0' }
   });
 
-  assert.deepEqual(Array.from(migrated.logs['1|A|A_0'].sets, set => ({ ...set })), [
+  assert.deepEqual(Array.from(migrated.logs['1|A|bench_v1'].sets, set => ({ ...set })), [
     { reps: '10', weight: '100' }
   ]);
-  assert.equal(migrated.logs['1|A|A_0'].swap, undefined, 'nach der dauerhaften Übernahme ist die Ersatzübung die reguläre Übung');
-  assert.equal(migrated.logs['1|A|A_0'].swapWeight, undefined, 'das temporäre Ersatzgewicht darf keine eigene Programmlogik behalten');
-  assert.deepEqual(Array.from(migrated.pendingReplacements), [], 'die erfolgreich übernommene Vormerkung muss erledigt sein');
+  assert.equal(migrated.logs['1|A|bench_v1'].swap, undefined, 'nach der dauerhaften Übernahme ist die Ersatzübung die reguläre Übung');
+  assert.equal(migrated.logs['1|A|bench_v1'].swapWeight, undefined, 'das temporäre Ersatzgewicht darf keine eigene Programmlogik behalten');
+  assert.equal(migrated.logs['1|A|bench'], undefined);
+  assert.match(html, /if\(pendingContext\)migrated\.pendingReplacements=\[\]/);
 });
 
 test('keeps deferred permanent replacements in the persisted program store', () => {
@@ -497,7 +504,7 @@ test('validates optional swap markers in backups without breaking older logs', (
 test('renders the temporary swap before and during training while permanent replacement stays workout-only', () => {
   assert.match(html, /Übung tauschen/);
   assert.match(html, /Für dieses Training/);
-  assert.match(html, /Dauerhaft ersetzen/);
+  assert.match(html, /Ab jetzt ersetzen/);
   const cardSource = functionSource('exCardHtml');
   assert.match(cardSource, /currentExerciseSwap\(ex\)/);
   assert.match(cardSource, /getauscht/);

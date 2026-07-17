@@ -374,3 +374,63 @@ test('uses one SVG icon system, larger training text and subtle completion feedb
   assert.match(html, /@keyframes checkpop/);
   assert.doesNotMatch(html, /workoutPanelHtml/);
 });
+
+test('enforces the current-week, previous-week and latest-repeat start matrix', () => {
+  const start = html.indexOf('function unitHasSetValues');
+  const end = html.indexOf('var REC_COLOR', start);
+  const context = {
+    S: { history: [], logs: {}, workout: null, week: 3, day: 'A' },
+    PROG: () => ({ weeks: [{}, {}, {}, {}], days: [{ key: 'A', ex: [] }] }),
+    renderView() {},
+    renderBar() {},
+    showModal() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  context.currentTrainingWeek = () => 3;
+  context.unitComplete = () => false;
+  context.dayWasInterrupted = () => false;
+  context.unitEmpty = () => true;
+  context.isLatestCompletedUnit = () => false;
+
+  assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: true, mode: 'start' });
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'start' });
+  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: false, mode: 'locked' });
+
+  context.unitEmpty = () => false;
+  context.dayWasInterrupted = () => true;
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'continue' });
+
+  context.unitComplete = () => true;
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: false, mode: 'complete' });
+  context.isLatestCompletedUnit = () => true;
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'repeat' });
+});
+
+test('correction mode is transient and exposes empty set rows without touching history or time', () => {
+  const start = html.indexOf('function unitHasSetValues');
+  const end = html.indexOf('var REC_COLOR', start);
+  const history = [{ week: 1, day: 'A', complete: true, dur: 600 }];
+  const context = {
+    S: { history, logs: {}, workout: null, week: 1, day: 'A' },
+    PROG: () => ({ weeks: [{}], days: [{ key: 'A', ex: [] }] }),
+    renderView() {},
+    renderBar() {},
+    showModal(title, message, actions) {
+      assert.equal(title, 'Werte korrigieren');
+      assert.match(message, /Empfehlungen späterer Wochen rechnen mit den neuen Werten/);
+      actions[0].action();
+    }
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  context.unitComplete = () => true;
+  context.startCorrection();
+  assert.equal(context.correctionActive(), true);
+  assert.deepEqual(context.S.history, history);
+  assert.equal(context.S.workout, null);
+  context.finishCorrection();
+  assert.equal(context.correctionActive(), false);
+  assert.match(html, /else if\(correctionActive\(\)\)\{rdis="";\}/);
+  assert.match(html, /if\(correctionActive\(\)\)\{[\s\S]*writeSets\(ex,corrected\)/);
+});

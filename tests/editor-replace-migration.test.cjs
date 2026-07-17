@@ -6,150 +6,163 @@ const vm = require('node:vm');
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 const start = html.indexOf('function editorBuildRefMap');
 const end = html.indexOf('function openProgramEditor', start);
-assert.ok(start >= 0 && end > start, 'Editor-Migrationsfunktionen wurden nicht gefunden');
+assert.ok(start >= 0 && end > start, 'Editor-Zeitachsenfunktionen wurden nicht gefunden');
 
-const context = {};
+const context = {
+  cloneJSON: value => JSON.parse(JSON.stringify(value)),
+  currentTrainingWeekFor: () => 3,
+  programUnitComplete: () => false,
+  exerciseValidForWeek: (ex, week) => week >= (ex.fromWeek ?? 1) && week <= (ex.untilWeek ?? Infinity),
+  normalizeSwapName: value => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, 80) : ''
+};
 vm.createContext(context);
 vm.runInContext(html.slice(start, end), context);
 
 function exercise(id, overrides) {
-  return Object.assign({ id, name: id, w: true, bw: false, unit: 'reps' }, overrides);
+  return Object.assign({ id, name: id, cat: 'kraft', w: true, bw: false, unit: 'reps' }, overrides);
 }
 
-function program(weeks, days) {
+function program(exercises) {
   return {
-    weeks: Array.from({ length: weeks }, (_, index) => ({ n: index + 1 })),
-    days
+    id: 'plan',
+    name: 'Plan',
+    categories: { kraft: { label: 'Kraft', color: 'amber', rest: 120 } },
+    weeks: Array.from({ length: 6 }, (_, index) => ({ n: index + 1, sets: { kraft: 3 } })),
+    days: [{ key: 'A', wd: 'Montag', title: 'A', ex: exercises }]
   };
 }
 
+function freshEdit(exercises) {
+  return {
+    id: 'fresh',
+    name: 'Plan',
+    categories: { kraft: { label: 'Kraft', color: 'amber', rest: 120 } },
+    weeks: Array.from({ length: 6 }, (_, index) => ({ n: index + 1, sets: { kraft: 3 } })),
+    days: [{ key: 'A', wd: 'Montag', title: 'A', ex: exercises }]
+  };
+}
+
+function draft(exercises) {
+  return { days: [{ key: 'A', exercises }] };
+}
+
 function store(overrides) {
-  return Object.assign({ tg: {}, logs: {}, history: [], workout: null, week: 1, day: 'A' }, overrides);
+  return Object.assign({
+    tg: {}, barw: {}, notes: {}, logs: {}, history: [], workout: null,
+    pendingReplacements: [], week: 3, day: 'A', blockCelebrated: false
+  }, overrides);
 }
 
 test('builds the old-to-new exercise map from editor refs without parsing ids', () => {
-  const draft = {
+  const map = context.editorBuildRefMap({
     days: [
       { key: 'Tag_mit_Unterstrich', exercises: [{ name: 'Neu' }, { name: 'Alt', _ref: 'alte_id_7' }] },
       { key: 'B', exercises: [{ name: 'Alt B', _ref: 'B_0' }] }
     ]
-  };
-  const map = context.editorBuildRefMap(draft);
+  });
   assert.deepEqual({ ...map.alte_id_7 }, { day: 'Tag_mit_Unterstrich', id: 'Tag_mit_Unterstrich_1' });
   assert.deepEqual({ ...map.B_0 }, { day: 'B', id: 'B_0' });
-  assert.equal(Object.keys(map).length, 2);
 });
 
-test('keeps logs on the correct exercises after inserting, moving and renaming', () => {
-  const oldProgram = program(2, [{ key: 'A', ex: [exercise('A_0'), exercise('A_1'), exercise('A_2')] }]);
-  const newProgram = program(2, [{ key: 'A', ex: [
-    exercise('A_0', { name: 'Neu' }),
-    exercise('A_1', { name: 'Umbenannt' }),
-    exercise('A_2'),
-    exercise('A_3')
-  ] }]);
-  const oldStore = store({
-    logs: {
-      '1|A|A_0': { sets: [{ reps: '8', weight: '50' }] },
-      '1|A|A_1': { sets: [{ reps: '9', weight: '60' }] },
-      '2|A|A_2': { sets: [{ reps: '10', weight: '70' }] }
-    },
-    history: [{ week: 1, day: 'A', start: 100, dur: 50 }]
-  });
-  const map = {
-    A_0: { day: 'A', id: 'A_1' },
-    A_1: { day: 'A', id: 'A_3' },
-    A_2: { day: 'A', id: 'A_2' }
-  };
-  const migrated = context.migrateReplaceStore(oldProgram, oldStore, newProgram, map);
-  assert.equal(migrated.logs['1|A|A_1'].sets[0].weight, '50');
-  assert.equal(migrated.logs['1|A|A_3'].sets[0].weight, '60');
-  assert.equal(migrated.logs['2|A|A_2'].sets[0].weight, '70');
-  assert.equal(migrated.logs['1|A|A_0'], undefined);
-  assert.deepEqual(Array.from(migrated.history, entry => ({ ...entry })), [{ week: 1, day: 'A', start: 100, dur: 50 }]);
+test('removed exercises end at the anchor while every stored value remains', () => {
+  const oldProgram = program([exercise('A_0'), exercise('A_1')]);
+  const oldStore = store({ logs: { '2|A|A_1': { sets: [{ reps: '8', weight: '50' }] } } });
+  context.editorPendingReplacementRefs = {};
+  context.editorRenameChoices = {};
+  const merged = context.timelineProgramFromEdit(
+    oldProgram,
+    freshEdit([exercise('A_0')]),
+    draft([{ name: 'A_0', weighted: true, unit: 'reps', _ref: 'A_0' }]),
+    oldStore
+  );
+  assert.equal(merged.days[0].ex.find(ex => ex.id === 'A_1').untilWeek, 2);
+  const migrated = context.migrateReplaceStore(oldProgram, oldStore, merged, {});
+  assert.deepEqual(JSON.parse(JSON.stringify(migrated.logs['2|A|A_1'])), oldStore.logs['2|A|A_1']);
 });
 
-test('drops deleted exercises and resets only exercises whose type changed', () => {
-  const oldProgram = program(2, [{ key: 'A', ex: [
-    exercise('A_0'),
-    exercise('A_1'),
-    exercise('A_2', { w: false, unit: 'reps' })
-  ] }]);
-  const newProgram = program(2, [{ key: 'A', ex: [
-    exercise('A_0', { w: false, unit: 'seconds' }),
-    exercise('A_1', { name: 'Nur umbenannt' })
-  ] }]);
-  const oldStore = store({ logs: {
-    '1|A|A_0': { sets: [{ reps: '8', weight: '50' }] },
-    '1|A|A_1': { sets: [{ reps: '9', weight: '60' }] },
-    '1|A|A_2': { sets: [{ reps: '12', weight: '' }] }
-  } });
-  const migrated = context.migrateReplaceStore(oldProgram, oldStore, newProgram, {
-    A_0: { day: 'A', id: 'A_0' },
-    A_1: { day: 'A', id: 'A_1' }
-  });
-  assert.deepEqual(Object.keys(migrated.logs), ['1|A|A_1']);
-  assert.equal(migrated.logs['1|A|A_1'].sets[0].weight, '60');
+test('type changes end the old exercise and create a linked successor', () => {
+  const oldProgram = program([exercise('A_0', { name: 'Beinpresse' })]);
+  context.editorPendingReplacementRefs = {};
+  context.editorRenameChoices = {};
+  const merged = context.timelineProgramFromEdit(
+    oldProgram,
+    freshEdit([exercise('A_0', { name: 'Kniebeuge', w: false, unit: 'reps' })]),
+    draft([{ name: 'Kniebeuge', unit: 'reps', _ref: 'A_0' }]),
+    store()
+  );
+  const [previous, successor] = merged.days[0].ex;
+  assert.equal(previous.id, 'A_0');
+  assert.equal(previous.untilWeek, 2);
+  assert.equal(successor.fromWeek, 3);
+  assert.equal(successor.prevId, 'A_0');
+  assert.notEqual(successor.id, previous.id);
 });
 
-test('migrates target overrides and removes values beyond shortened weeks', () => {
-  const oldProgram = program(8, [{ key: 'A', ex: [exercise('A_0')] }]);
-  const newProgram = program(6, [{ key: 'A', ex: [exercise('A_0')] }]);
-  const oldStore = store({
-    week: 7,
-    tg: { '5|A_0': '82.5', '7|A_0': '90' },
-    logs: { '6|A|A_0': { sets: [{ reps: '8', weight: '80' }] }, '7|A|A_0': { sets: [{ reps: '8', weight: '90' }] } }
-  });
-  const migrated = context.migrateReplaceStore(oldProgram, oldStore, newProgram, { A_0: { day: 'A', id: 'A_0' } });
-  assert.equal(migrated.week, 6);
-  assert.deepEqual({ ...migrated.tg }, { '5|A_0': '82.5' });
-  assert.deepEqual(Object.keys(migrated.logs), ['6|A|A_0']);
+test('rename decisions either preserve the id or begin a new exercise', () => {
+  const oldProgram = program([exercise('A_0', { name: 'Alter Name' })]);
+  const oldStore = store({ logs: { '2|A|A_0': { sets: [{ reps: '8', weight: '50' }] } } });
+  context.editorPendingReplacementRefs = {};
+  context.editorRenameChoices = { A_0: 'same' };
+  let merged = context.timelineProgramFromEdit(
+    oldProgram,
+    freshEdit([exercise('A_0', { name: 'Neuer Name' })]),
+    draft([{ name: 'Neuer Name', weighted: true, unit: 'reps', _ref: 'A_0' }]),
+    oldStore
+  );
+  assert.equal(merged.days[0].ex.length, 1);
+  assert.equal(merged.days[0].ex[0].id, 'A_0');
+
+  context.editorRenameChoices = { A_0: 'new' };
+  merged = context.timelineProgramFromEdit(
+    oldProgram,
+    freshEdit([exercise('A_0', { name: 'Neuer Name' })]),
+    draft([{ name: 'Neuer Name', weighted: true, unit: 'reps', _ref: 'A_0' }]),
+    oldStore
+  );
+  assert.equal(merged.days[0].ex[0].untilWeek, 2);
+  assert.equal(merged.days[0].ex[1].prevId, 'A_0');
 });
 
-test('drops values from deleted days, selects the first remaining day and clears workouts', () => {
-  const oldProgram = program(2, [
-    { key: 'A', ex: [exercise('A_0')] },
-    { key: 'B', ex: [exercise('B_0')] }
-  ]);
-  const newProgram = program(2, [{ key: 'B', ex: [exercise('B_0')] }]);
-  const oldStore = store({
-    day: 'A',
-    workout: { start: 123 },
-    logs: { '1|A|A_0': { sets: [{ reps: '8' }] }, '1|B|B_0': { sets: [{ reps: '9' }] } },
-    tg: { '1|A_0': '50', '1|B_0': '60' }
-  });
-  const migrated = context.migrateReplaceStore(oldProgram, oldStore, newProgram, { B_0: { day: 'B', id: 'B_0' } });
-  assert.equal(migrated.day, 'B');
-  assert.equal(migrated.workout, null);
-  assert.deepEqual(Object.keys(migrated.logs), ['1|B|B_0']);
-  assert.deepEqual({ ...migrated.tg }, { '1|B_0': '60' });
+test('a completed day anchors ordinary edits in the following week', () => {
+  context.programUnitComplete = () => true;
+  context.editorPendingReplacementRefs = {};
+  context.editorRenameChoices = { A_0: 'new' };
+  const oldProgram = program([exercise('A_0', { name: 'Alt' })]);
+  const merged = context.timelineProgramFromEdit(
+    oldProgram,
+    freshEdit([exercise('A_0', { name: 'Neu' })]),
+    draft([{ name: 'Neu', weighted: true, unit: 'reps', _ref: 'A_0' }]),
+    store()
+  );
+  assert.equal(merged.days[0].ex[0].untilWeek, 3);
+  assert.equal(merged.days[0].ex[1].fromWeek, 4);
+  context.programUnitComplete = () => false;
 });
 
-test('migrates bar weights and notes with the stable exercise reference', () => {
-  const oldProgram = program(2, [{ key: 'A', ex: [exercise('A_0'), exercise('A_1')] }]);
-  const newProgram = program(2, [{ key: 'B', ex: [exercise('B_0'), exercise('B_1', { w: false })] }]);
-  const oldStore = store({
-    barw: { A_0: 15, A_1: 10 },
-    notes: { A_0: 'Rack 4', A_1: 'wird verworfen' }
-  });
-  const migrated = context.migrateReplaceStore(oldProgram, oldStore, newProgram, {
-    A_0: { day: 'B', id: 'B_0' },
-    A_1: { day: 'B', id: 'B_1' }
-  });
-  assert.deepEqual({ ...migrated.barw }, { B_0: 15 });
-  assert.deepEqual({ ...migrated.notes }, { B_0: 'Rack 4' });
+test('a confirmed permanent swap becomes regular successor history', () => {
+  context.programUnitComplete = () => true;
+  context.editorPendingReplacementRefs = { A_0: 'Frontkniebeuge' };
+  context.editorRenameChoices = {};
+  const oldProgram = program([exercise('A_0', { name: 'Kniebeuge' })]);
+  const oldStore = store({ logs: { '3|A|A_0': { swap: 'Frontkniebeuge', sets: [{ reps: '8', weight: '45' }] } } });
+  const merged = context.timelineProgramFromEdit(
+    oldProgram,
+    freshEdit([exercise('A_0', { name: 'Frontkniebeuge' })]),
+    draft([{ name: 'Frontkniebeuge', weighted: true, unit: 'reps', _ref: 'A_0' }]),
+    oldStore
+  );
+  const successor = merged.days[0].ex.find(ex => ex.prevId === 'A_0');
+  assert.equal(successor.fromWeek, 3);
+  const migrated = context.migrateReplaceStore(oldProgram, oldStore, merged, {});
+  assert.equal(migrated.logs[`3|A|${successor.id}`].sets[0].weight, '45');
+  assert.equal(migrated.logs[`3|A|${successor.id}`].swap, undefined);
+  assert.equal(migrated.logs['3|A|A_0'], undefined);
+  context.programUnitComplete = () => false;
 });
 
-test('exposes the keep-progress dialog and blocks replacing the active program during training', () => {
-  assert.match(html, /Ersetzen & Fortschritt behalten/);
-  assert.match(html, /Ersetzen & Fortschritt zurücksetzen/);
-  assert.match(html, /function programWriteLocked\(\)\{return !!S\.workout;\}/);
-  assert.match(html, /if\(programWriteLocked\(\)\)\{showProgramWriteLocked\(\);return;\}/);
-});
-
-test('keeps refs editor-only and documents the replace behavior in the help text', () => {
-  assert.match(html, /draftEx\._ref=internalDay\.ex\[ei\]\.id/);
-  assert.match(html, /„Original ersetzen“ übernimmt deine Änderungen in das laufende Programm/);
+test('keeps refs editor-only and explains the new replace behavior', () => {
+  assert.match(html, /draftEx\._ref=internalEx\.id/);
+  assert.match(html, /Planänderungen gelten ab jetzt/);
   assert.doesNotMatch(html.slice(html.indexOf('function exportTranslate'), html.indexOf('function plainObject')), /_ref/);
   assert.doesNotMatch(html.slice(html.indexOf('function importTranslate'), html.indexOf('function normalizeWorkout')), /_ref/);
 });
