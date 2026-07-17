@@ -169,7 +169,7 @@ Drei Schichten, drei Zeitrichtungen:
 
 ### Feinspezifikation Release 1 „O-Fix" (O3 + erweiterte Wiederholen-Warnung aus O6)
 
-**Stand 17.07.2026, abgeglichen mit v0.22.3.** Alle Zeilenangaben beziehen sich auf `index.html` dieses Stands. Umfang: O3 vollständig plus O6 Punkt 1 (Wiederholen-Dialog). **Nicht enthalten:** O1-Sperren (Wiederholen bleibt in jeder Woche möglich), O2 „Werte korrigieren", O4/O5, Wegweiser- und Hinweis-Box-Texte aus O6. Keine neuen Datenfelder, keine Migration: O3 **liest ausschließlich** das vorhandene `history[].complete`; `DATA_SCHEMA_VERSION` bleibt 4, Austauschformat v2 unverändert.
+**Stand 17.07.2026, abgeglichen mit v0.22.3. UMSETZUNG FREIGEGEBEN durch den Produktverantwortlichen am 17.07.2026 (im Chat), inklusive der Präzisierung der Warnbedingung in F2.3.** Alle Zeilenangaben beziehen sich auf `index.html` dieses Stands. Umfang: O3 vollständig plus O6 Punkt 1 (Wiederholen-Dialog). **Nicht enthalten:** O1-Sperren (Wiederholen bleibt in jeder Woche möglich), O2 „Werte korrigieren", O4/O5, Wegweiser- und Hinweis-Box-Texte aus O6. Keine neuen Datenfelder, keine Migration: O3 **liest ausschließlich** das vorhandene `history[].complete`; `DATA_SCHEMA_VERSION` bleibt 4, Austauschformat v2 unverändert.
 
 #### F1 · Codestand-Abgleich (v0.22.3)
 
