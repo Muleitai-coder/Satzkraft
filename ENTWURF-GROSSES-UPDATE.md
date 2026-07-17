@@ -379,7 +379,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 | # | Frage | Entscheidung |
 |---|---|---|
 | M-E1 | Umfang (Auswahlprinzip)? | **ENTSCHIEDEN 16.07., ERWEITERT 17.07. (MF-2):** Sieben Bereiche mit Zielumfang ~200 Übungen: **Gym/Studio-Geräte 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5.** Kernanspruch unverändert: saubere deutsche UND englische Bezeichnungen (gründliche Recherche verpflichtend – größte Schwachstelle anderer Apps; `en`-Feld vorhanden). **Prüfpunkt Feinspezifikation:** Abgrenzung Mobility/Cardio zur bestehenden Warm-up/Cool-down-Bibliothek (`WUCD_LIB`) – was ist reguläre Übung im Trainingstag, was gehört in Warm-up/Cool-down. |
-| M-E2 | Felder pro Übung? | **ENTSCHIEDEN 16.07.:** Name (DE), englischer Name, Alias-Namen, Übungstyp (Gewicht/Körpergewicht/Zeit), Equipment, Bewegungsmuster/Muskel (nur intern für Tauschvorschläge), Technik-Hinweis (1 Satz), Video-Suchbegriff, passende Ersatzübung. |
+| M-E2 | Felder pro Übung? | **ENTSCHIEDEN 16.07., ERWEITERT 17.07.:** Name (DE), englischer Name, Alias-Namen, Übungstyp (Gewicht/Körpergewicht/**Körpergewicht+Zusatzgewicht**/Zeit), Equipment, Bewegungsmuster/Muskel (nur intern für Tauschvorschläge), Technik-Hinweis (1 Satz), Video-Suchbegriff, passende Ersatzübung. Erweiterung: vierter Übungstyp für Übungen wie Klimmzüge/Dips vom Produktverantwortlichen bestätigt (17.07., siehe `ENTWURF-UEBUNGSLISTE.md` Abschnitt 14). |
 | M-E3 | Alias-Matching für J4? | **ENTSCHIEDEN 16.07.:** Automatisch – bekannte Namen (DE/EN-Varianten) werden über die Alias-Liste still normalisiert; unbekannte matchen weiter nur exakt. |
 | M-E4 | Einsatzorte im UI? | **ENTSCHIEDEN 16.07.:** Drei Orte: Editor-Autocomplete (Übernahme füllt Typ, Technik-Hinweis, Video, Ersatzübung mit aus), Tauschvorschläge in K1, Langzeit-Matching J4. „Schnellwahl statt leerer Karte" beim Übung-Hinzufügen bewusst **nicht** übernommen. |
 
@@ -389,6 +389,11 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 - Freie eigene Übungsnamen bleiben uneingeschränkt erlaubt – die Bibliothek ist Komfort, nie Pflicht.
 - Recherche-Arbeitspaket vor der Umsetzung: Übungsliste mit DE/EN-Namen und Aliassen als eigenes Review-Dokument, Abnahme durch den Produktverantwortlichen (analog L-E5). Umfangsrichtwert: **MF-2**; Quelle/QS der Technik-Hinweise: **MF-3**; Startzeitpunkt: **MF-4**.
 - **Neu (Verzahnung mit O):** Das Feld „passende Ersatzübung" speist die Vorschläge für „Nur heute tauschen" und „Ab jetzt ersetzen" (Regel 8); DE/EN-Namen und Aliasse speisen die Übungs-Zeitachse (O5) und das Langzeit-Matching.
+
+### Stand der Vorarbeit (17.07.2026)
+- **Recherche-Dokument liegt vor:** `ENTWURF-UEBUNGSLISTE.md` – 200 Übungen in sieben Bereichen (Gym 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5), DE/EN-Namen recherchiert (Übersetzungsfallen mit Quellen dokumentiert), Ersatzübungen flächendeckend, alle 50 Übungsnamen der freigegebenen L-Programme abgedeckt, WUCD-Abgrenzung gekennzeichnet.
+- **Entscheidungen des Produktverantwortlichen (17.07.):** 1. Vierter Übungstyp „Körpergewicht+Zusatzgewicht" wird übernommen (M-E2 erweitert). 2. WUCD-Überschneidungen bleiben in beiden Bibliotheken (mit Kennzeichnung). 3. Bei Trage-/Schlitten-Übungen sollen Gewicht **und** Zeit erfassbar sein – Datenmodell/UI in der M-Feinspezifikation. 4. QS der Technik-Hinweise und Video-Suchbegriffe (MF-3) erfolgt später als eigener Schritt; Priorität ist die saubere Datenbasis. 5. Alias-Ergänzungen aus der Studio-Praxis folgen später.
+- **Status:** Liste bleibt ENTWURF bis zur MF-3-Freigabe; nichts davon ist in der App.
 
 ---
 

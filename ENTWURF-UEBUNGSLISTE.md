@@ -301,7 +301,7 @@ Abgleich mit der bestehenden Warm-up/Cool-down-Bibliothek (`WUCD_LIB` in `index.
 
 **Eindeutig reguläre Übungen im Trainingstag:** Jefferson Curl und Cossack Squats (Mobility mit Last bzw. Kraftanteil) sowie alle fünf Cardio-Einträge (als Zeit-Übungen für eigene Cardio-Anteile im Trainingstag; Seilspringen doppelt: kurz = Warm-up, lang = Cardio).
 
-**Zur Entscheidung durch den Produktverantwortlichen:** Entweder bleiben die sieben „eher WUCD“-Einträge bewusst in beiden Bibliotheken (mit dieser Kennzeichnung), oder sie werden aus der 200er-Liste gestrichen und der Mobility-Bereich schrumpft auf 2–3 reguläre Einträge. Empfehlung der Architektur: **in beiden führen** – wer z. B. gezielt einen Mobility-Block als Trainingsteil plant, braucht die Einträge als reguläre Übungen; die WUCD-Bibliothek bleibt davon unberührt.
+**ENTSCHIEDEN 17.07.2026 (Produktverantwortlicher):** Die „eher WUCD“-Einträge bleiben bewusst **in beiden Bibliotheken** (mit dieser Kennzeichnung) – wer z. B. gezielt einen Mobility-Block als Trainingsteil plant, braucht die Einträge als reguläre Übungen; die WUCD-Bibliothek bleibt davon unberührt.
 
 ## 12. Konsistenz mit den freigegebenen L-Programmen
 
@@ -320,10 +320,12 @@ Die englischen Namen folgen der etablierten Übungsnomenklatur (u. a. ExRx.net a
 5. **Multipresse = Smith Machine; Hackenschmidt-Kniebeuge = Hack Squat.** Quellen: [crimefood.de (Multipresse)](https://crimefood.de/kniebeugen-multipresse/), [crimefood.de (Hackenschmidt)](https://crimefood.de/hackenschmidt-kniebeuge/), [atletica.de](https://atletica.de/en/blogs/training-insights/hack-squat-masterclass-how-to-train-your-legs-effectively-atletica)
 6. **Incline Push-Up = Hände erhöht (leichter), Decline Push-Up = Füße erhöht (schwerer)** – häufige Verwechslung, weil beim Bankdrücken „Incline“ die schwerere Schräglage meint. Quellen: [healthline.com](https://www.healthline.com/health/decline-push-up), [madbarz.com](https://www.madbarz.com/blog/134-incline-vs-decline-push-ups-whats-the-differe)
 
-## 14. Offene Punkte für die Abnahme
+## 14. Offene Punkte für die Abnahme – Entscheidungen vom 17.07.2026
 
-1. **Übungstyp „KG+Z“ (Körpergewicht + Zusatzgewicht):** Der Auftrag nennt vier Typen, die Entscheidung M-E2 nur drei (Gewicht/Körpergewicht/Zeit). Betroffen sind 8 Übungen (Klimmzug-Varianten, Dips, Ring-Dips, Hyperextensions, Glute-Ham-Raise, Wadenheben einbeinig, Russian Twists, Cossack Squats). Bitte bestätigen, dass der vierte Typ ins Datenmodell aufgenommen wird – sonst fallen diese auf „Körpergewicht“ zurück.
-2. **WUCD-Abgrenzung:** Entscheidung „in beiden Bibliotheken führen“ vs. „aus der Liste streichen“ (Abschnitt 11).
-3. **Carry-Übungen als Zeit-Typ:** Farmer's Walk, Suitcase/Racked/Overhead Carry und die Sled-Übungen sind als `Zeit` typisiert; das verwendete Gewicht wird damit nicht strukturiert erfasst. Ob dafür eine Kombination (Zeit + Gewicht) nötig ist, bei der M-Feinspezifikation klären.
-4. **Technik-Hinweise und Video-Suchbegriffe:** Formulierung nach `trainings_richtlinien`-Geist; QS und Freigabe durch den Produktverantwortlichen gemäß MF-3 (Stichprobe der Suchbegriffe in der echten Videosuche empfohlen).
-5. **Aliasse:** Die Alias-Listen sind bewusst auf echte Namensvarianten beschränkt (M-E3 normalisiert Schreibweisen ohnehin); Ergänzungen aus der Studio-Praxis sind bei der Abnahme willkommen.
+Alle fünf Punkte wurden am 17.07.2026 vom Produktverantwortlichen entschieden:
+
+1. **Übungstyp „KG+Z“ (Körpergewicht + Zusatzgewicht):** **ENTSCHIEDEN 17.07.:** Der vierte Übungstyp wird übernommen (Erweiterung gegenüber M-E2, dort nur Gewicht/Körpergewicht/Zeit). Die 8 betroffenen Übungen (Klimmzug-Varianten, Dips, Ring-Dips, Hyperextensions, Glute-Ham-Raise, Wadenheben einbeinig, Russian Twists, Cossack Squats) bleiben wie typisiert.
+2. **WUCD-Abgrenzung:** **ENTSCHIEDEN 17.07.:** Nach Empfehlung der Architektur – die überschneidenden Einträge bleiben in **beiden** Bibliotheken (mit der Kennzeichnung aus Abschnitt 11); die 200er-Liste bleibt unverändert.
+3. **Carry-Übungen (Zeit + Gewicht):** **ENTSCHIEDEN 17.07.:** Bei Trage- und Schlitten-Übungen (Farmer's Walk, Suitcase/Racked/Overhead Carry, Sled Push/Pull) sollen **Gewicht und Zeit gemeinsam** erfassbar sein. Die Umsetzung (Datenmodell/UI, heute gibt es nur `unit:"seconds"` ohne Gewichtsfeld) wird in der M-Feinspezifikation ausgearbeitet.
+4. **Technik-Hinweise und Video-Suchbegriffe:** **ENTSCHIEDEN 17.07.:** Die Qualitätssicherung nach MF-3 erfolgt später als eigener Schritt an anderer Stelle. Priorität dieses Dokuments ist eine saubere, vollständige Datenbasis (Namen, Aliasse, Typen, Ersatzübungen); die Status-Kopfzeile bleibt bis zu dieser späteren Freigabe bestehen.
+5. **Aliasse:** **ENTSCHIEDEN 17.07.:** Ergänzungen aus der Studio-Praxis werden später nachgetragen; die jetzige Beschränkung auf echte Namensvarianten bleibt.
