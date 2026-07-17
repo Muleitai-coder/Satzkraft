@@ -795,3 +795,44 @@ Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; V
 - Tausch- und Notizdetails werden in v0.22.3 im vollständigen Trainingsprotokoll eindeutig dargestellt. Neue Kennzahlen oder zusätzliche Darstellungen im Bereich „Fortschritt im Trainingsblock“ sind nicht beschlossen.
 - Das Verwerfen einer dauerhaften Vormerkung darf den bereits dokumentierten Ersatznamen und dessen Sätze im beendeten Training nicht verändern.
 - Der ausführliche Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt offen.
+
+---
+
+## 18. Großes Update · Zonenmodell, Programm-Bibliothek, Übungs-Bibliothek · Releases 1–4 (beschlossen 17.07.2026)
+
+**Status:** Vom Produktverantwortlichen beschlossen und freigegeben. Die vollständigen, verbindlichen Arbeitsanweisungen stehen in `ENTWURF-GROSSES-UPDATE.md` – die vier dortigen Abschnitte **„Feinspezifikation Release 1–4"** sind Arbeitsanweisungen im Sinne dieses Briefings und werden in der unten stehenden Reihenfolge umgesetzt. Alle Guardrails aus Abschnitt 2 gelten unverändert. Paket N (KI-Coach-Blockbegleitung) ist **ausgeklammert** und nicht Teil dieses Updates.
+
+### Verbindliches Produkt-Regelwerk „Plan · Einheit · Protokoll"
+
+Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, bleibt stehen; trainiert wird immer nur vorne; Planänderungen gelten nur für Trainings, die noch kommen.* Daraus folgen zwölf Regeln (Langfassung in `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 3):
+
+1. **Unverlierbarkeit:** Keine Planänderung löscht trainierte Daten; entfernte/ersetzte Übungen *enden* (`untilWeek`), ihre Historie bleibt.
+2. **Korrigieren ist nicht Wiederholen:** Satzwerte abgeschlossener Einheiten sind jederzeit still korrigierbar; Struktur und Trainingszeit sind eingefroren.
+3. **Abgeschlossen bleibt abgeschlossen:** Vollständigkeit wird beim Beenden festgeschrieben (`history[].complete`).
+4. **Trainiert wird vorne:** Startbar sind nur die aktuelle Woche und leere Einheiten der Vorwoche.
+5. **Wiederholen nur zuletzt:** Nur die zuletzt abgeschlossene Einheit ist wiederholbar; die neue ersetzt die alte.
+6. **Eine Zelle, eine Wahrheit:** Je Woche×Tag genau eine Einheit.
+7. **Planänderungen gelten ab der nächsten offenen Einheit je Tag** – nie rückwirkend.
+8. **Tauschen ist zweistufig:** „nur heute" (Zelle) oder „ab jetzt" (alte endet, neue beginnt).
+9. **Struktur folgt denselben Regeln** (mit der in K-F4 dokumentierten Vereinfachung: Reihenfolge ist Darstellung).
+10. **Benannte Absichten statt Edit-Knöpfen.** 11. **Sperren sind Wegweiser.** 12. **Der Plan zeigt seine Geschichte.**
+
+### Release-Plan (ein Release = ein eigenes Update mit Version + Changelog)
+
+| Release | Inhalt | Arbeitsanweisung | Status |
+|---|---|---|---|
+| 1 „O-Fix" | Vollständigkeit abgeschlossener Einheiten einfrieren + erweiterte Wiederholen-Warnung | Feinspezifikation Release 1 (F1–F8) | freigegeben, Umsetzung beauftragt |
+| 2 „L" | Programm-Bibliothek: vier freigegebene Startprogramme (`ENTWURF-PROGRAMME/*.json` → `programme/`), Kachel, Vorschau, Kalibrier-Anleitung, Herkunfts-Kennzeichnung | Feinspezifikation Release 2 (L-F1–L-F7) | freigegeben |
+| 3 „O-Kern" | Zonenmodell komplett: Schreibrechte, „Werte korrigieren", Gültig-ab-Mechanik (`fromWeek`/`untilWeek`), Übungs-Zeitachse, Wegweiser + einmalige Hinweis-Box | Feinspezifikation Release 3 (K-F1–K-F9) | freigegeben |
+| 4 „M" | Übungs-Bibliothek light: `uebungen.json` aus der freigegebenen `ENTWURF-UEBUNGSLISTE.md`, Editor-Autocomplete, Tauschvorschläge, Alias-Matching | Feinspezifikation Release 4 (M-F1–M-F8) | freigegeben |
+
+**Verbindliche Umsetzungsregeln:**
+- Reihenfolge strikt 1 → 2 → 3 → 4; Release 3 setzt 1 voraus, Release 4 setzt 3 voraus.
+- Je Release nichts umsetzen, was über die jeweilige Feinspezifikation hinausgeht (insbesondere keine O-Kern-Teile im O-Fix vorziehen).
+- Datenkompatibilität: `cali-plan-v3`, `DATA_SCHEMA_VERSION` 4 und Austauschformat v2 bleiben; alle neuen Felder (`fromWeek`, `untilWeek`, `prevId`, `origin`, `zonesIntroSeen`) sind optional und abwärtskompatibel.
+- `js/progression.js` bleibt unangetastet; Test-Anker aus Abschnitt 2 Punkt 6 bleiben erhalten.
+- Freigegebene Inhalts-Artefakte: `ENTWURF-PROGRAMME/*.json` (vier Programme, Freigabe 17.07.2026) und `ENTWURF-UEBUNGSLISTE.md` (200 Übungen, Freigabe 17.07.2026).
+
+### Ausgeklammert
+
+Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 1–4 und nach einem eigenen Konzept-Termin zu „Bring your own AI" (Vorentscheidungen in `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 6). Bis dahin: keine N-Umsetzung, auch nicht teilweise.
