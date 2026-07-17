@@ -10,6 +10,16 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
 
+## [0.24.0] – 2026-07-17
+
+### Hinzugefügt
+
+- Neue Programm-Bibliothek: Vier geprüfte Satzkraft-Programme (Gym Ganzkörper Beginner und Fortgeschritten, Calisthenics-Einstieg, Hybrid) lassen sich mit vollständiger Vorschau und Kalibrier-Anleitung direkt übernehmen.
+
+### Geändert
+
+- Offizielle Satzkraft-Programme sind in der Programmverwaltung gekennzeichnet.
+
 ## [0.23.0] – 2026-07-17
 
 ### Behoben

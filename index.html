@@ -146,6 +146,7 @@ body.rest-lock .ex:not(.rest-focus){opacity:.55;transform:scale(.99)}
 .srow .unit{font-size:11px;color:#71717a;flex-shrink:0}
 .editnote{font-size:12px;color:#71717a;margin-top:8px;text-align:center}
 .calibrationhint{text-align:left}
+.calibrationmore{display:inline;margin-left:4px;padding:0;border:0;background:none;color:#6ee7b7;font:inherit;font-weight:750;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 .backupreminder{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0;padding:10px 12px;border:1px solid rgba(56,189,248,.25);border-radius:10px;background:rgba(14,165,233,.06);color:#a1a1aa;font-size:11px;line-height:1.4}
 .backupreminderactions{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
 .backupreminder button{border:0;background:none;color:#7dd3fc;font:inherit;font-weight:700;padding:7px;cursor:pointer;white-space:nowrap}
@@ -547,6 +548,19 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .previewday{border:1px solid #2b3440;border-radius:10px;background:#10151b;padding:10px 11px;min-width:0}
 .previewday b{display:block;font-size:11px;overflow-wrap:anywhere}
 .previewday span{display:block;color:#71717a;font-size:10px;margin-top:4px}
+.libraryprograms{display:grid;gap:9px;margin-top:10px}
+.libraryprogram{display:block;width:100%;padding:13px;border:1px solid #2b3440;border-radius:12px;background:#10151b;color:#fafafa;text-align:left;cursor:pointer}
+.libraryprogram:hover{border-color:#3f4a58;background:#141b23}
+.libraryprogram b{display:block;font-size:13px}
+.libraryprogrammeta{display:block;margin-top:4px;color:#6ee7b7;font-size:10px;font-weight:700}
+.libraryprogramdesc{display:block;margin-top:6px;color:#a1a1aa;font-size:11px;line-height:1.45}
+.librarypreview{margin:12px 0}
+.librarypreviewweek{font-size:10px;line-height:1.5;color:#a1a1aa}
+.librarypreviewday{margin-top:9px;padding:10px 11px;border:1px solid #2b3440;border-radius:10px;background:#10151b}
+.librarypreviewday b{display:block;font-size:11px}
+.librarypreviewday ul{margin:6px 0 0;padding-left:18px;color:#a1a1aa;font-size:10px;line-height:1.55}
+.calibrationguidebody{padding:11px;border-top:1px solid #2b3440;color:#a1a1aa;font-size:11px;line-height:1.55}
+.calibrationguidebody ol{margin:8px 0;padding-left:20px}.calibrationguidebody li{margin-bottom:7px}.calibrationguidebody p{margin:8px 0}
 .importactions{position:sticky;bottom:-18px;z-index:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:16px -18px -18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #242b35;background:rgba(20,25,32,.97)}
 .importactions .smallbtn{min-height:42px;white-space:normal}
 .importactions .wide{grid-column:1/-1}
@@ -556,6 +570,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .manualday.sel{background:#10b981;border-color:#10b981;color:#052e16}
 .manualhint{color:#71717a;font-size:10px;line-height:1.45;margin-top:7px}
 .sourcepill{display:inline-flex;align-items:center;border:1px solid #313a46;border-radius:999px;padding:4px 8px;color:#a1a1aa;font-size:9px;font-weight:750;margin-bottom:8px}
+.programorigin{color:#6ee7b7}
 .versionfoot{display:flex;justify-content:center;margin:22px auto 2px;color:#71717a;font-size:10px;font-weight:650;letter-spacing:.03em;background:none;border:0;padding:4px;cursor:pointer;text-decoration:underline;text-decoration-color:#3f4652;text-underline-offset:3px}
 .versionintro{margin:9px 0 12px;line-height:1.5}.versionhistory{display:grid;gap:8px;text-align:left}.versionentry{border:1px solid #313a46;border-radius:11px;background:#10151b;overflow:hidden}.versionentry>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}.versionentry>summary::-webkit-details-marker{display:none}.versionentry>summary:after{content:"";width:7px;height:7px;flex:none;border-right:2px solid #71717a;border-bottom:2px solid #71717a;transform:rotate(45deg);transition:transform .15s}.versionentry[open]>summary:after{transform:rotate(225deg)}.versionentry[open]>summary{border-bottom:1px solid #313a46}.versiontitle{display:block;color:#e4e4e7;font-size:12px}.versiondate{display:block;color:#71717a;font-size:9px;margin-top:2px}.versionbody{padding:10px 12px}.versionbody p{margin:0 0 8px;color:#a1a1aa;font-size:10px;line-height:1.45}.versionbody ul{margin:0;padding-left:18px}.versionbody li{margin:0 0 7px;line-height:1.45;font-size:11px}.legendversion{display:inline;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-color:#3f4652;text-underline-offset:3px}
 .developercredit{display:block;margin-top:5px;color:#a1a1aa;font-size:10px;font-weight:650;letter-spacing:.02em}
@@ -785,6 +800,8 @@ html[data-theme="light"] .createchoice,
 html[data-theme="light"] .importdrop,
 html[data-theme="light"] .importnotice,
 html[data-theme="light"] .previewday,
+html[data-theme="light"] .libraryprogram,
+html[data-theme="light"] .librarypreviewday,
 html[data-theme="light"] .manualday{background:#fff;border-color:#d4d4d8;color:#242b35}
 html[data-theme="light"] .createchoice.primary{background:#ecfdf5;border-color:#6ee7b7}
 html[data-theme="light"] .createchoice:hover{background:#f8fafc;border-color:#a1a1aa}
@@ -804,6 +821,8 @@ html[data-theme="light"] .importnotice.err{background:#fef2f2;border-color:#feca
 html[data-theme="light"] .importnotice.err strong{color:#991b1b}
 html[data-theme="light"] .importtechnical{border-color:#d4d4d8}
 html[data-theme="light"] .importtechnical pre{background:#f4f4f5;border-color:#d4d4d8;color:#52525b}
+html[data-theme="light"] .calibrationguidebody{border-color:#d4d4d8;color:#52525b}
+html[data-theme="light"] .libraryprogram:hover{background:#f8fafc;border-color:#a1a1aa}
 html[data-theme="light"] .importactions{background:rgba(255,255,255,.97);border-color:#e4e4e7}
 html[data-theme="light"] .manualday.sel{background:#10b981;border-color:#10b981;color:#052e16}
 html[data-theme="light"] .edwucdrow select,html[data-theme="light"] .edwucdrow input{background:#fff;border-color:#d4d4d8;color:#18181b}
@@ -933,7 +952,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.23.0";
+var APP_VERSION="0.24.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -1377,7 +1396,7 @@ function exCardHtml(ex){
  h+=rr?'<span><b>'+(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'–'+rr[1]+' Wdh')+'</b></span>':'<span><b>'+esc(ex.target||"—")+'</b></span>';
  if(ex.w)h+='<span class="dot">·</span><span>Ziel '+(!ex.bw?'<button type="button" class="platebtn" data-plates="'+attr(ex.id)+'" aria-label="Scheibenrechner für '+attr(ex.name)+' öffnen"><b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"—")+'</b></button>':'<b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"Körpergew.")+'</b>')+'</span>';
  var pauseLabel=restLabel(catRest(ex));h+='<span class="dot">·</span><span class="prescpause" aria-label="Pause '+attr(pauseLabel)+'" title="Pause '+attr(pauseLabel)+'">'+icon("timer")+' <b>'+pauseLabel+'</b></span></div>';
- if(ex.w&&!ex.bw&&tw<=0&&!sets.some(function(s){return Number(s.weight)>0;}))h+='<div class="editnote calibrationhint" id="calib-'+attr(ex.id)+'">Noch kein Arbeitsgewicht: Trag beim ersten Satz dein Gewicht ein – ab dann rechnet Satzkraft automatisch damit weiter.</div>';
+ if(ex.w&&!ex.bw&&tw<=0&&!sets.some(function(s){return Number(s.weight)>0;}))h+='<div class="editnote calibrationhint" id="calib-'+attr(ex.id)+'">Noch kein Arbeitsgewicht: Trag beim ersten Satz dein Gewicht ein – ab dann rechnet Satzkraft automatisch damit weiter. <button type="button" class="calibrationmore" data-calibration-guide="1">Wie finde ich mein Startgewicht?</button></div>';
  if(last){var v=last.sets.filter(function(s){return s.reps!=="";}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":(isTime(ex)?fmtSeconds(s.reps):""+s.reps);}).join(" · ")||"—";h+='<button class="last" data-hist="'+ex.id+'" aria-label="Verlauf für '+attr(ex.name)+' öffnen"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+v+'</span><span class="histhint">Verlauf <span aria-hidden="true">'+icon("chevron-right")+'</span></span></button>';}
  if(ex.w)h+='<div class="wwrow"><span>Arbeitsgewicht:</span><input class="inp" id="ww-'+ex.id+'" inputmode="decimal" aria-label="'+esc(ex.name)+' Arbeitsgewicht in kg" value="'+(currentExerciseSwapWeight(ex)==null?baseWeight(ex,S.week):currentExerciseSwapWeight(ex))+'"'+dis+'><span>kg'+(ex.bw&&tw===0?" (Zusatz)":"")+'</span></div>';
  var firstOpen=firstOpenSet(ex,sets);
@@ -1574,6 +1593,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";
 }
 var VERSION_HISTORY=[
+ {version:"v0.24.0",date:"17.07.2026",changes:["Vier geprüfte Satzkraft-Programme für Gym, Calisthenics und hybrides Training lassen sich mit vollständiger Vorschau direkt übernehmen.","Eine zweistufige Anleitung erklärt, wie du in der ersten Einheit ein passendes Startgewicht findest.","Direkt übernommene Satzkraft-Programme sind in der Programmverwaltung als offiziell gekennzeichnet."]},
  {version:"v0.23.0",date:"17.07.2026",changes:["Abgeschlossene Einheiten richten Tagesanzeige, Wochenbalken, Verpasst-Warnung und Blockabschluss dauerhaft nach dem beim Beenden gespeicherten Abschlussstatus aus.","Spätere Programmänderungen machen fertige Wochen nicht mehr rückwirkend unvollständig.","Die Wiederholen-Abfrage warnt, wenn neue Werte Empfehlungen in späteren Wochen desselben Trainingstags neu berechnen."]},
  {version:"v0.22.3",date:"16.07.2026",changes:["Während Satzpause, Satzfokus oder Zeittimer bleiben Eingaben ausschließlich bei der zugehörigen Übung möglich; andere Übungen sind konsequent gesperrt.","Vorgemerkte dauerhafte Übungstausche führen nach Trainingsende in eine verbindliche Entscheidung zwischen Editor und Verwerfen – ohne Später-Funktion.","Der Editor übernimmt alle vorgemerkten Tausche gemeinsam und markiert die betroffenen Übungen gelb, bis sie gespeichert oder verworfen wurden.","Übungsnotizen stehen im vollständigen Trainingsprotokoll direkt sichtbar statt hinter einer Aufklappaktion.","Bearbeitete Programme und Editor-Kopien werden nicht automatisch aktiviert und führen zurück zur Programmübersicht.","Der Dunkelmodus steht jetzt ausschließlich in der Fußzeile der Hauptseite." ]},
  {version:"v0.22.2",date:"16.07.2026",changes:["Das Archiv öffnet als eigene Ansicht mit Zurück-Navigation; archivierte Auswertungen führen ebenfalls per Zurück ins Archiv.","Der Dunkelmodus steht in der Fußzeile, während der Archivzugang den Platz in der Kopfzeile nutzt.","Programmkarten verzichten auf das redundante Aktiv-Symbol, zeigen vollständige Blöcke goldfarben als Abgeschlossen und verwenden kompakte Textaktionen.","Der Scheibenrechner bietet nur 10-, 15- und 20-kg-Stangen und nennt ausschließlich das rechnerische Gewicht pro Seite.","Übungen lassen sich für die ausgewählte Einheit bereits vor Trainingsbeginn tauschen und vor der ersten Satzeingabe wieder zurücksetzen."]},
@@ -2132,7 +2152,7 @@ function validateBackupFile(raw){
   var id=ids[i],program=raw.programs[id],check;if(!/^[A-Za-z0-9_-]{1,80}$/.test(id)||id==="__proto__"||id==="constructor"||id==="prototype")return"Das Backup enthält einen ungültigen Programm-Schlüssel.";
   if(program.archived!=null&&typeof program.archived!=="boolean")return'Programm „'+esc((program&&program.name)||id)+'“ enthält einen ungültigen Archivstatus.';
   if(program.parent!=null&&(typeof program.parent!=="string"||program.parent===id||!raw.programs[program.parent]))return'Programm „'+esc((program&&program.name)||id)+'“ enthält einen ungültigen Vorblock-Verweis.';
-  if(program.source!=null&&program.source!=="coach")return'Programm „'+esc((program&&program.name)||id)+'“ enthält eine ungültige Herkunft.';
+  if((program.source!=null&&program.source!=="coach")||(program.origin!=null&&program.origin!=="satzkraft"))return'Programm „'+esc((program&&program.name)||id)+'“ enthält eine ungültige Herkunft.';
   if(program.createdAt!=null&&!finiteNumber(program.createdAt,0,Number.MAX_SAFE_INTEGER,false)||program.updatedAt!=null&&!finiteNumber(program.updatedAt,0,Number.MAX_SAFE_INTEGER,false)||program.createdAt!=null&&program.updatedAt!=null&&program.updatedAt<program.createdAt)return'Programm „'+esc((program&&program.name)||id)+'“ enthält einen ungültigen Datum-Zeitstempel.';
   try{check=parseProgram(JSON.stringify(exportTranslate(program)));}catch(e){return'Programm „'+esc(id)+'“ im Backup ist beschädigt.';}
   if(check.err)return'Programm „'+esc((program&&program.name)||id)+'“ im Backup ist ungültig: '+check.err;
@@ -2156,7 +2176,17 @@ function importBackup(text){
  confirmBackupRestore(raw);
 }
 var pendingProgramImport=null,importInputText="",importSourceName="",importIssue=null,externalAiWish="";
-function programSourceLabel(origin){return origin==="coach"?"Satzkraft KI-Coach":origin==="link"?"Geteilter Link":origin==="file"?"Datei":"Eingefügtes JSON";}
+var PROGRAM_LIBRARY=[
+ {file:"./programme/gym-ganzkoerper-beginner.json",name:"Gym Ganzkörper Beginner",goal:"Kraftbasis & Muskelaufbau",level:"Einsteiger",days:3,duration:"50–65 min",description:"Geräte und Kurzhanteln mit bewusst einfacher Übungsauswahl."},
+ {file:"./programme/gym-ganzkoerper-fortgeschritten.json",name:"Gym Ganzkörper Fortgeschritten",goal:"Kraft & Muskelaufbau",level:"Fortgeschritten",days:3,duration:"65–80 min",description:"Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende."},
+ {file:"./programme/calisthenics-einstieg.json",name:"Calisthenics Einstieg",goal:"Körpergewichtskraft",level:"Einsteiger",days:3,duration:"40–50 min",description:"Ganzkörpertraining mit Boden, Bank, Stange, Ringen und Band."},
+ {file:"./programme/hybrid-gym-calisthenics.json",name:"Hybrid: Gym + Calisthenics",goal:"Kraft & Körperkontrolle",level:"Grundlagenerfahrung",days:3,duration:"60–75 min",description:"Langhantel, Kurzhanteln, Kabelzug und Körpergewicht kombiniert."}
+];
+function programSourceLabel(origin){return origin==="coach"?"Satzkraft KI-Coach":origin==="library"?"Satzkraft-Programm":origin==="link"?"Geteilter Link":origin==="file"?"Datei":"Eingefügtes JSON";}
+function calibrationGuideHtml(){
+ return'<p><b>So findest du dein Startgewicht (erste Einheit = Kalibrierung)</b></p><ol><li><b>Leicht anfangen:</b> Mach die Übung zuerst mit sehr leichtem Gewicht 8–10-mal sauber – an der Maschine die kleinste sinnvolle Stufe, mit der Langhantel die leere Stange, mit Kurzhanteln ein Paar, das sich mühelos anfühlt.</li><li><b>Herantasten:</b> Erhöhe das Gewicht in 2–3 kurzen Sätzen Schritt für Schritt (Maschine: 1–2 Stufen, Hanteln: 5–10 kg) und mach jeweils nur 3–5 Wiederholungen.</li><li><b>Arbeitsgewicht erkannt:</b> Dein Startgewicht ist das Gewicht, mit dem du die Ziel-Wiederholungen der Übung sauber schaffst und danach noch etwa 3 Wiederholungen übrig hättest. Genau das bedeutet die Anstrengungs-Angabe „RIR 3“ der ersten Wochen.</li><li><b>Eintragen – fertig:</b> Trag dieses Gewicht beim ersten Arbeitssatz ein. Satzkraft übernimmt es für die weiteren Sätze und steigert ab jetzt automatisch, sobald du das obere Wiederholungsziel erreichst.</li></ol><p><b>Im Zweifel leichter starten.</b> Ein zu leichtes Startgewicht holt die Progression in ein bis zwei Wochen von selbst auf – ein zu schweres kostet Technik und Motivation.</p>';
+}
+function showCalibrationGuide(){showModal("Startgewicht finden",calibrationGuideHtml(),[{label:"Verstanden",cls:"primary",action:null}]);}
 function extractSingleJSONObject(text){
  var depth=0,start=-1,inString=false,escaped=false,candidates=[];
  for(var i=0;i<text.length;i++){
@@ -2234,7 +2264,7 @@ function beginProgramImport(text,origin,sourceName){
 function storeImportedProgram(activate,allowDuplicate){
  if(programWriteLocked()){showProgramWriteLocked();return null;}
  var prepared=pendingProgramImport;if(!prepared||!prepared.program)return null;if(prepared.duplicateId&&!allowDuplicate)return null;
- var p=cloneJSON(prepared.program),fromCoach=prepared.origin==="coach",savedAt=Date.now();p.id=genId();while(S.programs[p.id])p.id=genId();p.createdAt=savedAt;p.updatedAt=savedAt;if(fromCoach){p.source="coach";saveCoachPreferences();}S.programs[p.id]=p;S.store[p.id]=newStore(p);
+ var p=cloneJSON(prepared.program),fromCoach=prepared.origin==="coach",fromLibrary=prepared.origin==="library",savedAt=Date.now();p.id=genId();while(S.programs[p.id])p.id=genId();p.createdAt=savedAt;p.updatedAt=savedAt;if(fromCoach){p.source="coach";saveCoachPreferences();}if(fromLibrary)p.origin="satzkraft";S.programs[p.id]=p;S.store[p.id]=newStore(p);
  pendingProgramImport=null;importIssue=null;
  if(activate){setActive(p.id);flushSave();closeLib(true);showModal("Programm gespeichert 💾","„"+esc(p.name)+"“ ist jetzt aktiv.",[{label:"Los geht's",cls:"primary",action:null}]);}
  else{flushSave();renderLib();showModal("Programm gespeichert","„"+esc(p.name)+"“ wurde unter „Weitere Programme“ gespeichert. Dein aktives Programm bleibt unverändert.",[{label:"OK",cls:"primary",action:null}]);}
@@ -2813,7 +2843,7 @@ function editorStoreProgram(replaceOriginal,exitMode,activateNew){
  var p=checked.prog;if(editorProgramSource==="coach"){p.source="coach";saveCoachPreferences();}
  if(!replaceOriginal){var wasNew=!editorSourceId,shouldActivate=wasNew?!!activateNew:false,savedAt=Date.now();if(editorSourceId)p.name=editorUniqueCopyName(p.name,S.programs);while(S.programs[p.id])p.id=genId();p.createdAt=savedAt;p.updatedAt=savedAt;S.programs[p.id]=p;S.store[p.id]=newStore(p);if(shouldActivate)setActive(p.id);else flushSave();if(wasNew){pendingProgramImport=null;importIssue=null;}editorUnsavedDraft=false;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);showModal("Programm gespeichert 💾","„"+esc(p.name)+"“ wurde "+(shouldActivate?"gespeichert und aktiviert.":"unter „Weitere Programme“ gespeichert. Dein aktives Programm bleibt unverändert."),[{label:shouldActivate?"Los geht's":"OK",cls:"primary",action:null}]);return;}
  if((editorSourceId==="default"&&!pendingContext)||!S.programs[editorSourceId])return;
- var sourceId=editorSourceId,oldProg=S.programs[sourceId],oldStore=S.store[sourceId]||newStore(oldProg),sourceName=oldProg.name,refMap=editorBuildRefMap(editorDraft);if(oldProg.parent)p.parent=oldProg.parent;if(oldProg.source)p.source=oldProg.source;
+ var sourceId=editorSourceId,oldProg=S.programs[sourceId],oldStore=S.store[sourceId]||newStore(oldProg),sourceName=oldProg.name,refMap=editorBuildRefMap(editorDraft);if(oldProg.parent)p.parent=oldProg.parent;if(oldProg.source)p.source=oldProg.source;if(oldProg.origin)p.origin=oldProg.origin;
  var replaceActions=[{label:pendingContext?"Tausche übernehmen":"Ersetzen & Fortschritt behalten",cls:"primary",action:function(){p.id=sourceId;if(typeof oldProg.createdAt==="number"&&isFinite(oldProg.createdAt)&&oldProg.createdAt>=0)p.createdAt=oldProg.createdAt;else delete p.createdAt;p.updatedAt=Date.now();S.programs[sourceId]=p;var migrated=migrateReplaceStore(oldProg,oldStore,p,refMap);if(pendingContext)migrated.pendingReplacements=[];S.store[sourceId]=migrated;if(S.active===sourceId){alias(S);refreshPostWorkoutReplacements();}flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Dein bisheriger Fortschritt wurde übernommen.",[{label:"OK",cls:"primary",action:pendingContext?finishPendingReplacementFlow:null}]);}}];
  if(!pendingContext)replaceActions.push({label:"Ersetzen & Fortschritt zurücksetzen",cls:"danger",action:function(){p.id=sourceId;if(typeof oldProg.createdAt==="number"&&isFinite(oldProg.createdAt)&&oldProg.createdAt>=0)p.createdAt=oldProg.createdAt;else delete p.createdAt;p.updatedAt=Date.now();S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId){alias(S);refreshPostWorkoutReplacements();}flushSave();editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}showModal("Programm ersetzt","„"+esc(p.name)+"“ ist gespeichert. Der Fortschritt dieses Programms wurde zurückgesetzt.",[{label:"OK",cls:"primary",action:null}]);}});
  replaceActions.push({label:"Abbrechen",action:null});
@@ -2835,7 +2865,7 @@ function createFollowupBlock(sourceId){
 }
 function libraryFooterHtml(){return'<div class="libraryfooter"><button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span></div>';}
 function programItemHtml(id,p){
- var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{},history:[]},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs,store.history),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,dateValue=hasUpdated?p.updatedAt:(hasCreated?p.createdAt:null),dateLabel=hasUpdated&&(!hasCreated||p.updatedAt>p.createdAt)?"Geändert am":"Erstellt am",dateText=dateValue==null?"":new Date(dateValue).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}),date=dateText?'<span class="programdate" title="'+dateLabel+' '+attr(dateText)+'">'+dateLabel+' '+dateText+'</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+date+'</div>';
+ var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{},history:[]},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs,store.history),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,dateValue=hasUpdated?p.updatedAt:(hasCreated?p.createdAt:null),dateLabel=hasUpdated&&(!hasCreated||p.updatedAt>p.createdAt)?"Geändert am":"Erstellt am",dateText=dateValue==null?"":new Date(dateValue).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}),date=dateText?'<span class="programdate" title="'+dateLabel+' '+attr(dateText)+'">'+dateLabel+' '+dateText+'</span>':'',origin=p.origin==="satzkraft"?'<span class="programorigin">Offizielles Satzkraft-Programm</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+origin+date+'</div>';
  if(archived)return'<div class="progitem archived"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-report-program="'+attr(id)+'">Auswertung ansehen</button><button class="progtextaction" data-unarchive="'+attr(id)+'"'+lockedAttr+'>Aus dem Archiv holen</button></div></div>';
  return '<div class="progitem'+(active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div>'+meta+'</div>'+badge+'</div><div class="progactions">'+(active?'':'<button class="progaction go" data-sel="'+attr(id)+'"'+lockedAttr+'>Aktivieren</button>')+'<button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button>'+(completed?'<button class="progaction go" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
 }
@@ -2866,11 +2896,21 @@ function renderArchive(){
 }
 function renderCreateHub(){
  var h='<div class="libbox createhub"><div class="ohdr"><button class="iconbtn" id="createback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Neues Programm</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Wähle den Weg, der zu dir passt. Egal wie der Plan entsteht: Vor dem Speichern kannst du ihn prüfen und bearbeiten.</div><div class="creategrid">';
+ h+='<button class="createchoice primary" id="programlibrarybtn" aria-label="Fertiges Satzkraft-Programm wählen"><span class="createicon" aria-hidden="true">'+icon("check")+'</span><b>Fertiges Programm wählen</b><small>Vier geprüfte Satzkraft-Programme – ansehen, übernehmen, lostrainieren.</small></button>';
  h+='<button class="createchoice primary" id="manualcreate" aria-label="Programm manuell erstellen"><span class="createicon" aria-hidden="true">'+icon("edit")+'</span><b>Manuell erstellen</b><small>Name, Wochen und Trainingstage festlegen. Danach baust du den Plan in der vertrauten Trainingsansicht auf.</small></button>';
  h+='<button class="createchoice" id="coachbtn" aria-label="Programm mit dem Satzkraft KI-Coach erstellen"><span class="createicon" aria-hidden="true">'+icon("sparkle")+'</span><b>Satzkraft KI-Coach <span style="color:#71717a;font-size:10px">Beta</span></b><small>Beantworte die ausführlichen Fragen und lass dir einen gezielten Trainingsplan erstellen.</small></button>';
  h+='<button class="createchoice" id="externalaibtn" aria-label="Programm mit ChatGPT oder einer anderen KI erstellen"><span class="createicon" aria-hidden="true">'+icon("external")+'</span><b>Mit ChatGPT &amp; Co. erstellen</b><small>Fertigen Anweisungstext kopieren, bei einer beliebigen KI einfügen, Ergebnis importieren.</small></button>';
  h+='<button class="createchoice" id="importbtn" aria-label="Fertiges Programm importieren"><span class="createicon" aria-hidden="true">'+icon("download")+'</span><b>Fertiges Programm importieren</b><small>Programm-Datei oder kopiertes JSON einfügen. Satzkraft prüft alles vor dem Speichern.</small></button>';
  h+='</div>'+libraryFooterHtml()+'</div>';document.getElementById("lib").innerHTML=h;
+}
+function renderProgramLibrary(){
+ var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Fertige Programme</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Vier geprüfte Programme mit passenden Trainingswochen, Warm-up und Cool-down. Du kannst jedes Programm vor dem Speichern vollständig ansehen.</div>';
+ if(locked)h+='<div class="importnotice warn"><strong>Training läuft</strong>Beende zuerst dein Training, bevor du ein neues Programm übernimmst.</div>';
+ h+='<div class="libraryprograms">';PROGRAM_LIBRARY.forEach(function(item,index){h+='<button class="libraryprogram" data-library-index="'+index+'"'+lockedAttr+'><b>'+esc(item.name)+'</b><span class="libraryprogrammeta">'+esc(item.goal)+' · '+esc(item.level)+' · '+item.days+' Tage · '+esc(item.duration)+'</span><span class="libraryprogramdesc">'+esc(item.description)+'</span></button>';});h+='</div></div>';document.getElementById("lib").innerHTML=h;
+}
+function loadProgramLibraryItem(index){
+ if(programWriteLocked()){showProgramWriteLocked();return;}var item=PROGRAM_LIBRARY[index];if(!item)return;
+ fetch(item.file).then(function(response){if(!response.ok)throw new Error("HTTP "+response.status);return response.text();}).then(function(text){beginProgramImport(text,"library",item.name);}).catch(function(){showModal("Programm nicht geladen","Das Programm konnte nicht geladen werden. Öffne die Liste einmal mit Internet – danach funktioniert sie auch offline.",[{label:"OK",cls:"primary",action:null}]);});
 }
 function renderExternalAiCreate(){
  var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Mit ChatGPT &amp; Co.</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">In drei Schritten zu deinem Programm. Satzkraft liefert einen fertigen Text für die KI und prüft das Ergebnis vor dem Speichern.</div>';
@@ -2894,6 +2934,7 @@ function renderImportPreview(){
  var prepared=pendingProgramImport;if(!prepared||!prepared.program){renderImportEntry();return;}var p=prepared.program,exerciseCount=p.days.reduce(function(sum,day){return sum+day.ex.length;},0),externalDays=prepared.external&&Array.isArray(prepared.external.days)?prepared.external.days:[],missingWeights=externalDays.reduce(function(sum,day){return sum+(Array.isArray(day.exercises)?day.exercises:[]).filter(function(ex){return ex&&ex.weighted===true&&!ex.bodyweight&&Number(ex.startWeight)===0;}).length;},0),h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importpreviewback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm prüfen</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(prepared.origin))+(prepared.sourceName?' · '+esc(prepared.sourceName):'')+'</span>';
  h+='<div class="previewhero"><h2>'+esc(p.name)+'</h2><p>'+(p.description?esc(p.description):'Keine Beschreibung hinterlegt.')+'</p><div class="previewstats"><div class="previewstat"><b>'+p.weeks.length+'</b><span>Wochen</span></div><div class="previewstat"><b>'+p.days.length+'</b><span>Trainingstage</span></div><div class="previewstat"><b>'+exerciseCount+'</b><span>Übungen</span></div></div></div>';
  h+='<div class="libsec" style="margin-top:14px">Trainingstage</div><div class="previewdays">';p.days.forEach(function(day){h+='<div class="previewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><span>'+day.ex.length+' Übungen'+((day.wu&&day.wu.length)||(day.cd&&day.cd.length)?' · Warm-up/Cool-down':'')+'</span></div>';});h+='</div>';
+ if(prepared.origin==="library"){h+='<div class="librarypreview"><div class="libsec">Wochenstruktur</div>';p.weeks.forEach(function(week){h+='<div class="librarypreviewweek"><b>Woche '+week.n+':</b> '+esc(week.label||week.phase)+' · RIR '+esc(week.rir||"–")+(week.note?' · '+esc(week.note):'')+'</div>';});h+='<div class="libsec">Alle Übungen</div>';p.days.forEach(function(day){h+='<div class="librarypreviewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><ul>';if(day.wu&&day.wu.length)h+='<li>Warm-up: '+day.wu.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';day.ex.forEach(function(ex){var category=p.categories&&p.categories[ex.cat];h+='<li>'+esc(ex.name)+' · '+esc(category&&category.label||ex.cat)+'</li>';});if(day.cd&&day.cd.length)h+='<li>Cool-down: '+day.cd.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';h+='</ul></div>';});h+='</div><details class="importtechnical calibrationguide"><summary>Startgewichte finden</summary><div class="calibrationguidebody">'+calibrationGuideHtml()+'</div></details>';}
  if(missingWeights)h+='<div class="importnotice"><strong>'+missingWeights+' Übungen ohne Startgewicht</strong>– kein Problem: Beim ersten Training trägst du dein Gewicht ein, danach rechnet die Progression automatisch. Alternativ kannst du Startgewichte vorher unter ‚Vorher bearbeiten‘ ergänzen.</div>';
  if(prepared.corrections.length)h+='<div class="importnotice ok"><strong>Sicher automatisch bereinigt</strong>'+prepared.corrections.map(esc).join('<br>')+'</div>';
  if(prepared.duplicateId){var existing=S.programs[prepared.duplicateId];h+='<div class="importnotice warn"><strong>Bereits vorhanden</strong>„'+esc(existing.name)+'“ hat denselben Inhalt. Es wird nicht unbemerkt doppelt gespeichert.</div>';}
@@ -2902,7 +2943,7 @@ function renderImportPreview(){
  else h+='<div class="importactions"><button class="smallbtn go wide" id="importactivate">Speichern &amp; aktivieren</button><button class="smallbtn" id="importsave">Nur speichern</button><button class="smallbtn" id="importedit">Vorher bearbeiten</button><button class="smallbtn wide" id="importcancel">Abbrechen</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
-function returnFromImportFlow(){var origin=(pendingProgramImport&&pendingProgramImport.origin)||(importIssue&&importIssue.origin)||"json";pendingProgramImport=null;importIssue=null;if(origin==="coach")renderCoach();else if(origin==="link")renderLib();else renderImportEntry();}
+function returnFromImportFlow(){var origin=(pendingProgramImport&&pendingProgramImport.origin)||(importIssue&&importIssue.origin)||"json";pendingProgramImport=null;importIssue=null;if(origin==="coach")renderCoach();else if(origin==="library")renderProgramLibrary();else if(origin==="link")renderLib();else renderImportEntry();}
 var manualCreatorState={name:"",description:"",weeks:8,days:[0,2,4]};
 function syncManualCreatorForm(){var name=document.getElementById("manualname"),description=document.getElementById("manualdescription"),weeks=document.getElementById("manualweeks");if(name)manualCreatorState.name=name.value;if(description)manualCreatorState.description=description.value;if(weeks)manualCreatorState.weeks=Math.max(1,Math.min(LIMITS.maxWeeks,Math.round(Number(weeks.value)||8)));}
 function renderManualCreator(){
@@ -2932,6 +2973,7 @@ app.addEventListener("focusin",function(e){var t=e.target;if(!active()||!t.id||!
 app.addEventListener("change",function(e){var t=e.target;if(!t.id)return;if(t.id.indexOf("rep-")===0||t.id.indexOf("wt-")===0)onSetChange(t);});
 app.addEventListener("click",function(e){
  var b=e.target.closest("button");if(!b)return;
+ if(b.dataset.calibrationGuide){showCalibrationGuide();return;}
  if(b.dataset.versionInfo){showVersionInfo();return;}
  if(b.id==="themebtn"){toggleTheme();return;}
  if(b.dataset.step){onStep(b);return;}
@@ -3016,6 +3058,8 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="createhubbtn"){renderCreateHub();return;}
  if(b.id==="createback"){renderLib();return;}
  if(b.id==="createhubback"){syncManualCreatorForm();renderCreateHub();return;}
+ if(b.id==="programlibrarybtn"){renderProgramLibrary();return;}
+ if(b.dataset.libraryIndex!=null){loadProgramLibraryItem(+b.dataset.libraryIndex);return;}
  if(b.id==="manualcreate"){renderManualCreator();return;}
  if(b.id==="manualcancel"){syncManualCreatorForm();renderCreateHub();return;}
  if(b.id==="manualstart"){startManualProgram();return;}
