@@ -1,6 +1,6 @@
 # ENTWURF – Übungs-Bibliothek light (Paket M): Übungsliste
 
-Status: ENTWURF – zur Abnahme durch den Produktverantwortlichen, nichts hiervon ist in der App, bevor die Liste freigegeben ist.
+Status: FREIGEGEBEN am 17.07.2026 durch den Produktverantwortlichen – verbindliche inhaltliche Grundlage für die Umsetzung von Paket M (inkl. der fünf Entscheidungen in Abschnitt 14).
 
 Stand: 17.07.2026 · Grundlage: `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 5 (Entscheidungen M-E1 bis M-E4, MF-1 bis MF-4) · Recherche-Arbeitspaket gemäß MF-3/MF-4.
 

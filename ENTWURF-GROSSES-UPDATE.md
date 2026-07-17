@@ -392,6 +392,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 
 ### Stand der Vorarbeit (17.07.2026)
 - **Recherche-Dokument liegt vor:** `ENTWURF-UEBUNGSLISTE.md` – 200 Übungen in sieben Bereichen (Gym 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5), DE/EN-Namen recherchiert (Übersetzungsfallen mit Quellen dokumentiert), Ersatzübungen flächendeckend, alle 50 Übungsnamen der freigegebenen L-Programme abgedeckt, WUCD-Abgrenzung gekennzeichnet.
+- **Freigabe (17.07.2026):** Liste vom Produktverantwortlichen abgenommen und freigegeben (Status in `ENTWURF-UEBUNGSLISTE.md` entsprechend gesetzt). Die inhaltliche M-Vorarbeit ist damit abgeschlossen; offen bleibt nur noch die technische Feinspezifikation der M-Umsetzung (Autocomplete, Tauschvorschläge, Alias-Matching).
 - **Entscheidungen des Produktverantwortlichen (17.07.):** 1. Vierter Übungstyp „Körpergewicht+Zusatzgewicht" wird übernommen (M-E2 erweitert). 2. WUCD-Überschneidungen bleiben in beiden Bibliotheken (mit Kennzeichnung). 3. Bei Trage-/Schlitten-Übungen sollen Gewicht **und** Zeit erfassbar sein – Datenmodell/UI in der M-Feinspezifikation. 4. QS der Technik-Hinweise und Video-Suchbegriffe (MF-3) erfolgt später als eigener Schritt; Priorität ist die saubere Datenbasis. 5. Alias-Ergänzungen aus der Studio-Praxis folgen später.
 - **Status:** Liste bleibt ENTWURF bis zur MF-3-Freigabe; nichts davon ist in der App.
 
