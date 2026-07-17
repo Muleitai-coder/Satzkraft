@@ -372,6 +372,42 @@ test('reserviert einen kompakten Iconplatz für das Einklappen ohne Layoutsprung
   );
 });
 
+test('zeigt beim Übungstausch höchstens drei deduplizierte Bibliotheksvorschläge', () => {
+  const context = appContext({ EXERCISE_LIBRARY: null, EXERCISE_ALIAS_INDEX: null });
+  context.setExerciseLibrary([
+    {
+      de: 'Brustpresse-Maschine',
+      en: 'Chest Press Machine',
+      alias: ['Brustpresse'],
+      equipment: 'Maschine',
+      muster: 'Horizontal drücken · Brust',
+      ersatz: 'Kurzhantel-Bankdrücken'
+    },
+    {
+      de: 'Kurzhantel-Bankdrücken',
+      en: 'Dumbbell Bench Press',
+      alias: [],
+      equipment: 'Kurzhanteln, Flachbank',
+      muster: 'Horizontal drücken · Brust',
+      ersatz: 'Brustpresse-Maschine'
+    },
+    {
+      de: 'Brustpresse neutral',
+      en: 'Neutral Chest Press',
+      alias: [],
+      equipment: 'Maschine',
+      muster: 'Horizontal drücken · Brust',
+      ersatz: 'Brustpresse-Maschine'
+    }
+  ]);
+  assert.deepEqual(
+    Array.from(context.exerciseSwapSuggestions({ name: 'Chest Press Machine', proxy: 'Kurzhantel-Bankdrücken' })),
+    ['Kurzhantel-Bankdrücken', 'Brustpresse neutral']
+  );
+  assert.match(html, /data-swap-suggestion=/);
+  assert.match(html, /Passende Vorschläge/);
+});
+
 test('stellt Scroll-Anker auch nach zwei schnellen Kartenersetzungen wieder her', () => {
   const callbacks = [];
   const nodes = Object.create(null);

@@ -1,0 +1,2988 @@
+[
+  {
+    "de": "Bankdrücken",
+    "en": "Barbell Bench Press",
+    "alias": [
+      "Flachbankdrücken",
+      "Langhantel-Bankdrücken",
+      "Bench Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Flachbank",
+    "muster": "Horizontal drücken · Brust",
+    "technik": "Zieh die Schulterblätter zusammen, halte die Füße fest am Boden und senke die Stange kontrolliert zur mittleren Brust.",
+    "video": "Barbell Bench Press Technik",
+    "ersatz": "Kurzhantel-Bankdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kurzhantel-Bankdrücken",
+    "en": "Dumbbell Bench Press",
+    "alias": [
+      "KH-Bankdrücken",
+      "Bankdrücken mit Kurzhanteln"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Flachbank",
+    "muster": "Horizontal drücken · Brust",
+    "technik": "Führe die Kurzhanteln in einem leichten Bogen über der Brust zusammen und halte die Schulterblätter dabei zurückgezogen.",
+    "video": "Dumbbell Bench Press Technik",
+    "ersatz": "Brustpresse-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Schrägbankdrücken Langhantel",
+    "en": "Incline Barbell Bench Press",
+    "alias": [
+      "Incline Bench Press",
+      "Schrägbankdrücken mit Langhantel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Schrägbank",
+    "muster": "Schräg drücken · obere Brust",
+    "technik": "Stell die Lehne auf etwa 30 bis 45 Grad und senke die Stange kontrolliert zum oberen Brustbereich.",
+    "video": "Incline Bench Press Technik",
+    "ersatz": "Schrägbankdrücken (KH)",
+    "bereich": "gym"
+  },
+  {
+    "de": "Schrägbankdrücken (KH)",
+    "en": "Incline Dumbbell Press",
+    "alias": [
+      "Schrägbankdrücken mit Kurzhanteln",
+      "Incline Dumbbell Bench Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Schrägbank",
+    "muster": "Schräg drücken · obere Brust",
+    "technik": "Drücke die Kurzhanteln aus der Dehnung nach oben zusammen und halte die Unterarme dabei senkrecht unter den Hanteln.",
+    "video": "Incline Dumbbell Press Technik",
+    "ersatz": "Brustpresse-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Negativbankdrücken",
+    "en": "Decline Bench Press",
+    "alias": [
+      "Decline-Bankdrücken",
+      "Negativ-Bankdrücken"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Negativbank",
+    "muster": "Horizontal drücken · untere Brust",
+    "technik": "Senke die Stange kontrolliert zum unteren Brustansatz und drücke sie ohne Abprallen wieder nach oben.",
+    "video": "Decline Bench Press Technik",
+    "ersatz": "Bankdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Bankdrücken an der Multipresse",
+    "en": "Smith Machine Bench Press",
+    "alias": [
+      "Multipresse-Bankdrücken",
+      "Smith Machine Bench"
+    ],
+    "typ": "gewicht",
+    "equipment": "Multipresse, Flachbank",
+    "muster": "Horizontal drücken · Brust",
+    "technik": "Positioniere die Bank so, dass die geführte Stange die mittlere Brust trifft, und arbeite über die volle Bewegungsweite.",
+    "video": "Smith Machine Bench Press Technik",
+    "ersatz": "Brustpresse-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Brustpresse-Maschine",
+    "en": "Chest Press Machine",
+    "alias": [
+      "Brustpresse",
+      "Chest Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Horizontal drücken · Brust",
+    "technik": "Stell die Griffe auf Brusthöhe ein und drücke gleichmäßig nach vorn, ohne die Schultern zu den Ohren zu ziehen.",
+    "video": "Chest Press Machine Technik",
+    "ersatz": "Kurzhantel-Bankdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Butterfly-Maschine",
+    "en": "Pec Deck",
+    "alias": [
+      "Butterfly",
+      "Machine Chest Fly",
+      "Pec Deck Fly"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Horizontale Adduktion · Brust",
+    "technik": "Führe die Arme mit leicht gebeugten Ellbogen in einem weiten Bogen zusammen und lass sie kontrolliert wieder öffnen.",
+    "video": "Pec Deck Technik",
+    "ersatz": "Fliegende am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Fliegende mit Kurzhanteln",
+    "en": "Dumbbell Fly",
+    "alias": [
+      "Kurzhantel-Fliegende",
+      "Flys"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Flachbank",
+    "muster": "Horizontale Adduktion · Brust",
+    "technik": "Öffne die Arme mit konstant leicht gebeugten Ellbogen bis auf Brusthöhe und führe sie im Bogen wieder zusammen.",
+    "video": "Dumbbell Fly Technik",
+    "ersatz": "Butterfly-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Fliegende am Kabel",
+    "en": "Cable Fly",
+    "alias": [
+      "Cable Crossover",
+      "Fliegende am Kabelzug"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug beidseitig",
+    "muster": "Horizontale Adduktion · Brust",
+    "technik": "Bleib im leichten Ausfallschritt stabil stehen und führe die Griffe in einem weiten Bogen vor der Brust zusammen.",
+    "video": "Cable Fly Technik",
+    "ersatz": "Butterfly-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Überzüge mit Kurzhantel",
+    "en": "Dumbbell Pullover",
+    "alias": [
+      "Pullover",
+      "Überzüge"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhantel, Flachbank",
+    "muster": "Schulterextension · Brust/Latissimus",
+    "technik": "Senke die Kurzhantel mit leicht gebeugten Armen weit hinter den Kopf und zieh sie kontrolliert über die Brust zurück.",
+    "video": "Dumbbell Pullover Technik",
+    "ersatz": "Latziehen mit gestreckten Armen",
+    "bereich": "gym"
+  },
+  {
+    "de": "Latzug breit",
+    "en": "Lat Pulldown",
+    "alias": [
+      "Latziehen",
+      "Latzug zur Brust",
+      "Wide-Grip Lat Pulldown"
+    ],
+    "typ": "gewicht",
+    "equipment": "Latzugturm",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Zieh die Stange mit aufrechtem Oberkörper zum oberen Brustbereich und lass sie kontrolliert nach oben zurück.",
+    "video": "Lat Pulldown Technik",
+    "ersatz": "Band-Klimmzüge",
+    "bereich": "gym"
+  },
+  {
+    "de": "Latzug enger Griff",
+    "en": "Close-Grip Lat Pulldown",
+    "alias": [
+      "Latzug eng",
+      "Latzug im neutralen Griff"
+    ],
+    "typ": "gewicht",
+    "equipment": "Latzugturm, enger Griff",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Zieh den Griff mit leicht zurückgelehntem Oberkörper Richtung Brustbein und führe die Ellbogen dabei eng am Körper.",
+    "video": "Close Grip Lat Pulldown Technik",
+    "ersatz": "Latzug breit",
+    "bereich": "gym"
+  },
+  {
+    "de": "Latzug im Untergriff",
+    "en": "Reverse-Grip Lat Pulldown",
+    "alias": [
+      "Underhand Lat Pulldown",
+      "Latzug im Kammgriff"
+    ],
+    "typ": "gewicht",
+    "equipment": "Latzugturm",
+    "muster": "Vertikal ziehen · Latissimus/Bizeps",
+    "technik": "Greif schulterbreit im Untergriff und zieh die Stange zur oberen Brust, während die Schulterblätter nach hinten-unten arbeiten.",
+    "video": "Reverse Grip Lat Pulldown Technik",
+    "ersatz": "Latzug breit",
+    "bereich": "gym"
+  },
+  {
+    "de": "Klimmzug-Maschine",
+    "en": "Assisted Pull-Up Machine",
+    "alias": [
+      "unterstützte Klimmzüge an der Maschine",
+      "Gravitron"
+    ],
+    "typ": "gewicht",
+    "equipment": "Klimmzug-Maschine mit Gegengewicht",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Wähle das Gegengewicht so, dass du den Zielbereich sauber schaffst, und zieh dich kontrolliert bis über die Griffe hoch.",
+    "video": "Assisted Pull-Up Machine Technik",
+    "ersatz": "Latzug breit",
+    "bereich": "gym"
+  },
+  {
+    "de": "Latziehen mit gestreckten Armen",
+    "en": "Straight-Arm Pulldown",
+    "alias": [
+      "Überzüge am Kabel",
+      "Straight-Arm Pushdown"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug, Stange oder Seil",
+    "muster": "Schulterextension · Latissimus",
+    "technik": "Drücke die Stange mit fast gestreckten Armen im Bogen zu den Oberschenkeln und lass sie langsam wieder steigen.",
+    "video": "Straight Arm Pulldown Technik",
+    "ersatz": "Latzug breit",
+    "bereich": "gym"
+  },
+  {
+    "de": "Rudern am Kabel",
+    "en": "Seated Cable Row",
+    "alias": [
+      "Kabelrudern",
+      "sitzendes Rudern",
+      "Low Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug, Sitzbank",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Zieh den Griff zum Bauchnabel, halte den Oberkörper dabei aufrecht und führe das Gewicht langsam zurück.",
+    "video": "Seated Cable Row Technik",
+    "ersatz": "Rudern-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Einarmiges Rudern am Kabel",
+    "en": "One-Arm Cable Row",
+    "alias": [
+      "einarmiges Kabelrudern",
+      "Single-Arm Cable Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Zieh den Griff einseitig zur unteren Rippe, ohne den Oberkörper mitzudrehen.",
+    "video": "Single Arm Cable Row Technik",
+    "ersatz": "Kurzhantel-Rudern einarmig",
+    "bereich": "gym"
+  },
+  {
+    "de": "Rudern-Maschine",
+    "en": "Seated Row Machine",
+    "alias": [
+      "Rudermaschine",
+      "Machine Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Halte die Brust am Polster und zieh die Griffe zurück, bis die Schulterblätter vollständig zusammenkommen.",
+    "video": "Seated Row Machine Technik",
+    "ersatz": "Rudern am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Brustgestütztes Rudern-Maschine",
+    "en": "Chest-Supported Row Machine",
+    "alias": [
+      "brustgestütztes Maschinen-Rudern"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine mit Brustpolster",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Drück die Brust aktiv gegen das Polster und ruder die Griffe zurück, ohne mit dem Oberkörper Schwung zu holen.",
+    "video": "Chest Supported Row Technik",
+    "ersatz": "Rudern am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Langhantel-Rudern",
+    "en": "Barbell Row",
+    "alias": [
+      "vorgebeugtes Rudern",
+      "Bent-Over Row",
+      "Pendlay Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Beuge dich mit neutralem Rücken etwa 45 Grad vor und zieh die Stange Richtung Bauchnabel, ohne den Oberkörper aufzurichten.",
+    "video": "Barbell Row Technik",
+    "ersatz": "Rudern am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kurzhantel-Rudern einarmig",
+    "en": "One-Arm Dumbbell Row",
+    "alias": [
+      "einarmiges Rudern",
+      "Single-Arm Dumbbell Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhantel, Bank",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Stütz dich mit Hand und Knie auf der Bank ab und zieh die Kurzhantel zur Hüfte, ohne den Rumpf zu verdrehen.",
+    "video": "One Arm Dumbbell Row Technik",
+    "ersatz": "Rudern am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Brustgestütztes Kurzhantel-Rudern",
+    "en": "Chest-Supported Dumbbell Row",
+    "alias": [
+      "Rudern auf der Schrägbank",
+      "Incline Dumbbell Row",
+      "Seal Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Schrägbank",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Leg dich bäuchlings auf die Schrägbank und ruder beide Kurzhanteln zur Hüfte, ohne die Brust vom Polster abzuheben.",
+    "video": "Chest Supported Dumbbell Row Technik",
+    "ersatz": "Brustgestütztes Rudern-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "T-Bar-Rudern",
+    "en": "T-Bar Row",
+    "alias": [
+      "T-Hantel-Rudern",
+      "T-Bar Rows"
+    ],
+    "typ": "gewicht",
+    "equipment": "T-Bar-Station",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Halte den Rücken neutral, während du das Gewicht zur Brust ziehst und die Ellbogen eng am Körper führst.",
+    "video": "T-Bar Row Technik",
+    "ersatz": "Langhantel-Rudern",
+    "bereich": "gym"
+  },
+  {
+    "de": "Landmine Rudern",
+    "en": "Landmine Row",
+    "alias": [
+      "Landmine-Rudern",
+      "Meadows Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel in Landmine-Halterung",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Beuge dich mit neutralem Rücken über das Stangenende und zieh es kontrolliert zur Hüfte.",
+    "video": "Landmine Row Technik",
+    "ersatz": "T-Bar-Rudern",
+    "bereich": "gym"
+  },
+  {
+    "de": "Face Pulls am Kabel",
+    "en": "Cable Face Pull",
+    "alias": [
+      "Face Pulls",
+      "Facepulls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug mit Seil auf Augenhöhe",
+    "muster": "Horizontal ziehen · hintere Schulter",
+    "technik": "Zieh das Seil auf Augenhöhe zum Gesicht und dreh die Handrücken dabei nach hinten-oben.",
+    "video": "Face Pull Technik",
+    "ersatz": "Reverse Butterfly",
+    "bereich": "gym"
+  },
+  {
+    "de": "Shrugs mit Kurzhanteln",
+    "en": "Dumbbell Shrug",
+    "alias": [
+      "Schulterheben mit Kurzhanteln",
+      "Nackenheben"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Schulterblattheben · Trapezius",
+    "technik": "Zieh die Schultern senkrecht Richtung Ohren und senke sie langsam wieder ab, ohne mit den Armen nachzuhelfen.",
+    "video": "Dumbbell Shrug Technik",
+    "ersatz": "Shrugs mit Langhantel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Shrugs mit Langhantel",
+    "en": "Barbell Shrug",
+    "alias": [
+      "Schulterheben mit Langhantel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Schulterblattheben · Trapezius",
+    "technik": "Halte die Arme gestreckt und heb die Schultern so hoch wie möglich, bevor du sie kontrolliert absenkst.",
+    "video": "Barbell Shrug Technik",
+    "ersatz": "Shrugs mit Kurzhanteln",
+    "bereich": "gym"
+  },
+  {
+    "de": "Hyperextensions",
+    "en": "Back Extension",
+    "alias": [
+      "Rückenstrecken",
+      "Hyperextension 45 Grad"
+    ],
+    "typ": "kgz",
+    "equipment": "Hyperextension-Bank",
+    "muster": "Hüft-/Rumpfstrecken · unterer Rücken/Gesäß",
+    "technik": "Senke den Oberkörper kontrolliert ab und richte ihn bis in die gerade Linie auf, ohne im oberen Punkt zu überstrecken.",
+    "video": "Back Extension Technik",
+    "ersatz": "Rückenstrecker-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kreuzheben",
+    "en": "Barbell Deadlift",
+    "alias": [
+      "Deadlift",
+      "konventionelles Kreuzheben"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Hüftdominant · Gesäß/Beinbeuger/Rücken",
+    "technik": "Halte die Stange nah am Körper und strecke Hüfte und Knie gleichzeitig, während der Rücken neutral bleibt.",
+    "video": "Deadlift Technik",
+    "ersatz": "Rumänisches Kreuzheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Sumo-Kreuzheben",
+    "en": "Sumo Deadlift",
+    "alias": [
+      "Sumo Kreuzheben",
+      "Sumo Deadlifts"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Hüftdominant · Gesäß/Adduktoren",
+    "technik": "Stell die Füße weit mit ausgedrehten Fußspitzen und drück die Knie beim Ziehen aktiv nach außen.",
+    "video": "Sumo Deadlift Technik",
+    "ersatz": "Kreuzheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Trap-Bar-Kreuzheben",
+    "en": "Trap Bar Deadlift",
+    "alias": [
+      "Hex-Bar-Kreuzheben",
+      "Trap Bar Deadlifts"
+    ],
+    "typ": "gewicht",
+    "equipment": "Trap-Bar (Hex-Bar)",
+    "muster": "Hüftdominant · Gesäß/Quadrizeps",
+    "technik": "Steh mittig in der Trap-Bar und drück dich über den ganzen Fuß nach oben, ohne dass die Hüfte zuerst steigt.",
+    "video": "Trap Bar Deadlift Technik",
+    "ersatz": "Kreuzheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Rumänisches Kreuzheben",
+    "en": "Barbell Romanian Deadlift",
+    "alias": [
+      "RDL",
+      "Romanian Deadlift"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Hüftscharnier · Beinbeuger/Gesäß",
+    "technik": "Schieb die Hüfte mit fast gestreckten Knien weit nach hinten und senke die Stange nah am Bein, bis die Beinrückseite deutlich spannt.",
+    "video": "Romanian Deadlift Technik",
+    "ersatz": "Beinbeuger liegend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Rumänisches Kreuzheben (KH)",
+    "en": "Dumbbell Romanian Deadlift",
+    "alias": [
+      "Rumänisches Kreuzheben mit Kurzhanteln",
+      "RDL mit Kurzhanteln"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Hüftscharnier · Beinbeuger/Gesäß",
+    "technik": "Führe die Kurzhanteln nah an den Beinen nach unten, während die Hüfte nach hinten schiebt und der Rücken lang bleibt.",
+    "video": "Dumbbell Romanian Deadlift Technik",
+    "ersatz": "Beinbeuger liegend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Good Mornings",
+    "en": "Barbell Good Morning",
+    "alias": [
+      "Good Morning"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Hüftscharnier · Beinbeuger/unterer Rücken",
+    "technik": "Beuge den Oberkörper mit leicht gebeugten Knien aus der Hüfte nach vorn und richte dich über die Hüftstreckung wieder auf.",
+    "video": "Good Morning Technik",
+    "ersatz": "Rumänisches Kreuzheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Rack Pulls",
+    "en": "Rack Pull",
+    "alias": [
+      "Block Pulls",
+      "Teilkreuzheben"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Rack oder Blöcke",
+    "muster": "Hüftdominant · Rücken/Gesäß",
+    "technik": "Zieh die Stange aus Kniehöhe mit neutralem Rücken bis zur vollen Hüftstreckung.",
+    "video": "Rack Pull Technik",
+    "ersatz": "Kreuzheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Schulterdrücken Langhantel",
+    "en": "Barbell Overhead Press",
+    "alias": [
+      "Military Press",
+      "OHP",
+      "Überkopfdrücken"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Spann Gesäß und Rumpf fest an und drücke die Stange eng am Gesicht vorbei senkrecht über den Kopf.",
+    "video": "Overhead Press Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kurzhantel-Schulterdrücken",
+    "en": "Dumbbell Shoulder Press",
+    "alias": [
+      "KH-Schulterdrücken",
+      "Dumbbell Overhead Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Drücke die Kurzhanteln aus Schulterhöhe senkrecht nach oben, ohne ins Hohlkreuz auszuweichen.",
+    "video": "Dumbbell Shoulder Press Technik",
+    "ersatz": "Schulterdrücken-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Arnold Press",
+    "en": "Arnold Press",
+    "alias": [
+      "Arnold-Drücken",
+      "Arnold Presses"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Starte mit den Handflächen zu dir und dreh die Hanteln während des Drückens nach außen, bis die Arme gestreckt sind.",
+    "video": "Arnold Press Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Schulterdrücken-Maschine",
+    "en": "Shoulder Press Machine",
+    "alias": [
+      "Schulterpresse",
+      "Machine Shoulder Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Stell den Sitz so ein, dass die Griffe auf Schulterhöhe starten, und drücke ohne Schwung nach oben.",
+    "video": "Shoulder Press Machine Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Landmine Press",
+    "en": "Landmine Press",
+    "alias": [
+      "Landmine-Drücken"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel in Landmine-Halterung",
+    "muster": "Schräg drücken · Schulter/obere Brust",
+    "technik": "Drücke das Stangenende schräg nach vorn-oben und halte den Rumpf dabei fest angespannt.",
+    "video": "Landmine Press Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kurzhantel-Seitheben",
+    "en": "Dumbbell Lateral Raise",
+    "alias": [
+      "Seitheben",
+      "Side Raises",
+      "Seitenheben"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Abduktion · seitliche Schulter",
+    "technik": "Heb die Arme leicht gebeugt seitlich bis auf Schulterhöhe und senke sie langsamer ab, als du sie angehoben hast.",
+    "video": "Lateral Raise Technik",
+    "ersatz": "Seitheben am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Seitheben am Kabel",
+    "en": "Cable Lateral Raise",
+    "alias": [
+      "Kabel-Seitheben",
+      "Cable Lateral Raises"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug",
+    "muster": "Abduktion · seitliche Schulter",
+    "technik": "Zieh den Griff gegen den konstanten Kabelzug seitlich bis auf Schulterhöhe, ohne mit dem Oberkörper zu pendeln.",
+    "video": "Cable Lateral Raise Technik",
+    "ersatz": "Kurzhantel-Seitheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Seitheben-Maschine",
+    "en": "Lateral Raise Machine",
+    "alias": [
+      "Seithebemaschine"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Abduktion · seitliche Schulter",
+    "technik": "Heb die Polster mit den Ellbogen bis auf Schulterhöhe an und senke sie kontrolliert wieder ab.",
+    "video": "Lateral Raise Machine Technik",
+    "ersatz": "Kurzhantel-Seitheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Frontheben",
+    "en": "Dumbbell Front Raise",
+    "alias": [
+      "Front Raises",
+      "Frontheben mit Kurzhanteln"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln oder Hantelscheibe",
+    "muster": "Schulterflexion · vordere Schulter",
+    "technik": "Heb die Hanteln mit fast gestreckten Armen nach vorn auf Schulterhöhe, ohne Schwung aus dem Oberkörper zu holen.",
+    "video": "Front Raise Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Vorgebeugtes Seitheben",
+    "en": "Bent-Over Reverse Fly",
+    "alias": [
+      "Reverse Flys",
+      "Rear Delt Raise",
+      "vorgebeugtes Fliegende"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Horizontale Abduktion · hintere Schulter",
+    "technik": "Beuge den Oberkörper fast waagerecht vor und öffne die Arme seitlich, bis sie eine Linie mit den Schultern bilden.",
+    "video": "Bent Over Reverse Fly Technik",
+    "ersatz": "Reverse Butterfly",
+    "bereich": "gym"
+  },
+  {
+    "de": "Reverse Butterfly",
+    "en": "Reverse Pec Deck",
+    "alias": [
+      "Butterfly Reverse",
+      "Rear Delt Fly Machine"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Horizontale Abduktion · hintere Schulter",
+    "technik": "Sitz mit der Brust am Polster und führe die Griffe im weiten Bogen nach hinten, bis die Schulterblätter zusammenkommen.",
+    "video": "Reverse Pec Deck Technik",
+    "ersatz": "Vorgebeugtes Seitheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Aufrechtes Rudern",
+    "en": "Upright Row",
+    "alias": [
+      "Upright Rows",
+      "aufrechtes Rudern mit Langhantel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, SZ-Stange oder Kabel",
+    "muster": "Vertikal ziehen · Schulter/Trapezius",
+    "technik": "Zieh die Stange mit breitem Griff körpernah bis maximal auf Brusthöhe und führe die Ellbogen dabei nach außen-oben.",
+    "video": "Upright Row Technik",
+    "ersatz": "Kurzhantel-Seitheben",
+    "bereich": "gym"
+  },
+  {
+    "de": "Außenrotation am Kabel",
+    "en": "Cable External Rotation",
+    "alias": [
+      "Schulteraußenrotation am Kabel",
+      "External Rotation"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug, leichtes Gewicht",
+    "muster": "Außenrotation · Rotatorenmanschette",
+    "technik": "Halte den Ellbogen am Körper fest und dreh den Unterarm gegen den Zug langsam nach außen.",
+    "video": "Cable External Rotation Technik",
+    "ersatz": "Face Pulls am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Langhantel-Curls",
+    "en": "Barbell Biceps Curl",
+    "alias": [
+      "Bizepscurls mit Langhantel",
+      "Barbell Curl"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Halte die Ellbogen fest an der Seite und curl die Stange ohne Schwung aus dem Oberkörper nach oben.",
+    "video": "Barbell Curl Technik",
+    "ersatz": "SZ-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "SZ-Curls",
+    "en": "EZ-Bar Curl",
+    "alias": [
+      "SZ-Stangen-Curls",
+      "EZ Bar Biceps Curl"
+    ],
+    "typ": "gewicht",
+    "equipment": "SZ-Stange",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Greif die SZ-Stange an den Schrägungen und beuge die Ellbogen kontrolliert, ohne die Oberarme nach vorn wandern zu lassen.",
+    "video": "EZ Bar Curl Technik",
+    "ersatz": "Langhantel-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kurzhantel-Curls",
+    "en": "Dumbbell Biceps Curl",
+    "alias": [
+      "Bizepscurls",
+      "Dumbbell Curl"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Curl die Hanteln mit ruhigen Oberarmen nach oben und dreh die Handflächen dabei zur Schulter.",
+    "video": "Dumbbell Curl Technik",
+    "ersatz": "Kabel-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Hammer-Curls",
+    "en": "Hammer Curl",
+    "alias": [
+      "Hammercurls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Ellbogenbeugen · Bizeps/Unterarm",
+    "technik": "Halte die Handflächen die ganze Bewegung über zueinander und curl die Hanteln eng am Körper nach oben.",
+    "video": "Hammer Curl Technik",
+    "ersatz": "Kurzhantel-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Schrägbank-Curls",
+    "en": "Incline Dumbbell Curl",
+    "alias": [
+      "Incline Curls",
+      "Curls auf der Schrägbank"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Schrägbank",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Lehn dich mit hängenden Armen auf die Schrägbank zurück und curl aus der vollen Dehnung nach oben.",
+    "video": "Incline Dumbbell Curl Technik",
+    "ersatz": "Kurzhantel-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Konzentrations-Curls",
+    "en": "Concentration Curl",
+    "alias": [
+      "Konzentrationscurls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhantel, Bank",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Stütz den Ellbogen an der Innenseite des Oberschenkels ab und curl die Hantel langsam und ohne Schwung.",
+    "video": "Concentration Curl Technik",
+    "ersatz": "Kurzhantel-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Scott-Curls",
+    "en": "Preacher Curl",
+    "alias": [
+      "Preacher Curls",
+      "Curls am Scott-Pult",
+      "Larry-Scott-Curls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Scott-Pult, SZ-Stange oder Kurzhantel",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Leg die Oberarme vollflächig auf dem Pult ab und strecke die Arme unten fast vollständig, bevor du wieder beugst.",
+    "video": "Preacher Curl Technik",
+    "ersatz": "Bizeps-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kabel-Curls",
+    "en": "Cable Biceps Curl",
+    "alias": [
+      "Bizeps am Kabel",
+      "Cable Curl"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Nutze die gleichmäßige Kabelspannung und halte die Ellbogen ruhig an der Seite, während du beugst und streckst.",
+    "video": "Cable Curl Technik",
+    "ersatz": "Kurzhantel-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Reverse Curls",
+    "en": "Reverse Barbell Curl",
+    "alias": [
+      "Curls im Obergriff",
+      "Reverse-Curls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel oder SZ-Stange",
+    "muster": "Ellbogenbeugen · Unterarm/Bizeps",
+    "technik": "Greif die Stange im Obergriff und curl sie mit ruhigen Handgelenken nach oben.",
+    "video": "Reverse Curl Technik",
+    "ersatz": "Hammer-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Bizeps-Maschine",
+    "en": "Biceps Curl Machine",
+    "alias": [
+      "Bizepsmaschine",
+      "Machine Curl"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Ellbogenbeugen · Bizeps",
+    "technik": "Richte die Ellbogen an der Drehachse der Maschine aus und arbeite über die volle Bewegungsweite.",
+    "video": "Biceps Curl Machine Technik",
+    "ersatz": "Scott-Curls",
+    "bereich": "gym"
+  },
+  {
+    "de": "Enges Bankdrücken",
+    "en": "Close-Grip Bench Press",
+    "alias": [
+      "enges Langhantel-Bankdrücken",
+      "Close Grip Bench"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Flachbank",
+    "muster": "Horizontal drücken · Trizeps/Brust",
+    "technik": "Greif etwa schulterbreit und führe die Ellbogen beim Absenken eng am Körper.",
+    "video": "Close Grip Bench Press Technik",
+    "ersatz": "Dips-Maschine",
+    "bereich": "gym"
+  },
+  {
+    "de": "Trizepsdrücken am Kabel",
+    "en": "Cable Triceps Pushdown",
+    "alias": [
+      "Trizeps-Pushdowns",
+      "Triceps Pressdown"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug, Stange oder Seil",
+    "muster": "Ellbogenstrecken · Trizeps",
+    "technik": "Halte die Ellbogen fest an der Seite und strecke die Arme vollständig nach unten, bevor du langsam nachgibst.",
+    "video": "Triceps Pushdown Technik",
+    "ersatz": "Kurzhantel-Trizepsdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Trizepsdrücken über Kopf am Kabel",
+    "en": "Overhead Cable Triceps Extension",
+    "alias": [
+      "Überkopf-Trizepsdrücken am Kabel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug mit Seil",
+    "muster": "Ellbogenstrecken · Trizeps",
+    "technik": "Strecke die Arme aus der Überkopf-Position nach vorn-oben und halte die Oberarme dabei ruhig neben dem Kopf.",
+    "video": "Overhead Cable Triceps Extension Technik",
+    "ersatz": "Kurzhantel-Trizepsdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kurzhantel-Trizepsdrücken",
+    "en": "Dumbbell Overhead Triceps Extension",
+    "alias": [
+      "Trizepsdrücken über Kopf mit Kurzhantel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhantel",
+    "muster": "Ellbogenstrecken · Trizeps",
+    "technik": "Senke die Kurzhantel hinter den Kopf ab und strecke die Arme nach oben, ohne die Ellbogen nach außen fallen zu lassen.",
+    "video": "Dumbbell Overhead Triceps Extension Technik",
+    "ersatz": "Trizepsdrücken am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Stirndrücken",
+    "en": "Lying Triceps Extension",
+    "alias": [
+      "French Press",
+      "Skull Crushers",
+      "Nosebreaker"
+    ],
+    "typ": "gewicht",
+    "equipment": "SZ-Stange, Flachbank",
+    "muster": "Ellbogenstrecken · Trizeps",
+    "technik": "Senke die Stange kontrolliert Richtung Stirn und strecke die Arme wieder, während die Oberarme senkrecht stehen bleiben.",
+    "video": "Skull Crusher Technik",
+    "ersatz": "Trizepsdrücken am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Trizeps-Kickbacks",
+    "en": "Triceps Kickback",
+    "alias": [
+      "Kickbacks"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Ellbogenstrecken · Trizeps",
+    "technik": "Beuge den Oberkörper vor, halte den Oberarm waagerecht und strecke den Unterarm nach hinten voll aus.",
+    "video": "Triceps Kickback Technik",
+    "ersatz": "Trizepsdrücken am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Trizeps-Maschine",
+    "en": "Triceps Extension Machine",
+    "alias": [
+      "Trizepsmaschine",
+      "Machine Triceps Extension"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Ellbogenstrecken · Trizeps",
+    "technik": "Leg die Oberarme auf dem Polster ab und strecke die Arme vollständig gegen den Widerstand.",
+    "video": "Triceps Extension Machine Technik",
+    "ersatz": "Trizepsdrücken am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Dips-Maschine",
+    "en": "Assisted Dip Machine",
+    "alias": [
+      "unterstützte Dips",
+      "Dip-Maschine mit Gegengewicht"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine mit Gegengewicht",
+    "muster": "Vertikal drücken · Trizeps/Brust",
+    "technik": "Wähle das Gegengewicht passend zum Zielbereich und drücke dich aus der tiefen Position kontrolliert nach oben.",
+    "video": "Assisted Dip Machine Technik",
+    "ersatz": "Enges Bankdrücken",
+    "bereich": "gym"
+  },
+  {
+    "de": "Langhantel-Kniebeuge",
+    "en": "Barbell Back Squat",
+    "alias": [
+      "Kniebeugen mit Langhantel",
+      "Back Squat",
+      "Squats"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Rack",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Beuge Hüfte und Knie gleichzeitig, halte die Brust aufrecht und geh so tief, wie du die Position sauber halten kannst.",
+    "video": "Back Squat Technik",
+    "ersatz": "Beinpresse",
+    "bereich": "gym"
+  },
+  {
+    "de": "Frontkniebeuge",
+    "en": "Barbell Front Squat",
+    "alias": [
+      "Front Squats",
+      "Frontkniebeugen"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Rack",
+    "muster": "Kniedominant · Quadrizeps",
+    "technik": "Leg die Stange auf den vorderen Schultern ab, halte die Ellbogen hoch und bleib beim Beugen möglichst aufrecht.",
+    "video": "Front Squat Technik",
+    "ersatz": "Langhantel-Kniebeuge",
+    "bereich": "gym"
+  },
+  {
+    "de": "Kniebeuge an der Multipresse",
+    "en": "Smith Machine Squat",
+    "alias": [
+      "Multipresse-Kniebeuge",
+      "Smith Machine Squats"
+    ],
+    "typ": "gewicht",
+    "equipment": "Multipresse",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Stell die Füße leicht vor die Stange und beuge kontrolliert, da die Führung die Balance übernimmt.",
+    "video": "Smith Machine Squat Technik",
+    "ersatz": "Beinpresse",
+    "bereich": "gym"
+  },
+  {
+    "de": "Goblet Squat",
+    "en": "Goblet Squat",
+    "alias": [
+      "Goblet Squat mit Kurzhantel",
+      "Goblet Squat mit Kettlebell",
+      "Goblet-Kniebeuge"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhantel oder Kettlebell",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Halte das Gewicht dicht vor der Brust und beuge aufrecht in die tiefe Hocke.",
+    "video": "Goblet Squat Technik",
+    "ersatz": "Beinpresse",
+    "bereich": "gym"
+  },
+  {
+    "de": "Beinpresse",
+    "en": "Leg Press",
+    "alias": [
+      "Leg Press Machine",
+      "45-Grad-Beinpresse"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Senke den Schlitten so weit ab, wie der untere Rücken am Polster bleibt, und drücke, ohne die Knie ganz durchzustrecken.",
+    "video": "Leg Press Technik",
+    "ersatz": "Goblet Squat",
+    "bereich": "gym"
+  },
+  {
+    "de": "Hackenschmidt-Kniebeuge",
+    "en": "Hack Squat",
+    "alias": [
+      "Hack Squats",
+      "Hackenschmidt-Maschine",
+      "Squat Machine"
+    ],
+    "typ": "gewicht",
+    "equipment": "Hack-Squat-Maschine",
+    "muster": "Kniedominant · Quadrizeps",
+    "technik": "Halte den Rücken vollflächig am Polster und beuge die Knie tief, bevor du dich über den ganzen Fuß nach oben drückst.",
+    "video": "Hack Squat Technik",
+    "ersatz": "Beinpresse",
+    "bereich": "gym"
+  },
+  {
+    "de": "Bulgarian Split Squats",
+    "en": "Bulgarian Split Squat",
+    "alias": [
+      "bulgarische Kniebeugen",
+      "Rear-Foot-Elevated Split Squat"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Bank",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Leg den hinteren Fuß auf der Bank ab und senke das hintere Knie senkrecht Richtung Boden.",
+    "video": "Bulgarian Split Squat Technik",
+    "ersatz": "Ausfallschritte (KH)",
+    "bereich": "gym"
+  },
+  {
+    "de": "Ausfallschritte (KH)",
+    "en": "Dumbbell Lunge",
+    "alias": [
+      "Ausfallschritte mit Kurzhanteln",
+      "Walking Lunges"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Mach einen großen Schritt nach vorn und senke das hintere Knie kontrolliert Richtung Boden, bevor du dich zurückdrückst.",
+    "video": "Dumbbell Lunge Technik",
+    "ersatz": "Beinpresse",
+    "bereich": "gym"
+  },
+  {
+    "de": "Step-ups mit Kurzhanteln",
+    "en": "Dumbbell Step-Up",
+    "alias": [
+      "Aufsteiger mit Kurzhanteln",
+      "Step-Ups mit Gewicht"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhanteln, Box oder Bank",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Drück dich vollständig über das obere Bein auf die Box, statt mit dem unteren Bein abzuspringen.",
+    "video": "Dumbbell Step Up Technik",
+    "ersatz": "Ausfallschritte rückwärts",
+    "bereich": "gym"
+  },
+  {
+    "de": "Beinstrecker",
+    "en": "Leg Extension",
+    "alias": [
+      "Beinstrecker-Maschine",
+      "Leg Extensions"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Kniestrecken · Quadrizeps",
+    "technik": "Strecke die Beine kontrolliert bis fast zur vollen Streckung und senke das Gewicht langsam wieder ab.",
+    "video": "Leg Extension Technik",
+    "ersatz": "Ausfallschritte (KH)",
+    "bereich": "gym"
+  },
+  {
+    "de": "Beinbeuger liegend",
+    "en": "Lying Leg Curl",
+    "alias": [
+      "Beincurls liegend",
+      "Leg Curls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Kniebeugen (Flexion) · Beinbeuger",
+    "technik": "Zieh die Fersen kontrolliert Richtung Gesäß und halte die Hüfte dabei fest am Polster.",
+    "video": "Lying Leg Curl Technik",
+    "ersatz": "Beinbeuger sitzend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Beinbeuger sitzend",
+    "en": "Seated Leg Curl",
+    "alias": [
+      "Beincurls sitzend"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Kniebeugen (Flexion) · Beinbeuger",
+    "technik": "Klemm die Oberschenkel unter das Polster und beuge die Knie über die volle Bewegungsweite.",
+    "video": "Seated Leg Curl Technik",
+    "ersatz": "Beinbeuger liegend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Glute-Ham-Raise",
+    "en": "Glute Ham Raise",
+    "alias": [
+      "GHR",
+      "GHD-Raise"
+    ],
+    "typ": "kgz",
+    "equipment": "GHD-Gerät",
+    "muster": "Kniebeugen (Flexion) · Beinbeuger/Gesäß",
+    "technik": "Senke den Oberkörper aus der aufrechten Position langsam nach vorn ab und zieh dich über die Beinbeuger wieder hoch.",
+    "video": "Glute Ham Raise Technik",
+    "ersatz": "Beinbeuger liegend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Hip Thrust",
+    "en": "Barbell Hip Thrust",
+    "alias": [
+      "Hip Thrusts",
+      "Hüftheben mit Langhantel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel, Bank",
+    "muster": "Hüftstrecken · Gesäß",
+    "technik": "Lehn die Schulterblätter an die Bank und drücke die Hüfte bis zur vollen Streckung nach oben, ohne ins Hohlkreuz zu gehen.",
+    "video": "Hip Thrust Technik",
+    "ersatz": "Glute Bridge",
+    "bereich": "gym"
+  },
+  {
+    "de": "Durchzüge am Kabel",
+    "en": "Cable Pull-Through",
+    "alias": [
+      "Pull-Throughs",
+      "Kabel-Durchzüge"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug mit Seil",
+    "muster": "Hüftscharnier · Gesäß/Beinbeuger",
+    "technik": "Steh mit dem Rücken zum Kabelturm und strecke die Hüfte gegen den Zug vollständig nach vorn.",
+    "video": "Cable Pull Through Technik",
+    "ersatz": "Hip Thrust",
+    "bereich": "gym"
+  },
+  {
+    "de": "Glute Kickbacks am Kabel",
+    "en": "Cable Glute Kickback",
+    "alias": [
+      "Cable Kickbacks",
+      "Kickbacks am Kabel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug mit Fußschlaufe",
+    "muster": "Hüftstrecken unilateral · Gesäß",
+    "technik": "Führe das Bein mit stabilem Becken kontrolliert nach hinten-oben, ohne den unteren Rücken zu überstrecken.",
+    "video": "Cable Glute Kickback Technik",
+    "ersatz": "Hip Thrust",
+    "bereich": "gym"
+  },
+  {
+    "de": "Abduktoren-Maschine",
+    "en": "Hip Abduction Machine",
+    "alias": [
+      "Abduktorenmaschine",
+      "Abduktion am Gerät"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Hüftabduktion · seitliches Gesäß",
+    "technik": "Drück die Knie gleichmäßig gegen die Polster nach außen und lass sie langsam wieder zusammenkommen.",
+    "video": "Hip Abduction Machine Technik",
+    "ersatz": "Glute Kickbacks am Kabel",
+    "bereich": "gym"
+  },
+  {
+    "de": "Adduktoren-Maschine",
+    "en": "Hip Adduction Machine",
+    "alias": [
+      "Adduktorenmaschine",
+      "Adduktion am Gerät"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Hüftadduktion · Adduktoren",
+    "technik": "Führe die Knie kontrolliert gegen den Widerstand zusammen und öffne langsam wieder in die Dehnung.",
+    "video": "Hip Adduction Machine Technik",
+    "ersatz": "Cossack Squats",
+    "bereich": "gym"
+  },
+  {
+    "de": "Wadenheben stehend",
+    "en": "Standing Calf Raise",
+    "alias": [
+      "Wadenheben an der Maschine stehend",
+      "Calf Raises"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine oder Erhöhung mit Zusatzgewicht",
+    "muster": "Plantarflexion · Waden",
+    "technik": "Drück dich hoch auf die Zehenspitzen und senke die Fersen langsam bis unter die Kante in die Dehnung.",
+    "video": "Standing Calf Raise Technik",
+    "ersatz": "Wadenheben an der Beinpresse",
+    "bereich": "gym"
+  },
+  {
+    "de": "Wadenheben sitzend",
+    "en": "Seated Calf Raise",
+    "alias": [
+      "Wadenmaschine sitzend"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Plantarflexion · Waden",
+    "technik": "Arbeite mit gebeugten Knien über die volle Bewegungsweite und mach oben eine kurze Pause.",
+    "video": "Seated Calf Raise Technik",
+    "ersatz": "Wadenheben stehend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Wadenheben an der Beinpresse",
+    "en": "Leg Press Calf Raise",
+    "alias": [
+      "Calf Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Beinpresse",
+    "muster": "Plantarflexion · Waden",
+    "technik": "Drück den Schlitten nur mit den Fußballen nach oben und lass die Fersen langsam in die Dehnung sinken.",
+    "video": "Leg Press Calf Raise Technik",
+    "ersatz": "Wadenheben stehend",
+    "bereich": "gym"
+  },
+  {
+    "de": "Crunch-Maschine",
+    "en": "Ab Crunch Machine",
+    "alias": [
+      "Bauchmaschine",
+      "Machine Crunch"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Rumpfbeugen · Bauch",
+    "technik": "Rolle den Oberkörper Wirbel für Wirbel gegen den Widerstand ein und öffne kontrolliert wieder.",
+    "video": "Ab Crunch Machine Technik",
+    "ersatz": "Kabel-Crunches",
+    "bereich": "gym"
+  },
+  {
+    "de": "Rückenstrecker-Maschine",
+    "en": "Back Extension Machine",
+    "alias": [
+      "Rückenstreckermaschine",
+      "Lower Back Machine"
+    ],
+    "typ": "gewicht",
+    "equipment": "Maschine",
+    "muster": "Rumpfstrecken · unterer Rücken",
+    "technik": "Drücke das Rückenpolster kontrolliert nach hinten und kehre langsam in die Ausgangsposition zurück.",
+    "video": "Back Extension Machine Technik",
+    "ersatz": "Hyperextensions",
+    "bereich": "gym"
+  },
+  {
+    "de": "Liegestütze",
+    "en": "Push-Up",
+    "alias": [
+      "Push-Ups",
+      "Pushups",
+      "Liegestütz"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Horizontal drücken · Brust/Trizeps",
+    "technik": "Halte den Körper in einer festen Linie und senke die Brust bis knapp über den Boden.",
+    "video": "Push-Up Technik",
+    "ersatz": "Erhöhte Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Liegestütze an der Wand",
+    "en": "Wall Push-Up",
+    "alias": [
+      "Wand-Liegestütze",
+      "Wall Push-Ups"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Wand",
+    "muster": "Horizontal drücken · Brust",
+    "technik": "Stell dich eine Armlänge vor die Wand und beuge die Arme, während der Körper eine gerade Linie bleibt.",
+    "video": "Wall Push-Up Technik",
+    "ersatz": "Erhöhte Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Erhöhte Liegestütze",
+    "en": "Incline Push-Up",
+    "alias": [
+      "Liegestütze mit erhöhten Händen",
+      "schräge Liegestütze"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Bank oder Erhöhung",
+    "muster": "Horizontal drücken · Brust",
+    "technik": "Stütz die Hände erhöht ab und halte die Körperlinie, wobei eine höhere Ablage die Übung leichter macht.",
+    "video": "Incline Push-Up Technik",
+    "ersatz": "Liegestütze an der Wand",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Liegestütze mit erhöhten Füßen",
+    "en": "Decline Push-Up",
+    "alias": [
+      "Decline Liegestütze",
+      "Liegestütze Füße erhöht"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Bank oder Box",
+    "muster": "Schräg drücken · obere Brust/Schulter",
+    "technik": "Leg die Füße erhöht ab und senke die Brust kontrolliert Richtung Boden, wobei die erhöhten Füße die Übung schwerer machen.",
+    "video": "Decline Push-Up Technik",
+    "ersatz": "Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Enge Liegestütze",
+    "en": "Close-Grip Push-Up",
+    "alias": [
+      "Diamant-Liegestütze",
+      "Diamond Push-Up",
+      "enge Push-Ups"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Horizontal drücken · Trizeps",
+    "technik": "Setz die Hände etwa schulterbreit oder enger und führe die Ellbogen beim Absenken dicht am Körper.",
+    "video": "Close Grip Push-Up Technik",
+    "ersatz": "Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Ring-Liegestütze",
+    "en": "Ring Push-Up",
+    "alias": [
+      "Liegestütze an Ringen",
+      "TRX-Liegestütze"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Turnringe oder Schlingentrainer",
+    "muster": "Horizontal drücken · Brust/Stabilisation",
+    "technik": "Stabilisiere die Ringe eng am Körper und drücke dich besonders kontrolliert nach oben.",
+    "video": "Ring Push-Up Technik",
+    "ersatz": "Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Archer Liegestütze",
+    "en": "Archer Push-Up",
+    "alias": [
+      "Bogenschützen-Liegestütze"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Horizontal drücken unilateral · Brust",
+    "technik": "Setz die Hände weit auseinander und senke dich seitlich über einen Arm ab, während der andere gestreckt bleibt.",
+    "video": "Archer Push-Up Technik",
+    "ersatz": "Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Pseudo Planche Liegestütze",
+    "en": "Pseudo Planche Push-Up",
+    "alias": [
+      "Pseudo-Planche-Push-Ups"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Horizontal drücken · Brust/vordere Schulter",
+    "technik": "Setz die Hände auf Hüfthöhe auf und lehn die Schultern weit vor die Handgelenke, bevor du dich absenkst.",
+    "video": "Pseudo Planche Push-Up Technik",
+    "ersatz": "Pike Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Pike Liegestütze",
+    "en": "Pike Push-Up",
+    "alias": [
+      "Pike Push-Ups"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Bring die Hüfte hoch in die Pike-Position und senke den Kopf zwischen den Händen Richtung Boden.",
+    "video": "Pike Push-Up Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Erhöhte Pike Liegestütze",
+    "en": "Incline Pike Push-Up",
+    "alias": [
+      "Pike Liegestütze mit erhöhten Füßen",
+      "Elevated Pike Push-Up"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Box oder Bank",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Stell die Füße erhöht ab, sodass mehr Gewicht auf den Schultern liegt, und senke den Kopf kontrolliert Richtung Boden.",
+    "video": "Elevated Pike Push-Up Technik",
+    "ersatz": "Pike Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Handstand halten an der Wand",
+    "en": "Wall Handstand Hold",
+    "alias": [
+      "Wandhandstand",
+      "Handstand Hold"
+    ],
+    "typ": "zeit",
+    "equipment": "Wand",
+    "muster": "Überkopf-Stütz · Schulter",
+    "technik": "Drück dich aktiv aus den Schultern lang und halte Körperspannung von den Händen bis zu den Fußspitzen.",
+    "video": "Wall Handstand Technik",
+    "ersatz": "Erhöhte Pike Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Handstand-Liegestütze an der Wand",
+    "en": "Wall Handstand Push-Up",
+    "alias": [
+      "Handstand Push-Ups",
+      "HSPU"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Wand",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Senke dich im Wandhandstand kontrolliert ab, bis der Kopf den Boden fast berührt, und drücke dich vollständig zurück.",
+    "video": "Wall Handstand Push-Up Technik",
+    "ersatz": "Erhöhte Pike Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Dips am Barren",
+    "en": "Parallel Bar Dips",
+    "alias": [
+      "Dips",
+      "Bar Dips",
+      "Barrendips"
+    ],
+    "typ": "kgz",
+    "equipment": "Dip-Barren",
+    "muster": "Vertikal drücken · Brust/Trizeps",
+    "technik": "Senke dich ab, bis die Oberarme etwa waagerecht sind, und drücke dich ohne Schwung wieder hoch.",
+    "video": "Dips Technik",
+    "ersatz": "Dips an der Bank",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Dips an der Bank",
+    "en": "Bench Dips",
+    "alias": [
+      "Bankdips",
+      "Bench Dip"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Bank",
+    "muster": "Vertikal drücken · Trizeps",
+    "technik": "Stütz die Hände hinter dir auf der Bank ab und beuge die Ellbogen gerade nach hinten.",
+    "video": "Bench Dips Technik",
+    "ersatz": "Enge Liegestütze",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Ring-Dips",
+    "en": "Ring Dips",
+    "alias": [
+      "Dips an Ringen"
+    ],
+    "typ": "kgz",
+    "equipment": "Turnringe",
+    "muster": "Vertikal drücken · Brust/Trizeps",
+    "technik": "Halte die Ringe eng am Körper und drücke dich aus der tiefen Position hoch, bis die Arme gestreckt und die Ringe ruhig sind.",
+    "video": "Ring Dips Technik",
+    "ersatz": "Dips am Barren",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Klimmzüge",
+    "en": "Pull-Up",
+    "alias": [
+      "Klimmzüge im Obergriff",
+      "Pull-Ups"
+    ],
+    "typ": "kgz",
+    "equipment": "Klimmzugstange",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Starte aus dem vollen Hang und zieh dich hoch, bis das Kinn über der Stange ist, ohne mit den Beinen Schwung zu holen.",
+    "video": "Pull-Up Technik",
+    "ersatz": "Latzug breit",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Klimmzüge im Untergriff",
+    "en": "Chin-Up",
+    "alias": [
+      "Chin-Ups",
+      "Klimmzüge im Kammgriff"
+    ],
+    "typ": "kgz",
+    "equipment": "Klimmzugstange",
+    "muster": "Vertikal ziehen · Latissimus/Bizeps",
+    "technik": "Greif schulterbreit mit den Handflächen zu dir und zieh dich aus dem vollen Hang bis über die Stange.",
+    "video": "Chin-Up Technik",
+    "ersatz": "Klimmzüge",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Klimmzüge im neutralen Griff",
+    "en": "Neutral-Grip Pull-Up",
+    "alias": [
+      "Hammergriff-Klimmzüge",
+      "Neutral Grip Pull-Ups"
+    ],
+    "typ": "kgz",
+    "equipment": "Klimmzugstange mit Parallelgriffen",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Zieh dich mit parallelen Handflächen hoch und senke dich bis in den vollen Hang ab.",
+    "video": "Neutral Grip Pull-Up Technik",
+    "ersatz": "Klimmzüge",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Negative Klimmzüge",
+    "en": "Negative Pull-Up",
+    "alias": [
+      "exzentrische Klimmzüge",
+      "Negativ-Klimmzüge"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange, Box zum Einstieg",
+    "muster": "Vertikal ziehen exzentrisch · Latissimus",
+    "technik": "Steig in die obere Position und senke dich so langsam wie möglich in den vollen Hang ab.",
+    "video": "Negative Pull-Up Technik",
+    "ersatz": "Band-Klimmzüge",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Band-Klimmzüge",
+    "en": "Band-Assisted Pull-Up",
+    "alias": [
+      "Klimmzüge mit Band",
+      "unterstützte Klimmzüge mit Band"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange, Widerstandsband",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Häng das Band an die Stange und leg einen Fuß oder ein Knie hinein, sodass es dich unten am stärksten unterstützt.",
+    "video": "Band Assisted Pull-Up Technik",
+    "ersatz": "Unterstützte Klimmzüge (Fuß auf Bank)",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Unterstützte Klimmzüge (Fuß auf Bank)",
+    "en": "Foot-Assisted Pull-Up",
+    "alias": [
+      "Unterstützte Klimmzüge mit Fuß auf einer Bank",
+      "Assisted Pull-Up"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange, Bank",
+    "muster": "Vertikal ziehen · Latissimus",
+    "technik": "Stell einen Fuß auf die Bank und hilf nur so viel mit dem Bein nach, wie du für saubere Wiederholungen brauchst.",
+    "video": "Assisted Pull-Up Technik",
+    "ersatz": "Band-Klimmzüge",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Archer Klimmzüge",
+    "en": "Archer Pull-Up",
+    "alias": [
+      "Bogenschützen-Klimmzüge"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange",
+    "muster": "Vertikal ziehen unilateral · Latissimus",
+    "technik": "Zieh dich zu einer Hand hinüber, während der andere Arm möglichst gestreckt bleibt.",
+    "video": "Archer Pull-Up Technik",
+    "ersatz": "Klimmzüge",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Rudern an der Stange",
+    "en": "Inverted Row",
+    "alias": [
+      "Rudern an niedriger Stange",
+      "Australian Pull-Up",
+      "Bodyweight Row"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "niedrige Stange (Rack oder Multipresse)",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Häng dich mit gestrecktem Körper unter die Stange und zieh die Brust bis an die Stange heran.",
+    "video": "Inverted Row Technik",
+    "ersatz": "Rudern am Kabel",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Rudern an Ringen",
+    "en": "Ring Row",
+    "alias": [
+      "Rudern an Ringen mit aufrechtem Körper",
+      "TRX-Rudern"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Turnringe oder Schlingentrainer",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Stell die Füße umso weiter nach vorn, je schwerer die Übung werden soll, und zieh die Ringe zur unteren Brust.",
+    "video": "Ring Row Technik",
+    "ersatz": "Rudern an der Stange",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Scapula Pull-ups",
+    "en": "Scapula Pull-Up",
+    "alias": [
+      "Schulterblatt-Klimmzüge",
+      "Scap Pulls"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange",
+    "muster": "Schulterblattzug · Trapezius/Latissimus",
+    "technik": "Häng dich mit gestreckten Armen an die Stange und zieh nur die Schulterblätter nach hinten-unten, ohne die Ellbogen zu beugen.",
+    "video": "Scapula Pull-Up Technik",
+    "ersatz": "Hängen an der Stange",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Hängen an der Stange",
+    "en": "Dead Hang",
+    "alias": [
+      "toter Hang",
+      "passives Hängen"
+    ],
+    "typ": "zeit",
+    "equipment": "Klimmzugstange",
+    "muster": "Hängen · Griffkraft/Schulter",
+    "technik": "Häng dich mit vollem Griff an die Stange und atme ruhig weiter, während die Schultern lang bleiben dürfen.",
+    "video": "Dead Hang Technik",
+    "ersatz": "Scapula Pull-ups",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Kniebeugen",
+    "en": "Bodyweight Squat",
+    "alias": [
+      "Kniebeugen ohne Gewicht",
+      "Air Squat"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Beuge tief mit aufrechtem Oberkörper und halte die Knie in Richtung der Fußspitzen ausgerichtet.",
+    "video": "Bodyweight Squat Technik",
+    "ersatz": "Box-Kniebeugen",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Box-Kniebeugen",
+    "en": "Box Squat",
+    "alias": [
+      "Kniebeugen zur Box",
+      "Kniebeugen auf die Bank"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Box oder Bank",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Setz dich kontrolliert kurz auf die Box ab und steh ohne Schwung wieder auf.",
+    "video": "Bodyweight Box Squat Technik",
+    "ersatz": "Kniebeugen",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Split Squats",
+    "en": "Split Squat",
+    "alias": [
+      "Split Squats mit Festhalten",
+      "statische Ausfallschritte"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "optional stabile Stütze zum Festhalten",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Bleib in der Schrittstellung stehen und senke das hintere Knie senkrecht Richtung Boden.",
+    "video": "Split Squat Technik",
+    "ersatz": "Ausfallschritte rückwärts",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Ausfallschritte",
+    "en": "Lunge",
+    "alias": [
+      "Lunges",
+      "Ausfallschritte vorwärts"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Mach einen großen Schritt nach vorn, senke das hintere Knie Richtung Boden und drück dich kraftvoll zurück.",
+    "video": "Bodyweight Lunge Technik",
+    "ersatz": "Ausfallschritte rückwärts",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Ausfallschritte rückwärts",
+    "en": "Reverse Lunge",
+    "alias": [
+      "Reverse Lunges",
+      "Rückwärts-Ausfallschritte"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Setz einen großen Schritt nach hinten und senke das hintere Knie kontrolliert ab, bevor du dich über das vordere Bein aufrichtest.",
+    "video": "Reverse Lunge Technik",
+    "ersatz": "Split Squats",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Pistol Squats",
+    "en": "Pistol Squat",
+    "alias": [
+      "einbeinige Kniebeuge",
+      "Pistols"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "optional Festhalten",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Streck ein Bein nach vorn und senke dich auf dem Standbein so tief ab, wie du die Kontrolle behältst.",
+    "video": "Pistol Squat Technik",
+    "ersatz": "Bulgarian Split Squats",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Wandsitz",
+    "en": "Wall Sit",
+    "alias": [
+      "Wall Sit",
+      "Wandsitzen"
+    ],
+    "typ": "zeit",
+    "equipment": "Wand",
+    "muster": "Kniedominant isometrisch · Quadrizeps",
+    "technik": "Rutsch mit dem Rücken an der Wand hinunter, bis die Knie etwa 90 Grad gebeugt sind, und halte die Position.",
+    "video": "Wall Sit Technik",
+    "ersatz": "Box-Kniebeugen",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Step-ups",
+    "en": "Step-Up",
+    "alias": [
+      "Aufsteiger",
+      "Step-Ups ohne Gewicht"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Box oder Bank",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Steig vollständig über das obere Bein auf die Box und senke dich kontrolliert wieder ab.",
+    "video": "Step-Up Technik",
+    "ersatz": "Ausfallschritte",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Glute Bridge",
+    "en": "Glute Bridge",
+    "alias": [
+      "Beckenheben",
+      "Hüftbrücke",
+      "Glute Bridges"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Hüftstrecken · Gesäß",
+    "technik": "Drück die Hüfte aus der Rückenlage bis zur vollen Streckung nach oben und spann das Gesäß oben bewusst an.",
+    "video": "Glute Bridge Technik",
+    "ersatz": "Hip Thrust",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Einbeinige Glute Bridge",
+    "en": "Single-Leg Glute Bridge",
+    "alias": [
+      "einbeiniges Beckenheben"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Hüftstrecken unilateral · Gesäß",
+    "technik": "Strecke ein Bein nach vorn und drücke die Hüfte über das Standbein nach oben, ohne das Becken kippen zu lassen.",
+    "video": "Single Leg Glute Bridge Technik",
+    "ersatz": "Glute Bridge",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Nordic Hamstring Curls",
+    "en": "Nordic Hamstring Curl",
+    "alias": [
+      "Nordic Curls",
+      "Natural Leg Curl"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Fixierung für die Fersen (Partner oder Polster)",
+    "muster": "Kniebeugen (Flexion) exzentrisch · Beinbeuger",
+    "technik": "Lass dich aus dem Kniestand so langsam wie möglich nach vorn ab und fang dich mit den Händen auf.",
+    "video": "Nordic Hamstring Curl Technik",
+    "ersatz": "Beinbeuger liegend",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Wadenheben beidbeinig",
+    "en": "Bodyweight Calf Raise",
+    "alias": [
+      "Wadenheben ohne Gewicht",
+      "Double-Leg Calf Raise"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "optional Erhöhung",
+    "muster": "Plantarflexion · Waden",
+    "technik": "Drück dich hoch auf die Zehenspitzen und senke die Fersen langsam wieder ab, gern über eine Kante in die Dehnung.",
+    "video": "Bodyweight Calf Raise Technik",
+    "ersatz": "Wadenheben stehend",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Wadenheben einbeinig",
+    "en": "Single-Leg Calf Raise",
+    "alias": [
+      "einbeiniges Wadenheben"
+    ],
+    "typ": "kgz",
+    "equipment": "optional Erhöhung",
+    "muster": "Plantarflexion unilateral · Waden",
+    "technik": "Steh auf einem Bein, drück dich hoch auf den Fußballen und arbeite besonders langsam in der Absenkphase.",
+    "video": "Single Leg Calf Raise Technik",
+    "ersatz": "Wadenheben beidbeinig",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "L-Sit",
+    "en": "L-Sit",
+    "alias": [
+      "L-Stütz",
+      "L-Sit Hold"
+    ],
+    "typ": "zeit",
+    "equipment": "Parallettes, Dip-Barren oder Boden",
+    "muster": "Stütz isometrisch · Rumpf/Hüftbeuger",
+    "technik": "Drück die Schultern aktiv nach unten und halte die gestreckten Beine waagerecht nach vorn.",
+    "video": "L-Sit Technik",
+    "ersatz": "Hollow Body Hold",
+    "bereich": "calisthenics"
+  },
+  {
+    "de": "Kettlebell Swing",
+    "en": "Kettlebell Swing",
+    "alias": [
+      "KB Swing",
+      "Russian Swing",
+      "Kettlebell-Schwingen"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Hüftscharnier ballistisch · Gesäß/Beinbeuger",
+    "technik": "Erzeuge den Schwung ausschließlich aus der schnellen Hüftstreckung und lass die Arme nur führen, bis die Kettlebell etwa Brusthöhe erreicht.",
+    "video": "Kettlebell Swing Technik",
+    "ersatz": "Durchzüge am Kabel",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Einarmiger Kettlebell Swing",
+    "en": "One-Arm Kettlebell Swing",
+    "alias": [
+      "Single-Arm Swing",
+      "einarmiger Swing"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Hüftscharnier ballistisch · Gesäß/Beinbeuger",
+    "technik": "Schwing die Kettlebell einarmig aus der Hüftstreckung und halte den Oberkörper dabei gerade, ohne ihn zu verdrehen.",
+    "video": "One Arm Kettlebell Swing Technik",
+    "ersatz": "Kettlebell Swing",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Deadlift",
+    "en": "Kettlebell Deadlift",
+    "alias": [
+      "Kreuzheben mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Hüftdominant · Gesäß/Beinbeuger",
+    "technik": "Stell die Kettlebell zwischen die Füße und hebe sie über die Hüftstreckung mit neutralem Rücken an.",
+    "video": "Kettlebell Deadlift Technik",
+    "ersatz": "Kreuzheben",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Einbeiniges Kreuzheben mit Kettlebell",
+    "en": "Single-Leg Kettlebell Deadlift",
+    "alias": [
+      "Single-Leg Deadlift",
+      "einbeiniges RDL mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Hüftscharnier unilateral · Beinbeuger/Gesäß",
+    "technik": "Kippe den Oberkörper über das Standbein nach vorn, während das freie Bein die Gegenbewegung macht und die Hüfte gerade bleibt.",
+    "video": "Single Leg Kettlebell Deadlift Technik",
+    "ersatz": "Rumänisches Kreuzheben (KH)",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Front Squat",
+    "en": "Kettlebell Front Squat",
+    "alias": [
+      "Double Kettlebell Front Squat",
+      "Front Squat im Rack"
+    ],
+    "typ": "gewicht",
+    "equipment": "1–2 Kettlebells",
+    "muster": "Kniedominant · Quadrizeps/Gesäß",
+    "technik": "Halte die Kettlebells in der Rack-Position an der Brust und beuge aufrecht in die tiefe Hocke.",
+    "video": "Kettlebell Front Squat Technik",
+    "ersatz": "Goblet Squat",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Sumo Squat",
+    "en": "Kettlebell Sumo Squat",
+    "alias": [
+      "Sumo-Kniebeuge mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Kniedominant breit · Quadrizeps/Adduktoren",
+    "technik": "Stell die Füße weit auseinander, halte die Kettlebell hängend vor dir und beuge tief zwischen die Beine.",
+    "video": "Kettlebell Sumo Squat Technik",
+    "ersatz": "Goblet Squat",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Ausfallschritte",
+    "en": "Kettlebell Lunge",
+    "alias": [
+      "Ausfallschritte mit Kettlebell",
+      "Racked Lunge"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
+    "technik": "Halte die Kettlebell im Rack oder hängend und senke das hintere Knie kontrolliert Richtung Boden.",
+    "video": "Kettlebell Lunge Technik",
+    "ersatz": "Ausfallschritte (KH)",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Clean",
+    "en": "Kettlebell Clean",
+    "alias": [
+      "KB Clean",
+      "Umsetzen mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Ganzkörper ballistisch · Hüfte/Rücken",
+    "technik": "Zieh die Kettlebell körpernah aus der Hüftstreckung nach oben und lass sie weich in die Rack-Position einrollen.",
+    "video": "Kettlebell Clean Technik",
+    "ersatz": "Kettlebell High Pull",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Clean & Press",
+    "en": "Kettlebell Clean and Press",
+    "alias": [
+      "Clean und Press",
+      "Clean and Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Ganzkörper · Hüfte/Schulter",
+    "technik": "Bring die Kettlebell mit einem sauberen Clean in die Rack-Position und drücke sie von dort kontrolliert über den Kopf.",
+    "video": "Kettlebell Clean and Press Technik",
+    "ersatz": "Kettlebell Push Press",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Press",
+    "en": "Kettlebell Overhead Press",
+    "alias": [
+      "Military Press mit Kettlebell",
+      "einarmiges Kettlebell-Drücken"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Vertikal drücken · Schulter",
+    "technik": "Drücke die Kettlebell aus der Rack-Position senkrecht nach oben, während Rumpf und Gesäß fest angespannt bleiben.",
+    "video": "Kettlebell Press Technik",
+    "ersatz": "Kurzhantel-Schulterdrücken",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Push Press",
+    "en": "Kettlebell Push Press",
+    "alias": [
+      "Push Press mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Vertikal drücken mit Beinschwung · Schulter",
+    "technik": "Gib mit einer kleinen Kniebeuge Schwung und drücke die Kettlebell aus dem Beinimpuls über den Kopf.",
+    "video": "Kettlebell Push Press Technik",
+    "ersatz": "Kettlebell Press",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Bottoms-Up Press",
+    "en": "Kettlebell Bottoms-Up Press",
+    "alias": [
+      "Bottom-Up Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Vertikal drücken · Schulter/Griffkraft",
+    "technik": "Balanciere die Kettlebell kopfüber auf dem Griff und drücke sie langsam nach oben, ohne dass sie kippt.",
+    "video": "Bottoms Up Press Technik",
+    "ersatz": "Kettlebell Press",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Snatch",
+    "en": "Kettlebell Snatch",
+    "alias": [
+      "KB Snatch",
+      "Reißen mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Ganzkörper ballistisch · Hüfte/Schulter",
+    "technik": "Beschleunige die Kettlebell aus der Hüftstreckung in einem Zug nach oben und fang sie oben mit gestrecktem Arm weich ab.",
+    "video": "Kettlebell Snatch Technik",
+    "ersatz": "Kettlebell Clean & Press",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell High Pull",
+    "en": "Kettlebell High Pull",
+    "alias": [
+      "hoher Zug mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Hüftscharnier ballistisch · Hüfte/oberer Rücken",
+    "technik": "Zieh die Kettlebell nach der Hüftstreckung mit dem Ellbogen hoch und körpernah bis auf Brusthöhe.",
+    "video": "Kettlebell High Pull Technik",
+    "ersatz": "Kettlebell Swing",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Thruster",
+    "en": "Kettlebell Thruster",
+    "alias": [
+      "Thruster mit Kettlebells"
+    ],
+    "typ": "gewicht",
+    "equipment": "1–2 Kettlebells",
+    "muster": "Ganzkörper · Beine/Schulter",
+    "technik": "Verbinde eine tiefe Front-Kniebeuge und das Überkopfdrücken zu einer flüssigen Bewegung.",
+    "video": "Kettlebell Thruster Technik",
+    "ersatz": "Thruster",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Rudern einarmig",
+    "en": "One-Arm Kettlebell Row",
+    "alias": [
+      "KB Row",
+      "Kettlebell-Rudern"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Beuge dich in der Schrittstellung vor und zieh die Kettlebell zur Hüfte, ohne den Rumpf zu verdrehen.",
+    "video": "One Arm Kettlebell Row Technik",
+    "ersatz": "Kurzhantel-Rudern einarmig",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Gorilla Rows",
+    "en": "Gorilla Row",
+    "alias": [
+      "Gorilla-Rudern"
+    ],
+    "typ": "gewicht",
+    "equipment": "2 Kettlebells",
+    "muster": "Horizontal ziehen · oberer Rücken",
+    "technik": "Bleib im tiefen Hüftscharnier über den Kettlebells und ruder abwechselnd eine Seite, während die andere am Boden stabilisiert.",
+    "video": "Gorilla Row Technik",
+    "ersatz": "Kettlebell Rudern einarmig",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Renegade Rows",
+    "en": "Renegade Row",
+    "alias": [
+      "Liegestütz-Rudern",
+      "Plank Row"
+    ],
+    "typ": "gewicht",
+    "equipment": "2 Kettlebells oder Kurzhanteln",
+    "muster": "Horizontal ziehen und Anti-Rotation · Rücken/Rumpf",
+    "technik": "Ruder im Liegestütz abwechselnd eine Hantel zur Hüfte, ohne dass die Hüfte zur Seite kippt.",
+    "video": "Renegade Row Technik",
+    "ersatz": "Kurzhantel-Rudern einarmig",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Floor Press",
+    "en": "Kettlebell Floor Press",
+    "alias": [
+      "Bodendrücken mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "1–2 Kettlebells",
+    "muster": "Horizontal drücken · Brust/Trizeps",
+    "technik": "Drücke die Kettlebell aus der Rückenlage nach oben, wobei die Oberarme am Boden kurz aufsetzen.",
+    "video": "Kettlebell Floor Press Technik",
+    "ersatz": "Kurzhantel-Bankdrücken",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Turkish Get-up",
+    "en": "Turkish Get-Up",
+    "alias": [
+      "TGU",
+      "Türkisches Aufstehen"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Ganzkörper · Stabilisation",
+    "technik": "Steh Schritt für Schritt aus der Rückenlage auf, während der gestreckte Arm die Kettlebell die ganze Zeit senkrecht über dir hält.",
+    "video": "Turkish Get-Up Technik",
+    "ersatz": "Kettlebell Windmill",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Windmill",
+    "en": "Kettlebell Windmill",
+    "alias": [
+      "Windmühle mit Kettlebell"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Hüftscharnier seitlich · Rumpf/Schulter",
+    "technik": "Halte die Kettlebell über Kopf, schieb die Hüfte zur Seite und führe die freie Hand am Bein entlang nach unten, ohne den oberen Arm zu beugen.",
+    "video": "Kettlebell Windmill Technik",
+    "ersatz": "Turkish Get-up",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Kettlebell Halo",
+    "en": "Kettlebell Halo",
+    "alias": [
+      "Halo"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kettlebell",
+    "muster": "Schulterrotation · Schulter/Rumpf",
+    "technik": "Kreise die Kettlebell langsam und eng um den Kopf, während Rumpf und Hüfte ruhig bleiben.",
+    "video": "Kettlebell Halo Technik",
+    "ersatz": "Schulterkreisen mit Stab",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Suitcase Carry",
+    "en": "Suitcase Carry",
+    "alias": [
+      "einseitiges Koffertragen",
+      "Single-Arm Farmer's Carry"
+    ],
+    "typ": "zeit",
+    "equipment": "Kettlebell oder Kurzhantel",
+    "muster": "Tragen unilateral · seitlicher Rumpf/Griffkraft",
+    "technik": "Trag das Gewicht einseitig neben dem Körper und bleib dabei so aufrecht, als würdest du zwei gleiche Gewichte tragen.",
+    "video": "Suitcase Carry Technik",
+    "ersatz": "Farmer's Walk",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Racked Carry",
+    "en": "Kettlebell Rack Carry",
+    "alias": [
+      "Front Rack Carry"
+    ],
+    "typ": "zeit",
+    "equipment": "1–2 Kettlebells",
+    "muster": "Tragen · Rumpf/Schulter",
+    "technik": "Trag die Kettlebell in der Rack-Position an der Brust und geh mit aufrechtem, festem Rumpf.",
+    "video": "Kettlebell Rack Carry Technik",
+    "ersatz": "Suitcase Carry",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Overhead Carry",
+    "en": "Overhead Carry",
+    "alias": [
+      "Waiter's Carry",
+      "Überkopftragen"
+    ],
+    "typ": "zeit",
+    "equipment": "Kettlebell oder Kurzhantel",
+    "muster": "Tragen überkopf · Schulter/Rumpf",
+    "technik": "Halte das Gewicht mit gestrecktem Arm senkrecht über der Schulter und geh langsam und kontrolliert.",
+    "video": "Overhead Carry Technik",
+    "ersatz": "Racked Carry",
+    "bereich": "kettlebell"
+  },
+  {
+    "de": "Farmer's Walk",
+    "en": "Farmer's Carry",
+    "alias": [
+      "Farmers Walk",
+      "Farmer Walk"
+    ],
+    "typ": "zeit",
+    "equipment": "2 Kurzhanteln, Kettlebells oder Farmer-Griffe",
+    "muster": "Tragen · Ganzkörper/Griffkraft",
+    "technik": "Trag die Gewichte beidseitig mit aufrechter Haltung und mach zügige, kontrollierte Schritte.",
+    "video": "Farmers Carry Technik",
+    "ersatz": "Suitcase Carry",
+    "bereich": "functional"
+  },
+  {
+    "de": "Sled Push",
+    "en": "Sled Push",
+    "alias": [
+      "Schlittenschieben",
+      "Prowler Push"
+    ],
+    "typ": "zeit",
+    "equipment": "Gewichtsschlitten",
+    "muster": "Schieben · Beine/Ganzkörper",
+    "technik": "Lehn dich mit gestreckten Armen in den Schlitten und schieb ihn mit kraftvollen, flachen Schritten.",
+    "video": "Sled Push Technik",
+    "ersatz": "Beinpresse",
+    "bereich": "functional"
+  },
+  {
+    "de": "Sled Pull",
+    "en": "Sled Drag",
+    "alias": [
+      "Schlittenziehen",
+      "Backward Sled Drag"
+    ],
+    "typ": "zeit",
+    "equipment": "Gewichtsschlitten, Gurt oder Seil",
+    "muster": "Ziehen · Beine/Rücken",
+    "technik": "Lehn dich leicht gegen die Zugrichtung und zieh den Schlitten mit gleichmäßigen Schritten.",
+    "video": "Sled Drag Technik",
+    "ersatz": "Farmer's Walk",
+    "bereich": "functional"
+  },
+  {
+    "de": "Box Jumps",
+    "en": "Box Jump",
+    "alias": [
+      "Sprünge auf die Box",
+      "Boxsprünge"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Plyo-Box",
+    "muster": "Sprung · Beine (Explosivkraft)",
+    "technik": "Spring beidbeinig auf die Box, lande weich in der Hocke und steig kontrolliert wieder herunter.",
+    "video": "Box Jump Technik",
+    "ersatz": "Sprungkniebeugen",
+    "bereich": "functional"
+  },
+  {
+    "de": "Sprungkniebeugen",
+    "en": "Jump Squat",
+    "alias": [
+      "Squat Jumps",
+      "Jump Squats"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Sprung · Beine (Explosivkraft)",
+    "technik": "Beuge in die halbe Hocke, spring explosiv nach oben und lande weich mit gebeugten Knien.",
+    "video": "Jump Squat Technik",
+    "ersatz": "Box Jumps",
+    "bereich": "functional"
+  },
+  {
+    "de": "Standweitsprung",
+    "en": "Broad Jump",
+    "alias": [
+      "Standing Long Jump",
+      "Weitsprung aus dem Stand"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Sprung horizontal · Beine (Explosivkraft)",
+    "technik": "Schwing die Arme mit, spring so weit wie möglich nach vorn und lande stabil in der Hocke.",
+    "video": "Broad Jump Technik",
+    "ersatz": "Box Jumps",
+    "bereich": "functional"
+  },
+  {
+    "de": "Burpees",
+    "en": "Burpee",
+    "alias": [
+      "Burpees mit Liegestütz"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Ganzkörper · Kondition",
+    "technik": "Geh über die Liegestützposition auf den Boden, komm zügig wieder hoch und spring am Ende gestreckt ab.",
+    "video": "Burpee Technik",
+    "ersatz": "Mountain Climbers",
+    "bereich": "functional"
+  },
+  {
+    "de": "Mountain Climbers",
+    "en": "Mountain Climber",
+    "alias": [
+      "Bergsteiger"
+    ],
+    "typ": "zeit",
+    "equipment": "keine",
+    "muster": "Ganzkörper dynamisch · Rumpf/Kondition",
+    "technik": "Bleib in der stabilen Stützposition und zieh die Knie schnell im Wechsel zur Brust, ohne die Hüfte anzuheben.",
+    "video": "Mountain Climber Technik",
+    "ersatz": "Bärengang",
+    "bereich": "functional"
+  },
+  {
+    "de": "Bärengang",
+    "en": "Bear Crawl",
+    "alias": [
+      "Bear Walk",
+      "Bärenkriechen"
+    ],
+    "typ": "zeit",
+    "equipment": "keine",
+    "muster": "Ganzkörper · Rumpf/Schulter",
+    "technik": "Krabble auf Händen und Fußballen vorwärts und halte die Knie dabei knapp über dem Boden und die Hüfte ruhig.",
+    "video": "Bear Crawl Technik",
+    "ersatz": "Mountain Climbers",
+    "bereich": "functional"
+  },
+  {
+    "de": "Wall Balls",
+    "en": "Wall Ball Shot",
+    "alias": [
+      "Wall Ball",
+      "Medizinball-Würfe an die Wand"
+    ],
+    "typ": "gewicht",
+    "equipment": "Medizinball, Wand",
+    "muster": "Ganzkörper · Beine/Schulter",
+    "technik": "Verbinde eine tiefe Kniebeuge mit dem Wurf des Balls an die Zielmarke und fang ihn direkt in die nächste Wiederholung ab.",
+    "video": "Wall Ball Technik",
+    "ersatz": "Thruster",
+    "bereich": "functional"
+  },
+  {
+    "de": "Medizinball Slams",
+    "en": "Medicine Ball Slam",
+    "alias": [
+      "Ball Slams",
+      "Med Ball Slam"
+    ],
+    "typ": "gewicht",
+    "equipment": "Slam Ball oder Medizinball",
+    "muster": "Ganzkörper ballistisch · Rumpf",
+    "technik": "Heb den Ball weit über den Kopf und schleudere ihn mit dem ganzen Körper kraftvoll vor dir auf den Boden.",
+    "video": "Medicine Ball Slam Technik",
+    "ersatz": "Kettlebell Swing",
+    "bereich": "functional"
+  },
+  {
+    "de": "Battle Ropes",
+    "en": "Battle Rope Waves",
+    "alias": [
+      "Tauschläge",
+      "Battle Rope"
+    ],
+    "typ": "zeit",
+    "equipment": "Battle Rope",
+    "muster": "Ganzkörper · Schulter/Kondition",
+    "technik": "Bleib in der leichten Hocke und schlag mit den Armen gleichmäßige, kraftvolle Wellen ins Seil.",
+    "video": "Battle Ropes Technik",
+    "ersatz": "Seilspringen",
+    "bereich": "functional"
+  },
+  {
+    "de": "Thruster",
+    "en": "Barbell Thruster",
+    "alias": [
+      "Langhantel-Thruster",
+      "Thrusters"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Ganzkörper · Beine/Schulter",
+    "technik": "Geh mit der Stange in der Frontablage in die tiefe Kniebeuge und nutze den Schwung direkt zum Überkopfdrücken.",
+    "video": "Thruster Technik",
+    "ersatz": "Kettlebell Thruster",
+    "bereich": "functional"
+  },
+  {
+    "de": "Push Press",
+    "en": "Barbell Push Press",
+    "alias": [
+      "Schwungdrücken",
+      "Push Press mit Langhantel"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Vertikal drücken mit Beinschwung · Schulter",
+    "technik": "Gib mit einer kurzen Kniebeuge Schwung und drücke die Stange in einem Zug über den Kopf.",
+    "video": "Push Press Technik",
+    "ersatz": "Schulterdrücken Langhantel",
+    "bereich": "functional"
+  },
+  {
+    "de": "Power Clean",
+    "en": "Barbell Power Clean",
+    "alias": [
+      "Umsetzen",
+      "Standumsetzen"
+    ],
+    "typ": "gewicht",
+    "equipment": "Langhantel",
+    "muster": "Ganzkörper ballistisch · Hüfte/Rücken",
+    "technik": "Beschleunige die Stange körpernah aus der Hüftstreckung und fang sie in der Frontablage mit hohen Ellbogen ab.",
+    "video": "Power Clean Technik",
+    "ersatz": "Kettlebell Clean",
+    "bereich": "functional"
+  },
+  {
+    "de": "Plank",
+    "en": "Plank",
+    "alias": [
+      "Unterarmstütz",
+      "Planke"
+    ],
+    "typ": "zeit",
+    "equipment": "keine",
+    "muster": "Anti-Extension · Rumpf",
+    "technik": "Bilde vom Kopf bis zu den Fersen eine feste Linie und spann Bauch und Gesäß aktiv an.",
+    "video": "Plank Technik",
+    "ersatz": "Dead Bug",
+    "bereich": "core"
+  },
+  {
+    "de": "Seitstütz",
+    "en": "Side Plank",
+    "alias": [
+      "seitlicher Unterarmstütz",
+      "Side Plank"
+    ],
+    "typ": "zeit",
+    "equipment": "keine",
+    "muster": "Anti-Lateralflexion · seitlicher Rumpf",
+    "technik": "Stütz dich auf dem Unterarm ab und halte die Hüfte hoch in einer geraden Linie.",
+    "video": "Side Plank Technik",
+    "ersatz": "Plank",
+    "bereich": "core"
+  },
+  {
+    "de": "Copenhagen Plank",
+    "en": "Copenhagen Plank",
+    "alias": [
+      "Kopenhagen-Seitstütz",
+      "Copenhagen Side Plank"
+    ],
+    "typ": "zeit",
+    "equipment": "Bank",
+    "muster": "Anti-Lateralflexion · Adduktoren/Rumpf",
+    "technik": "Leg das obere Bein auf der Bank ab und halte den Körper im Seitstütz gerade, sodass die Oberschenkel-Innenseite trägt.",
+    "video": "Copenhagen Plank Technik",
+    "ersatz": "Seitstütz",
+    "bereich": "core"
+  },
+  {
+    "de": "Dead Bug",
+    "en": "Dead Bug",
+    "alias": [
+      "Deadbug"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Anti-Extension · Rumpf",
+    "technik": "Drück den unteren Rücken in den Boden und strecke Arm und gegenüberliegendes Bein langsam aus.",
+    "video": "Dead Bug Technik",
+    "ersatz": "Bird Dog",
+    "bereich": "core"
+  },
+  {
+    "de": "Bird Dog",
+    "en": "Bird Dog",
+    "alias": [
+      "Vierfüßler diagonal"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Anti-Rotation · Rumpf/unterer Rücken",
+    "technik": "Strecke im Vierfüßlerstand Arm und gegenüberliegendes Bein aus, ohne dass Becken oder Schultern kippen.",
+    "video": "Bird Dog Technik",
+    "ersatz": "Dead Bug",
+    "bereich": "core"
+  },
+  {
+    "de": "Hollow Body Hold",
+    "en": "Hollow Body Hold",
+    "alias": [
+      "Hollow Hold"
+    ],
+    "typ": "zeit",
+    "equipment": "keine",
+    "muster": "Anti-Extension · Rumpf",
+    "technik": "Drück den unteren Rücken in den Boden und halte Schultern und Beine knapp über dem Boden.",
+    "video": "Hollow Body Hold Technik",
+    "ersatz": "Beinheben liegend",
+    "bereich": "core"
+  },
+  {
+    "de": "Crunches",
+    "en": "Crunch",
+    "alias": [
+      "Bauchpressen",
+      "Crunchs"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Rumpfbeugen · Bauch",
+    "technik": "Rolle nur Kopf und Schulterblätter vom Boden ein und lass den unteren Rücken liegen.",
+    "video": "Crunch Technik",
+    "ersatz": "Kabel-Crunches",
+    "bereich": "core"
+  },
+  {
+    "de": "Kabel-Crunches",
+    "en": "Cable Crunch",
+    "alias": [
+      "Crunches am Kabel",
+      "Kneeling Cable Crunch"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug mit Seil",
+    "muster": "Rumpfbeugen · Bauch",
+    "technik": "Knie dich vor den Kabelturm und rolle den Oberkörper gegen den Widerstand ein, statt mit den Armen zu ziehen.",
+    "video": "Cable Crunch Technik",
+    "ersatz": "Crunches",
+    "bereich": "core"
+  },
+  {
+    "de": "Beinheben liegend",
+    "en": "Lying Leg Raise",
+    "alias": [
+      "Leg Raises",
+      "Beinheben am Boden"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Hüftbeugen · Bauch/Hüftbeuger",
+    "technik": "Heb die gestreckten Beine aus der Rückenlage an und senke sie so weit ab, wie der untere Rücken am Boden bleibt.",
+    "video": "Lying Leg Raise Technik",
+    "ersatz": "Knieheben hängend",
+    "bereich": "core"
+  },
+  {
+    "de": "Knieheben hängend",
+    "en": "Hanging Knee Raise",
+    "alias": [
+      "hängendes Knieheben",
+      "Knee Raises"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange",
+    "muster": "Hüftbeugen · Bauch/Hüftbeuger",
+    "technik": "Häng ruhig an der Stange und zieh die Knie kontrolliert Richtung Brust, ohne Schwung zu holen.",
+    "video": "Hanging Knee Raise Technik",
+    "ersatz": "Beinheben liegend",
+    "bereich": "core"
+  },
+  {
+    "de": "Beinheben hängend",
+    "en": "Hanging Leg Raise",
+    "alias": [
+      "hängendes Beinheben",
+      "Leg Raises an der Stange"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Klimmzugstange",
+    "muster": "Hüftbeugen · Bauch/Hüftbeuger",
+    "technik": "Heb die gestreckten Beine im Hang mindestens bis zur Waagerechten und senke sie ohne Pendeln wieder ab.",
+    "video": "Hanging Leg Raise Technik",
+    "ersatz": "Knieheben hängend",
+    "bereich": "core"
+  },
+  {
+    "de": "Russian Twists",
+    "en": "Russian Twist",
+    "alias": [
+      "Rumpfdrehen im Sitzen"
+    ],
+    "typ": "kgz",
+    "equipment": "optional Hantelscheibe oder Medizinball",
+    "muster": "Rotation · seitlicher Rumpf",
+    "technik": "Lehn den Oberkörper im Sitzen leicht zurück und dreh ihn kontrolliert von Seite zu Seite.",
+    "video": "Russian Twist Technik",
+    "ersatz": "Holzfäller am Kabel",
+    "bereich": "core"
+  },
+  {
+    "de": "Holzfäller am Kabel",
+    "en": "Cable Woodchop",
+    "alias": [
+      "Woodchopper",
+      "Woodchops",
+      "Holzhacker"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug",
+    "muster": "Rotation · seitlicher Rumpf",
+    "technik": "Dreh den Oberkörper mit fast gestreckten Armen diagonal gegen den Zug und lass die Hüfte mitarbeiten.",
+    "video": "Cable Woodchop Technik",
+    "ersatz": "Russian Twists",
+    "bereich": "core"
+  },
+  {
+    "de": "Ab-Wheel Rollouts",
+    "en": "Ab Wheel Rollout",
+    "alias": [
+      "Rollouts mit der Bauchrolle",
+      "Ab Rollouts"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Ab-Wheel",
+    "muster": "Anti-Extension · Rumpf",
+    "technik": "Rolle aus dem Kniestand so weit nach vorn, wie du die Hüfte gestreckt und den Rumpf fest halten kannst.",
+    "video": "Ab Wheel Rollout Technik",
+    "ersatz": "Plank",
+    "bereich": "core"
+  },
+  {
+    "de": "Pallof Press",
+    "en": "Pallof Press",
+    "alias": [
+      "Anti-Rotations-Press",
+      "Paloff Press"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kabelzug oder Widerstandsband",
+    "muster": "Anti-Rotation · Rumpf",
+    "technik": "Drück den Griff auf Brusthöhe langsam von dir weg und verhindere dabei jede Drehung des Oberkörpers.",
+    "video": "Pallof Press Technik",
+    "ersatz": "Dead Bug",
+    "bereich": "core"
+  },
+  {
+    "de": "Jefferson Curl",
+    "en": "Jefferson Curl",
+    "alias": [
+      "Jefferson Curls"
+    ],
+    "typ": "gewicht",
+    "equipment": "Kurzhantel, optional Erhöhung",
+    "muster": "Wirbelsäulenbeugen beladen · hintere Kette",
+    "technik": "Rolle die Wirbelsäule mit sehr leichtem Gewicht Wirbel für Wirbel nach unten ein und wieder auf.",
+    "video": "Jefferson Curl Technik",
+    "ersatz": "Rumänisches Kreuzheben",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Cossack Squats",
+    "en": "Cossack Squat",
+    "alias": [
+      "Kosakenhocke",
+      "seitliche Kniebeuge"
+    ],
+    "typ": "kgz",
+    "equipment": "optional Kurzhantel oder Kettlebell",
+    "muster": "Seitliche Kniebeuge · Adduktoren/Hüfte",
+    "technik": "Verlagere dich in der breiten Grätsche tief über ein Bein, während das andere gestreckt bleibt.",
+    "video": "Cossack Squat Technik",
+    "ersatz": "Adduktoren-Maschine",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Tiefe Hocke halten",
+    "en": "Deep Squat Hold",
+    "alias": [
+      "tiefe Hocke",
+      "Squat Hold"
+    ],
+    "typ": "zeit",
+    "equipment": "optional Festhalten",
+    "muster": "Hüft-/Sprunggelenkmobilität",
+    "technik": "Bleib entspannt in der tiefsten Hocke sitzen und halte die Fersen dabei am Boden.",
+    "video": "Deep Squat Hold Technik",
+    "ersatz": "90/90-Hüftwechsel",
+    "bereich": "mobility"
+  },
+  {
+    "de": "90/90-Hüftwechsel",
+    "en": "90/90 Hip Switch",
+    "alias": [
+      "90 90 Stretch",
+      "90/90 Hip Rotations"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Hüftrotation",
+    "technik": "Sitz mit beiden Knien im rechten Winkel und dreh die Beine kontrolliert von einer Seite zur anderen.",
+    "video": "90/90 Hip Switch Technik",
+    "ersatz": "Taubenhaltung",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Couch Stretch",
+    "en": "Couch Stretch",
+    "alias": [
+      "Hüftbeuger-Dehnung erhöht",
+      "Couch-Dehnung"
+    ],
+    "typ": "zeit",
+    "equipment": "Wand oder Bank",
+    "muster": "Hüftbeugerdehnung",
+    "technik": "Stell das hintere Schienbein an der Wand hoch und schieb die Hüfte sanft nach vorn, während der Oberkörper aufrecht bleibt.",
+    "video": "Couch Stretch Technik",
+    "ersatz": "Taubenhaltung",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Taubenhaltung",
+    "en": "Pigeon Pose",
+    "alias": [
+      "Pigeon Stretch",
+      "Taube"
+    ],
+    "typ": "zeit",
+    "equipment": "keine",
+    "muster": "Gesäß-/Hüftdehnung",
+    "technik": "Leg das vordere Bein angewinkelt ab und senke die Hüfte gerade Richtung Boden, während das hintere Bein lang bleibt.",
+    "video": "Pigeon Pose Technik",
+    "ersatz": "90/90-Hüftwechsel",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Schulterkreisen mit Stab",
+    "en": "Shoulder Pass-Through",
+    "alias": [
+      "Shoulder Dislocates",
+      "Schulterdurchzüge mit Stab"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Stab oder Band",
+    "muster": "Schultermobilität",
+    "technik": "Führe den breit gegriffenen Stab mit gestreckten Armen langsam über den Kopf nach hinten und wieder zurück.",
+    "video": "Shoulder Pass Through Technik",
+    "ersatz": "Wall Slides",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Wall Slides",
+    "en": "Wall Slide",
+    "alias": [
+      "Schultergleiten an der Wand",
+      "Scapular Wall Slides"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "Wand",
+    "muster": "Schultermobilität",
+    "technik": "Halte Unterarme und Handrücken an der Wand und schieb die Arme langsam nach oben, ohne den Kontakt zu verlieren.",
+    "video": "Wall Slide Technik",
+    "ersatz": "Schulterkreisen mit Stab",
+    "bereich": "mobility"
+  },
+  {
+    "de": "World's Greatest Stretch",
+    "en": "World's Greatest Stretch",
+    "alias": [
+      "WGS"
+    ],
+    "typ": "koerpergewicht",
+    "equipment": "keine",
+    "muster": "Ganzkörpermobilität",
+    "technik": "Geh in den tiefen Ausfallschritt, setz die Hand innen auf und dreh den freien Arm weit nach oben auf.",
+    "video": "World's Greatest Stretch Technik",
+    "ersatz": "Cossack Squats",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Thorakale Extension über der Rolle",
+    "en": "Thoracic Extension on Foam Roller",
+    "alias": [
+      "BWS-Mobilisation über der Rolle",
+      "T-Spine Extension"
+    ],
+    "typ": "zeit",
+    "equipment": "Faszienrolle",
+    "muster": "Brustwirbelsäulenmobilität",
+    "technik": "Leg die Rolle quer unter den oberen Rücken und strecke dich mit abgestütztem Kopf langsam darüber.",
+    "video": "Thoracic Extension Foam Roller Technik",
+    "ersatz": "Wall Slides",
+    "bereich": "mobility"
+  },
+  {
+    "de": "Laufband",
+    "en": "Treadmill Run",
+    "alias": [
+      "Laufen auf dem Laufband",
+      "Treadmill"
+    ],
+    "typ": "zeit",
+    "equipment": "Laufband",
+    "muster": "Ausdauer · Ganzkörper",
+    "technik": "Wähle Tempo und Steigung so, dass du das geplante Intervall gleichmäßig durchhalten kannst.",
+    "video": "Laufband Lauftechnik",
+    "ersatz": "Crosstrainer",
+    "bereich": "cardio"
+  },
+  {
+    "de": "Rudergerät",
+    "en": "Rowing Machine",
+    "alias": [
+      "Ruderergometer",
+      "Row Erg",
+      "Indoor Rowing"
+    ],
+    "typ": "zeit",
+    "equipment": "Rudergerät",
+    "muster": "Ausdauer · Ganzkörper",
+    "technik": "Arbeite in der Reihenfolge Beine, Rumpf, Arme und kehre in umgekehrter Reihenfolge nach vorn zurück.",
+    "video": "Rudergerät Technik",
+    "ersatz": "Fahrradergometer",
+    "bereich": "cardio"
+  },
+  {
+    "de": "Fahrradergometer",
+    "en": "Stationary Bike",
+    "alias": [
+      "Ergometer",
+      "Exercise Bike",
+      "Indoor Bike"
+    ],
+    "typ": "zeit",
+    "equipment": "Fahrradergometer",
+    "muster": "Ausdauer · Beine",
+    "technik": "Stell die Sattelhöhe so ein, dass das Knie unten leicht gebeugt bleibt, und tritt mit gleichmäßiger Frequenz.",
+    "video": "Ergometer richtig einstellen",
+    "ersatz": "Crosstrainer",
+    "bereich": "cardio"
+  },
+  {
+    "de": "Crosstrainer",
+    "en": "Elliptical Trainer",
+    "alias": [
+      "Ellipsentrainer",
+      "Cross Trainer",
+      "Elliptical"
+    ],
+    "typ": "zeit",
+    "equipment": "Crosstrainer",
+    "muster": "Ausdauer · Ganzkörper",
+    "technik": "Bleib aufrecht, verteil den Druck über den ganzen Fuß und nutze Arme und Beine gleichmäßig.",
+    "video": "Crosstrainer Technik",
+    "ersatz": "Laufband",
+    "bereich": "cardio"
+  },
+  {
+    "de": "Seilspringen",
+    "en": "Jump Rope",
+    "alias": [
+      "Rope Skipping",
+      "Seilhüpfen",
+      "Springseil"
+    ],
+    "typ": "zeit",
+    "equipment": "Springseil",
+    "muster": "Ausdauer · Ganzkörper",
+    "technik": "Spring flach aus den Fußgelenken ab und dreh das Seil aus den Handgelenken statt aus den Armen.",
+    "video": "Jump Rope Technik",
+    "ersatz": "Fahrradergometer",
+    "bereich": "cardio"
+  }
+]

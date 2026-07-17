@@ -10,6 +10,17 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
 
+## [0.26.0] – 2026-07-17
+
+### Hinzugefügt
+
+- Eingebaute Übungsbibliothek: 200 geprüfte Übungen mit sauberen deutschen und englischen Namen – der Editor schlägt beim Tippen passende Übungen vor und füllt Typ, Technik-Hinweis und Ersatzübung automatisch aus.
+
+### Geändert
+
+- Bessere Tauschvorschläge: Beim Übungstausch schlägt Satzkraft gleichwertige Alternativen vor.
+- Fortschritte werden über Blöcke hinweg zuverlässiger erkannt, auch wenn Übungen leicht unterschiedlich benannt sind.
+
 ## [0.25.0] – 2026-07-17
 
 ### Hinzugefügt
