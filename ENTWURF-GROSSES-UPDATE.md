@@ -8,7 +8,7 @@
 
 ## 1. Gesamt-Reihenfolge und Release-Schnitt
 
-**Empfehlung der Architektur (17.07.2026, Bestätigung offen → GF-1/GF-2):**
+**ENTSCHIEDEN 17.07.2026 (GF-1/GF-2):**
 
 | Schritt | Release | Inhalt | Begründung |
 |---|---|---|---|
@@ -115,7 +115,7 @@ Drei Schichten, drei Zeitrichtungen:
 - **Soll:**
   1. Startbar: Einheiten der aktuellen Woche sowie leere Einheiten der Vorwoche.
   2. Wiederholbar: ausschließlich die zuletzt abgeschlossene Einheit (jüngste `history`-Session mit `complete === true`).
-  3. „Aktuelle Woche" = höchste Woche mit begonnener oder abgeschlossener Einheit, mindestens Woche 1 (**OF-1 bestätigen**); Wochen-Navigation bleibt zum Ansehen frei.
+  3. „Aktuelle Woche" wird automatisch abgeleitet (ENTSCHIEDEN 17.07., OF-1): höchste Woche mit begonnener oder abgeschlossener Einheit; sind dort alle Einheiten abgeschlossen, rückt die Folgewoche nach (bis zur Blocklänge); ohne Trainingsdaten Woche 1. Wochen-Navigation bleibt zum Ansehen frei.
   4. Gesperrte Tage zeigen statt des Start-Buttons einen Wegweiser (O6).
 - **Akzeptanz:** Mit `TESTBACKUP-AUSWERTUNG.json` (Wochen 1–7 abgeschlossen): in Woche ≤6 kein Training startbar; in Woche 7 nur die letzte Einheit wiederholbar; leere Einheit der Woche 7 bleibt startbar, wenn Woche 8 aktuell ist. `training-flow.test.cjs` erweitert.
 
@@ -185,7 +185,7 @@ Neue Nutzer kommen heute nur über den 17-Fragen-Coach, ChatGPT oder manuelles B
 - **Kalibrier-Anleitung:** Textentwurf in `ENTWURF-PROGRAMME/kalibrier-anleitung.md`.
 - **Nächster Schritt:** Studio-Abnahme durch den Produktverantwortlichen (**LF-1**, jede Datei lässt sich über „Fertiges Programm importieren" probetrainieren).
 
-### Technische Eckpunkte (zu bestätigen → LF-2)
+### Technische Eckpunkte (ENTSCHIEDEN 17.07., LF-2/LF-3)
 - Programme als statische JSON im Austauschformat `trainings-block` v2 (z. B. `programme/*.json`), vom Service Worker gecacht → offline verfügbar. Kein Build-Tool; `js/progression.js` zeigt, dass Zusatzdateien die Ein-Datei-Regel für die UI nicht verletzen.
 - Übernahme durch den bestehenden `parseProgram`-Pfad (gleiche Validierung wie jeder Import).
 - Jedes Bibliotheksprogramm mit `TESTPROGRAMM`-Qualität; automatischer Test lädt alle Bibliotheks-JSONs über `parseProgram`.
@@ -202,7 +202,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 
 | # | Frage | Entscheidung |
 |---|---|---|
-| M-E1 | Umfang (Auswahlprinzip)? | **ENTSCHIEDEN 16.07.:** Abdeckung statt Zielzahl – drei Bereiche: gängigste **Studio-Geräte-Übungen**, gängigste **Kettlebell-Übungen**, gängigste **Calisthenics-Übungen**. Kernanspruch: saubere deutsche UND englische Bezeichnungen (gründliche Recherche verpflichtend – größte Schwachstelle anderer Apps; `en`-Feld vorhanden). |
+| M-E1 | Umfang (Auswahlprinzip)? | **ENTSCHIEDEN 16.07., ERWEITERT 17.07. (MF-2):** Sieben Bereiche mit Zielumfang ~200 Übungen: **Gym/Studio-Geräte 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5.** Kernanspruch unverändert: saubere deutsche UND englische Bezeichnungen (gründliche Recherche verpflichtend – größte Schwachstelle anderer Apps; `en`-Feld vorhanden). **Prüfpunkt Feinspezifikation:** Abgrenzung Mobility/Cardio zur bestehenden Warm-up/Cool-down-Bibliothek (`WUCD_LIB`) – was ist reguläre Übung im Trainingstag, was gehört in Warm-up/Cool-down. |
 | M-E2 | Felder pro Übung? | **ENTSCHIEDEN 16.07.:** Name (DE), englischer Name, Alias-Namen, Übungstyp (Gewicht/Körpergewicht/Zeit), Equipment, Bewegungsmuster/Muskel (nur intern für Tauschvorschläge), Technik-Hinweis (1 Satz), Video-Suchbegriff, passende Ersatzübung. |
 | M-E3 | Alias-Matching für J4? | **ENTSCHIEDEN 16.07.:** Automatisch – bekannte Namen (DE/EN-Varianten) werden über die Alias-Liste still normalisiert; unbekannte matchen weiter nur exakt. |
 | M-E4 | Einsatzorte im UI? | **ENTSCHIEDEN 16.07.:** Drei Orte: Editor-Autocomplete (Übernahme füllt Typ, Technik-Hinweis, Video, Ersatzübung mit aus), Tauschvorschläge in K1, Langzeit-Matching J4. „Schnellwahl statt leerer Karte" beim Übung-Hinzufügen bewusst **nicht** übernommen. |
@@ -253,39 +253,39 @@ Der Coach erstellt heute nur das Programm. Ausbaustufe: Mitten im Block kann der
 ### Global
 | # | Frage | Vorschlag der Architektur |
 |---|---|---|
-| GF-1 | Gesamt-Reihenfolge bestätigen? | O-Fix → L → O-Kern → M → N (Abschnitt 1). |
-| GF-2 | Release-Schnitt: O in zwei Releases (Fix vorgezogen + Kern)? | Ja – der Fix-Teil ist klein und schützt L-Neunutzer. |
-| GF-3 | Bestandsnutzer-Kommunikation: Nutzer mitten im Block erleben nach dem O-Kern-Update neue Sperren. Einmaliger Hinweis beim ersten Öffnen („Neu: Dein Protokoll ist jetzt geschützt…")? | Ja, einmaliges Info-Panel, kurz und beruhigend. |
+| GF-1 | Gesamt-Reihenfolge bestätigen? | **ENTSCHIEDEN 17.07.:** O-Fix → L → O-Kern → M → N (Abschnitt 1). |
+| GF-2 | Release-Schnitt: O in zwei Releases (Fix vorgezogen + Kern)? | **ENTSCHIEDEN 17.07.:** Ja, zwei Releases – der Fix-Teil ist klein und schützt L-Neunutzer. |
+| GF-3 | Bestandsnutzer-Kommunikation: Nutzer mitten im Block erleben nach dem O-Kern-Update neue Sperren. Einmaliger Hinweis beim ersten Öffnen? | **ENTSCHIEDEN 17.07.:** Ja, einmaliges Info-Panel, kurz und beruhigend. **GF-3a offen:** Wortlaut und Gestaltung der Hinweis-Box werden vor der O-Kern-Umsetzung im Detail mit dem Produktverantwortlichen durchgegangen (konkreter Entwurf folgt bei den O-Fragen). |
 
 ### Paket L
 | # | Frage | Vorschlag |
 |---|---|---|
-| LF-1 | Studio-Abnahme der vier Programme (Gate, keine Designfrage). | Aktion beim Produktverantwortlichen; Programme sind importierbar und probetrainierbar. |
-| LF-2 | Technische Eckpunkte bestätigen (statische JSONs `programme/*.json`, SW-Cache, `parseProgram`-Pfad)? | Bestätigen wie beschrieben. |
-| LF-3 | Herkunfts-Kennzeichnung: Ort und Wortlaut („Offizielles Satzkraft-Programm")? | Kleine Zeile in der Programmkarte der Verwaltung; kein Badge im Training. |
+| LF-1 | Studio-Abnahme der vier Programme (Gate, keine Designfrage). | **OFFEN (Aktion):** Praxistest durch den Produktverantwortlichen; Programme sind importierbar und probetrainierbar. |
+| LF-2 | Technische Eckpunkte bestätigen (statische JSONs `programme/*.json`, SW-Cache, `parseProgram`-Pfad)? | **ENTSCHIEDEN 17.07.:** Separate mitgelieferte JSON-Dateien, offline gecacht, Übernahme über den `parseProgram`-Pfad. |
+| LF-3 | Herkunfts-Kennzeichnung: Ort und Wortlaut? | **ENTSCHIEDEN 17.07.:** Kleine Zeile „Offizielles Satzkraft-Programm" auf der Programmkarte in der Verwaltung; kein Kennzeichen im Training. |
 
 ### Paket M
 | # | Frage | Vorschlag |
 |---|---|---|
-| MF-1 | Speicherort der Liste: im Quellcode (wie `WUCD_LIB`) oder separate gecachte JSON? | Nach Listengröße entscheiden; Richtwert: bis ~50 Übungen inline, darüber separate JSON. |
-| MF-2 | Zielumfang je Bereich für das Recherche-Paket? | Richtwert: ~25 Studio-Geräte, ~15 Kettlebell, ~20 Calisthenics (= ~60 gesamt); Abdeckung vor Vollständigkeit. |
-| MF-3 | Quelle/Qualitätssicherung der Technik-Hinweise und Video-Suchbegriffe? | Formulierung durch Agenten nach `trainings_richtlinien`, Review im selben Abnahme-Dokument wie die Namen (L-E5-analog). |
-| MF-4 | Startzeitpunkt des Recherche-Dokuments? | Parallel zu Schritt 2–3 (reine Dokumentenarbeit, kein Code). |
+| MF-1 | Speicherort der Liste? | **ENTSCHIEDEN 17.07.:** Separate mitgelieferte JSON-Datei, offline gecacht (bei ~200 Übungen ohnehin geboten; konsistent mit LF-2). |
+| MF-2 | Zielumfang je Bereich? | **ENTSCHIEDEN 17.07.:** ~200 Übungen: Gym 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5 (siehe M-E1, erweitert). |
+| MF-3 | Qualitätssicherung der Technik-Hinweise und Video-Suchbegriffe? | **ENTSCHIEDEN 17.07.:** Komplette Liste als Review-Dokument (Formulierung durch Agenten nach `trainings_richtlinien`), Abnahme durch den Produktverantwortlichen vor Aufnahme in die App. |
+| MF-4 | Startzeitpunkt des Recherche-Dokuments? | **ENTSCHIEDEN 17.07.:** Parallel zu Schritt 2–3 (reine Dokumentenarbeit, kein Code). |
 
 ### Paket N
 | # | Frage | Vorschlag |
 |---|---|---|
-| NF-1 | Kostenmodell / „Bring your own AI" (aus N-E5). | Eigener Termin vor N-Start; BYO-AI bevorzugt prüfen (kostet Betreiber nichts, passt zur Achse „Bring your own AI"). |
-| NF-2 | Übernahme-Pfad auf O4-Mechanik umstellen (statt H-Migration)? | Ja – zwingend für N-E3 (Abschnitt 6, technische Eckpunkte). |
-| NF-3 | Schwelle für den proaktiven Hinweis? | „Übung zweimal in Folge unter Zielbereich" als Startdefinition; Feinspezifikation bei N. |
+| NF-1 | Kostenmodell / „Bring your own AI" (aus N-E5). | **RICHTUNG ENTSCHIEDEN 17.07.:** BYO-AI ist die bevorzugte Richtung. **Ausdrücklicher Wunsch des Produktverantwortlichen:** Paket N bleibt bewusst ganz am Ende der Reihenfolge; vor jeder weiteren N-Festlegung wird zuerst ein Detailkonzept ausgearbeitet, wie BYO-AI konkret umsetzbar ist (Ablauf, Kopiertext, Antwort-Einfügen, Fehlerfälle). Keine N-Umsetzung ohne dieses Konzept und dessen Freigabe. |
+| NF-2 | Übernahme-Pfad auf O4-Mechanik umstellen (statt H-Migration)? | **ENTSCHIEDEN 17.07.:** Ja – die Garantie „trainierte Wochen bleiben unberührt" wird vom Datenmodell erzwungen. |
+| NF-3 | Schwelle für den proaktiven Hinweis? | **ENTSCHIEDEN 17.07.:** „Übung zweimal in Folge unter Zielbereich" als Startdefinition; Feinjustierung bei der N-Feinspezifikation. |
 
 ### Paket O
 | # | Frage | Vorschlag |
 |---|---|---|
-| OF-1 | Definition „aktuelle Woche": höchste Woche mit begonnener/abgeschlossener Einheit (statt frei gewählter `S.week`)? | Ja – macht die Sperren manipulationssicher und unabhängig von der Navigations-Auswahl. |
-| OF-2 | UI-Ort der Aktion „Werte korrigieren"? | Auf abgeschlossenen Tageskarten anstelle des Start-Buttons (zusammen mit dem O6-Wegweiser). |
-| OF-3 | Editor-Nachfrage bei Namensänderung: ab welcher Schwelle? | Immer fragen, wenn der Name geändert wird UND bereits Werte existieren; reine Tippfehler-Korrekturen (kleine Änderung) ohne Nachfrage durchlassen ist fehleranfällig – lieber immer fragen, Dialog ist ein Tap. |
-| OF-4 | Bestandsdaten beim O-Kern-Update: Sperren greifen sofort, alte Lücken bleiben Lücken, nichts wird migriert? | Ja – `fromWeek`/`untilWeek` fehlen bei Bestandsübungen (= gelten immer), Verhalten bleibt identisch bis zur ersten Editor-Änderung. |
+| OF-1 | Definition „aktuelle Woche"? | **ENTSCHIEDEN 17.07.:** Automatisch abgeleitet – höchste Woche mit begonnener/abgeschlossener Einheit; sind dort alle Einheiten abgeschlossen, rückt die Folgewoche nach (bis zur Blocklänge); ohne Trainingsdaten Woche 1. Unabhängig von der Navigations-Auswahl (`S.week` bleibt reine Ansicht). |
+| OF-2 | UI-Ort der Aktion „Werte korrigieren"? | **ENTSCHIEDEN 17.07.:** Auf abgeschlossenen Tageskarten anstelle des Start-Buttons (zusammen mit dem O6-Wegweiser). |
+| OF-3 | Editor-Nachfrage bei Namensänderung: ab welcher Schwelle? | **ENTSCHIEDEN 17.07.:** Immer fragen, wenn der Name geändert wird UND bereits Werte existieren. Ein Tap mehr beim Tippfehler-Fix, dafür landet nie stillschweigend Historie an der falschen Übung. |
+| OF-4 | Bestandsdaten beim O-Kern-Update? | **ENTSCHIEDEN 17.07.:** Nichts wird migriert – `fromWeek`/`untilWeek` fehlen bei Bestandsübungen (= gelten immer), Sperren und neue Aktionen greifen ab sofort, alte Lücken bleiben Lücken. |
 
 ---
 
