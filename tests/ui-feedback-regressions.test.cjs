@@ -113,6 +113,63 @@ function programFixture() {
   };
 }
 
+function repeatDialogContext(extraLogs) {
+  const program = programFixture();
+  program.weeks.push({ n: 2, phase: 'aufbau', label: 'Aufbau', sets: { kraft: 1 } });
+  const modalCalls = [];
+  const context = appContext();
+  context.S = {
+    active: 'basis', programs: { basis: program }, week: 1, day: 'A',
+    logs: extraLogs || {}, history: [{ week: 1, day: 'A', complete: true }],
+    workout: null
+  };
+  context.PROG = () => program;
+  context.showModal = (title, message, actions) => modalCalls.push({ title, message, actions });
+  context.icon = () => '';
+  return { context, modalCalls, program };
+}
+
+test('warnt beim Wiederholen nur vor betroffenen späteren Empfehlungen', () => {
+  const withoutLater = repeatDialogContext();
+  withoutLater.context.startWorkout();
+  assert.equal(withoutLater.modalCalls.length, 1);
+  assert.match(withoutLater.modalCalls[0].message, /Alle eingetragenen Satzwerte/);
+  assert.doesNotMatch(withoutLater.modalCalls[0].message, /Empfehlungen der folgenden Wochen/);
+
+  const sameDay = repeatDialogContext({
+    '2|A|bench': { sets: [{ reps: '8', weight: '80' }] }
+  });
+  sameDay.context.startWorkout();
+  assert.match(sameDay.modalCalls[0].message, /Empfehlungen der folgenden Wochen werden aus den neuen Werten neu berechnet/);
+  assert.match(sameDay.modalCalls[0].message, /Deine eingetragenen Werte bleiben unverändert/);
+
+  const unrelated = repeatDialogContext({
+    '2|B|bench': { sets: [{ reps: '8', weight: '80' }] },
+    '2|A|row': { sets: [{ reps: '8', weight: '80' }], swap: 'Kabelrudern' }
+  });
+  unrelated.context.startWorkout();
+  assert.doesNotMatch(unrelated.modalCalls[0].message, /Empfehlungen der folgenden Wochen/);
+});
+
+test('behandelt eingefrorene Einheiten in Dialog und Startleiste als wiederholbar', () => {
+  const { context, modalCalls, program } = repeatDialogContext();
+  program.days[0].ex.push({
+    id: 'later', name: 'Später ergänzt', cat: 'kraft', w: false, unit: 'reps'
+  });
+  const bar = { innerHTML: '', classList: { remove() {} } };
+  context.document = {
+    body: { classList: { remove() {} } },
+    getElementById: id => id === 'bar' ? bar : null
+  };
+
+  context.startWorkout();
+  context.renderBar();
+
+  assert.equal(modalCalls.length, 1);
+  assert.match(modalCalls[0].title, /Training wiederholen/);
+  assert.match(bar.innerHTML, /Training wiederholen/);
+});
+
 test('setzt einen heutigen Übungstausch samt passender Vormerkung zurück', () => {
   const program = programFixture();
   const exercise = program.days[0].ex[0];

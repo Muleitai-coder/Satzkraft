@@ -933,7 +933,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.22.3";
+var APP_VERSION="0.23.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -1076,7 +1076,8 @@ function weekLayout(){
  return slots;
 }
 function dayStatus(d){
- var all=d.ex.length,dn=0;for(var i=0;i<all;i++)if(cellComplete(S.week,d.key,d.ex[i]))dn++;
+ var all=d.ex.length;if(historyMarksComplete(S.history,S.week,d.key))return{dn:all,all:all,complete:true};
+ var dn=0;for(var i=0;i<all;i++)if(cellComplete(S.week,d.key,d.ex[i]))dn++;
  return{dn:dn,all:all,complete:all>0&&dn===all};
 }
 function wfOf(W){return W.phase==="deload"?getWorkoutSettings().deloadMultiplier:1.0;}
@@ -1096,9 +1097,9 @@ function catReps(ex,phase){if(Array.isArray(ex.reps))return ex.reps;var r=catOf(
 function setsForWeek(catKey,w){var W=PROG().weeks[w-1];if(!W)return 0;var s=W.sets&&W.sets[catKey];return(s!=null)?s:3;}
 function setsForProgramExercise(program,ex,w){var week=program&&program.weeks&&program.weeks[w-1],sets=week&&week.sets&&week.sets[ex.cat];return ex.sets!=null?ex.sets:(sets!=null?sets:3);}
 function setsForExercise(ex,w){return setsForProgramExercise(PROG(),ex,w);}
-function programBlockComplete(program,logs){
- if(!program||!Array.isArray(program.weeks)||!program.weeks.length||!Array.isArray(program.days)||!program.days.length)return false;logs=logs&&typeof logs==="object"?logs:{};
- for(var w=1;w<=program.weeks.length;w++)for(var di=0;di<program.days.length;di++){var day=program.days[di];if(!day.ex||!day.ex.length)return false;for(var ei=0;ei<day.ex.length;ei++){var ex=day.ex[ei],need=setsForProgramExercise(program,ex,w),cell=logs[w+"|"+day.key+"|"+ex.id];if(!need||!cell||!Array.isArray(cell.sets))return false;for(var si=0;si<need;si++)if(!cell.sets[si]||!setComplete(ex,cell.sets[si]))return false;}}
+function programBlockComplete(program,logs,history){
+ if(!program||!Array.isArray(program.weeks)||!program.weeks.length||!Array.isArray(program.days)||!program.days.length)return false;logs=logs&&typeof logs==="object"?logs:{};if(!Array.isArray(history))history=[];
+ for(var w=1;w<=program.weeks.length;w++)for(var di=0;di<program.days.length;di++){var day=program.days[di];if(historyMarksComplete(history,w,day.key))continue;if(!day.ex||!day.ex.length)return false;for(var ei=0;ei<day.ex.length;ei++){var ex=day.ex[ei],need=setsForProgramExercise(program,ex,w),cell=logs[w+"|"+day.key+"|"+ex.id];if(!need||!cell||!Array.isArray(cell.sets))return false;for(var si=0;si<need;si++)if(!cell.sets[si]||!setComplete(ex,cell.sets[si]))return false;}}
  return true;
 }
 
@@ -1227,11 +1228,24 @@ function showExerciseNote(ex){
  ]);
 }
 function lastPerf(ex){for(var w=S.week-1;w>=1;w--){var c=S.logs[w+"|"+S.day+"|"+ex.id];if(c&&!normalizeSwapName(c.swap)&&c.sets&&c.sets.some(function(s){return s.reps!==""&&s.reps!=null;}))return{week:w,sets:c.sets};}return null;}
-function weekFrac(w){var d=0,t=0,ds=PROG().days;for(var a=0;a<ds.length;a++)for(var i=0;i<ds[a].ex.length;i++){t++;if(cellComplete(w,ds[a].key,ds[a].ex[i]))d++;}return t?d/t:0;}
+function weekFrac(w){
+ var d=0,t=0,ds=PROG().days;
+ for(var a=0;a<ds.length;a++){
+  var n=ds[a].ex.length;t+=n;
+  if(historyMarksComplete(S.history,w,ds[a].key)){d+=n;continue;}
+  for(var i=0;i<n;i++)if(cellComplete(w,ds[a].key,ds[a].ex[i]))d++;
+ }
+ return t?d/t:0;
+}
 function dayComplete(w,dk){
  var day=dayByKey(dk);
  return day.ex.length>0&&day.ex.every(function(ex){return cellComplete(w,dk,ex);});
 }
+function historyMarksComplete(history,w,dk){
+ if(!Array.isArray(history))return false;
+ return history.some(function(e){return !!e&&e.week===w&&e.day===dk&&e.complete===true;});
+}
+function unitComplete(w,dk){return historyMarksComplete(S.history,w,dk)||dayComplete(w,dk);}
 function dayWasInterrupted(w,dk){
  return S.history.some(function(e){return e.week===w&&e.day===dk&&e.complete!==true;});
 }
@@ -1258,7 +1272,7 @@ function skippedBeforeSelection(){
  var skipped=[];
  for(var w=1;w<=S.week;w++){
   var limit=w===S.week?currentIndex:ordered.length;
-  for(var i=0;i<limit;i++)if(!dayComplete(w,ordered[i].key))skipped.push({week:w,day:ordered[i]});
+  for(var i=0;i<limit;i++)if(!unitComplete(w,ordered[i].key))skipped.push({week:w,day:ordered[i]});
  }
  return skipped;
 }
@@ -1394,7 +1408,7 @@ function renderView(){
  var dd=day.ex.filter(isDone).length;
  h+='<div class="dayhdr'+(active()?' active':'')+'">'+(active()?'':'<h2>'+esc(day.wd||day.key)+(day.title?' · '+esc(day.title):'')+'</h2>')+'<span class="p" id="dayprog">'+dd+'/'+day.ex.length+' erledigt</span></div>';
  S.history.filter(function(e){return e.week===S.week&&e.day===S.day;}).forEach(function(e){var segments=e.segments||1;h+='<div class="sessbox">🗓 '+dDate(e.start)+(segments>1?' · Dauer '+fmtTime(e.dur)+' · '+segments+' Abschnitte':' · '+dClock(e.start)+'–'+dClock(e.end)+' · Dauer '+fmtTime(e.dur))+'</div>';});
- if(!active()&&!dayComplete(S.week,S.day))h+='<div class="starthint">'+icon("play")+' Tippe unten auf <b>Training starten</b>, um Sätze einzutragen.</div>';
+ if(!active()&&!unitComplete(S.week,S.day))h+='<div class="starthint">'+icon("play")+' Tippe unten auf <b>Training starten</b>, um Sätze einzutragen.</div>';
  if(day.wu&&day.wu.length){var wus=day.wu.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="wubtn" style="width:100%;margin:0 0 10px">'+icon("play")+' Warm-up starten \u00b7 '+day.wu.length+' \u00dcbungen \u00b7 ~'+Math.round(wus/60)+' min</button>';}
  day.ex.forEach(function(ex){h+=exCardHtml(ex);});
  if(day.cd&&day.cd.length){var cds=day.cd.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="cdbtn" style="width:100%;margin:4px 0 10px">'+icon("play")+' Cool-down starten \u00b7 '+day.cd.length+' \u00dcbungen \u00b7 ~'+Math.round(cds/60)+' min</button>';}
@@ -1560,6 +1574,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";
 }
 var VERSION_HISTORY=[
+ {version:"v0.23.0",date:"17.07.2026",changes:["Abgeschlossene Einheiten richten Tagesanzeige, Wochenbalken, Verpasst-Warnung und Blockabschluss dauerhaft nach dem beim Beenden gespeicherten Abschlussstatus aus.","Spätere Programmänderungen machen fertige Wochen nicht mehr rückwirkend unvollständig.","Die Wiederholen-Abfrage warnt, wenn neue Werte Empfehlungen in späteren Wochen desselben Trainingstags neu berechnen."]},
  {version:"v0.22.3",date:"16.07.2026",changes:["Während Satzpause, Satzfokus oder Zeittimer bleiben Eingaben ausschließlich bei der zugehörigen Übung möglich; andere Übungen sind konsequent gesperrt.","Vorgemerkte dauerhafte Übungstausche führen nach Trainingsende in eine verbindliche Entscheidung zwischen Editor und Verwerfen – ohne Später-Funktion.","Der Editor übernimmt alle vorgemerkten Tausche gemeinsam und markiert die betroffenen Übungen gelb, bis sie gespeichert oder verworfen wurden.","Übungsnotizen stehen im vollständigen Trainingsprotokoll direkt sichtbar statt hinter einer Aufklappaktion.","Bearbeitete Programme und Editor-Kopien werden nicht automatisch aktiviert und führen zurück zur Programmübersicht.","Der Dunkelmodus steht jetzt ausschließlich in der Fußzeile der Hauptseite." ]},
  {version:"v0.22.2",date:"16.07.2026",changes:["Das Archiv öffnet als eigene Ansicht mit Zurück-Navigation; archivierte Auswertungen führen ebenfalls per Zurück ins Archiv.","Der Dunkelmodus steht in der Fußzeile, während der Archivzugang den Platz in der Kopfzeile nutzt.","Programmkarten verzichten auf das redundante Aktiv-Symbol, zeigen vollständige Blöcke goldfarben als Abgeschlossen und verwenden kompakte Textaktionen.","Der Scheibenrechner bietet nur 10-, 15- und 20-kg-Stangen und nennt ausschließlich das rechnerische Gewicht pro Seite.","Übungen lassen sich für die ausgewählte Einheit bereits vor Trainingsbeginn tauschen und vor der ersten Satzeingabe wieder zurücksetzen."]},
  {version:"v0.22.1",date:"16.07.2026",changes:["Ein heutiger Übungstausch lässt sich vor der ersten Satzeingabe vollständig auf das Original zurücksetzen.","Der Scheibenrechner zeigt die Beladung pro Seite klarer und bietet 10-, 15-, 20-kg- sowie eigene Stangen direkt an.","Programmkarten ordnen Datum und Abschlussstatus in der Metazeile ein; Archivieren ist eine dezente Nebenaktion.","Übungsabschluss und Einklappen bleiben stabil, die Vorgabezeile nutzt ein Uhrsymbol ohne verschwommenen Rand.","Das vollständige Trainingsprotokoll kennzeichnet getauschte Übungen und blendet vorhandene Notizen auf Wunsch ein.","Nach dem Löschen bleibt die Programmverwaltung geöffnet; Editor- und Kalibrierhinweise sind typografisch vereinheitlicht."]},
@@ -1656,7 +1671,7 @@ function endRest(){
 function elapsedSec(){var w=S.workout;if(!w)return 0;return w.accrued+(w.running?(Date.now()-w.startedAt)/1000:0);}
 function beginWorkout(mode){
  clearDonePrompt();cancelAllAutoRest();unlockAudio();requestWakeLock();askNotifyPermission();var n=Date.now(),records=historyForDay(S.week,S.day);
- mode=mode||(dayWasInterrupted(S.week,S.day)&&!dayComplete(S.week,S.day)?"continue":"fresh");
+ mode=mode||(dayWasInterrupted(S.week,S.day)&&!unitComplete(S.week,S.day)?"continue":"fresh");
  var accrued=0,firstStart=n,segmentsBase=0;
  if(mode==="continue"&&records.length){
   accrued=records.reduce(function(sum,e){return sum+(Number(e.dur)||0);},0);
@@ -1666,9 +1681,20 @@ function beginWorkout(mode){
  expandedDoneExercises={};cancelAllDoneCollapse();S.workout={running:true,startedAt:n,accrued:accrued,firstStart:firstStart,askedDone:false,completedAt:0,week:S.week,day:S.day,mode:mode,segmentsBase:segmentsBase,pendingReplacements:[]};
  save();renderBar();renderView();
 }
+function laterWeeksHaveData(w,dk){
+ for(var key in S.logs){
+  var parts=key.split("|");
+  if(Number(parts[0])<=w||parts[1]!==dk)continue;
+  var c=S.logs[key];if(!c||normalizeSwapName(c.swap)||!Array.isArray(c.sets))continue;
+  for(var i=0;i<c.sets.length;i++){var s=c.sets[i];if(s&&s.reps!==""&&s.reps!=null)return true;}
+ }
+ return false;
+}
 function startWorkout(){
- if(dayComplete(S.week,S.day)){
-  showModal("Training wiederholen?","Alle eingetragenen Satzwerte dieses Tages werden geleert. Beim Beenden ersetzt die neue Trainingszeit außerdem die bisher gespeicherte Zeit.",[
+ if(unitComplete(S.week,S.day)){
+  var repeatText="Alle eingetragenen Satzwerte dieses Tages werden geleert. Beim Beenden ersetzt die neue Trainingszeit außerdem die bisher gespeicherte Zeit.";
+  if(laterWeeksHaveData(S.week,S.day))repeatText+="<br><br>Empfehlungen der folgenden Wochen werden aus den neuen Werten neu berechnet. Deine eingetragenen Werte bleiben unverändert.";
+  showModal("Training wiederholen?",repeatText,[
    {label:"Zurücksetzen & wiederholen",cls:"primary",action:function(){resetDayLogs(S.week,S.day);beginWorkout("repeat");}},
    {label:"Abbrechen",action:null}
   ]);return;
@@ -1748,7 +1774,7 @@ function autoStop(reason){if(!S.workout)return;var programId=S.active;stopWorkou
 function renderBar(){
  var bar=document.getElementById("bar"),w=S.workout,h="";
  if(!w){
-  var completed=dayComplete(S.week,S.day),continuing=dayWasInterrupted(S.week,S.day)&&!completed;
+  var completed=unitComplete(S.week,S.day),continuing=dayWasInterrupted(S.week,S.day)&&!completed;
   h='<div class="barwrap"><div class="start-only"><button class="bbtn go" id="startw">'+icon("play")+' Training '+(completed?"wiederholen":continuing?"fortsetzen":"starten")+'</button></div></div>';
  }else if(restPhase==="hold"){
   var held=holdElapsedSeconds(),targetMode=holdTimerMode==="target",holdPct=targetMode&&holdMax?Math.max(0,Math.min(100,held/holdMax*100)):(holdBest?Math.max(0,Math.min(100,held/holdBest*100)):0),holdReached=targetMode&&holdMin!=null&&held>=holdMin,holdSub=targetMode&&holdMin!=null?(holdReached?"Ziel erreicht · Ende bei "+fmtSeconds(holdMax):"Ziel "+fmtSecondsRange(holdMin,holdMax)):(holdBest?"Maximalzeit · Bestwert "+fmtSeconds(holdBest):"Maximalzeit · selbst stoppen");
@@ -1808,7 +1834,7 @@ function buildReportData(program,logs,history){
 }
 function topBlockImprovements(data){return(data.exercises||[]).filter(function(metric){return metric.delta>0&&metric.first!=null;}).map(function(metric){return{metric:metric,score:metric.delta/Math.max(Math.abs(metric.first),1)};}).sort(function(a,b){return b.score-a.score;}).slice(0,3).map(function(item){return item.metric;});}
 function maybeShowBlockSuccess(programId){
- var program=S.programs[programId],store=S.store[programId];if(!program||!store||store.blockCelebrated===true||!programBlockComplete(program,store.logs))return false;store.blockCelebrated=true;if(programId===S.active)S.blockCelebrated=true;flushSave();
+ var program=S.programs[programId],store=S.store[programId];if(!program||!store||store.blockCelebrated===true||!programBlockComplete(program,store.logs,store.history))return false;store.blockCelebrated=true;if(programId===S.active)S.blockCelebrated=true;flushSave();
  var data=buildReportData(program,store.logs,store.history),improvements=topBlockImprovements(data),list='<p><b>Größte Verbesserungen</b></p>'+(improvements.length?'<ul>'+improvements.map(function(metric){return'<li><b>'+esc(metric.name)+'</b>: +'+esc(metric.type==="seconds"?fmtSeconds(metric.delta):reportNumber(metric.delta)+" "+reportMetricUnit(metric.type))+'</li>';}).join("")+'</ul>':'<p class="muted">Noch kein Wochenvergleich – deine ersten Vergleichswerte sind für den nächsten Block gespeichert.</p>'),msg='<p><b>Glückwunsch – du hast „'+esc(program.name)+'“ abgeschlossen.</b></p><p>'+data.completedSessions+' Einheiten · '+reportDuration(data.totalDuration)+' dokumentierte Trainingszeit</p>'+list,actions=[{label:"Folgeblock starten",cls:"primary",action:function(){createFollowupBlock(programId);}},{label:"Auswertung ansehen",action:function(){openReport(programId);}}];
  if(program.source==="coach")actions.push({label:"Mit KI-Coach neu planen",action:function(){openCoachWithPreferences();}});actions.push({label:"Später",action:null});showModal("Trainingsblock geschafft 🎉",msg,actions);return true;
 }
@@ -2803,13 +2829,13 @@ function archiveProgram(id){
 }
 function unarchiveProgram(id){if(programWriteLocked()){showProgramWriteLocked();return false;}var program=S.programs[id];if(!program||program.archived!==true)return false;delete program.archived;flushSave();renderArchive();return true;}
 function createFollowupBlock(sourceId){
- if(programWriteLocked()){showProgramWriteLocked();return null;}var source=S.programs[sourceId],sourceStore=S.store[sourceId];if(!source||source.archived===true||!sourceStore)return null;if(!programBlockComplete(source,sourceStore.logs)){showModal("Block noch nicht abgeschlossen","Schließe zuerst alle vorgesehenen Einheiten dieses Blocks ab.",[{label:"OK",cls:"primary",action:null}]);return null;}
+ if(programWriteLocked()){showProgramWriteLocked();return null;}var source=S.programs[sourceId],sourceStore=S.store[sourceId];if(!source||source.archived===true||!sourceStore)return null;if(!programBlockComplete(source,sourceStore.logs,sourceStore.history)){showModal("Block noch nicht abgeschlossen","Schließe zuerst alle vorgesehenen Einheiten dieses Blocks ab.",[{label:"OK",cls:"primary",action:null}]);return null;}
  syncStore();sourceStore=S.store[sourceId];var next=buildFollowupProgram(source,sourceStore,S.programs);while(S.programs[next.id])next.id=genId();source.archived=true;S.programs[next.id]=next;S.store[next.id]=newStore(next);if(!setActive(next.id)){delete S.programs[next.id];delete S.store[next.id];delete source.archived;return null;}flushSave();
  var lib=document.getElementById("lib");if(lib&&lib.classList.contains("open"))closeLib(true);showModal("Folgeblock bereit","„"+esc(next.name)+"“ ist jetzt aktiv. Die empfohlenen Startgewichte basieren auf deinem letzten belastbaren Training; der abgeschlossene Block liegt im Archiv.",[{label:"Los geht's",cls:"primary",action:null}]);return next.id;
 }
 function libraryFooterHtml(){return'<div class="libraryfooter"><button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span></div>';}
 function programItemHtml(id,p){
- var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{}},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,dateValue=hasUpdated?p.updatedAt:(hasCreated?p.createdAt:null),dateLabel=hasUpdated&&(!hasCreated||p.updatedAt>p.createdAt)?"Geändert am":"Erstellt am",dateText=dateValue==null?"":new Date(dateValue).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}),date=dateText?'<span class="programdate" title="'+dateLabel+' '+attr(dateText)+'">'+dateLabel+' '+dateText+'</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+date+'</div>';
+ var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{},history:[]},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs,store.history),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,dateValue=hasUpdated?p.updatedAt:(hasCreated?p.createdAt:null),dateLabel=hasUpdated&&(!hasCreated||p.updatedAt>p.createdAt)?"Geändert am":"Erstellt am",dateText=dateValue==null?"":new Date(dateValue).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}),date=dateText?'<span class="programdate" title="'+dateLabel+' '+attr(dateText)+'">'+dateLabel+' '+dateText+'</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+date+'</div>';
  if(archived)return'<div class="progitem archived"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-report-program="'+attr(id)+'">Auswertung ansehen</button><button class="progtextaction" data-unarchive="'+attr(id)+'"'+lockedAttr+'>Aus dem Archiv holen</button></div></div>';
  return '<div class="progitem'+(active?" active":"")+'"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+'</div>'+meta+'</div>'+badge+'</div><div class="progactions">'+(active?'':'<button class="progaction go" data-sel="'+attr(id)+'"'+lockedAttr+'>Aktivieren</button>')+'<button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button>'+(completed?'<button class="progaction go" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
 }

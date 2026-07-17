@@ -148,7 +148,7 @@ function completeLogs(program) {
   return logs;
 }
 
-test('computes the completed badge from every planned set instead of storing completion state', () => {
+test('computes block completion live for units without a frozen completion state', () => {
   const context = appContext();
   const program = blockProgram();
   const logs = completeLogs(program);
@@ -164,6 +164,61 @@ test('computes the completed badge from every planned set instead of storing com
   const incompleteWeightedSet = JSON.parse(JSON.stringify(logs));
   incompleteWeightedSet['1|A|squat'].sets[0].weight = '';
   assert.equal(context.programBlockComplete(program, incompleteWeightedSet), false);
+});
+
+test('keeps regularly completed units complete after later plan additions', () => {
+  const context = appContext();
+  const program = blockProgram();
+  const logs = completeLogs(program);
+  const history = program.weeks.map((_, index) => ({
+    week: index + 1, day: 'A', complete: true
+  }));
+  const snapshot = JSON.stringify({ program, logs, history });
+  program.days[0].ex.push({
+    id: 'later', name: 'Später ergänzt', cat: 'strength', w: false, unit: 'reps'
+  });
+
+  assert.equal(context.programBlockComplete(program, logs), false);
+  assert.equal(context.programBlockComplete(program, logs, history), true);
+  assert.equal(context.programBlockComplete(program, logs, history.map(entry => ({ ...entry, complete: false }))), false);
+  assert.equal(context.programBlockComplete(program, logs, history.map(({ complete, ...entry }) => entry)), false);
+  assert.equal(
+    JSON.stringify({ program: blockProgram(), logs, history }),
+    snapshot,
+    'Abschlussprüfung darf Logs und History nicht verändern'
+  );
+});
+
+test('uses frozen completion for day status, week progress and skipped-unit checks', () => {
+  const context = appContext();
+  const program = blockProgram();
+  program.weeks = program.weeks.slice(0, 1);
+  const logs = completeLogs(program);
+  program.days[0].ex.push({
+    id: 'later', name: 'Später ergänzt', cat: 'strength', w: false, unit: 'reps'
+  });
+  const history = [{ week: 1, day: 'A', complete: true }];
+  context.S = {
+    active: 'basis', programs: { basis: program }, logs, history, week: 1, day: 'A'
+  };
+  context.PROG = () => program;
+
+  assert.equal(context.historyMarksComplete(history, 1, 'A'), true);
+  assert.equal(context.unitComplete(1, 'A'), true);
+  assert.equal(context.weekFrac(1), 1);
+  assert.equal(context.dayStatus(program.days[0]).complete, true);
+  program.days.push({ key: 'B', wd: 'Mittwoch', ex: [] });
+  context.S.day = 'B';
+  context.weekLayout = () => program.days;
+  assert.deepEqual(Array.from(context.skippedBeforeSelection()), []);
+  program.days.pop();
+  context.S.day = 'A';
+
+  history[0].complete = false;
+  assert.equal(context.historyMarksComplete(history, 1, 'A'), false);
+  assert.equal(context.unitComplete(1, 'A'), false);
+  assert.equal(context.weekFrac(1) < 1, true);
+  assert.equal(context.dayStatus(program.days[0]).complete, false);
 });
 
 test('creates incrementing follow-up names and never truncates the block suffix', () => {
@@ -300,6 +355,36 @@ test('shows block success exactly once and persists only the celebration marker'
   assert.match(functionSource('continuePostWorkoutFlow'), /showPendingReplacementDecision\(programId\).*maybeShowBlockSuccess\(programId\)/s);
   assert.match(functionSource('newStore'), /blockCelebrated:false/);
   assert.match(functionSource('syncStore'), /blockCelebrated:S\.blockCelebrated===true/);
+});
+
+test('celebrates a frozen block even when the current plan has a later exercise', () => {
+  const context = appContext();
+  const program = blockProgram();
+  const logs = completeLogs(program);
+  const history = program.weeks.map((_, index) => ({
+    week: index + 1, day: 'A', complete: true, start: 1000 + index, dur: 600
+  }));
+  program.days[0].ex.push({
+    id: 'later', name: 'Später ergänzt', cat: 'strength', w: false, unit: 'reps'
+  });
+  const store = {
+    tg: {}, barw: {}, notes: {}, logs, history,
+    workout: null, week: 3, day: 'A', blockCelebrated: false
+  };
+  context.S = {
+    active: 'basis', programs: { basis: program }, store: { basis: store },
+    tg: store.tg, barw: store.barw, notes: store.notes, logs,
+    history, workout: null, week: 3, day: 'A', blockCelebrated: false
+  };
+  const modals = [];
+  context.showModal = (title, message, actions) => modals.push({ title, message, actions });
+  context.save = context.flushSave = () => {};
+  context.openReport = context.createFollowupBlock = () => {};
+  context.esc = value => String(value == null ? '' : value);
+
+  assert.equal(context.maybeShowBlockSuccess('basis'), true);
+  assert.equal(context.maybeShowBlockSuccess('basis'), false);
+  assert.equal(modals.length, 1);
 });
 
 test('separates archived programs, exposes read-only actions and blocks stale activation/edit paths', () => {

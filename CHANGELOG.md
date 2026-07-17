@@ -10,6 +10,20 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
 
+## [0.23.0] – 2026-07-17
+
+### Behoben
+
+- `O3`: Abgeschlossen bleibt abgeschlossen – Tagesanzeige, Wochenbalken, Verpasst-Warnung und Blockabschluss richten sich bei beendeten Einheiten nach dem beim Beenden gespeicherten Abschlussstatus. Nachträgliche Programmänderungen (z. B. eine ergänzte Übung oder erhöhte Satzzahlen) machen fertige Wochen nicht mehr rückwirkend unvollständig und blockieren den Blockabschluss nicht mehr.
+
+### Geändert
+
+- `O6`: Die Wiederholen-Abfrage warnt zusätzlich, wenn spätere Wochen desselben Trainingstags bereits Werte enthalten: Empfehlungen der folgenden Wochen werden aus den neuen Werten neu berechnet; die eingetragenen Werte bleiben unverändert.
+
+### Daten & Kompatibilität
+
+- Keine Formatänderung: Es wird ausschließlich der vorhandene Abschlussstatus gespeicherter Einheiten gelesen. Alte Backups ohne diesen Status laden unverändert und verhalten sich wie bisher; Schema-Version, Austauschformat und Progressionslogik bleiben unverändert.
+
 ## [0.22.3] – 2026-07-16
 
 ### Behoben
