@@ -10,6 +10,10 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 - Kommt dieselbe Übung an mehreren Trainingstagen vor, zeigt die Trainingskarte zusätzlich den jüngsten eingetragenen Wert des anderen Tages. Progression und Zielgewichte bleiben weiterhin pro Trainingstag getrennt.
 
+### Behoben
+
+- Auf kleinen Smartphone-Bildschirmen brechen die Protokollaktionen in der unteren Leiste sauber um und werden nicht mehr seitlich abgeschnitten.
+
 ### Offen
 
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.

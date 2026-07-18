@@ -63,6 +63,7 @@ WebKit ist die automatisierbare Safari-Engine, nicht der veröffentlichte Apple-
 | GAP-04 | UI sagt „200 geprüfte Übungen“, während Technik- und Videosuchbegriff-QS laut Entwurf noch separat aussteht. | Copy-Risiko melden; bis zur Entscheidung exakten Ist-Text prüfen, nicht als Qualitätsnachweis interpretieren. |
 | GAP-05 | `Calisthenics Einstieg` und `Calisthenics-Einstieg` driften zwischen Artefakten. | Ausgelieferten Produktnamen aus JSON/UI ohne Bindestrich als aktuellen Contract verwenden. |
 | GAP-06 | Ein bereits getauschter Eintrag zeigt im laufenden Training vier Entscheidungen im Tauschmodal. | Aktuellen Viererzustand mit Text- und Screenshot-Test sichtbar einfrieren; vor Release auf höchstens drei Wege reduzieren oder ausdrücklich als Ausnahme abnehmen. |
+| GAP-07 | Der erste echte Mobile-Lauf schnitt die beiden Protokollaktionen in der Bottom-Bar horizontal ab. | Behoben: Aktionen umbrechen bis 430 px in ein zweispaltiges Raster. `VIS-18` prüft weiterhin, dass Dokument, App und Bottom-Bar exakt in den Viewport passen. |
 
 ## 1. TEXTE & KOMMUNIKATION
 
@@ -200,6 +201,7 @@ Wichtig: Text-Assertions werden stets innerhalb des relevanten Containers ausgef
 | VIS-20 | P1 | Druckansicht | A4, mehrere Seiten, kein abgeschnittener Inhalt; Protokoll nur geöffnet | DESK |
 | VIS-21 | P2 | Reduced Motion | ohne Animation keine Information verloren; Screenshot stabil | ALL |
 | VIS-22 | P1 | Bereits getauschte Übung im laufenden Workout | `tauschmodal-vier-entscheidungen.png`; aktuelle vier Aktionen vollständig sichtbar; bekannte Überladung aus GAP-06 wird nicht unsichtbar toleriert | ALL |
+| VIS-23 | P1 | Bibliothek mit darüberliegendem Bestätigungsmodal | nur das Modal interaktiv; `#modal` liegt mit höherem `z-index` über `#lib`; kein drittes Overlay | ALL |
 
 Konfiguration und Beispiele liegen in:
 
@@ -233,7 +235,7 @@ const overflow = await page.evaluate(() => ({
 expect(overflow).toEqual({ document: false, app: false, bar: false });
 ```
 
-Visual-Baselines werden je Projekt getrennt gespeichert. Texte dürfen **nicht** maskiert werden. Nur tatsächlich volatile Timersekunden dürfen maskiert oder über eine feste Clock stabilisiert werden. CI darf Snapshots niemals automatisch aktualisieren.
+Visual-Baselines werden je Betriebssystem und Projekt getrennt gespeichert. Texte dürfen **nicht** maskiert werden. Nur tatsächlich volatile Timersekunden dürfen maskiert oder über eine feste Clock stabilisiert werden. CI darf Snapshots niemals automatisch aktualisieren.
 
 ## 3. REDUNDANZ-CHECK
 
@@ -429,21 +431,26 @@ expect(historyAfter).toEqual(historyBefore);
 
 ### Empfohlene Struktur
 
-Das Repository hat bisher keine Node-Paketdatei und keine CI-Konfiguration. Die Beispiele sind deshalb isoliert:
+Playwright ist als reine Dev-Abhängigkeit installiert. Die statische Produkt-App bleibt ohne Runtime-Abhängigkeit und Build-Schritt; eine CI-Konfiguration ist weiterhin als direkt übernehmbares Beispiel enthalten:
 
 ```text
 Satzkraft/
+├── package.json
+├── package-lock.json
 ├── index.html
 ├── TESTBACKUP-AUSWERTUNG.json
 ├── qa/
 │   └── playwright/
 │       ├── playwright.config.cjs
+│       ├── static-server.cjs
 │       ├── update.spec.js
 │       ├── __screenshots__/
-│       │   ├── desktop-chromium/
-│       │   ├── desktop-webkit/
-│       │   ├── mobile-chromium/
-│       │   └── mobile-webkit/
+│       │   ├── darwin/
+│       │   │   ├── desktop-chromium/
+│       │   │   ├── desktop-webkit/
+│       │   │   ├── mobile-chromium/
+│       │   │   └── mobile-webkit/
+│       │   └── linux/           # in der gepinnten CI-Umgebung erzeugen
 │       ├── playwright-report/
 │       └── test-results/
 └── tests/                       # vorhandene node:test-Suite
@@ -506,7 +513,7 @@ Die vollständigen Beispiele in `qa/playwright/update.spec.js` decken bereits ab
 - einen echten Start-/Eingabe-/Beenden-Kernfluss;
 - den offline neu geladenen PWA-Shell samt Programm- und Übungsbibliothek.
 
-Normale Text-, Funktions- und Screenshot-Tests blockieren Service Worker bewusst, damit kein veralteter Cache den Testzustand verfälscht. Der Offline-Test steht deshalb in einem eigenen `test.describe` mit `test.use({ serviceWorkers: 'allow' })` und prüft nach einem Online-Priming einen echten Offline-Reload.
+Normale Text-, Funktions- und Screenshot-Tests blockieren Service Worker bewusst, damit kein veralteter Cache den Testzustand verfälscht. Der Offline-Test steht deshalb in einem eigenen `test.describe` mit `test.use({ serviceWorkers: 'allow' })`. Chromium prüft nach dem Online-Priming einen echten Offline-Reload. Playwright-WebKit bricht bei dieser Navigation intern ab; dort werden Cache Storage und die weiter bedienbare Offline-Oberfläche direkt geprüft. Ein echter Safari-Offline-Smoke bleibt zusätzlich erforderlich.
 
 ### Selektorstrategie
 
@@ -528,26 +535,31 @@ Diese Punkte sind P1-Verbesserungen; Tests sollten sie nicht durch fragile Selek
 
 ### Lokale Terminal-Befehle
 
-Einmalige Einrichtung ab Repositorywurzel:
+Reproduzierbare Einrichtung ab Repositorywurzel; Playwright ist auf dem Prüfgerät bereits mit Node 22 installiert:
 
 ```bash
-npm init -y
-npm install --save-dev --save-exact @playwright/test@1.61.0
+npm ci
 npx playwright install chromium webkit
 ```
 
-Das erzeugte `package-lock.json` muss committed werden. Produktiv bleibt die App ohne Runtime-Dependency und ohne Build-Schritt.
+`package-lock.json` pinnt `@playwright/test` auf 1.61.0. Produktiv bleibt die App ohne Runtime-Dependency und ohne Build-Schritt.
 
 Vorhandene Unit-Suite:
 
 ```bash
-node --test tests/*.test.cjs tests/*.test.mjs
+npm run test:unit
 ```
 
 Alle Update-E2E-Tests, headless:
 
 ```bash
-npx playwright test --config qa/playwright/playwright.config.cjs
+npm run test:e2e
+```
+
+Nur funktionale Fälle ohne Screenshot-Baselines:
+
+```bash
+npm run test:e2e:functional
 ```
 
 Gezielt nach Projekt:
@@ -561,9 +573,7 @@ npx playwright test \
 Nur Visual-Fälle:
 
 ```bash
-npx playwright test \
-  --config qa/playwright/playwright.config.cjs \
-  --grep @visual
+npm run test:e2e:visual
 ```
 
 Interaktiv beziehungsweise headed:
@@ -582,10 +592,7 @@ npx playwright test \
 Baselines einmalig bewusst in derselben OS-/Browserumgebung wie CI erzeugen:
 
 ```bash
-npx playwright test \
-  --config qa/playwright/playwright.config.cjs \
-  --grep @visual \
-  --update-snapshots=all
+npm run test:e2e:visual:update
 ```
 
 CI darf Baselines nicht aktualisieren:
@@ -597,6 +604,8 @@ npx playwright test \
 ```
 
 ### CI/CD ohne manuelle Laufzeitfreigabe
+
+Vor Aktivierung des Linux-Gates müssen die 20 `linux`-Baselines einmalig im unten gepinnten Container erzeugt, visuell geprüft und committed werden. Der reguläre Workflow vergleicht anschließend ausschließlich und aktualisiert niemals Referenzbilder.
 
 ```yaml
 name: QA
@@ -611,6 +620,9 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.0-noble
+      options: --ipc=host
     timeout-minutes: 30
     env:
       CI: "true"
@@ -626,17 +638,8 @@ jobs:
       - name: Dependencies
         run: npm ci
 
-      - name: Browser und Systempakete
-        run: npx playwright install --with-deps chromium webkit
-
-      - name: Bestehende Unit-Tests
-        run: node --test tests/*.test.cjs tests/*.test.mjs
-
-      - name: Playwright ohne automatische Baseline-Änderung
-        run: >
-          npx playwright test
-          --config qa/playwright/playwright.config.cjs
-          --update-snapshots=none
+      - name: Unit- und Playwright-Tests
+        run: npm run test:ci
 
       - name: Artefakte sichern
         if: ${{ !cancelled() }}
@@ -672,4 +675,4 @@ Ein Update darf nur freigegeben werden, wenn:
 - kein horizontaler Overflow und keine doppelte Steuerung existieren;
 - Backup/Import/Export und Altbestand kompatibel bleiben;
 - die Mehrtag-Anzeige nachweislich keinerlei tagübergreifende Progressionsmutation verursacht;
-- GAP-01 bis GAP-06 entweder entschieden oder als bewusst akzeptiertes Restrisiko dokumentiert sind.
+- GAP-01 bis GAP-07 entweder entschieden oder als bewusst akzeptiertes Restrisiko dokumentiert sind.
