@@ -214,6 +214,46 @@ test('excludes swapped work from original progression, history trend and follow-
   assert.equal(followup[0].sets[0].weight, '80');
 });
 
+test('shows the latest matching exercise value from another day without merging progression', () => {
+  const program = programFixture();
+  const exercise = program.days[0].ex[0];
+  program.days.push({
+    key: 'B',
+    wd: 'Freitag',
+    title: 'Drücken 2',
+    ex: [{
+      id: 'bench-friday', name: 'Bankdrücken',
+      cat: 'kraft', w: true, unit: 'reps', def: 70, inc: 2.5
+    }]
+  });
+  const context = appContext();
+  context.S = {
+    week: 3,
+    day: 'A',
+    logs: {
+      '1|A|bench': { sets: [{ reps: '5', weight: '80' }] },
+      '2|B|bench-friday': { sets: [{ reps: '8', weight: '70' }] },
+      '3|B|bench-friday': { sets: [{ reps: '12', weight: '120' }], swap: 'Brustpresse' }
+    },
+    history: [
+      { week: 3, day: 'B', start: 300, end: 400, complete: true },
+      { week: 2, day: 'B', start: 100, end: 200, complete: true }
+    ]
+  };
+  context.PROG = () => program;
+  context.setsForExercise = () => 1;
+
+  const otherDay = context.latestOtherDayPerf(exercise);
+
+  assert.equal(otherDay.day.key, 'B');
+  assert.equal(otherDay.week, 2, 'ein Übungstausch darf nicht als Wert der Originalübung erscheinen');
+  assert.equal(otherDay.exercise.id, 'bench-friday');
+  assert.equal(context.performanceSummary(otherDay.exercise, otherDay.sets), '8×70 kg');
+  assert.equal(context.lastPerf(exercise).week, 1, '„Zuletzt“ bleibt auf den ausgewählten Trainingstag begrenzt');
+  assert.equal(context.sessionFor(exercise, 2), null, 'die Progression darf den anderen Trainingstag nicht übernehmen');
+  assert.match(functionSource('exCardHtml'), /Letzter Wert an anderem Tag/);
+});
+
 test('ignores swapped holds when calculating the original exercise best time', () => {
   const exercise = { id: 'hang', unit: 'seconds' };
   const context = appContext();

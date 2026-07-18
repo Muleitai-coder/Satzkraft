@@ -833,6 +833,12 @@ Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, blei
 - `js/progression.js` bleibt unangetastet; Test-Anker aus Abschnitt 2 Punkt 6 bleiben erhalten.
 - Freigegebene Inhalts-Artefakte: `ENTWURF-PROGRAMME/*.json` (vier Programme, Freigabe 17.07.2026) und `ENTWURF-UEBUNGSLISTE.md` (200 Übungen, Freigabe 17.07.2026).
 
+### Ergänzende Produktentscheidung · Gleiche Übung an mehreren Trainingstagen (18.07.2026)
+
+- Jede Planposition bleibt über ihre eigene Übungs-ID und den Trainingstag getrennt. Progression, Zielgewicht, Korrekturen und Verlauf werden nicht zwischen Tagen zusammengeführt.
+- Die Trainingskarte zeigt rein informativ den jüngsten eingetragenen Originalwert derselben Übung von einem anderen Trainingstag, sofern ein solcher Wert vorhanden ist.
+- Getauschte Übungen zählen nicht als Wert der Originalübung. Die Anzeige verändert weder gespeicherte Daten noch Empfehlungen.
+
 ### Ausgeklammert
 
 Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 1–4 und nach einem eigenen Konzept-Termin zu „Bring your own AI" (Vorentscheidungen in `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 6). Bis dahin: keine N-Umsetzung, auch nicht teilweise.

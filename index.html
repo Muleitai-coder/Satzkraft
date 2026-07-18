@@ -133,6 +133,9 @@ body.rest-lock .ex:not(.rest-focus){opacity:.55;transform:scale(.99)}
 .last .l{color:#71717a;flex-shrink:0}
 .last .v{color:#a1a1aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .last .histhint{margin-left:auto;color:#71717a;flex-shrink:0;font-weight:600}
+.otherlast{font-size:11px;line-height:1.4;color:#71717a;margin:-4px 0 12px;min-width:0}
+.otherlast .l{color:#71717a}
+.otherlast .v{color:#a1a1aa;overflow-wrap:anywhere}
 .wwrow{display:flex;align-items:center;gap:8px;font-size:12px;color:#71717a;margin-bottom:12px}
 .wwrow input{width:64px}
 .inp{background:#242b35;border:1px solid #313a46;border-radius:8px;padding:6px;color:#fafafa;text-align:center;font-size:16px;outline:none;min-width:0}
@@ -1306,7 +1309,23 @@ function showExerciseNote(ex){
   {label:"Abbrechen",action:null}
  ]);
 }
+function performanceSummary(ex,sets){return(sets||[]).filter(function(s){return s&&s.reps!==""&&s.reps!=null;}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":(isTime(ex)?fmtSeconds(s.reps):""+s.reps);}).join(" · ")||"—";}
 function lastPerf(ex){for(var w=S.week-1;w>=1;w--){var c=S.logs[w+"|"+S.day+"|"+ex.id];if(c&&!normalizeSwapName(c.swap)&&c.sets&&c.sets.some(function(s){return s.reps!==""&&s.reps!=null;}))return{week:w,sets:c.sets};}return null;}
+function otherDayPerfForUnit(ex,day,w){
+ var exercises=dayExercisesFor(day,w);
+ for(var i=0;i<exercises.length;i++){
+  var candidate=exercises[i],cell=S.logs[w+"|"+day.key+"|"+candidate.id];
+  if(!exerciseLibraryNamesMatch(ex.name,candidate.name)||!cell||normalizeSwapName(cell.swap)||!Array.isArray(cell.sets)||!cell.sets.some(function(s){return s&&s.reps!==""&&s.reps!=null;}))continue;
+  return{day:day,week:w,exercise:candidate,sets:cell.sets};
+ }
+ return null;
+}
+function latestOtherDayPerf(ex){
+ var records=(Array.isArray(S.history)?S.history:[]).map(function(entry,index){return{entry:entry,index:index,at:Number(entry&&(entry.end||entry.start))||0};}).filter(function(record){return record.entry&&record.entry.day!==S.day;}).sort(function(a,b){return b.at-a.at||a.index-b.index;});
+ for(var i=0;i<records.length;i++){var entry=records[i].entry,day=dayByKey(entry.day),found=day&&day.key===entry.day?otherDayPerfForUnit(ex,day,Number(entry.week)):null;if(found)return found;}
+ for(var w=PROG().weeks.length;w>=1;w--)for(var di=PROG().days.length-1;di>=0;di--){var candidateDay=PROG().days[di];if(candidateDay.key!==S.day){var fallback=otherDayPerfForUnit(ex,candidateDay,w);if(fallback)return fallback;}}
+ return null;
+}
 function weekFrac(w){
  var d=0,t=0,ds=PROG().days;
  for(var a=0;a<ds.length;a++){
@@ -1510,7 +1529,7 @@ function collapseDoneCard(ex){
 function scheduleDoneCollapse(ex){cancelDoneCollapse(ex.id);doneCollapseTimers[ex.id]=setTimeout(function(){delete doneCollapseTimers[ex.id];collapseDoneCard(ex);},DONE_COLLAPSE_DELAY);}
 function collapseDoneExcept(exid){Object.keys(doneCollapseTimers).forEach(function(id){if(id===exid)return;var other=findEx(id);if(other)collapseDoneCard(other);else cancelDoneCollapse(id);});}
 function exCardHtml(ex){
- var sets=getSets(ex),wk=PROG().weeks[S.week-1],rr=catReps(ex,wk.phase),tw=targetWeight(ex),last=lastPerf(ex),done=isDone(ex),swap=currentExerciseSwap(ex),displayName=swap||ex.name,hasEntered=exerciseHasEnteredData(ex),pending=active()?workoutPendingReplacements().filter(function(item){return item.day===S.day&&item.exId===ex.id;})[0]:null;
+ var sets=getSets(ex),wk=PROG().weeks[S.week-1],rr=catReps(ex,wk.phase),tw=targetWeight(ex),last=lastPerf(ex),otherLast=latestOtherDayPerf(ex),done=isDone(ex),swap=currentExerciseSwap(ex),displayName=swap||ex.name,hasEntered=exerciseHasEnteredData(ex),pending=active()?workoutPendingReplacements().filter(function(item){return item.day===S.day&&item.exId===ex.id;})[0]:null;
  if(active()&&done&&!expandedDoneExercises[ex.id])return'<div class="ex done excompact" id="card-'+attr(ex.id)+'"><span class="tag '+catColor(ex)+'">'+esc(catLabel(ex))+'</span><span class="excompactname">'+esc(displayName)+(swap?'<small>getauscht</small>':'')+'</span><span class="excompactcheck" aria-label="Erledigt">'+icon("check")+'</span><button class="edmini" data-expand-done="'+attr(ex.id)+'">Öffnen</button></div>';
  var dis=workWeightInputLocked(ex)?" disabled":"";
  var h='<div class="ex'+(done?" done":"")+(active()?"":" locked")+'" id="card-'+ex.id+'">';
@@ -1530,7 +1549,8 @@ function exCardHtml(ex){
  if(ex.w)h+='<span class="dot">·</span><span>Ziel '+(!ex.bw?'<button type="button" class="platebtn" data-plates="'+attr(ex.id)+'" aria-label="Scheibenrechner für '+attr(ex.name)+' öffnen"><b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"—")+'</b></button>':'<b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"Körpergew.")+'</b>')+'</span>';
  var pauseLabel=restLabel(catRest(ex));h+='<span class="dot">·</span><span class="prescpause" aria-label="Pause '+attr(pauseLabel)+'" title="Pause '+attr(pauseLabel)+'">'+icon("timer")+' <b>'+pauseLabel+'</b></span></div>';
  if(ex.w&&!ex.bw&&tw<=0&&!sets.some(function(s){return Number(s.weight)>0;}))h+='<div class="editnote calibrationhint" id="calib-'+attr(ex.id)+'">Noch kein Arbeitsgewicht: Trag beim ersten Satz dein Gewicht ein – ab dann rechnet Satzkraft automatisch damit weiter. <button type="button" class="calibrationmore" data-calibration-guide="1">Wie finde ich mein Startgewicht?</button></div>';
- if(last){var v=last.sets.filter(function(s){return s.reps!=="";}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":(isTime(ex)?fmtSeconds(s.reps):""+s.reps);}).join(" · ")||"—";h+='<button class="last" data-hist="'+ex.id+'" aria-label="Verlauf für '+attr(ex.name)+' öffnen"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+v+'</span><span class="histhint">Verlauf <span aria-hidden="true">'+icon("chevron-right")+'</span></span></button>';}
+ if(last){var v=performanceSummary(ex,last.sets);h+='<button class="last" data-hist="'+ex.id+'" aria-label="Verlauf für '+attr(ex.name)+' öffnen"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+esc(v)+'</span><span class="histhint">Verlauf <span aria-hidden="true">'+icon("chevron-right")+'</span></span></button>';}
+ if(otherLast){var ov=performanceSummary(otherLast.exercise,otherLast.sets);h+='<div class="otherlast"><span class="l">Letzter Wert an anderem Tag · '+esc(otherLast.day.wd||otherLast.day.title||otherLast.day.key)+' (W'+otherLast.week+'):</span> <span class="v">'+esc(ov)+'</span></div>';}
  if(ex.w)h+='<div class="wwrow"><span>Arbeitsgewicht:</span><input class="inp" id="ww-'+ex.id+'" inputmode="decimal" aria-label="'+esc(ex.name)+' Arbeitsgewicht in kg" value="'+(currentExerciseSwapWeight(ex)==null?baseWeight(ex,S.week):currentExerciseSwapWeight(ex))+'"'+dis+'><span>kg'+(ex.bw&&tw===0?" (Zusatz)":"")+'</span></div>';
  var firstOpen=firstOpenSet(ex,sets);
  var hasData=sets.some(function(s){return s.reps!==""||s.weight!=="";});
