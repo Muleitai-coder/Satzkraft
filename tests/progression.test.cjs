@@ -70,6 +70,33 @@ test("calculates deload once from the heavy base", () => {
   });
   assert.equal(deload.action, "deload");
   assert.equal(deload.nextWeight, 48);
+  assert.match(deload.message, /reduziertes Gewicht/);
+});
+
+test("uses exercise-specific deload language without imaginary weight", () => {
+  const seconds = progression.calculateNextRecommendation({
+    exercise: { unit: "seconds", pmode: "seconds" },
+    settings,
+    repRange: [30, 60],
+    currentSession: [{ reps: "45", weight: "" }],
+    isDeload: true
+  });
+  assert.equal(seconds.action, "deload");
+  assert.equal(seconds.nextWeight, null);
+  assert.match(seconds.message, /Haltezeit reduzieren|leichtere Variante/);
+  assert.doesNotMatch(`${seconds.message} ${seconds.reason}`, /Gewicht|kg/);
+
+  const bodyweight = progression.calculateNextRecommendation({
+    exercise: { unit: "reps", pmode: "reps" },
+    settings,
+    repRange: [8, 12],
+    currentSession: sets([10, 10, 10], 0),
+    isDeload: true
+  });
+  assert.equal(bodyweight.action, "deload");
+  assert.equal(bodyweight.nextWeight, null);
+  assert.match(bodyweight.message, /weniger Wiederholungen|leichtere Variante/);
+  assert.doesNotMatch(`${bodyweight.message} ${bodyweight.reason}`, /Gewicht|kg/);
 });
 
 test("supports reps, seconds and skills without a fixed exercise database", () => {

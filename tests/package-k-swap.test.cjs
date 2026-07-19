@@ -143,8 +143,10 @@ test('stores a today-only swap in the exercise log and writeSets keeps its marke
   assert.equal(context.S.logs['1|A|bench'].swap, 'Brustpresse');
   assert.equal(context.currentExerciseSwap(exercise), 'Brustpresse');
 
+  context.S.logs['1|A|bench'].swapDecision = 'pending';
   context.writeSets(exercise, [{ reps: '8', weight: '90' }]);
   assert.equal(context.S.logs['1|A|bench'].swap, 'Brustpresse', 'Satzeingaben dürfen den Tauschvermerk nicht überschreiben');
+  assert.equal(context.S.logs['1|A|bench'].swapDecision, 'pending', 'eine offene Abschlussentscheidung darf beim Schreiben der Satzwerte nicht verloren gehen');
   assert.deepEqual(Array.from(context.S.logs['1|A|bench'].sets, set => ({ ...set })), [
     { reps: '8', weight: '90' }
   ]);
@@ -159,7 +161,7 @@ test('stores a today-only swap in the exercise log and writeSets keeps its marke
   assert.equal(context.S.logs['1|A|bench'].swap, undefined, 'nach der ersten Satzeingabe darf kein Übungswechsel mehr begonnen werden');
 });
 
-test('keeps a replacement working weight out of the original exercise target', () => {
+test('uses the replacement first-set weight without changing the original exercise target', () => {
   const program = programFixture();
   const exercise = program.days[0].ex[0];
   const context = appContext();
@@ -170,20 +172,11 @@ test('keeps a replacement working weight out of the original exercise target', (
   };
   context.PROG = () => program;
   context.findEx = id => id === exercise.id ? exercise : null;
-  context.active = () => true;
-  context.restPhase = null;
-  context.save = () => {};
-  context.document.getElementById = () => null;
-
-  context.onWwInput({ id: 'ww-bench', value: '50' });
-
-  assert.equal(context.S.tg['1|bench'], '80', 'das Originalziel darf durch die Ersatzübung nicht überschrieben werden');
-  assert.equal(context.S.logs['1|A|bench'].swapWeight, '50');
-  assert.equal(context.currentExerciseSwapWeight(exercise), 50);
-  assert.equal(context.targetWeight(exercise), 50, 'im heutigen Ersatztraining muss das eigene Arbeitsgewicht nutzbar sein');
-
+  assert.equal(context.targetWeight(exercise), 0, 'eine neue Ersatzübung startet ohne das Zielgewicht der Originalübung');
   context.writeSets(exercise, [{ reps: '10', weight: '50' }]);
-  assert.equal(context.S.logs['1|A|bench'].swapWeight, '50', 'Satzeingaben müssen das temporäre Ersatzgewicht erhalten');
+  assert.equal(context.S.tg['1|bench'], '80', 'das Originalziel darf durch die Ersatzübung nicht überschrieben werden');
+  assert.equal(context.currentExerciseSwapWeight(exercise), null);
+  assert.equal(context.targetWeight(exercise), 50, 'der erste Satz wird zum Arbeitswert der heutigen Ersatzübung');
 });
 
 test('excludes swapped work from original progression, history trend and follow-up recommendations', () => {
@@ -300,102 +293,116 @@ test('shows the original and replacement names in the detailed training protocol
   assert.match(protocol, /10×100/);
 });
 
-test('queues permanent replacements during training and opens every exact _ref only after explicit action', () => {
+test('applies an accepted post-workout swap at the next open week without changing its protocol', () => {
   const program = programFixture();
-  program.days[0].ex.push(
-    { id: 'row', name: 'Langhantelrudern', cat: 'kraft', w: true, unit: 'reps', def: 60, inc: 2.5 },
-    { id: 'press', name: 'Schulterdrücken', cat: 'kraft', w: true, unit: 'reps', def: 40, inc: 2.5 }
-  );
-  const exercise = program.days[0].ex[0];
   const context = appContext();
-  context.S = {
-    active: 'basis', programs: { basis: program }, week: 1, day: 'A', logs: {},
-    workout: { running: true, pendingReplacements: [] }
-  };
-  context.postWorkoutReplacements = [];
-  let editorOpened = 0;
-  let saved = 0;
-  context.active = () => !!context.S.workout;
-  context.save = () => { saved++; };
-  context.renderView = () => {};
-  context.openLib = () => {};
-  context.openProgramEditor = id => {
-    editorOpened++;
-    assert.equal(id, 'basis');
-    context.editorDraft = {
-      name: 'Kraftbasis',
-      categories: { kraft: { label: 'Kraft', color: 'amber', rest: 90, reps: { aufbau: [5, 8] } } },
-      weeks: [{ n: 1, phase: 'aufbau', label: 'Aufbau', sets: { kraft: 1 } }],
-      days: [{
-        key: 'A', weekday: 'Montag', title: 'Drücken',
-        exercises: [
-          { _ref: 'bench', name: 'Bankdrücken', category: 'kraft', weighted: true, unit: 'reps', startWeight: 80, increment: 2.5 },
-          { _ref: 'row', name: 'Langhantelrudern', category: 'kraft', weighted: true, unit: 'reps', startWeight: 60, increment: 2.5 },
-          { _ref: 'press', name: 'Schulterdrücken', category: 'kraft', weighted: true, unit: 'reps', startWeight: 40, increment: 2.5 }
-        ]
-      }]
-    };
-  };
-  let undoSteps = 0;
-  context.editorPushUndo = () => { undoSteps++; };
-  context.renderProgramEditor = () => {};
-
-  assert.equal(typeof context.queuePermanentExerciseReplacement, 'function');
-  assert.equal(typeof context.workoutPendingReplacements, 'function');
-  assert.equal(typeof context.openPendingReplacement, 'function');
-  const before = JSON.stringify(program);
-  context.queuePermanentExerciseReplacement(exercise, 'Brustpresse');
-  const pending = context.workoutPendingReplacements();
-
-  assert.equal(editorOpened, 0, 'der Trainings-Schreibschutz darf nicht übergangen werden');
-  assert.equal(JSON.stringify(program), before, 'das laufende Training darf das Programm nicht still verändern');
-  assert.equal(pending.length, 1);
-  assert.match(JSON.stringify(pending[0]), /bench/);
-  assert.match(JSON.stringify(pending[0]), /Brustpresse/);
-  assert.equal(saved > 0, true, 'die Vormerkung muss mit dem laufenden Training gespeichert werden');
-
-  const requests = pending.concat([
-    { programId: 'basis', day: 'A', exId: 'row', name: 'Kabelrudern' }
+  context.setExerciseLibrary([
+    {
+      de: 'Kurzhantel-Bankdrücken',
+      en: 'Dumbbell Bench Press',
+      alias: [],
+      typ: 'gewicht',
+      equipment: 'Kurzhanteln, Flachbank',
+      muster: 'Horizontal drücken · Brust',
+      technik: 'Kurzhanteln kontrolliert absenken.',
+      video: 'Dumbbell Bench Press Technik',
+      ersatz: 'Liegestütze'
+    },
+    {
+      de: 'Liegestütze',
+      en: 'Push-Up',
+      alias: [],
+      typ: 'koerpergewicht',
+      equipment: 'keine',
+      muster: 'Horizontal drücken · Brust',
+      technik: 'Körper in einer Linie halten.',
+      video: 'Push-Up Technik',
+      ersatz: 'Erhöhte Liegestütze'
+    }
   ]);
-  context.S.workout = null;
-  context.openPendingReplacementsInEditor(requests);
-  assert.equal(editorOpened, 1, 'erst die bewusste Folgeaktion öffnet den Editor');
-  assert.equal(context.editorDraft.days[0].exercises[0]._ref, 'bench');
-  assert.equal(context.editorDraft.days[0].exercises[0].name, 'Brustpresse');
-  assert.equal(context.editorDraft.days[0].exercises[1]._ref, 'row');
-  assert.equal(context.editorDraft.days[0].exercises[1].name, 'Kabelrudern');
-  assert.equal(context.editorDraft.days[0].exercises[2].name, 'Schulterdrücken');
-  assert.deepEqual({ ...context.editorPendingReplacementRefs }, {
-    bench: 'Brustpresse',
-    row: 'Kabelrudern'
+  Object.assign(program.days[0].ex[0], {
+    en: 'Barbell Bench Press',
+    sub: 'Alte Bankdrück-Technik',
+    q: 'Barbell Bench Press Technik',
+    gname: 'Bench Press'
   });
-  assert.equal(undoSteps, 1, 'alle Vormerkungen müssen einen gemeinsamen Rückgängig-Schritt bilden');
-  assert.equal(context.editorExerciseIndex, 0);
+  const store = {
+    tg: {}, barw: {}, notes: {},
+    logs: { '1|A|bench': { sets: [{ reps: '8', weight: '62.5' }], swap: 'Kurzhantel-Bankdrücken', swapWeight: '80' } },
+    history: [{ week: 1, day: 'A', start: 1, end: 2, dur: 1, complete: true }],
+    workout: null, pendingReplacements: [], week: 1, day: 'A', blockCelebrated: false
+  };
+  context.S = {
+    active: 'basis', programs: { basis: program }, store: { basis: store },
+    week: 1, day: 'A', logs: store.logs, history: store.history,
+    pendingReplacements: [], workout: null
+  };
+  context.syncStore = () => {};
+  context.flushSave = () => {};
+  context.refreshPostWorkoutReplacements = () => [];
 
-  context.EDITOR_WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
-  context.WD_ABBR = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-  context.WUCD_LIB = { warmup: [], cooldown: [] };
-  context.editorWeekIndex = 0;
-  context.editorOpenSections = {};
-  context.LIMITS.maxDays = 7;
-  context.LIMITS.maxExPerDay = 20;
-  const editorTraining = context.renderEditorTraining(context.editorDraft, ['kraft']);
-  assert.equal((editorTraining.match(/class="edexercise[^"]*pendingreplacement/g) || []).length, 2, 'jede vorgemerkte _ref muss eine gelbe Karte erhalten');
-  assert.equal((editorTraining.match(/class="pendingreplacementbadge"/g) || []).length, 2);
-  const untouchedCard = editorTraining.match(/<div class="edexercise([^"]*)" data-ed-ex-card="2">/);
-  assert.ok(untouchedCard, 'nicht vorgemerkte Vergleichsübung fehlt');
-  assert.doesNotMatch(untouchedCard[1], /pendingreplacement/);
+  const request = context.completedWorkoutSwaps('basis', 1, 'A')[0];
+  assert.deepEqual({ ...request }, {
+    programId: 'basis', week: 1, day: 'A', exId: 'bench',
+    name: 'Kurzhantel-Bankdrücken', original: 'Bankdrücken'
+  });
+  assert.equal(context.nextOpenReplacementWeek(program, store, request), 2);
+  assert.equal(context.nextOpenReplacementWeek(program, {
+    ...store,
+    logs: {
+      ...store.logs,
+      '2|A|bench': { sets: [{ reps: '5', weight: '60' }] }
+    }
+  }, request), 3, 'eine teilweise begonnene Folgewoche darf nicht überschrieben werden');
+  assert.equal(context.nextOpenReplacementWeek(program, {
+    ...store,
+    logs: {
+      ...store.logs,
+      '2|A|bench': { sets: [], swap: 'Liegestütze' }
+    }
+  }, request), 3, 'auch ein vorbereiteter Tausch macht die Folgewoche belegt');
 
-  const editorRoot = { innerHTML: '' };
-  context.document = { getElementById: id => id === 'lib' ? editorRoot : null };
-  context.editorSourceId = 'basis';
-  context.editorView = 'training';
-  context.editorUndoStack = [];
-  vm.runInContext(`renderProgramEditor = ${functionSource('renderProgramEditor')}`, context);
-  context.renderProgramEditor('training', 0, 0);
-  assert.match(editorRoot.innerHTML, /editorpendingnotice/);
-  assert.match(editorRoot.innerHTML, /id="edreplace">Vorgemerkte Tausche übernehmen/);
-  assert.doesNotMatch(editorRoot.innerHTML, /id="edsavecopy"/);
+  const result = context.applyPermanentExerciseReplacement(request);
+  assert.deepEqual({ ...result }, { followup: false, anchor: 2 });
+  assert.equal(program.days[0].ex[0].untilWeek, 1);
+  const successor = program.days[0].ex[1];
+  assert.equal(successor.name, 'Kurzhantel-Bankdrücken');
+  assert.equal(successor.en, 'Dumbbell Bench Press');
+  assert.equal(successor.sub, 'Kurzhanteln kontrolliert absenken.');
+  assert.equal(successor.q, 'Dumbbell Bench Press Technik');
+  assert.equal(successor.proxy, 'Liegestütze');
+  assert.equal(successor.gname, undefined);
+  assert.equal(successor.def, 62.5, 'die neue Übung startet mit ihrem tatsächlich verwendeten Gewicht statt dem Ziel der Originalübung');
+  assert.equal(successor.fromWeek, 2);
+  assert.equal(successor.prevId, 'bench');
+  assert.deepEqual({ ...store.logs['1|A|bench'] }, {
+    sets: [{ reps: '8', weight: '62.5' }], swap: 'Kurzhantel-Bankdrücken', swapWeight: '80'
+  }, 'das abgeschlossene Training bleibt als Tausch protokolliert');
+
+  const bodyweight = context.applyPermanentReplacementMetadata({
+    name: 'Bankdrücken', en: 'Alt', sub: 'Alt', q: 'Alt', proxy: 'Alt',
+    gname: 'Alt', w: true, bw: false, unit: 'reps', pmode: 'weight',
+    def: 80, inc: 2.5
+  }, 'Liegestütze');
+  assert.equal(bodyweight.en, 'Push-Up');
+  assert.equal(bodyweight.sub, 'Körper in einer Linie halten.');
+  assert.equal(bodyweight.w, false);
+  assert.equal(bodyweight.unit, 'reps');
+  assert.equal(bodyweight.pmode, 'reps');
+  assert.equal(bodyweight.def, undefined);
+  assert.equal(bodyweight.inc, undefined);
+  assert.equal(bodyweight.gname, undefined);
+
+  const unknown = context.applyPermanentReplacementMetadata({
+    name: 'Bankdrücken', en: 'Falscher englischer Name', sub: 'Falscher Hinweis',
+    q: 'Falsches Video', proxy: 'Falscher Ersatz', gname: 'Alt', w: true
+  }, 'Eigene Ersatzübung');
+  assert.equal(unknown.name, 'Eigene Ersatzübung');
+  assert.equal(unknown.en, undefined);
+  assert.equal(unknown.sub, undefined);
+  assert.equal(unknown.q, undefined);
+  assert.equal(unknown.proxy, undefined);
+  assert.equal(unknown.gname, undefined);
 });
 
 test('turns a matching today-only swap into normal history when the replacement is saved permanently', () => {
@@ -430,81 +437,102 @@ test('turns a matching today-only swap into normal history when the replacement 
   assert.match(html, /if\(pendingContext\)migrated\.pendingReplacements=\[\]/);
 });
 
-test('keeps deferred permanent replacements in the persisted program store', () => {
+test('defers a last-week replacement to the follow-up block', () => {
   const program = programFixture();
-  const pending = [{ programId: 'basis', day: 'A', exId: 'bench', name: 'Brustpresse' }];
+  program.weeks = program.weeks.slice(0, 1);
+  const store = {
+    logs: { '1|A|bench': { sets: [{ reps: '8', weight: '55' }], swap: 'Kurzhantel-Bankdrücken' } },
+    history: [{ week: 1, day: 'A', complete: true }],
+    pendingReplacements: []
+  };
   const context = appContext();
   context.S = {
-    active: 'basis', programs: { basis: program }, pendingReplacements: []
+    active: 'basis', programs: { basis: program }, store: { basis: store },
+    logs: store.logs, history: store.history, pendingReplacements: []
   };
-  context.postWorkoutReplacements = [];
+  context.syncStore = () => {};
+  context.flushSave = () => {};
+  context.refreshPostWorkoutReplacements = () => context.S.pendingReplacements;
+  context.genId = () => 'followup';
+  context.setExerciseLibrary([{
+    de: 'Kurzhantel-Bankdrücken',
+    en: 'Dumbbell Bench Press',
+    alias: [],
+    typ: 'gewicht',
+    equipment: 'Kurzhanteln, Flachbank',
+    muster: 'Horizontal drücken · Brust',
+    technik: 'Kurzhanteln kontrolliert absenken.',
+    video: 'Dumbbell Bench Press Technik',
+    ersatz: 'Liegestütze'
+  }]);
 
-  assert.equal(context.offerPendingReplacements(pending), true);
-  assert.deepEqual(Array.from(context.S.pendingReplacements, request => ({ ...request })), pending);
+  const request = context.completedWorkoutSwaps('basis', 1, 'A')[0];
+  const result = context.applyPermanentExerciseReplacement(request);
 
-  context.postWorkoutReplacements = [];
-  assert.equal(context.offerPendingReplacements([]), true, 'eine spätere Anzeige darf die gespeicherte Vormerkung nicht verlieren');
-  assert.deepEqual(Array.from(context.postWorkoutReplacements, request => ({ ...request })), pending);
+  assert.deepEqual({ ...result }, { followup: true, anchor: null });
+  assert.deepEqual(Array.from(context.S.pendingReplacements, item => ({ ...item })), [{
+    programId: 'basis', day: 'A', exId: 'bench', name: 'Kurzhantel-Bankdrücken'
+  }]);
+  store.pendingReplacements = context.S.pendingReplacements;
+  const followup = context.buildFollowupProgram(program, store, { basis: program });
+  assert.equal(followup.days[0].ex[0].name, 'Kurzhantel-Bankdrücken');
+  assert.equal(followup.days[0].ex[0].en, 'Dumbbell Bench Press');
+  assert.equal(followup.days[0].ex[0].sub, 'Kurzhanteln kontrolliert absenken.');
+  assert.equal(followup.days[0].ex[0].q, 'Dumbbell Bench Press Technik');
+  assert.equal(followup.days[0].ex[0].def, 55);
+  assert.equal(followup.days[0].ex[0].fromWeek, undefined);
 });
 
-test('stopWorkout requires Editor or Verwerfen for pending replacements and offers no Später path', () => {
+test('asks for every completed swap separately after the workout', () => {
   const program = programFixture();
-  const pending = [{ programId: 'basis', day: 'A', exId: 'bench', name: 'Brustpresse' }];
+  program.days[0].ex.push({
+    id: 'row', name: 'Rudern', proxy: 'Kabelrudern',
+    cat: 'kraft', w: true, unit: 'reps', def: 60, inc: 2.5
+  });
+  const store = {
+    logs: {
+      '1|A|bench': { sets: [{ reps: '8', weight: '80' }], swap: 'Brustpresse', swapDecision: 'pending' },
+      '1|A|row': { sets: [{ reps: '8', weight: '60' }], swap: 'Kabelrudern', swapDecision: 'pending' }
+    },
+    history: [{ week: 1, day: 'A', complete: true }],
+    pendingReplacements: []
+  };
   const context = appContext();
   context.S = {
-    active: 'basis', programs: { basis: program }, week: 1, day: 'A', logs: {}, pendingReplacements: [],
-    workout: {
-      running: false, accrued: 60, firstStart: 1, week: 1, day: 'A',
-      segmentsBase: 0, pendingReplacements: pending
-    }
+    active: 'basis', programs: { basis: program }, store: { basis: store },
+    week: 1, day: 'A', logs: store.logs, history: store.history,
+    pendingReplacements: [], workout: null
   };
-  context.postWorkoutReplacements = [];
-  context.pendingReplacementCompletionProgramId = null;
-  context.PROG = () => program;
-  context.active = () => !!context.S.workout;
   const modals = [];
-  let flushed = 0;
-  let editorOpened = 0;
-  let completedFlow = 0;
-  let rendered = 0;
-  context.clearDonePrompt = context.cancelAllAutoRest = context.resetRestState = () => {};
-  context.clearRestFocus = context.releaseWakeLock = context.cancelAllDoneCollapse = () => {};
-  context.replaceDayHistory = context.renderBar = () => {};
-  context.renderView = () => { rendered++; };
-  context.flushSave = () => { flushed++; };
-  context.dayComplete = () => false;
-  context.maybeShowBlockSuccess = () => { completedFlow++; return false; };
+  context.active = () => false;
+  context.syncStore = context.flushSave = context.renderView = context.renderBar = () => {};
+  context.refreshPostWorkoutReplacements = () => [];
+  context.maybeShowBlockSuccess = () => false;
   context.showModal = (title, message, actions) => modals.push({ title, message, actions });
-  let editorRequests = null;
-  context.openPendingReplacementsInEditor = requests => {
-    editorOpened++;
-    editorRequests = requests;
-    return true;
-  };
+  context.postWorkoutSwapProgramId = null;
+  context.postWorkoutSwapQueue = [];
+  assert.equal(
+    context.resumePendingWorkoutSwapFlow('basis'),
+    true,
+    'offene Einzelentscheidungen müssen nach einem Reload wieder erscheinen'
+  );
 
-  context.stopWorkout();
-
-  assert.equal(context.S.workout, null);
-  assert.equal(editorOpened, 0, 'Trainingsende darf den Editor nicht automatisch öffnen');
-  assert.deepEqual(Array.from(context.S.pendingReplacements, request => ({ ...request })), pending);
-  assert.ok(flushed >= 1, 'Vormerkungen müssen vor der Entscheidung dauerhaft gespeichert sein');
   assert.equal(modals.length, 1);
-  assert.match(modals[0].title, /Dauerhafte Übungstausche prüfen/);
+  assert.equal(modals[0].title, 'Übung dauerhaft übernehmen?');
   assert.match(modals[0].message, /Bankdrücken.*Brustpresse/s);
   assert.deepEqual(Array.from(modals[0].actions, action => action.label), [
-    'Zum Editor', 'Vormerkungen verwerfen'
+    'Dauerhaft übernehmen', 'Nur dieses Training'
   ]);
-  assert.doesNotMatch(JSON.stringify(modals[0]), /Später/);
-
   modals[0].actions[0].action();
-  assert.equal(editorOpened, 1);
-  assert.deepEqual(Array.from(editorRequests, request => ({ ...request })), pending);
+  assert.equal(modals.length, 2);
+  assert.match(modals[1].message, /Rudern.*Kabelrudern/s);
+  modals[1].actions[1].action();
 
-  modals[0].actions[1].action();
-  assert.deepEqual(Array.from(context.S.pendingReplacements), []);
-  assert.deepEqual(Array.from(context.postWorkoutReplacements), []);
-  assert.ok(rendered >= 2);
-  assert.equal(completedFlow, 1, 'erst nach der Entscheidung darf der übrige Abschlussfluss weiterlaufen');
+  assert.equal(context.postWorkoutSwapQueue.length, 0);
+  assert.equal(store.logs['1|A|bench'].swapDecision, 'permanent');
+  assert.equal(store.logs['1|A|row'].swapDecision, 'training');
+  assert.equal(program.days[0].ex.some(ex => ex.name === 'Brustpresse' && ex.fromWeek === 2), true);
+  assert.equal(program.days[0].ex.some(ex => ex.name === 'Kabelrudern' && ex.fromWeek === 2), false);
 });
 
 test('validates optional swap markers in backups without breaking older logs', () => {
@@ -521,6 +549,7 @@ test('validates optional swap markers in backups without breaking older logs', (
   const valid = JSON.parse(JSON.stringify(baseStore));
   valid.logs['1|A|bench'].swap = 'B'.repeat(80);
   valid.logs['1|A|bench'].swapWeight = '45';
+  valid.logs['1|A|bench'].swapDecision = 'pending';
   valid.pendingReplacements = [{ programId: 'basis', day: 'A', exId: 'bench', name: 'Brustpresse' }];
   assert.equal(context.validateBackupStore(valid, 'basis', program), null);
 
@@ -536,18 +565,25 @@ test('validates optional swap markers in backups without breaking older logs', (
   orphanWeight.logs['1|A|bench'].swapWeight = '50';
   assert.match(context.validateBackupStore(orphanWeight, 'basis', program), /Ersatzgewicht/);
 
+  const invalidDecision = JSON.parse(JSON.stringify(baseStore));
+  invalidDecision.logs['1|A|bench'].swap = 'Brustpresse';
+  invalidDecision.logs['1|A|bench'].swapDecision = 'später';
+  assert.match(context.validateBackupStore(invalidDecision, 'basis', program), /Tauschstatus/);
+
   const stalePending = JSON.parse(JSON.stringify(baseStore));
   stalePending.pendingReplacements = [{ programId: 'basis', day: 'A', exId: 'fehlt', name: 'Brustpresse' }];
   assert.match(context.validateBackupStore(stalePending, 'basis', program), /vorgemerkte Übungstausche/);
 });
 
-test('renders the temporary swap before and during training while permanent replacement stays workout-only', () => {
+test('renders one simple temporary action and defers permanence until completion', () => {
   assert.match(html, /Übung tauschen/);
   assert.match(html, /Für dieses Training/);
-  assert.match(html, /Ab jetzt ersetzen/);
+  assert.doesNotMatch(functionSource('showExerciseSwap'), /Ab jetzt ersetzen/);
+  assert.match(functionSource('showNextPostWorkoutSwapDecision'), /Dauerhaft übernehmen/);
+  assert.match(functionSource('showNextPostWorkoutSwapDecision'), /Nur dieses Training/);
   const cardSource = functionSource('exCardHtml');
   assert.match(cardSource, /currentExerciseSwap\(ex\)/);
   assert.match(cardSource, /getauscht/);
-  assert.doesNotMatch(cardSource, /if\(active\(\)&&!done&&!hasEntered\)/);
-  assert.match(functionSource('showExerciseSwap'), /if\(active\(\)\)actions\.push/);
+  assert.doesNotMatch(cardSource, /Übung nur heute tauschen/);
+  assert.doesNotMatch(cardSource, /swapqueued/);
 });

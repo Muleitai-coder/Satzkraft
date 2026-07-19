@@ -9,14 +9,40 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 ### Hinzugefügt
 
 - Kommt dieselbe Übung an mehreren Trainingstagen vor, zeigt die Trainingskarte zusätzlich den jüngsten eingetragenen Wert des anderen Tages. Progression und Zielgewichte bleiben weiterhin pro Trainingstag getrennt.
+- Nach einem vollständig beendeten Training fragt Satzkraft für jede getauschte Übung einzeln, ob der Tausch dauerhaft gelten oder nur im gerade beendeten Training bleiben soll. Ist im aktuellen Block keine offene Folgewoche mehr vorhanden, wird ein bestätigter Tausch in den nächsten Folgeblock übernommen.
+- Die nächste Trainingswoche zeigt die aus der vorigen Einheit abgeleitete Progressionsempfehlung direkt an der jeweiligen Übung.
+- Eine leicht verständliche PDF-Anleitung erklärt den Programmeditor mit seinen Bereichen Training, Wochen und Details.
+
+### Geändert
+
+- Die App öffnet nach dem Update ohne zusätzlichen Start-Hinweis direkt in der Trainingsansicht.
+- Beim Tauschen bleibt ein frei bearbeitbares Feld „Ersatzübung“. Während der Eingabe stehen deutsche Datenbanktreffer direkt darunter zur Auswahl; nach der Auswahl bleibt nur der Name im Feld. Ein separater Bereich zeigt zusätzlich genau eine empfohlene Ersatzübung.
+- Aktionen auf Programmkarten wie „Bearbeiten“, „Aktivieren“, „Folgeblock starten“, „Archivieren“ und Archivaktionen werden einheitlich als anklickbare Textaktionen ohne Button-Fläche dargestellt.
+- Der Hinweis „Arbeitsgewicht noch offen“ steht in Trainingskarten immer unter dem Verlauf und unmittelbar vor den Satzzeilen.
+- Zeitvorgaben und protokollierte Zeitwerte werden einheitlich im Format Minuten:Sekunden angezeigt, beispielsweise `1:15 min` statt `75 Sek`.
+- Beim Fortsetzen eines unterbrochenen Trainings gilt das dreistündige Sicherheitslimit nur für den aktuell gestarteten Abschnitt. Bereits gespeicherte Abschnitte lösen keinen sofortigen automatischen Stopp mehr aus; beim Wechsel in den Hintergrund wird die Trainingszeit pausiert.
+- Die zusätzliche Zeile „Arbeitsgewicht“ in Trainingskarten entfällt. Das Ziel bleibt oben sichtbar; fehlt es, übernimmt der erste eingetragene Satz den Arbeitswert, und spätere Sätze verwenden vorrangig das zuletzt tatsächlich verwendete Gewicht.
+- Empfehlungen erscheinen direkt nach den abgeschlossenen Sätzen. In der offenen Folgewoche steht nur ein kompakter Herkunfts- oder Erholungshinweis fest neben der betroffenen kg-, Wiederholungs- oder Zeitvorgabe.
+- Die Fußleiste einer abgeschlossenen älteren Einheit enthält nur noch „Werte korrigieren“. Der erklärende Protokollsatz und die redundante Aktion „Diesen Inhalt heute trainieren“ entfallen.
+- Direkte Änderungen und die Korrekturansicht erklären vor dem Speichern einheitlich, dass spätere Empfehlungen und Zielwerte neu berechnet werden.
+- Übungstausche heißen vor und während des Trainings einheitlich „Übung tauschen“. Eine dauerhafte Entscheidung wird nicht mehr während des Trainings oder gesammelt im Editor verlangt.
+- Die automatische Satzpause startet auch nach dem letzten Satz. Der zusätzliche Knopf „Pause starten“ entfällt.
+- Trainingskarten, Programmeditor, Programmverwaltung und Erstellen-Auswahl wurden typografisch beruhigt und ausgerichtet. Sichtbare Garmin-Bezeichnungen entfallen; die bisherigen Datenfelder bleiben für kompatible Importe erhalten.
+- Bibliotheksvorschauen zeigen Übungen ohne zusätzliche Trainingsgruppen-Zuordnung und ohne redundante Startgewicht-Zählung.
 
 ### Behoben
 
 - Auf kleinen Smartphone-Bildschirmen brechen die Protokollaktionen in der unteren Leiste sauber um und werden nicht mehr seitlich abgeschnitten.
+- Das Programm „Calisthenics Einstieg“ lässt sich wieder fehlerfrei laden und bis zur Vorschau öffnen.
+- Das Umschalten automatischer Wiederholungsbereiche schließt die geöffnete Trainingsgruppe im Editor nicht mehr.
+- Beim verzögerten Einklappen einer erledigten Übung bleibt die folgende Karte an ihrer sichtbaren Position.
+- Dead Hang sowie reine Zeit- und Körpergewichtsübungen erhalten im Deload keine unlogische Empfehlung für ein reduziertes Gewicht mehr.
 
 ### Offen
 
 - Der detaillierte Leitfaden zur Ermittlung des ersten Arbeitsgewichts bleibt eine offene Produktentscheidung; v0.22.1 vereinheitlicht nur die bestehende Hinweisdarstellung.
+- Die konkrete Darstellung der einzelnen Tauschentscheidung wird noch mit etablierten Trainingsapps verglichen; der fachliche Zeitpunkt nach Trainingsende und die Einzelentscheidung je Übung stehen bereits fest.
+- Für die Wochenplanung bleibt eine Kombination aus verständlichen Vorlagen und frei änderbaren Werten die bevorzugte Richtung. Eine einschränkende feste Datenbank wird erst nach einer eigenen Produktentscheidung umgesetzt.
 
 ## [0.26.0] – 2026-07-17
 

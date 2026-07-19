@@ -31,7 +31,6 @@ function validationContext() {
     WD_MAP: { montag: 0, mo: 0, monday: 0, dienstag: 1, di: 1, tuesday: 1, mittwoch: 2, mi: 2, wednesday: 2, donnerstag: 3, do: 3, thursday: 3, fr: 4, freitag: 4, friday: 4, samstag: 5, sa: 5, saturday: 5, sonntag: 6, so: 6, sunday: 6 },
     WD_CANON: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
     VALID_PROGRESSION_MODES: ['weight', 'added_weight', 'reps', 'seconds', 'progression', 'none'],
-    WUCD_SET: {},
     ANLEITUNG: {},
     esc: value => String(value == null ? '' : value),
     wucdSan: list => Array.isArray(list) ? list.map(item => ({ name: item.name, sec: item.seconds })) : [],
@@ -47,15 +46,8 @@ function validationContext() {
     showProgramWriteLocked() {},
     setActive(id) { context.S.active = id; return true; }
   };
-  const allPrograms = fs.readdirSync(path.join(root, 'programme'))
-    .filter(file => file.endsWith('.json'))
-    .map(file => JSON.parse(fs.readFileSync(path.join(root, 'programme', file), 'utf8')));
-  for (const program of allPrograms) {
-    for (const day of program.days) {
-      for (const item of [...(day.warmup || []), ...(day.cooldown || [])]) context.WUCD_SET[item.name] = 1;
-    }
-  }
   vm.createContext(context);
+  vm.runInContext(sourceBetween('var WUCD_LIB=', 'ANLEITUNG.erlaubte_werte'), context);
   vm.runInContext(sourceBetween('function genId()', 'function setActive('), context);
   vm.runInContext(sourceBetween('var pendingProgramImport=', 'function deleteProgram'), context);
   return context;
@@ -109,7 +101,8 @@ test('renders the official origin line and the complete library entry points', (
   assert.match(sourceBetween('function renderCreateHub', 'function renderExternalAiCreate'), /Fertiges Programm wählen/);
   assert.match(functionSource('renderImportPreview'), /Wochenstruktur/);
   assert.match(functionSource('renderImportPreview'), /Alle Übungen/);
-  assert.match(functionSource('renderImportPreview'), /Startgewichte finden/);
+  assert.doesNotMatch(functionSource('renderImportPreview'), /Startgewichte finden|missingWeights|Sicher automatisch bereinigt/);
+  assert.doesNotMatch(functionSource('renderImportPreview'), /category&&category\.label/);
   assert.match(functionSource('showCalibrationGuide'), /Startgewicht finden/);
-  assert.match(html, /Wie finde ich mein Startgewicht\?/);
+  assert.match(html, /Startgewicht bestimmen/);
 });

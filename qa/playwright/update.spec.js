@@ -11,13 +11,8 @@ const REPORT_BACKUP = JSON.parse(
   )
 );
 
-const INTRO_COPY = [
-  'Mit diesem Update passt Satzkraft besser auf deine Trainingsdaten auf.',
-  'Abgeschlossene Trainings bleiben genau so, wie du sie trainiert hast.',
-  'Zahlen ausbessern geht weiterhin jederzeit – über ‚Werte korrigieren‘.',
-  'Trainiert und wiederholt wird vorne – in deiner aktuellen Woche, Nachholen aus der Vorwoche inklusive.',
-  'Änderungen an deinem Plan gelten ab jetzt und lassen Vergangenes unverändert. Alles andere bleibt, wie du es kennst.',
-];
+const CORRECTION_EFFECT_COPY =
+  'Du änderst nur die Satzwerte dieser abgeschlossenen Einheit. Trainingszeit und Protokolleintrag bleiben unverändert. Empfehlungen und Zielwerte späterer Wochen werden nach deiner Korrektur neu berechnet.';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -25,9 +20,33 @@ function clone(value) {
 
 function reportState(mutator) {
   const state = clone(REPORT_BACKUP);
-  state.store[state.active].zonesIntroSeen = true;
   if (mutator) mutator(state, state.programs[state.active], state.store[state.active]);
   return state;
+}
+
+function compactWorkoutState(exerciseCount = 1) {
+  return reportState((state, program, store) => {
+    program.weeks = program.weeks.slice(0, 2);
+    program.days = [program.days[0]];
+    program.days[0].ex = program.days[0].ex.slice(0, exerciseCount);
+    const usedCategories = new Set(
+      program.days[0].ex.map((exercise) => exercise.cat)
+    );
+    for (const week of program.weeks) {
+      week.sets = {};
+      for (const category of usedCategories) week.sets[category] = 1;
+    }
+    store.tg = {};
+    store.barw = {};
+    store.notes = {};
+    store.logs = {};
+    store.history = [];
+    store.workout = null;
+    store.pendingReplacements = [];
+    store.week = 1;
+    store.day = program.days[0].key;
+    store.blockCelebrated = false;
+  });
 }
 
 async function openWithState(page, state, options = {}) {
@@ -67,13 +86,17 @@ async function openProgramLibrary(page) {
 }
 
 async function openFirstExerciseInEditor(page) {
-  await openPrograms(page);
-  await page.locator('#lib .progitem.active [data-edit]').click();
-  await expect(page.locator('#lib h1')).toHaveText('Programm bearbeiten');
+  await openActiveProgramInEditor(page);
   await page.locator('#lib [data-ed-openex="0"]').click();
   await expect(page.locator('#lib [data-ed-ex-card="0"]')).toHaveClass(
     /open/
   );
+}
+
+async function openActiveProgramInEditor(page) {
+  await openPrograms(page);
+  await page.locator('#lib .progitem.active [data-edit]').click();
+  await expect(page.locator('#lib h1')).toHaveText('Programm bearbeiten');
 }
 
 async function waitForFonts(page) {
@@ -119,32 +142,7 @@ async function horizontalOverflow(page, selectors) {
 }
 
 test.describe('1 · Texte & Kommunikation', () => {
-  test('TXT-01/P0: Erststart erklärt das Zonenmodell wortgleich und genau einmal', async ({
-    page,
-  }) => {
-    await page.goto('/index.html');
-
-    const modal = page.locator('#modal');
-    await expect(modal.locator('.mtitle')).toHaveText(
-      'Neu: Dein Trainingstagebuch ist geschützt'
-    );
-    await expect(modal.locator('.mmsg > p')).toHaveText(INTRO_COPY);
-    await expect(modal.locator('.mbtn')).toHaveText(['Verstanden']);
-
-    await modal
-      .getByRole('button', { name: 'Verstanden', exact: true })
-      .click();
-    await expect(modal).toBeHidden();
-
-    await page.reload();
-    await expect(
-      page.locator('#modal .mtitle', {
-        hasText: 'Neu: Dein Trainingstagebuch ist geschützt',
-      })
-    ).toHaveCount(0);
-  });
-
-  test('TXT-03/P0: alte abgeschlossene Einheit ist Protokoll mit zwei klaren Auswegen', async ({
+  test('TXT-03/P0: alte abgeschlossene Einheit zeigt nur die eindeutige Korrekturaktion', async ({
     page,
   }) => {
     await openWithState(
@@ -156,13 +154,14 @@ test.describe('1 · Texte & Kommunikation', () => {
     );
 
     const bar = page.locator('#bar');
-    await expect(bar.locator('b')).toHaveText(
-      'Diese Einheit ist Teil deines Protokolls.'
+    await expect(bar.locator('button')).toHaveCount(1);
+    await expect(bar.locator('#correctvalues')).toHaveText(
+      'Werte korrigieren'
     );
-    await expect(bar.locator('button')).toHaveText([
-      'Werte korrigieren',
-      'Diesen Inhalt heute trainieren',
-    ]);
+    await expect(bar).not.toContainText(
+      'Diese Einheit ist Teil deines Protokolls'
+    );
+    await expect(bar.locator('#traintoday')).toHaveCount(0);
     await expect(bar.locator('#startw')).toHaveCount(0);
   });
 
@@ -184,21 +183,79 @@ test.describe('1 · Texte & Kommunikation', () => {
     await page.locator('#correctvalues').click();
     const modal = page.locator('#modal');
     await expect(modal.locator('.mtitle')).toHaveText('Werte korrigieren');
-    await expect(modal.locator('.mmsg')).toHaveText(
-      'Du bearbeitest dein Protokoll. Empfehlungen späterer Wochen rechnen mit den neuen Werten.'
-    );
+    await expect(modal.locator('.mmsg')).toHaveText(CORRECTION_EFFECT_COPY);
     await expect(modal.locator('.mbtn')).toHaveText([
-      'Weiter',
+      'Werte korrigieren',
       'Abbrechen',
     ]);
-    await modal.getByRole('button', { name: 'Weiter', exact: true }).click();
+    await modal
+      .getByRole('button', { name: 'Werte korrigieren', exact: true })
+      .click();
 
     await expect(page.locator('#bar #finishcorrection')).toHaveText('Fertig');
-    await expect(page.locator('#card-A_0 .editnote')).toHaveText(
-      'Du korrigierst nur die Satzwerte. Trainingszeit und Protokolleintrag bleiben unverändert.'
-    );
+    await expect(page.locator('#card-A_0 .editnote')).toHaveCount(0);
     await page.locator('#rep-A_0-0').fill('9');
     await page.locator('#finishcorrection').click();
+
+    const result = await page.evaluate(() => ({
+      history: JSON.parse(JSON.stringify(window.S.history)),
+      reps: window.S.logs['1|A|A_0'].sets[0].reps,
+      workout: window.S.workout,
+    }));
+    expect(result.history).toEqual(historyBefore);
+    expect(result.reps).toBe('9');
+    expect(result.workout).toBeNull();
+  });
+
+  test('TXT-06/P0: direkte Textänderung lässt sich verwerfen und bewusst übernehmen', async ({
+    page,
+  }) => {
+    await openWithState(
+      page,
+      reportState((state, program, store) => {
+        store.week = 1;
+        store.day = 'A';
+        store.logs['1|A|A_0'].swap = 'Beinpresse';
+        store.logs['1|A|A_0'].swapDecision = 'training';
+      })
+    );
+
+    const historyBefore = await page.evaluate(() =>
+      JSON.parse(JSON.stringify(window.S.history))
+    );
+    const input = page.locator('#rep-A_0-0');
+    const modal = page.locator('#modal');
+    await expect(input).toHaveValue('8');
+
+    await input.fill('9');
+    await input.press('Tab');
+    await expect(modal.locator('.mtitle')).toHaveText('Wert übernehmen?');
+    await expect(modal.locator('.mmsg')).toContainText('Beinpresse');
+    await expect(modal.locator('.mmsg')).not.toContainText(
+      'Langhantel-Kniebeuge'
+    );
+    await expect(modal.locator('.mmsg')).toContainText('Satz 1: 8 → 9 Wdh');
+    await expect(modal.locator('.mmsg')).toContainText(
+      CORRECTION_EFFECT_COPY
+    );
+    await expect(modal.locator('.mbtn')).toHaveText([
+      'Übernehmen',
+      'Verwerfen',
+    ]);
+    await modal
+      .getByRole('button', { name: 'Verwerfen', exact: true })
+      .click();
+    await expect(input).toHaveValue('8');
+    expect(
+      await page.evaluate(() => window.S.logs['1|A|A_0'].sets[0].reps)
+    ).toBe('8');
+
+    await input.fill('9');
+    await input.press('Tab');
+    await modal
+      .getByRole('button', { name: 'Übernehmen', exact: true })
+      .click();
+    await expect(input).toHaveValue('9');
 
     const result = await page.evaluate(() => ({
       history: JSON.parse(JSON.stringify(window.S.history)),
@@ -367,9 +424,7 @@ test.describe('1 · Texte & Kommunikation', () => {
     await page.locator('[data-swap-ex="A_0"]').click();
     const modal = page.locator('#modal');
     await expect(modal.locator('.mtitle')).toHaveText('Übung tauschen');
-    await expect(modal.locator('.edlabel')).toHaveText(
-      'Ersatzübung für dieses Training'
-    );
+    await expect(modal.locator('.edlabel')).toHaveText('Ersatzübung');
     await expect(modal.locator('#swapname')).toHaveAttribute(
       'placeholder',
       'Zum Beispiel Kurzhantel-Bankdrücken'
@@ -388,12 +443,15 @@ test.describe('1 · Texte & Kommunikation', () => {
     expect(new Set(labels).size).toBe(labels.length);
 
     await expect(modal.locator('.muted')).toHaveText(
-      'Der Tausch gilt für die ausgewählte Einheit und verändert nicht die Progression der Originalübung. Du kannst ihn schon vor dem Trainingsstart vorbereiten.'
+      'Für dieses Training wird nur die angezeigte Übung geändert. Nach einem vollständig beendeten Training entscheidest du für jeden Tausch einzeln, ob er künftig bleiben soll.'
     );
     await expect(modal.locator('.mbtn')).toHaveText([
-      'Übung nur heute tauschen',
+      'Übung tauschen',
       'Abbrechen',
     ]);
+    await expect(
+      modal.getByRole('button', { name: /Dauerhaft|Ab jetzt/ })
+    ).toHaveCount(0);
   });
 
   test('TXT-27/P0: Mehrtag-Hinweis nennt Herkunft, behält Ziel und Progression aber taggetrennt', async ({
@@ -442,17 +500,6 @@ test.describe('1 · Texte & Kommunikation', () => {
 });
 
 test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
-  test('@visual VIS-02/P1: Erststart-Modal bleibt auf allen Projekten klar lesbar', async ({
-    page,
-  }) => {
-    await page.goto('/index.html');
-    await expect(page.locator('#modal .mtitle')).toHaveText(
-      'Neu: Dein Trainingstagebuch ist geschützt'
-    );
-    await waitForFonts(page);
-    await expect(page).toHaveScreenshot('erststart-modal-dunkel.png');
-  });
-
   test('@visual VIS-03/P1: gesperrte Einheit zeigt keine überladene Aktionsleiste', async ({
     page,
   }) => {
@@ -533,7 +580,7 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await expect(page.locator('#lib')).toHaveCSS('z-index', '85');
   });
 
-  test('@visual VIS-22/P1: vier Tauschentscheidungen werden als bekannte Überladungsgrenze eingefroren', async ({
+  test('@visual VIS-22/P1: Tauschdialog im Training bleibt auf drei eindeutige Aktionen begrenzt', async ({
     page,
   }) => {
     await openWithState(
@@ -548,7 +595,7 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await page.locator('#swapname').fill('Beinpresse');
     await page
       .getByRole('button', {
-        name: 'Übung nur heute tauschen',
+        name: 'Übung tauschen',
         exact: true,
       })
       .click();
@@ -557,16 +604,20 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await page.locator('[data-swap-ex="A_0"]').click();
 
     const actions = page.locator('#modal .mbtn');
-    await expect(actions).toHaveCount(4);
+    await expect(actions).toHaveCount(3);
     await expect(actions).toHaveText([
-      'Übung nur heute tauschen',
-      'Ab jetzt ersetzen',
+      'Übung tauschen',
       'Original verwenden',
       'Abbrechen',
     ]);
+    await expect(
+      page.locator('#modal').getByRole('button', {
+        name: /Dauerhaft übernehmen|Ab jetzt ersetzen/,
+      })
+    ).toHaveCount(0);
     await waitForFonts(page);
     await expect(page.locator('#modal .mbox')).toHaveScreenshot(
-      'tauschmodal-vier-entscheidungen.png'
+      'tauschmodal-schlank.png'
     );
   });
 });
@@ -639,6 +690,8 @@ test.describe('3 · Redundanz-Check', () => {
     const ids = await choices.evaluateAll((nodes) => nodes.map((node) => node.id));
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids[0]).toBe('programlibrarybtn');
+    await expect(choices.nth(0)).not.toHaveClass(/primary/);
+    await expect(choices.nth(1)).not.toHaveClass(/primary/);
   });
 
   test('RED-07/P1: Bibliotheken begrenzen und deduplizieren Auswahlmengen', async ({
@@ -652,6 +705,34 @@ test.describe('3 · Redundanz-Check', () => {
       .locator('b')
       .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
     expect(new Set(programNames).size).toBe(4);
+  });
+
+  test('RED-08/P0: Übungskarte zeigt nur drei Hilfsaktionen in einer Zeile und keinen alten Ballast', async ({
+    page,
+  }) => {
+    await openWithState(
+      page,
+      reportState((state, program, store) => {
+        store.week = 8;
+        store.day = 'A';
+      })
+    );
+
+    const actions = page.locator('#card-A_0 .links > a, #card-A_0 .links > button');
+    await expect(actions).toHaveCount(3);
+    await expect(actions).toHaveText(['Video', 'Notiz', 'Übung tauschen']);
+    const actionTops = await actions.evaluateAll((nodes) =>
+      nodes.map((node) => Math.round(node.getBoundingClientRect().top))
+    );
+    expect(new Set(actionTops).size).toBe(1);
+    await expect(page.locator('#app')).not.toContainText('Garmin');
+    await expect(page.locator('#app .pausebtn')).toHaveCount(0);
+
+    await page.locator('#startw').click();
+    await expect(
+      page.getByRole('button', { name: /Pause starten/i })
+    ).toHaveCount(0);
+    await expect(page.locator('#app .pausebtn')).toHaveCount(0);
   });
 });
 
@@ -730,13 +811,208 @@ test.describe('4 · Regression & Offline-PWA', () => {
       'Wochenstruktur',
       'Alle Übungen',
     ]);
-    await expect(page.locator('#lib .calibrationguide summary')).toHaveText(
-      'Startgewichte finden'
-    );
+    await expect(page.locator('#lib .calibrationguide')).toHaveCount(0);
   });
 });
 
 test.describe('4 · Regression & Kernfunktion', () => {
+  test('REG-01/P0: alle vier Bibliotheksprogramme erreichen eine vollständige Vorschau', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState());
+    await openProgramLibrary(page);
+
+    const programNames = [
+      'Gym Ganzkörper Beginner',
+      'Gym Ganzkörper Fortgeschritten',
+      'Calisthenics Einstieg',
+      'Hybrid: Gym + Calisthenics',
+    ];
+
+    for (let index = 0; index < programNames.length; index += 1) {
+      await page.locator(`#lib [data-library-index="${index}"]`).click();
+      await expect(page.locator('#lib h1')).toHaveText('Programm prüfen');
+      await expect(page.locator('#lib .previewhero h2')).toHaveText(
+        programNames[index]
+      );
+      await expect(page.locator('#lib .previewstats .previewstat')).toHaveCount(
+        3
+      );
+      await expect(page.locator('#lib .librarypreview')).toBeVisible();
+      await expect(page.locator('#lib .calibrationguide')).toHaveCount(0);
+
+      await page.locator('#importpreviewback').click();
+      await expect(page.locator('#lib h1')).toHaveText('Fertige Programme');
+      await expect(page.locator('#lib [data-library-index]')).toHaveCount(4);
+    }
+  });
+
+  test('REG-03/P0: Auto-Wiederholungsbereiche lassen die geöffnete Trainingsgruppe offen', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState());
+    await openActiveProgramInEditor(page);
+
+    await page.locator('#lib [data-ed-tab="details"]').click();
+
+    const groups = page.locator(
+      '#lib details[data-ed-section="groups"]'
+    );
+    await groups.locator('summary').first().click();
+    await expect(groups).toHaveAttribute('open', '');
+
+    const category = page
+      .locator('#lib details[data-ed-section^="category-"]')
+      .first();
+    const section = await category.getAttribute('data-ed-section');
+    await category.locator('summary').first().click();
+    await expect(category).toHaveAttribute('open', '');
+
+    const automaticRanges = category.locator('[data-ed-reps]');
+    if (await automaticRanges.isChecked()) {
+      await automaticRanges.uncheck();
+    } else {
+      await automaticRanges.check();
+    }
+
+    await expect(
+      page.locator('#lib details[data-ed-section="groups"]')
+    ).toHaveAttribute('open', '');
+    await expect(
+      page.locator(
+        `#lib details[data-ed-section="${section}"]`
+      )
+    ).toHaveAttribute('open', '');
+  });
+
+  test('REG-04/P0: die automatische Pause startet nach dem letzten Satz vor dem Abschlussdialog', async ({
+    page,
+  }) => {
+    await openWithState(page, compactWorkoutState(1));
+    await page.evaluate(() => {
+      window.AUTO_REST_DELAY = 0;
+      window.DONE_PROMPT_DELAY = 0;
+    });
+
+    await page.locator('#startw').click();
+    await page.locator('#rep-A_0-0').fill('8');
+
+    await expect(page.locator('#bar .restbar .subline')).toHaveText(
+      'Satzpause'
+    );
+    await expect(page.locator('#modal')).toBeHidden();
+    await expect(page.locator('#app .pausebtn')).toHaveCount(0);
+
+    await page.locator('#stopr').click();
+    await expect(page.locator('#modal .mtitle')).toHaveText(
+      'Alle Übungen erledigt 💪'
+    );
+  });
+
+  test('REG-05/P0: zwei Tausche werden nach Trainingsende einzeln und unabhängig entschieden', async ({
+    page,
+  }) => {
+    await openWithState(page, compactWorkoutState(2));
+    await page.evaluate(() => {
+      window.AUTO_REST_DELAY = 0;
+      window.DONE_PROMPT_DELAY = 0;
+    });
+
+    for (const [exerciseId, replacement] of [
+      ['A_0', 'Beinpresse'],
+      ['A_1', 'Kurzhantel-Bankdrücken'],
+    ]) {
+      await page.locator(`[data-swap-ex="${exerciseId}"]`).click();
+      await page.locator('#swapname').fill(replacement);
+      await page
+        .getByRole('button', { name: 'Übung tauschen', exact: true })
+        .click();
+    }
+
+    await page.locator('#startw').click();
+    await page.locator('#rep-A_0-0').fill('8');
+    await expect(page.locator('#bar .restbar .subline')).toHaveText(
+      'Satzpause'
+    );
+    await page.locator('#stopr').click();
+
+    await page.locator('#rep-A_1-0').fill('8');
+    await expect(page.locator('#bar .restbar .subline')).toHaveText(
+      'Satzpause'
+    );
+    await page.locator('#stopr').click();
+    await expect(page.locator('#modal .mtitle')).toHaveText(
+      'Alle Übungen erledigt 💪'
+    );
+    await page
+      .getByRole('button', { name: 'Training beenden', exact: true })
+      .click();
+
+    const decisionPage = await page.context().newPage();
+    await decisionPage.goto('/index.html');
+    await expect(decisionPage.locator('#app .ptitle')).toBeVisible();
+    const modal = decisionPage.locator('#modal');
+    await expect(modal.locator('.mtitle')).toHaveText(
+      'Übung dauerhaft übernehmen?'
+    );
+    await expect(modal.locator('.mmsg')).toContainText(
+      'Langhantel-Kniebeuge wurde in diesem Training durch Beinpresse ersetzt.'
+    );
+    await expect(modal.locator('.mbtn')).toHaveText([
+      'Dauerhaft übernehmen',
+      'Nur dieses Training',
+    ]);
+    await modal
+      .getByRole('button', { name: 'Dauerhaft übernehmen', exact: true })
+      .click();
+
+    await expect(modal.locator('.mmsg')).toContainText(
+      'Bankdrücken wurde in diesem Training durch Kurzhantel-Bankdrücken ersetzt.'
+    );
+    await modal
+      .getByRole('button', { name: 'Nur dieses Training', exact: true })
+      .click();
+
+    const result = await decisionPage.evaluate(() => {
+      const day = window.S.programs[window.S.active].days[0];
+      return {
+        exercises: day.ex.map((exercise) => ({
+          name: exercise.name,
+          en: exercise.en,
+          sub: exercise.sub,
+          video: exercise.q,
+          proxy: exercise.proxy,
+          fromWeek: exercise.fromWeek,
+          untilWeek: exercise.untilWeek,
+        })),
+        firstSwap: window.S.logs['1|A|A_0'].swap,
+        firstDecision: window.S.logs['1|A|A_0'].swapDecision,
+        secondSwap: window.S.logs['1|A|A_1'].swap,
+        secondDecision: window.S.logs['1|A|A_1'].swapDecision,
+      };
+    });
+    expect(result.exercises).toContainEqual({
+      name: 'Beinpresse',
+      en: 'Leg Press',
+      sub: expect.stringContaining('untere Rücken'),
+      video: 'Leg Press Technik',
+      proxy: 'Goblet Squat',
+      fromWeek: 2,
+      untilWeek: undefined,
+    });
+    expect(result.exercises).not.toContainEqual(
+      expect.objectContaining({
+        name: 'Kurzhantel-Bankdrücken',
+        fromWeek: 2,
+      })
+    );
+    expect(result.firstSwap).toBe('Beinpresse');
+    expect(result.firstDecision).toBe('permanent');
+    expect(result.secondSwap).toBe('Kurzhantel-Bankdrücken');
+    expect(result.secondDecision).toBe('training');
+    await decisionPage.close();
+  });
+
   test('REG-02/P0: Training starten, Satz speichern und unterbrochen beenden', async ({
     page,
   }) => {

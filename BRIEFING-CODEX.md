@@ -5,6 +5,8 @@
 **Aktueller Produktstand:** Satzkraft v0.26.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
+**Aktuelle Prozessentscheidung (18.07.2026):** Für Prüfungen gilt ausschließlich die risikobasierte Strategie aus `docs/TESTING.md` und `AGENTS.md`. Historische Pakettexte, die vollständige Suites oder Browsermatrizen nach jeder Änderung verlangen, dokumentieren nur den damaligen Abnahmestand und lösen keine automatischen Großtests mehr aus.
+
 ---
 
 ## 1. Projektkontext
@@ -37,7 +39,7 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
 5. **`js/progression.js` nicht verändern.** Die Progressionslogik (doppelte Progression, Deload 0.6, Wiedereinstieg 0.925, RIR-Logik) ist geprüft und bleibt exakt so.
 6. **Test-Anker nicht umbenennen/verschieben.** Die Tests schneiden `index.html` an diesen Funktionsnamen: `reportFinite`, `reportNumber`, `catReps`, `getSets`, `onSetInput`, `onSetChange`, `workoutProgress`, `stopWorkout`, `readBackupMeta`, `confirmBackupRestore`, `validBackupNumber`, `cloneJSON`, `openProgramEditor`, `editorTargetReps`, `editorExerciseMeta`, `editorMoveExerciseToGap`, `confirmEditorDeleteWeek`. Diese Funktionsnamen müssen als Strings erhalten bleiben und ihre relative Reihenfolge behalten.
 7. **Versionierung und Historie:** Jede nutzerrelevante Änderung sofort unter `Unreleased` in `CHANGELOG.md` eintragen. Bei einem Release den Abschnitt auf die neue Version mit Datum umstellen und gleichzeitig `APP_VERSION` in `index.html` sowie `CACHE` in `sw.js` synchron erhöhen (Test `version.test.cjs` prüft das). Die CSS-Klassen `appversion` und `versionfoot` müssen im Quelltext weiter vorkommen – sie dürfen aber an anderer Stelle gerendert werden. Kein Release ohne Changelog-Eintrag.
-8. **Nach jedem Arbeitspaket:** `node --test tests/` grün + manuelle Checks (Abschnitt 6). Tests bei geänderten Verhalten bewusst erweitern, nicht löschen.
+8. **Nach jedem Arbeitspaket:** Kleinste passende Prüfung gemäß `docs/TESTING.md`; vollständige Suites und Browsermatrizen nur auf ausdrücklichen Nutzerbefehl. Tests bei geändertem Verhalten bewusst erweitern, nicht löschen.
 9. **Ein Arbeitspaket = ein Commit** (bzw. eine zusammenhängende Änderung), Reihenfolge wie unten.
 
 ---
@@ -229,7 +231,7 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
 - Keine Supersätze/Zirkel, keine Cardio-Einheiten (Meter/Kalorien) – bewusste Grenzen der Struktur.
 - Keine neuen Auswertungs-Diagrammtypen oder wählbare Zeiträume.
 - Keine Änderungen an `js/progression.js` oder an der Progressionsmathematik.
-- Keine Konten/Sync (siehe AUSBAUPLAN.md – spätere Ausbaustufe).
+- Keine Konten/Sync (siehe `docs/planung/AUSBAUPLAN.md` – spätere Ausbaustufe).
 
 ---
 
@@ -245,16 +247,19 @@ Die folgende Zuordnung dokumentiert den ursprünglichen Umsetzungsplan für v0.1
 
 Jeweils `APP_VERSION` + `sw.js`-`CACHE` synchron erhöhen. B3 (Live-Vorschau) ist optional und darf entfallen.
 
-## 6. Abnahme-Checkliste (nach jedem Paket manuell)
+## 6. Abnahme-Checkliste
 
-1. `node --test tests/` – alle Tests grün (bei Verhaltensänderung Tests erweitert, nicht entfernt).
-2. Frisches Profil (localStorage leeren): App startet mit Standardprogramm, Training starten → Sätze eintragen → Pause-Timer → Training beenden → Eintrag im Verlauf.
-3. Bestehende Daten: v0.14.1-Backup einspielen → lädt fehlerfrei, Fortschritt vorhanden.
-4. Import-Flow: Vorlage kopieren → einfügen → Prüfen & Vorschau → „Nur speichern“ und „Speichern & aktivieren“.
+Die folgenden Szenarien bilden den fachlichen Abnahmekatalog. Pro Änderung wird nur das betroffene Szenario geprüft; eine vollständige Wiederholung erfolgt ausschließlich auf ausdrücklichen Nutzerbefehl:
+
+1. Passende einzelne Node-Testdatei bei Verhaltensänderungen.
+2. Frisches Profil: App startet mit Standardprogramm, Training starten → Sätze eintragen → Pause-Timer → Training beenden → Eintrag im Verlauf.
+3. Bestehende Daten: altes Backup einspielen → lädt fehlerfrei, Fortschritt vorhanden.
+4. Import-Flow: Vorlage kopieren → einfügen → Prüfen & Vorschau → speichern beziehungsweise aktivieren.
 5. Editor: Programm bearbeiten → als Kopie speichern → Original unverändert; „Original ersetzen“ mit Sicherheitsabfrage.
-6. Auswertung öffnen → Drucken/PDF aus dunklem und hellem Theme (Desktop-Browser), Protokoll zu/auf.
-7. Hell-/Dunkelmodus: alle neuen UI-Elemente in beiden Themes prüfen (Light-Theme-Overrides in CSS ergänzen!).
-8. Viewport 375 px (iPhone SE/Mini): keine abgeschnittenen Buttons, Editor und Import bedienbar.
+6. Auswertung und Druck/PDF im betroffenen Theme.
+7. Betroffene UI im relevanten Theme und Viewport.
+
+Auswahl, Wiederholungsregeln und große Testbefehle stehen zentral in `docs/TESTING.md`.
 
 ---
 
@@ -405,7 +410,7 @@ Die folgenden Punkte sind **umgesetzt und abgenommen**. Bei Widersprüchen zu ä
 3. **Synchron erhöhen:** `APP_VERSION` in `index.html` und `CACHE` in `sw.js` auf dieselbe Version setzen.
 4. **Changelog abschließen:** `Unreleased`-Einträge unter eine Überschrift `[VERSION] – YYYY-MM-DD` verschieben; leeren `Unreleased`-Abschnitt oben stehen lassen.
 5. **Briefing pflegen:** Bei neuen verbindlichen Produktentscheidungen oder Architekturregeln diesen aktuellen Statusabschnitt erweitern. Detailtickets gehören ins Briefing, nutzerorientierte Zusammenfassungen ins Changelog.
-6. **Prüfen:** Gesamte Node-Testsuite, `git diff --check` und risikogerechte manuelle Browserprüfung ausführen. Der aktuelle Versions-Test muss zusätzlich sicherstellen, dass die Version im Changelog vorkommt.
+6. **Prüfen:** `git diff --check` und die kleinste passende Prüfung gemäß `docs/TESTING.md` ausführen. Vollständige Suites und Browsermatrizen nur auf ausdrücklichen Nutzerbefehl. Bei Releases ist der Versions-Test der gezielte Mindesttest.
 7. **Git-Abschluss:** Zusammenhängend committen; bei echten veröffentlichten Releases künftig einen Git-Tag `vVERSION` anlegen. Historische Versionen ohne vorhandenen Tag werden nicht nachträglich als angeblich veröffentlichte Tags ausgegeben.
 8. **Automatischer GitHub-Abschluss:** Nach vollständig umgesetzter und technisch erfolgreich geprüfter Arbeit die zum Auftrag gehörenden Dateien zusammenhängend committen und den Commit automatisch auf den aktuellen Arbeitsbranch von `origin` hochladen. Die Produktabnahme durch den Nutzer darf danach auf diesem hochgeladenen Arbeitsstand erfolgen; ein Push ist noch kein Merge und kein Release. Die ausführlichen Sicherheitsgrenzen stehen in `AGENTS.md`.
 
@@ -472,14 +477,14 @@ Kann ein gemeldeter Fehler nicht reproduziert werden, werden keine spekulativen 
 
 ### 10.5 · Prüfen
 
-Die Abnahme erfolgt risikogerecht, mindestens aber so:
+Die Abnahme erfolgt risikogerecht nach `docs/TESTING.md`:
 
-1. Gezielter Test für den betroffenen Bereich.
-2. Gesamte Node-Testsuite.
-3. `git diff --check`.
-4. Bei Layout, Interaktion, Fokus, Scrollen oder responsivem Verhalten eine manuelle Browserprüfung am betroffenen Viewport; mobile Standardprüfung 390 × 844 px, wenn kein anderes Gerät genannt wurde.
-5. Bei Import-/Datenänderungen zusätzlich ein bestehendes Programm sowie `TESTPROGRAMM-ALLE-SZENARIEN.json` laden.
-6. Bei PWA-/Release-Änderungen Versionsgleichheit von `APP_VERSION`, Service-Worker-Cache, Changelog und Briefing prüfen.
+1. `git diff --check`.
+2. Gezielter Test für den betroffenen Bereich, sofern Verhalten geändert wurde.
+3. Bei Layout, Interaktion, Fokus, Scrollen oder responsivem Verhalten höchstens die betroffene Ansicht am relevanten Viewport prüfen.
+4. Bei Import-/Datenänderungen das unmittelbar betroffene Programm oder Fixture laden.
+5. Bei PWA-/Release-Änderungen Versionsgleichheit von `APP_VERSION`, Service-Worker-Cache, Changelog und Briefing prüfen.
+6. Vollständige Node-Suite, Playwright-Matrix, visuelle Regression und komplette manuelle Abnahme nur auf ausdrücklichen Nutzerbefehl.
 
 ### 10.6 · Ergebnis übergeben und vom Nutzer abnehmen lassen
 
@@ -614,7 +619,7 @@ Priorität aus Nutzersicht: Wunsch (Kernwunsch des Betreibers)
 ### Tests (Paket H)
 
 - Neuer Test `editor-replace-migration.test.cjs` (Muster wie bestehende Tests: Funktionen per String-Anker aus `index.html` schneiden; `editorBuildRefMap` und `migrateReplaceStore` deshalb als eigenständige, pure Funktionen schreiben). Szenarien mindestens: einfügen, verschieben, löschen, umbenennen, Typwechsel, Wochen kürzen, `tg`-Override, Tag gelöscht.
-- Bestehende Anker-Funktionen nicht umbenennen; `node --test tests/` grün.
+- Bestehende Anker-Funktionen nicht umbenennen; den zugehörigen Migrationstest gezielt ausführen. Die vollständige Suite bleibt ein großer Test gemäß `docs/TESTING.md`.
 
 ### Abnahme Paket H (manuell, zusätzlich zu Abschnitt 6)
 
@@ -800,11 +805,11 @@ Jedes Paket einzeln nach Abschnitt 6 und 10.5 prüfen und vom Nutzer abnehmen; V
 
 ## 18. Großes Update · Zonenmodell, Programm-Bibliothek, Übungs-Bibliothek · Releases 1–4 (beschlossen 17.07.2026)
 
-**Status:** Vom Produktverantwortlichen beschlossen und freigegeben. Die vollständigen, verbindlichen Arbeitsanweisungen stehen in `ENTWURF-GROSSES-UPDATE.md` – die vier dortigen Abschnitte **„Feinspezifikation Release 1–4"** sind Arbeitsanweisungen im Sinne dieses Briefings und werden in der unten stehenden Reihenfolge umgesetzt. Alle Guardrails aus Abschnitt 2 gelten unverändert. Paket N (KI-Coach-Blockbegleitung) ist **ausgeklammert** und nicht Teil dieses Updates.
+**Status:** Vom Produktverantwortlichen beschlossen, umgesetzt und abgenommen. Die vollständigen Spezifikationen stehen in `docs/planung/GROSSES-UPDATE-RELEASES-1-4.md`. Alle Guardrails aus Abschnitt 2 gelten unverändert. Paket N (KI-Coach-Blockbegleitung) ist **ausgeklammert** und nicht Teil dieses Updates.
 
 ### Verbindliches Produkt-Regelwerk „Plan · Einheit · Protokoll"
 
-Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, bleibt stehen; trainiert wird immer nur vorne; Planänderungen gelten nur für Trainings, die noch kommen.* Daraus folgen zwölf Regeln (Langfassung in `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 3):
+Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, bleibt stehen; trainiert wird immer nur vorne; Planänderungen gelten nur für Trainings, die noch kommen.* Daraus folgen zwölf Regeln (Langfassung in `docs/planung/GROSSES-UPDATE-RELEASES-1-4.md`, Abschnitt 3):
 
 1. **Unverlierbarkeit:** Keine Planänderung löscht trainierte Daten; entfernte/ersetzte Übungen *enden* (`untilWeek`), ihre Historie bleibt.
 2. **Korrigieren ist nicht Wiederholen:** Satzwerte abgeschlossener Einheiten sind jederzeit still korrigierbar; Struktur und Trainingszeit sind eingefroren.
@@ -821,17 +826,17 @@ Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, blei
 
 | Release | Inhalt | Arbeitsanweisung | Status |
 |---|---|---|---|
-| 1 „O-Fix" | Vollständigkeit abgeschlossener Einheiten einfrieren + erweiterte Wiederholen-Warnung | Feinspezifikation Release 1 (F1–F8) | freigegeben, Umsetzung beauftragt |
-| 2 „L" | Programm-Bibliothek: vier freigegebene Startprogramme (`ENTWURF-PROGRAMME/*.json` → `programme/`), Kachel, Vorschau, Kalibrier-Anleitung, Herkunfts-Kennzeichnung | Feinspezifikation Release 2 (L-F1–L-F7) | freigegeben |
-| 3 „O-Kern" | Zonenmodell komplett: Schreibrechte, „Werte korrigieren", Gültig-ab-Mechanik (`fromWeek`/`untilWeek`), Übungs-Zeitachse, Wegweiser + einmalige Hinweis-Box | Feinspezifikation Release 3 (K-F1–K-F9) | freigegeben |
-| 4 „M" | Übungs-Bibliothek light: `uebungen.json` aus der freigegebenen `ENTWURF-UEBUNGSLISTE.md`, Editor-Autocomplete, Tauschvorschläge, Alias-Matching | Feinspezifikation Release 4 (M-F1–M-F8) | freigegeben |
+| 1 „O-Fix" | Vollständigkeit abgeschlossener Einheiten einfrieren + erweiterte Wiederholen-Warnung | Feinspezifikation Release 1 (F1–F8) | umgesetzt |
+| 2 „L" | Programm-Bibliothek: vier freigegebene Startprogramme in `programme/`, Kachel, Vorschau, Kalibrier-Anleitung, Herkunfts-Kennzeichnung | Feinspezifikation Release 2 (L-F1–L-F7) | umgesetzt |
+| 3 „O-Kern" | Zonenmodell komplett: Schreibrechte, „Werte korrigieren", Gültig-ab-Mechanik (`fromWeek`/`untilWeek`), Übungs-Zeitachse, Wegweiser + einmalige Hinweis-Box | Feinspezifikation Release 3 (K-F1–K-F9) | umgesetzt |
+| 4 „M" | Übungs-Bibliothek light: `uebungen.json` aus der freigegebenen Referenz, Editor-Autocomplete, Tauschvorschläge, Alias-Matching | Feinspezifikation Release 4 (M-F1–M-F8) | umgesetzt |
 
 **Verbindliche Umsetzungsregeln:**
 - Reihenfolge strikt 1 → 2 → 3 → 4; Release 3 setzt 1 voraus, Release 4 setzt 3 voraus.
 - Je Release nichts umsetzen, was über die jeweilige Feinspezifikation hinausgeht (insbesondere keine O-Kern-Teile im O-Fix vorziehen).
-- Datenkompatibilität: `cali-plan-v3`, `DATA_SCHEMA_VERSION` 4 und Austauschformat v2 bleiben; alle neuen Felder (`fromWeek`, `untilWeek`, `prevId`, `origin`, `zonesIntroSeen`) sind optional und abwärtskompatibel.
+- Datenkompatibilität: `cali-plan-v3`, `DATA_SCHEMA_VERSION` 4 und Austauschformat v2 bleiben; die neuen Felder (`fromWeek`, `untilWeek`, `prevId`, `origin`) sind optional und abwärtskompatibel.
 - `js/progression.js` bleibt unangetastet; Test-Anker aus Abschnitt 2 Punkt 6 bleiben erhalten.
-- Freigegebene Inhalts-Artefakte: `ENTWURF-PROGRAMME/*.json` (vier Programme, Freigabe 17.07.2026) und `ENTWURF-UEBUNGSLISTE.md` (200 Übungen, Freigabe 17.07.2026).
+- Freigegebene Inhalts-Artefakte: `programme/*.json` (vier Programme) und `docs/referenz/UEBUNGSLISTE.md` (200 Übungen), jeweils Freigabe 17.07.2026.
 
 ### Ergänzende Produktentscheidung · Gleiche Übung an mehreren Trainingstagen (18.07.2026)
 
@@ -841,4 +846,55 @@ Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, blei
 
 ### Ausgeklammert
 
-Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 1–4 und nach einem eigenen Konzept-Termin zu „Bring your own AI" (Vorentscheidungen in `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 6). Bis dahin: keine N-Umsetzung, auch nicht teilweise.
+Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 1–4 und nach einem eigenen Konzept-Termin zu „Bring your own AI" (Vorentscheidungen in `docs/planung/GROSSES-UPDATE-RELEASES-1-4.md`, Abschnitt 6). Bis dahin: keine N-Umsetzung, auch nicht teilweise.
+
+---
+
+## 19. UX-Nachschärfung nach dem Praxistest · 18.07.2026
+
+**Status:** Die folgenden Regeln sind für den unveröffentlichten Folgestand beschlossen. Sie ersetzen in den jeweils genannten Punkten die historischen Regeln aus `FB-20260716-25`, `FB-20260716-27`, Paket K1 und dem Regelwerk aus Abschnitt 18. Datenformat, `DATA_SCHEMA_VERSION`, localStorage-Schlüssel sowie die Trennung von Plan, Einheit und Protokoll bleiben unverändert.
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260718-01` | umgesetzt | Eine abgeschlossene ältere Einheit zeigt in der Fußleiste ausschließlich „Werte korrigieren“. Der Satz „Diese Einheit ist Teil deines Protokolls“ und die Aktion „Diesen Inhalt heute trainieren“ entfallen. Eine zulässige Wiederholung der neuesten Einheit bleibt ein eigener, klar benannter Weg. |
+| `FB-20260718-02` | umgesetzt | Direkte Änderungen an Satzwerten sowie der Einstieg über „Werte korrigieren“ verwenden dieselbe Wirkungsbeschreibung: Nur Satzwerte der abgeschlossenen Einheit ändern sich; Trainingszeit und Protokolleintrag bleiben bestehen; Empfehlungen und Zielwerte späterer Wochen werden nach der Korrektur neu berechnet. Stepper und Texteingabe führen bei einer abgeschlossenen Einheit in denselben Bestätigungsweg. |
+| `FB-20260718-03` | umgesetzt; ersetzt die Vormerkungs-/Bulk-Editor-Regel | Vor und während des Trainings heißt die Aktion nur „Übung tauschen“. Der Tausch gilt zunächst für die ausgewählte Einheit. Vor der ersten Satzeingabe kann mit „Original verwenden“ zurückgekehrt werden. Während des Trainings gibt es weder „Ab jetzt ersetzen“ noch eine dauerhafte Vormerkung im Editor. |
+| `FB-20260718-04` | umgesetzt; ersetzt `FB-20260716-27` | Erst nach einem vollständig beendeten Training wird für jede tatsächlich getauschte Übung ein eigener Entscheidungsdialog angezeigt: „Dauerhaft übernehmen“ oder „Nur dieses Training“. Mehrere Tausche werden einzeln und nacheinander entschieden. Das gerade beendete Protokoll bleibt bei beiden Entscheidungen unverändert. Eine dauerhafte Wahl beginnt an der nächsten offenen Einheit des betroffenen Tages. Bei gewichteten Ersatzübungen wird dafür das tatsächlich trainierte Ersatzgewicht statt des alten Zielgewichts übernommen. Gibt es im Block keine offene Folgewoche mehr, wird sie im nächsten Folgeblock angewendet; der frühere Editorfehler „keine offene Folgewoche“ darf nicht mehr entstehen. |
+| `FB-20260718-05` | umgesetzt | Die automatische Satzpause startet auch nach dem letzten Satz einer Übung und nach dem letzten Satz des Trainingstags. Ein Abschlussdialog wartet, bis die Pause beendet oder abgebrochen wurde. Der zusätzliche Kartenknopf „Pause starten“ entfällt, weil er neben der zuverlässigen Automatik redundant ist. |
+| `FB-20260718-06` | umgesetzt | Vor einer neuen Einheit zeigt die Trainingskarte die aus der letzten passenden Originaleinheit abgeleitete Progressionsempfehlung. Getauschte Einheiten bleiben ausgeschlossen. Empfehlungen sind typgerecht: gewichtete Übungen dürfen Gewichtsangaben nutzen; Zeit-, Progressions- und reine Körpergewichtsübungen erhalten Zeit-, Wiederholungs- oder Variantenhinweise, niemals ein erfundenes Gewicht. |
+| `FB-20260718-07` | umgesetzt | Das verzögerte Einklappen einer erledigten Übung bewahrt die sichtbare Position der folgenden Karte. Fokus und Scrollposition dürfen nicht wahrnehmbar hin und her springen. |
+| `FB-20260718-08` | umgesetzt | Sichtbare Garmin- und Garmin-Proxy-Bezeichnungen entfallen vollständig. Vorhandene Import-/Exportfelder dürfen intern aus Kompatibilitätsgründen bestehen bleiben. Video, Notiz und Übung tauschen bilden eine gemeinsame Aktionszeile; deutscher Titel, englischer Titel und Beschreibung sind klar voneinander getrennt. |
+| `FB-20260718-09` | umgesetzt | Importnormalisierungen bleiben intern, werden aber nicht als „Sicher automatisch bereinigt“ kommuniziert. Das offizielle Programm „Calisthenics Einstieg“ muss denselben echten Prüf- und Vorschaupfad wie die anderen Bibliotheksprogramme fehlerfrei durchlaufen. |
+| `FB-20260718-10` | umgesetzt | In der Programmverwaltung hat „Aktivieren“ dieselbe zurückgenommene Hierarchie wie „Bearbeiten“. Im Erstellen-Hub sind „Fertiges Programm wählen“ und „Manuell erstellen“ nicht dauerhaft farblich hervorgehoben. Bibliotheksvorschauen zeigen Übungsnamen ohne Trainingsgruppen-Suffix und keine redundante Zahl fehlender Startgewichte. |
+| `FB-20260718-11` | umgesetzt | Der Programmeditor richtet zusammengehörige Felder auf derselben Ebene aus: Trainingstag/Name des Tages, Bezeichnung/Farbe sowie Checkbox/Text der eigenen Vorgabe. Das Umschalten automatischer Wiederholungsbereiche hält die betroffene Trainingsgruppe geöffnet. |
+| `FB-20260718-12` | umgesetzt | Die Editor-Anleitung ist zusätzlich als leicht verständliche PDF verfügbar. Sie erklärt Training, Wochen, Details, Trainingsgruppen, eigene Vorgaben, Gültigkeit, Rückgängig sowie Kopie gegenüber Original ersetzen ohne internes Vorwissen vorauszusetzen. |
+
+### Weiterhin offene Produktentscheidungen
+
+- **Darstellung der Tauschentscheidungen:** Der fachliche Lebenszyklus aus `FB-20260718-03/04` ist fest. Wortlaut und visuelle Form werden mit etablierten Trainingsapps verglichen; die App darf dafür später von sequenziellen Dialogen auf eine gleichwertige Einzelentscheidung je Zeile in einer Zusammenfassung wechseln.
+- **Wochen als Datenbank:** Bis zu einer eigenen Entscheidung bleibt der Editor flexibel. Bevorzugte Richtung ist ein Hybrid: verständliche Vorlagen für häufige Aufbau-, Intensiv- und Erholungswochen, deren RIR-, Satz- und Textwerte anschließend frei änderbar bleiben. Eine starre Datenbank oder Einschränkung bestehender Importe ist nicht beschlossen.
+- **Startgewicht-Hilfe:** Die redundante Zählung in der Programmvorschau entfällt. Der genaue Umfang eines weiterführenden Leitfadens bleibt offen; die Trainingskarte darf einen einzigen kompakten Einstieg zur bestehenden Hilfe anbieten.
+
+### Test- und Dokumentationspflichten
+
+- Der vorhandene Playwright-Testbestand deckt Chromium und WebKit auf Desktop und Smartphone ab.
+- Verbindliche Copy wird wortgleich getestet; veraltete Texte und Aktionen sind zusätzlich mit Anzahl `0` abgesichert.
+- Visuelle Baselines decken die reduzierte Protokollleiste, den neutralen Erstellen-Hub und den neuen schlanken Tauschdialog ab.
+- Die vier offiziellen Bibliotheksprogramme sind im Browserpfad bis zur Vorschau abgedeckt.
+- Die PDF wird bei inhaltlichen oder Layoutänderungen vor Übergabe gezielt gerendert und geprüft.
+- Die Ausführung vollständiger Matrizen richtet sich ausschließlich nach `docs/TESTING.md`.
+
+---
+
+## 20. Empfehlungen in Trainingskarten · 19.07.2026
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260719-01` | umgesetzt | Nach vollständigen Sätzen zeigt die Karte die daraus berechnete Empfehlung direkt unter den Satzzeilen. In einer offenen Folgewoche wird diese Karte nicht wiederholt; stattdessen steht ein kompakter Hinweis fest in der passenden Vorgabeposition (kg, Wdh., Zeit oder Variante). Auch `Erholungswoche` und `Wiedereinstieg` bleiben an dieser Position, damit die Erklärung nicht zwischen den Bereichen springt. |
+| `FB-20260719-02` | umgesetzt | Die separate Zeile „Arbeitsgewicht“ entfällt. Das empfohlene Ziel bleibt in der Vorgabezeile sichtbar. Fehlt ein Ziel, erklärt der bestehende Kalibrierungshinweis die Eingabe im ersten Satz; dieser Wert wird anschließend als Arbeitswert angezeigt. Für weitere Sätze hat das zuletzt tatsächlich verwendete Gewicht Vorrang vor dem ursprünglichen Ziel. Dasselbe gilt für getauschte Übungen, ohne deren Gewicht in das Originalziel zu schreiben. |
+| `FB-20260719-03` | umgesetzt | Das dreistündige Sicherheitslimit wird beim Fortsetzen nur gegen den neu gestarteten Trainingsabschnitt gerechnet, nicht gegen die Summe bereits gespeicherter Abschnitte. Beim Verlassen beziehungsweise Wechseln der App in den Hintergrund wird eine laufende Trainingszeit automatisch pausiert und gespeichert, damit Abwesenheit nicht als Trainingsdauer zählt. |
+| `FB-20260719-04` | umgesetzt | Zeitvorgaben und protokollierte Zeitwerte werden unabhängig von ihrer Länge als Minuten:Sekunden dargestellt. Beispiel: Plank mit 75 Sekunden erscheint als `1:15 min`, ein Bereich von 30 bis 75 Sekunden als `0:30–1:15 min`. Die intern gespeicherten Sekunden und die Eingabelogik bleiben unverändert. |
+| `FB-20260719-05` | umgesetzt | Der Kalibrierungshinweis „Arbeitsgewicht noch offen“ erhält eine feste Position unter dem Verlauf beziehungsweise unter einem zusätzlichen Vergleichswert eines anderen Tages und direkt vor den Satzzeilen. |
+| `FB-20260719-06` | umgesetzt | Alle Aktionen innerhalb einer Programmkarte werden wie das frühere „Bearbeiten“ als anklickbare, unterstrichene Textaktionen ohne Button-Fläche dargestellt. Dazu gehören insbesondere „Aktivieren“, „Bearbeiten“, „Folgeblock starten“, „Archivieren“, „Auswertung ansehen“ und „Aus dem Archiv holen“. |
+| `FB-20260719-07` | umgesetzt | Der Dialog „Übung tauschen“ verwendet oben das frei bearbeitbare Feld „Ersatzübung“. Beim Tippen erscheinen deutsche Datenbanktreffer ohne englische Bezeichnungen oder Zusatzinformationen direkt unter dem Feld. Nach der Auswahl verschwindet die Trefferliste und der Name bleibt im Feld; er kann erneut verändert oder durch einen eigenen Namen ersetzt werden. Darunter zeigt der Dialog separat „Empfohlene Ersatzübung“ mit genau einer passenden Auswahl. |
+| `FB-20260719-08` | umgesetzt | Beim Start nach dem Update erscheint kein zusätzlicher Hinweisdialog. Die frühere einmalige Meldung „Neu: Dein Trainingstagebuch ist geschützt“ und ihr gespeicherter Gesehen-Status entfallen vollständig; die App öffnet direkt in der Trainingsansicht. |

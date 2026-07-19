@@ -59,7 +59,12 @@
    return"Halten: Gewicht bleibt gleich, versuche mehr Wiederholungen";
   }
   if(a==="decrease")return"Reduzieren: Gewicht war wahrscheinlich zu hoch"+(nw!=null?" (≈ "+nw+" kg)":"");
-  if(a==="deload")return"Deload: reduziertes Gewicht verwenden"+(nw!=null?" (≈ "+nw+" kg)":"");
+  if(a==="deload"){
+   if(mode==="weight"||mode==="added_weight")return"Erholung: reduziertes Gewicht verwenden"+(nw!=null?" (≈ "+nw+" kg)":"");
+   if(mode==="seconds")return"Erholung: Haltezeit reduzieren oder leichtere Variante wählen";
+   if(mode==="progression")return"Erholung: leichtere Variante sauber ausführen";
+   return"Erholung: weniger Wiederholungen oder leichtere Variante wählen";
+  }
   if(a==="technique")return"Technik prüfen: keine Steigerung empfohlen";
   if(a==="progression")return"Progression möglich: schwerere Variante testen";
   return"";
@@ -72,7 +77,12 @@
   var current=p.currentSession,repRange=p.repRange,currentWeight=Number(p.currentWeight)||0;
   function result(value){value.mode=mode;value.increment=inc;if(value.nextWeight===undefined)value.nextWeight=null;value.message=buildCoachMessage(value);return value;}
   if(!current||!current.length)return result({action:"none",reason:"Noch keine Werte eingetragen."});
-  if(p.isDeload)return result({action:"deload",nextWeight:calculateDeloadValue(currentWeight,settings),reason:"Deload – keine Progression, reduziertes Gewicht verwenden."});
+  if(p.isDeload){
+   if(mode==="none")return result({action:"none",reason:"Für diese Übung ist keine automatische Progression vorgesehen."});
+   if(mode==="weight"||mode==="added_weight")return result({action:"deload",nextWeight:calculateDeloadValue(currentWeight,settings),reason:"Erholungswoche: Belastung bewusst reduzieren, keine Steigerung."});
+   if(mode==="seconds")return result({action:"deload",reason:"Erholungswoche: kürzer halten oder eine leichtere Variante wählen."});
+   return result({action:"deload",reason:"Erholungswoche: Umfang oder Schwierigkeit bewusst reduzieren."});
+  }
   if(mode==="none")return result({action:"none",reason:"Für diese Übung ist keine automatische Progression vorgesehen."});
   if(mode==="progression"){
    if(repRange&&repBucket(current,repRange,settings)==="increase")return result({action:"progression",reason:"Zielbereich erreicht – nächste Skill-Stufe / schwerere Variante testen."});

@@ -5,22 +5,17 @@ const vm = require('node:vm');
 
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 
-test('shows the protected-journal guide once and uses all four intent labels', () => {
+test('uses the current correction and swap labels without a startup update notice', () => {
   for (const text of [
-    'Neu: Dein Trainingstagebuch ist geschützt',
-    'Abgeschlossene Trainings bleiben genau so, wie du sie trainiert hast.',
-    'Zahlen ausbessern geht weiterhin jederzeit – über ‚Werte korrigieren‘.',
-    'Trainiert und wiederholt wird vorne – in deiner aktuellen Woche, Nachholen aus der Vorwoche inklusive.',
-    'Änderungen an deinem Plan gelten ab jetzt und lassen Vergangenes unverändert. Alles andere bleibt, wie du es kennst.',
-    'Diese Einheit ist Teil deines Protokolls.',
     'Werte korrigieren',
     'Training wiederholen (ersetzt die letzte Einheit)',
-    'Übung nur heute tauschen',
-    'Ab jetzt ersetzen'
+    'Übung tauschen',
+    'Dauerhaft übernehmen',
+    'Nur dieses Training'
   ]) assert.match(html, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.match(html, /if\(active\(\)\|\|S\.zonesIntroSeen===true\)return false/);
-  assert.match(html, /S\.zonesIntroSeen=true;flushSave\(\)/);
-  assert.match(html, /else if\(!loadIssueText&&!active\(\)&&!pendingProgramImport&&!S\.zonesIntroSeen\)/);
+  assert.doesNotMatch(html, /Diese Einheit ist Teil deines Protokolls\.|Diesen Inhalt heute trainieren|Übung nur heute tauschen|Ab jetzt ersetzen/);
+  assert.doesNotMatch(html, /Neu: Dein Trainingstagebuch ist geschützt|zonesIntroSeen|showZonesIntroOnce/);
+  assert.match(html, /resumedPendingWorkoutSwaps=resumePendingWorkoutSwapFlow\(S\.active\)/);
 });
 
 function functionSource(name) {
@@ -174,9 +169,9 @@ test('behandelt eingefrorene Einheiten in Dialog und Startleiste als wiederholba
   program.days[0].ex.push({
     id: 'later', name: 'Später ergänzt', cat: 'kraft', w: false, unit: 'reps'
   });
-  const bar = { innerHTML: '', classList: { remove() {} } };
+  const bar = { innerHTML: '', classList: { toggle() {} } };
   context.document = {
-    body: { classList: { remove() {} } },
+    body: { classList: { toggle() {} } },
     getElementById: id => id === 'bar' ? bar : null
   };
 

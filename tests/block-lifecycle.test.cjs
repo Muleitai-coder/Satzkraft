@@ -378,7 +378,7 @@ test('shows block success exactly once and persists only the celebration marker'
     'Folgeblock starten', 'Auswertung ansehen', 'Später'
   ]);
   assert.match(functionSource('stopWorkout'), /continuePostWorkoutFlow\(/);
-  assert.match(functionSource('continuePostWorkoutFlow'), /showPendingReplacementDecision\(programId\).*maybeShowBlockSuccess\(programId\)/s);
+  assert.match(functionSource('continuePostWorkoutFlow'), /showNextPostWorkoutSwapDecision\(\).*maybeShowBlockSuccess\(programId\)/s);
   assert.match(functionSource('newStore'), /blockCelebrated:false/);
   assert.match(functionSource('syncStore'), /blockCelebrated:S\.blockCelebrated===true/);
 });
