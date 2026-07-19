@@ -85,6 +85,7 @@ function loadEditorStoreContext(sourceProgram) {
 
 test('stores timestamps while copies and replacements return to the list without activating themselves', () => {
   const source = internalProgram('source', 'Kraftbasis');
+  source.origin = 'satzkraft';
   source.createdAt = NOW - 10_000;
   source.updatedAt = NOW - 5_000;
   const active = internalProgram('active', 'Aktiver Plan');
@@ -99,6 +100,7 @@ test('stores timestamps while copies and replacements return to the list without
   assert.match(copy.name, / \(Kopie\)$/);
   assert.equal(copy.createdAt, NOW);
   assert.equal(copy.updatedAt, NOW);
+  assert.equal(copy.origin, undefined, 'eine Editor-Kopie ist kein offizielles Satzkraft-Programm');
   assert.equal(copyRun.context.S.active, 'active', 'eine Editor-Kopie darf das aktive Programm nicht wechseln');
   assert.deepEqual(copyRun.activations, []);
   assert.deepEqual(copyRun.editorExits, ['back'], 'nach dem Speichern der Kopie muss die Programmübersicht folgen');
@@ -115,6 +117,7 @@ test('stores timestamps while copies and replacements return to the list without
   const replaced = replaceRun.context.S.programs.source;
   assert.equal(replaced.createdAt, source.createdAt, 'Erstellungsdatum des Originals muss erhalten bleiben');
   assert.equal(replaced.updatedAt, NOW, 'Änderungsdatum muss beim Ersetzen erneuert werden');
+  assert.equal(replaced.origin, 'satzkraft', 'Bearbeiten des Originals erhält dessen Herkunft');
   assert.equal(replaceRun.context.S.active, 'active', 'das Ersetzen eines anderen Programms darf es nicht aktivieren');
   assert.deepEqual(replaceRun.activations, []);
   assert.deepEqual(replaceRun.editorExits, ['back'], 'nach dem Ersetzen muss die Programmübersicht folgen');

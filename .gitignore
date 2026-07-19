@@ -9,3 +9,8 @@
 # Lokale Abhängigkeiten und Protokolle
 node_modules/
 *.log
+qa/playwright/playwright-report/
+qa/playwright/test-results/
+
+# Lokale Agent-Arbeitsbereiche
+.claude/worktrees/

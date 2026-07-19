@@ -52,7 +52,7 @@ test('renumbers weeks after structural edits', () => {
 });
 
 test('keeps editor drafts deeply separated from the original program', () => {
-  assert.match(html, /editorDraft=cloneJSON\(exportTranslate\(p\)\)/);
+  assert.match(html, /var exported=cloneJSON\(exportTranslate\(p\)\)/);
   const original = { weeks: [{ sets: { kraft: 3 } }], settings: { deloadMultiplier: 0.6 } };
   const draft = context.cloneJSON(original);
   draft.weeks[0].sets.neu = 4;

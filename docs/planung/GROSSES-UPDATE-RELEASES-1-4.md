@@ -1,8 +1,8 @@
-# ENTWURF · Großes Update: Pakete L, M, N, O (Arbeitsdokument)
+# Großes Update: Releases 1–4 (Spezifikation und Entscheidungsverlauf)
 
-> **Status: INS BRIEFING ÜBERNOMMEN (17.07.2026).** Alle Entscheidungen sind getroffen, die Feinspezifikationen der Releases 1–4 sind freigegeben. `BRIEFING-CODEX.md` Abschnitt 18 verweist auf dieses Dokument: **Die vier Feinspezifikations-Abschnitte („Feinspezifikation Release 1–4") sind damit verbindliche Arbeitsanweisungen** für den umsetzenden Agenten. Paket N ist ausgeklammert (Abschnitt 6 bleibt als Vorentscheidung dokumentiert). Historie der Entscheidungsfindung: Abschnitte 8–9.
+> **Status: UMGESETZT mit v0.26.0.** Dieses Dokument bewahrt Spezifikation und Entscheidungsverlauf der Releases 1–4. Aktuelle Produktregeln stehen in `BRIEFING-CODEX.md`. Paket N bleibt ausgeklammert; Abschnitt 6 dokumentiert nur die Vorentscheidung.
 
-**Strategischer Rahmen:** Alle vier Pakete vertiefen die Differenzierungs-Achsen (Trainingsintelligenz, „Bring your own AI", lokal ohne Konto/Abo, deutsch & laientauglich). Die Nicht-Ziele aus Briefing Abschnitt 4 bleiben unangetastet. Der langfristige `AUSBAUPLAN.md` (Konten/Cloud/Desktop) ist von diesem Update unabhängig und bleibt unberührt.
+**Strategischer Rahmen:** Alle vier Pakete vertiefen die Differenzierungs-Achsen (Trainingsintelligenz, „Bring your own AI", lokal ohne Konto/Abo, deutsch & laientauglich). Die Nicht-Ziele aus Briefing Abschnitt 4 bleiben unangetastet. Der langfristige `docs/planung/AUSBAUPLAN.md` (Konten/Cloud/Desktop) ist von diesem Update unabhängig und bleibt unberührt.
 
 ---
 
@@ -418,9 +418,9 @@ Neue Nutzer kommen heute nur über den 17-Fragen-Coach, ChatGPT oder manuelles B
 | L-E8 | Vorschau-Detailgrad? | **ENTSCHIEDEN 16.07.:** Vollständig scrollbar – Beschreibung, Wochenstruktur (Phasen/RIR), alle Tage mit allen Übungen inkl. Warm-up/Cool-down. Nutzt das Import-Vorschau-Muster. |
 
 ### Stand der Vorarbeit (16.07.2026)
-- **Alle vier Programmentwürfe liegen vor:** `ENTWURF-PROGRAMME/gym-ganzkoerper-beginner.json`, `gym-ganzkoerper-fortgeschritten.json`, `calisthenics-einstieg.json`, `hybrid-gym-calisthenics.json`. Je 3 Tage × 8 Wochen (2×-Aufbau-Deload, RIR 3→1), Warm-up/Cool-down je Tag, alle Geräte-Übungen mit `proxy`, englische Namen (`en`), Startgewichte 0.
+- **Alle vier Programme liegen vor:** `programme/gym-ganzkoerper-beginner.json`, `gym-ganzkoerper-fortgeschritten.json`, `calisthenics-einstieg.json`, `hybrid-gym-calisthenics.json`. Je 3 Tage × 8 Wochen (2×-Aufbau-Deload, RIR 3→1), Warm-up/Cool-down je Tag, alle Geräte-Übungen mit `proxy`, englische Namen (`en`), Startgewichte 0.
 - **Validierung:** Alle vier bestehen die echte `parseProgram`-Prüfung (getestet in v0.19.x) sowie einen Regel-Nachbau (Whitelist, Limits, Satz-Abdeckung je Woche).
-- **Kalibrier-Anleitung:** Textentwurf in `ENTWURF-PROGRAMME/kalibrier-anleitung.md`.
+- **Kalibrier-Anleitung:** Der frühere Textentwurf wurde in die App-Texte übernommen.
 - **Freigabe (17.07.2026):** Die vier Programme wurden vom Produktverantwortlichen überarbeitet und freigegeben (LF-1 erledigt). Erneute Vollvalidierung über den `parseProgram`-Test ist Teil der L-Umsetzung.
 
 ### Technische Eckpunkte (ENTSCHIEDEN 17.07., LF-2/LF-3)
@@ -443,7 +443,7 @@ Neue Nutzer kommen heute nur über den 17-Fragen-Coach, ChatGPT oder manuelles B
 - Schreibschutz: `programWriteLocked()` gilt; die neue Kachel erhält dasselbe `lockedAttr`-Muster wie `createhubbtn`.
 
 #### L-F2 · Dateien & Auslieferung
-1. Neues Verzeichnis `programme/` mit den vier freigegebenen JSONs (Verschieben aus `ENTWURF-PROGRAMME/`, Dateinamen beibehalten). Die Inhalte von `ENTWURF-PROGRAMME/kalibrier-anleitung.md` wandern in die App-Texte (L-F4); danach wird der Ordner `ENTWURF-PROGRAMME/` entfernt (Git-Historie genügt).
+1. Verzeichnis `programme/` mit den vier freigegebenen JSONs. Die frühere Kalibrier-Anleitung ist in die App-Texte übernommen; der Entwurfsordner wurde wie geplant entfernt.
 2. `sw.js`: die vier JSONs in die Cache-Liste aufnehmen (offline verfügbar; `CACHE`-Version steigt mit dem Release ohnehin, `version.test.cjs`).
 3. Konstante `PROGRAM_LIBRARY` in `index.html`: je Programm Datei-Pfad, Name, Ziel, Level, Tage/Woche, Dauer je Einheit, Kurzbeschreibung (bestimmt die Listen-Reihenfolge). Laden per `fetch` beim Öffnen der Liste.
 
@@ -484,7 +484,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 | # | Frage | Entscheidung |
 |---|---|---|
 | M-E1 | Umfang (Auswahlprinzip)? | **ENTSCHIEDEN 16.07., ERWEITERT 17.07. (MF-2):** Sieben Bereiche mit Zielumfang ~200 Übungen: **Gym/Studio-Geräte 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5.** Kernanspruch unverändert: saubere deutsche UND englische Bezeichnungen (gründliche Recherche verpflichtend – größte Schwachstelle anderer Apps; `en`-Feld vorhanden). **Prüfpunkt Feinspezifikation:** Abgrenzung Mobility/Cardio zur bestehenden Warm-up/Cool-down-Bibliothek (`WUCD_LIB`) – was ist reguläre Übung im Trainingstag, was gehört in Warm-up/Cool-down. |
-| M-E2 | Felder pro Übung? | **ENTSCHIEDEN 16.07., ERWEITERT 17.07.:** Name (DE), englischer Name, Alias-Namen, Übungstyp (Gewicht/Körpergewicht/**Körpergewicht+Zusatzgewicht**/Zeit), Equipment, Bewegungsmuster/Muskel (nur intern für Tauschvorschläge), Technik-Hinweis (1 Satz), Video-Suchbegriff, passende Ersatzübung. Erweiterung: vierter Übungstyp für Übungen wie Klimmzüge/Dips vom Produktverantwortlichen bestätigt (17.07., siehe `ENTWURF-UEBUNGSLISTE.md` Abschnitt 14). |
+| M-E2 | Felder pro Übung? | **ENTSCHIEDEN 16.07., ERWEITERT 17.07.:** Name (DE), englischer Name, Alias-Namen, Übungstyp (Gewicht/Körpergewicht/**Körpergewicht+Zusatzgewicht**/Zeit), Equipment, Bewegungsmuster/Muskel (nur intern für Tauschvorschläge), Technik-Hinweis (1 Satz), Video-Suchbegriff, passende Ersatzübung. Erweiterung: vierter Übungstyp für Übungen wie Klimmzüge/Dips vom Produktverantwortlichen bestätigt (17.07., siehe `docs/referenz/UEBUNGSLISTE.md` Abschnitt 14). |
 | M-E3 | Alias-Matching für J4? | **ENTSCHIEDEN 16.07.:** Automatisch – bekannte Namen (DE/EN-Varianten) werden über die Alias-Liste still normalisiert; unbekannte matchen weiter nur exakt. |
 | M-E4 | Einsatzorte im UI? | **ENTSCHIEDEN 16.07.:** Drei Orte: Editor-Autocomplete (Übernahme füllt Typ, Technik-Hinweis, Video, Ersatzübung mit aus), Tauschvorschläge in K1, Langzeit-Matching J4. „Schnellwahl statt leerer Karte" beim Übung-Hinzufügen bewusst **nicht** übernommen. |
 
@@ -496,8 +496,8 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 - **Neu (Verzahnung mit O):** Das Feld „passende Ersatzübung" speist die Vorschläge für „Nur heute tauschen" und „Ab jetzt ersetzen" (Regel 8); DE/EN-Namen und Aliasse speisen die Übungs-Zeitachse (O5) und das Langzeit-Matching.
 
 ### Stand der Vorarbeit (17.07.2026)
-- **Recherche-Dokument liegt vor:** `ENTWURF-UEBUNGSLISTE.md` – 200 Übungen in sieben Bereichen (Gym 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5), DE/EN-Namen recherchiert (Übersetzungsfallen mit Quellen dokumentiert), Ersatzübungen flächendeckend, alle 50 Übungsnamen der freigegebenen L-Programme abgedeckt, WUCD-Abgrenzung gekennzeichnet.
-- **Freigabe (17.07.2026):** Liste vom Produktverantwortlichen abgenommen und freigegeben (Status in `ENTWURF-UEBUNGSLISTE.md` entsprechend gesetzt). Die inhaltliche M-Vorarbeit ist damit abgeschlossen; offen bleibt nur noch die technische Feinspezifikation der M-Umsetzung (Autocomplete, Tauschvorschläge, Alias-Matching).
+- **Recherche-Dokument liegt vor:** `docs/referenz/UEBUNGSLISTE.md` – 200 Übungen in sieben Bereichen (Gym 90, Calisthenics 40, Kettlebell 25, Functional 15, Core 15, Mobility 10, Cardio 5), DE/EN-Namen recherchiert (Übersetzungsfallen mit Quellen dokumentiert), Ersatzübungen flächendeckend, alle 50 Übungsnamen der freigegebenen L-Programme abgedeckt, WUCD-Abgrenzung gekennzeichnet.
+- **Freigabe (17.07.2026):** Liste vom Produktverantwortlichen abgenommen und freigegeben (Status in `docs/referenz/UEBUNGSLISTE.md` entsprechend gesetzt). Die inhaltliche M-Vorarbeit ist damit abgeschlossen; offen bleibt nur noch die technische Feinspezifikation der M-Umsetzung (Autocomplete, Tauschvorschläge, Alias-Matching).
 - **Entscheidungen des Produktverantwortlichen (17.07.):** 1. Vierter Übungstyp „Körpergewicht+Zusatzgewicht" wird übernommen (M-E2 erweitert). 2. WUCD-Überschneidungen bleiben in beiden Bibliotheken (mit Kennzeichnung). 3. Bei Trage-/Schlitten-Übungen sollen Gewicht **und** Zeit erfassbar sein – Datenmodell/UI in der M-Feinspezifikation. 4. QS der Technik-Hinweise und Video-Suchbegriffe (MF-3) erfolgt später als eigener Schritt; Priorität ist die saubere Datenbasis. 5. Alias-Ergänzungen aus der Studio-Praxis folgen später.
 - **Status:** Liste bleibt ENTWURF bis zur MF-3-Freigabe; nichts davon ist in der App.
 
@@ -505,7 +505,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 
 ### Feinspezifikation Release 4 „M" (Übungs-Bibliothek light) · FREIGEGEBEN 17.07.2026
 
-**Stand 17.07.2026, abgeglichen mit v0.22.3; setzt Release 3 voraus** (Tauschvorschläge münden in die „Ab jetzt ersetzen"-Mechanik). Inhaltliche Grundlage ist die **freigegebene** `ENTWURF-UEBUNGSLISTE.md`.
+**Stand 17.07.2026, abgeglichen mit v0.22.3; setzt Release 3 voraus** (Tauschvorschläge münden in die „Ab jetzt ersetzen"-Mechanik). Inhaltliche Grundlage ist die **freigegebene** `docs/referenz/UEBUNGSLISTE.md`.
 
 #### M-F1 · Codestand-Abgleich
 - Editor-Übungsfelder: `editorExerciseMeta` (~2566), Namensfeld `edexname`-Karten – Andockpunkt fürs Autocomplete.
@@ -514,7 +514,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 - `WUCD_LIB` (~2234) bleibt getrennt; als WUCD-nah gekennzeichnete Einträge der Liste werden **nicht** in die Übungs-Bibliothek aufgenommen.
 
 #### M-F2 · Datei & Struktur
-1. Neue Datei `uebungen.json`, generiert aus der freigegebenen `ENTWURF-UEBUNGSLISTE.md`: je Eintrag `de`, `en`, `alias[]`, `typ` (`gewicht|koerpergewicht|kgz|zeit`), `equipment`, `muster` (intern), `technik` (1 Satz), `video`, `ersatz`. Bereichszuordnung bleibt als Feld erhalten (nur intern, keine Muskel-Analytik im UI).
+1. Neue Datei `uebungen.json`, generiert aus der freigegebenen `docs/referenz/UEBUNGSLISTE.md`: je Eintrag `de`, `en`, `alias[]`, `typ` (`gewicht|koerpergewicht|kgz|zeit`), `equipment`, `muster` (intern), `technik` (1 Satz), `video`, `ersatz`. Bereichszuordnung bleibt als Feld erhalten (nur intern, keine Muskel-Analytik im UI).
 2. `sw.js`: Datei in die Cache-Liste. Laden „lazy" beim ersten Öffnen von Editor oder Tausch-Modal; danach im Speicher.
 3. Typ-Mapping in App-Felder: `gewicht`→`w:true`; `koerpergewicht`→`w:false`; `kgz`→`w:true,bw:true`; `zeit`→`unit:"seconds"`.
 
@@ -591,7 +591,7 @@ Der Coach erstellt heute nur das Programm. Ausbaustufe: Mitten im Block kann der
 ### Paket L
 | # | Frage | Vorschlag |
 |---|---|---|
-| LF-1 | Studio-Abnahme der vier Programme (Gate, keine Designfrage). | **ERLEDIGT 17.07.:** Programme vom Produktverantwortlichen überarbeitet und freigegeben (Stand in `ENTWURF-PROGRAMME/`). JSON-Syntax nach Überarbeitung geprüft; die volle `parseProgram`-Validierung läuft als automatischer Test in der L-Umsetzung. |
+| LF-1 | Studio-Abnahme der vier Programme (Gate, keine Designfrage). | **ERLEDIGT 17.07.:** Programme vom Produktverantwortlichen überarbeitet, freigegeben und nach `programme/` übernommen. JSON-Syntax und `parseProgram`-Validierung wurden bei der L-Umsetzung geprüft. |
 | LF-2 | Technische Eckpunkte bestätigen (statische JSONs `programme/*.json`, SW-Cache, `parseProgram`-Pfad)? | **ENTSCHIEDEN 17.07.:** Separate mitgelieferte JSON-Dateien, offline gecacht, Übernahme über den `parseProgram`-Pfad. |
 | LF-3 | Herkunfts-Kennzeichnung: Ort und Wortlaut? | **ENTSCHIEDEN 17.07.:** Kleine Zeile „Offizielles Satzkraft-Programm" auf der Programmkarte in der Verwaltung; kein Kennzeichen im Training. |
 

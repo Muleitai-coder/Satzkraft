@@ -148,6 +148,23 @@ test('previousBlockMetrics follows archived parents by exact exercise name and r
   assert.match(card, /Vorblock: 82,5 kg/);
 });
 
+test('uses the loaded alias canonicalization for comparisons across blocks', () => {
+  const { context, report } = loadReportContext();
+  const previous = weightedProgram('Block 1', 'Barbell Back Squat', { archived: true });
+  const current = weightedProgram('Block 2', 'Langhantel-Kniebeuge', { parent: 'previous' });
+  context.S.programs = { previous, current };
+  context.S.store = { previous: reportStore(75, 2000), current: reportStore(80, 3000) };
+  context.S.active = 'current';
+  context.canonicalExerciseName = name => (
+    name === 'Barbell Back Squat' || name === 'Langhantel-Kniebeuge'
+      ? 'Langhantel-Kniebeuge'
+      : name
+  );
+
+  context.buildReport('current');
+  assert.match(report.innerHTML, /Vorblock: 82,5 kg/);
+});
+
 test('exportTranslate never exposes internal archive or parent-chain metadata', () => {
   const start = html.indexOf('function exportTranslate');
   const end = html.indexOf('function plainObject', start);

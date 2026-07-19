@@ -92,6 +92,31 @@ test('keeps deload work in totals but excludes weighted deload points from the t
   assert.equal(data.totalVolume, 800);
 });
 
+test('keeps ended and successor exercises in separate week-filtered report cards', () => {
+  const data = context.buildReportData(
+    {
+      weeks: [{ n: 1 }, { n: 2 }, { n: 3 }],
+      days: [{ key: 'A', ex: [
+        { id: 'old', name: 'Beinpresse', w: true, untilWeek: 2 },
+        { id: 'new', name: 'Kniebeuge', w: true, fromWeek: 3, prevId: 'old' }
+      ] }]
+    },
+    {
+      '1|A|old': { sets: [{ reps: '8', weight: '80' }] },
+      '3|A|old': { sets: [{ reps: '8', weight: '90' }] },
+      '3|A|new': { sets: [{ reps: '8', weight: '60' }] }
+    },
+    []
+  );
+  const old = data.exercises.find(metric => metric.id === 'old');
+  const successor = data.exercises.find(metric => metric.id === 'new');
+  assert.deepEqual(Array.from(old.points, point => point.week), [1]);
+  assert.deepEqual(Array.from(successor.points, point => point.week), [3]);
+  assert.equal(old.untilWeek, 2);
+  assert.match(html, /metric\.name\+period/);
+  assert.match(html, /' · Woche '\+metric\.fromWeek\+'–'\+metric\.untilWeek/);
+});
+
 test('ignores malformed and contradictory values instead of inventing progress', () => {
   assert.equal(context.reportEstimate1RM('', 10), null);
   assert.equal(context.reportEstimate1RM(-20, 10), null);

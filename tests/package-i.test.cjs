@@ -27,7 +27,7 @@ test('keeps bar weights and notes in every store lifecycle path', () => {
   assert.match(html, /function newStore\(prog\)\{return\{tg:\{\},barw:\{\},notes:\{\}/);
   assert.match(html, /function syncStore\(\)\{S\.store\[S\.active\]=\{tg:S\.tg,barw:S\.barw,notes:S\.notes/);
   assert.match(html, /S\.tg=st\.tg;S\.barw=st\.barw;S\.notes=st\.notes/);
-  assert.match(html, /\["barw","notes"\]\.forEach/);
+  assert.match(html, /function migrateReplaceStore[\s\S]*JSON\.parse\(JSON\.stringify\(oldStore/);
   assert.match(html, /st\.barw!=null&&!plainObject\(st\.barw\)/);
   assert.match(html, /notes\[noteKeys\[ni\]\]\.length>500/);
 });

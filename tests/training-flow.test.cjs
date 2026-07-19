@@ -128,13 +128,14 @@ test('completes repetitions from weight input and queues automatic rest', () => 
   assert.equal(scheduled[3], true);
 });
 
-test('keeps zero targets empty and reuses a previous calibration weight', () => {
+test('prefers the previous set weight and keeps empty zero targets empty', () => {
   const start = html.indexOf('function onSetInput');
   const end = html.indexOf('function onSetChange', start);
   let written;
   const weightInput = { value: '' };
   const exercise = { id: 'squat', w: true };
   const sets = [{ reps: '12', weight: '80' }, { reps: '', weight: '' }];
+  let plannedTarget = 95;
   const context = {
     restPhase: null,
     restExId: null,
@@ -151,7 +152,7 @@ test('keeps zero targets empty and reuses a previous calibration weight', () => 
     firstOpenSet: () => 0,
     setInputLocked: () => false,
     round: value => value,
-    targetWeight: () => 0,
+    targetWeight: () => plannedTarget,
     writeSets: (_ex, next) => { written = next; },
     save() {},
     setComplete: (_ex, set) => set.reps !== '' && set.weight !== '',
@@ -169,6 +170,7 @@ test('keeps zero targets empty and reuses a previous calibration weight', () => 
   assert.equal(weightInput.value, '80');
 
   sets[0] = { reps: '', weight: '' };
+  plannedTarget = 0;
   weightInput.value = '';
   context.onSetInput({ id: 'rep-squat-1', value: '12' });
   assert.equal(written[1].weight, '');
@@ -183,11 +185,9 @@ test('locks focused inputs and steppers of other exercises throughout every set 
   const exercise = { id: 'row', name: 'Rudern', w: true };
   const rep = { id: 'rep-row-0', disabled: false };
   const weight = { id: 'wt-row-0', disabled: false };
-  const workingWeight = { id: 'ww-row', disabled: false };
   const controls = new Map([
     [rep.id, rep],
-    [weight.id, weight],
-    [workingWeight.id, workingWeight]
+    [weight.id, weight]
   ]);
   const steppers = [
     { dataset: { step: 'rep' }, disabled: false },
@@ -211,10 +211,9 @@ test('locks focused inputs and steppers of other exercises throughout every set 
   vm.runInContext(html.slice(start, end), context);
 
   for (const phase of ['countdown', 'set', 'hold']) {
-    for (const focused of [rep, weight, workingWeight]) {
+    for (const focused of [rep, weight]) {
       rep.disabled = false;
       weight.disabled = false;
-      workingWeight.disabled = false;
       steppers.forEach(button => { button.disabled = false; });
       context.restPhase = phase;
       context.document.activeElement = focused;
@@ -223,7 +222,6 @@ test('locks focused inputs and steppers of other exercises throughout every set 
 
       assert.equal(rep.disabled, true, `${phase}: fokussierte fremde Wiederholungen müssen gesperrt sein`);
       assert.equal(weight.disabled, true, `${phase}: fokussiertes fremdes Satzgewicht muss gesperrt sein`);
-      assert.equal(workingWeight.disabled, true, `${phase}: fremdes Arbeitsgewicht muss gesperrt sein`);
       assert.deepEqual(steppers.map(button => button.disabled), [true, true], `${phase}: fremde Stepper müssen gesperrt sein`);
     }
   }
@@ -231,7 +229,7 @@ test('locks focused inputs and steppers of other exercises throughout every set 
 
 test('onSetInput rejects stale writes from other exercises during countdown, set and hold', () => {
   const lockStart = html.indexOf('function setInputLocked');
-  const lockEnd = html.indexOf('function workWeightInputLocked', lockStart);
+  const lockEnd = html.indexOf('function applyLocks', lockStart);
   const inputStart = html.indexOf('function onSetInput');
   const inputEnd = html.indexOf('function onSetChange', inputStart);
   assert.ok(lockStart >= 0 && lockEnd > lockStart, 'zentrale Eingabesperre wurde nicht gefunden');
@@ -304,11 +302,11 @@ test('formats long time prescriptions in minutes without changing stored seconds
   const context = {};
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
-  assert.equal(context.fmtSeconds(90), '90 Sek');
+  assert.equal(context.fmtSeconds(90), '1:30 min');
   assert.equal(context.fmtSeconds(150), '2:30 min');
-  assert.equal(context.fmtSeconds(900), '15 min');
-  assert.equal(context.fmtSecondsRange(30, 60), '30–60 Sek');
-  assert.equal(context.fmtSecondsRange(780, 900), '13–15 min');
+  assert.equal(context.fmtSeconds(900), '15:00 min');
+  assert.equal(context.fmtSecondsRange(30, 75), '0:30–1:15 min');
+  assert.equal(context.fmtSecondsRange(780, 900), '13:00–15:00 min');
   assert.equal(context.fmtMinuteInput(1200), '20,0');
   assert.match(html, /data-time-scale="60"/);
   assert.match(html, /minuteStep\?\.5:1/);
@@ -317,16 +315,19 @@ test('formats long time prescriptions in minutes without changing stored seconds
 test('guards the delayed automatic rest and keeps the page scrollable', () => {
   assert.match(html, /var AUTO_REST_DELAY=2000/);
   assert.match(html, /scheduleAutoRest\(ex,i,wasComplete,nowComplete\)/);
-  assert.match(html, /canStartRest\(ex,current,firstOpen\)/);
-  assert.match(html, /startRest\(catRest\(ex\),ex\.id\)/);
+  assert.match(html, /canStartRest\(ex,current,firstOpen,true\)/);
+  assert.match(html, /startRest\(catRest\(ex\),ex\.id,true\)/);
+  assert.match(html, /restAfterExercise=next>=sets\.length/);
+  assert.doesNotMatch(html.slice(html.indexOf('function exCardHtml'), html.indexOf('function renderView')), /class="pausebtn"/);
   assert.doesNotMatch(html, /body\.rest-lock\{position:fixed/);
   assert.match(html, /body\.rest-lock \.ex:not\(\.rest-focus\)\{opacity:\.55/);
 });
 
-test('explains calibration programs in training and import preview', () => {
-  assert.match(html, /Noch kein Arbeitsgewicht: Trag beim ersten Satz dein Gewicht ein/);
-  assert.match(html, /missingWeights/);
-  assert.match(html, /Übungen ohne Startgewicht/);
+test('keeps the calibration entry compact and removes it from program previews', () => {
+  assert.match(html, /Arbeitsgewicht noch offen/);
+  assert.match(html, /Startgewicht bestimmen/);
+  assert.doesNotMatch(html, /class="wwrow"/);
+  assert.doesNotMatch(html.slice(html.indexOf('function renderImportPreview'), html.indexOf('function returnFromImportFlow')), /missingWeights|Übungen ohne Startgewicht|Startgewichte finden/);
   assert.match(html, /tw>0\?tw\+" kg":\(ex\.bw\?"Körpergew\.":"—"\)/);
 });
 
@@ -339,7 +340,7 @@ test('runs timed holds in the shared bar and records them before the set rest', 
   assert.match(html, /Stopp &amp; eintragen/);
   assert.match(html, /Ziel erreicht · Ende bei/);
   assert.match(html, /Maximalzeit · Bestwert/);
-  assert.match(html, /if\(next<sets\.length\)startRest\(pause,exid\)/);
+  assert.match(html.slice(html.indexOf('function finishHold'), html.indexOf('function adjustRest')), /startRest\(pause,exid,true\)/);
   assert.match(html, /holdMaxAlerted=true;beep\(\)/);
   assert.match(html, /holdTimerMode==="target"/);
   assert.match(html, /finishHold\(holdMax\)/);
@@ -373,4 +374,68 @@ test('uses one SVG icon system, larger training text and subtle completion feedb
   assert.match(html, /@keyframes setpulse/);
   assert.match(html, /@keyframes checkpop/);
   assert.doesNotMatch(html, /workoutPanelHtml/);
+});
+
+test('enforces the current-week, previous-week and latest-repeat start matrix', () => {
+  const start = html.indexOf('function unitHasSetValues');
+  const end = html.indexOf('var REC_COLOR', start);
+  const context = {
+    S: { history: [], logs: {}, workout: null, week: 3, day: 'A' },
+    PROG: () => ({ weeks: [{}, {}, {}, {}], days: [{ key: 'A', ex: [] }] }),
+    renderView() {},
+    renderBar() {},
+    showModal() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  context.currentTrainingWeek = () => 3;
+  context.unitComplete = () => false;
+  context.dayWasInterrupted = () => false;
+  context.unitEmpty = () => true;
+  context.isLatestCompletedUnit = () => false;
+
+  assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: true, mode: 'start' });
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'start' });
+  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: false, mode: 'locked' });
+
+  context.unitEmpty = () => false;
+  context.dayWasInterrupted = () => true;
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'continue' });
+
+  context.unitComplete = () => true;
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: false, mode: 'complete' });
+  context.isLatestCompletedUnit = () => true;
+  assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'repeat' });
+});
+
+test('correction mode is transient and exposes empty set rows without touching history or time', () => {
+  const start = html.indexOf('function unitHasSetValues');
+  const end = html.indexOf('var REC_COLOR', start);
+  const history = [{ week: 1, day: 'A', complete: true, dur: 600 }];
+  const context = {
+    S: { history, logs: {}, workout: null, week: 1, day: 'A' },
+    PROG: () => ({ weeks: [{}], days: [{ key: 'A', ex: [] }] }),
+    renderView() {},
+    renderBar() {},
+    showModal(title, message, actions) {
+      assert.equal(title, 'Werte korrigieren');
+      assert.equal(
+        message,
+        'Du änderst nur die Satzwerte dieser abgeschlossenen Einheit. Trainingszeit und Protokolleintrag bleiben unverändert. Empfehlungen und Zielwerte späterer Wochen werden nach deiner Korrektur neu berechnet.'
+      );
+      assert.equal(actions[0].label, 'Werte korrigieren');
+      actions[0].action();
+    }
+  };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+  context.unitComplete = () => true;
+  context.startCorrection();
+  assert.equal(context.correctionActive(), true);
+  assert.deepEqual(context.S.history, history);
+  assert.equal(context.S.workout, null);
+  context.finishCorrection();
+  assert.equal(context.correctionActive(), false);
+  assert.match(html, /else if\(correctionActive\(\)\)\{rdis="";\}/);
+  assert.match(html, /if\(correctionActive\(\)\)\{[\s\S]*writeSets\(ex,corrected\)/);
 });

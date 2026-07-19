@@ -1,8 +1,8 @@
-# ENTWURF – Übungs-Bibliothek light (Paket M): Übungsliste
+# Referenz – Übungs-Bibliothek light (Paket M)
 
-Status: FREIGEGEBEN am 17.07.2026 durch den Produktverantwortlichen – verbindliche inhaltliche Grundlage für die Umsetzung von Paket M (inkl. der fünf Entscheidungen in Abschnitt 14).
+Status: FREIGEGEBEN am 17.07.2026 und als `uebungen.json` umgesetzt – fachliche Referenz für Paket M (inkl. der fünf Entscheidungen in Abschnitt 14).
 
-Stand: 17.07.2026 · Grundlage: `ENTWURF-GROSSES-UPDATE.md`, Abschnitt 5 (Entscheidungen M-E1 bis M-E4, MF-1 bis MF-4) · Recherche-Arbeitspaket gemäß MF-3/MF-4.
+Stand: 17.07.2026 · Grundlage: `docs/planung/GROSSES-UPDATE-RELEASES-1-4.md`, Abschnitt 5 (Entscheidungen M-E1 bis M-E4, MF-1 bis MF-4) · Recherche-Arbeitspaket gemäß MF-3/MF-4.
 
 ## 1. Zweck
 
@@ -305,7 +305,7 @@ Abgleich mit der bestehenden Warm-up/Cool-down-Bibliothek (`WUCD_LIB` in `index.
 
 ## 12. Konsistenz mit den freigegebenen L-Programmen
 
-Alle 50 Übungsnamen der vier freigegebenen Programme (`ENTWURF-PROGRAMME/*.json`) sind in dieser Liste enthalten – als Hauptname oder als Alias (z. B. „Ausfallschritte mit Kurzhanteln“ → Ausfallschritte (KH), „Rudern an niedriger Stange“ → Rudern an der Stange, „Unterstützte Klimmzüge mit Fuß auf einer Bank“ → Unterstützte Klimmzüge (Fuß auf Bank), „Goblet Squat mit Kurzhantel“ → Goblet Squat). Damit greift das Langzeit-Matching (J4) für alle Bibliotheksprogramme ohne Lücke.
+Alle 50 Übungsnamen der vier freigegebenen Programme (`programme/*.json`) sind in dieser Liste enthalten – als Hauptname oder als Alias (z. B. „Ausfallschritte mit Kurzhanteln“ → Ausfallschritte (KH), „Rudern an niedriger Stange“ → Rudern an der Stange, „Unterstützte Klimmzüge mit Fuß auf einer Bank“ → Unterstützte Klimmzüge (Fuß auf Bank), „Goblet Squat mit Kurzhantel“ → Goblet Squat). Damit greift das Langzeit-Matching (J4) für alle Bibliotheksprogramme ohne Lücke.
 
 Reine Freitext-Proxys der Programme (z. B. „Pike Hold mit gebeugten Knien“, „Plank auf Knien“, „Fersen abwechselnd zum Boden tippen“, „Band Face Pulls“) bleiben bewusst Freitext – die Bibliothek ist Komfort, nie Pflicht, und Regressions-Varianten in Proxy-Feldern brauchen keinen eigenen Bibliothekseintrag.
 

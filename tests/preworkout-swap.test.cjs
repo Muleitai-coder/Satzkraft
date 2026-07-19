@@ -145,7 +145,7 @@ test('tauscht und verwirft eine Übung für die ausgewählte Einheit schon vor T
   context.showExerciseSwap(exercise);
   assert.equal(modals.length, 1, 'der Tauschdialog muss auch ohne Workout geöffnet werden');
 
-  const todayAction = modals[0].actions.find(action => /Nur heute|dieses Training/i.test(action.label));
+  const todayAction = modals[0].actions.find(action => action.label === 'Übung tauschen');
   assert.ok(todayAction, 'die ausgewählte Einheit braucht eine temporäre Tauschaktion');
   todayAction.action();
 
@@ -179,13 +179,16 @@ test('sperrt Tausch und Rücksetzen vor Trainingsstart bereits nach einem einzel
   assert.equal(context.S.logs['2|B|squat'].swapWeight, '70');
 });
 
-test('merkt außerhalb eines Workouts keinen dauerhaften Ersatz vor', () => {
+test('bietet vor dem Training keinen dauerhaften Ersatz an', () => {
   const program = programFixture();
   const exercise = program.days[1].ex[0];
-  const { context } = preWorkoutContext(program);
+  const { context, modals } = preWorkoutContext(program);
 
-  assert.equal(context.queuePermanentExerciseReplacement(exercise, 'Beinpresse'), false);
+  context.showExerciseSwap(exercise);
+  assert.deepEqual(Array.from(modals[0].actions, action => action.label), [
+    'Übung tauschen', 'Abbrechen'
+  ]);
   assert.equal(context.S.workout, null);
   assert.deepEqual(Array.from(context.S.pendingReplacements), []);
-  assert.equal(context.S.logs['2|B|squat'], undefined, 'ein abgewiesener Dauerhaft-Tausch darf auch keinen temporären Tausch erzeugen');
+  assert.equal(context.S.logs['2|B|squat'], undefined);
 });

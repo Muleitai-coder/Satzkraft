@@ -209,7 +209,7 @@
           "seconds": 40
         },
         {
-          "name": "Lat-Dehnung an der Stange",
+          "name": "Lat-Dehnung am Rack",
           "seconds": 40
         },
         {
@@ -262,7 +262,7 @@
       "title": "Ganzkörper Stabilität",
       "warmup": [
         {
-          "name": "Hampelmänner oder Step Jacks",
+          "name": "Hampelmänner",
           "seconds": 60
         },
         {
@@ -343,7 +343,7 @@
       "title": "Ganzkörper Progression",
       "warmup": [
         {
-          "name": "Seilspringen ohne Seil",
+          "name": "Seilspringen",
           "seconds": 60
         },
         {
@@ -365,7 +365,7 @@
       ],
       "cooldown": [
         {
-          "name": "Gesäßdehnung liegend",
+          "name": "Gesäßdehnung liegend (Figur 4)",
           "seconds": 45
         },
         {
