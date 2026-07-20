@@ -431,6 +431,7 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .edkey{font:11px ui-monospace,Menlo,monospace;color:#71717a;font-weight:400}
 .edempty{color:#71717a;font-size:12px;padding:10px 2px}
 .edsticky{position:sticky;bottom:-18px;margin:16px -18px -18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;background:rgba(20,25,32,.96);border-top:1px solid #242b35;z-index:2}
+.edsticky:after{content:"";position:absolute;top:100%;left:0;right:0;height:calc(22px + env(safe-area-inset-bottom));background:#141920;pointer-events:none}
 .edsticky .smallbtn{flex:1;min-height:42px}
 .editorbox{max-width:620px}
 .edtophelp{background:none;border:none;color:#34d399;font-size:12px;font-weight:700;cursor:pointer;padding:8px}
@@ -686,6 +687,7 @@ html[data-theme="light"] .edsection,
 html[data-theme="light"] .edcard{background:#fff;border-color:#e4e4e7}
 html[data-theme="light"] .edintro{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
 html[data-theme="light"] .edsticky{background:rgba(255,255,255,.96);border-color:#e4e4e7}
+html[data-theme="light"] .edsticky:after{background:#fff}
 html[data-theme="light"] .edtabs,
 html[data-theme="light"] .eddaysettings,
 html[data-theme="light"] .edphasehelp,
@@ -856,7 +858,7 @@ html[data-theme="light"] .edwucdrow select,html[data-theme="light"] .edwucdrow i
 html[data-theme="light"] .edwucdgroup+.edwucdgroup{border-color:#e4e4e7}
 html[data-theme="light"] .versionfoot{color:#71717a}
 @media(max-width:600px){.creategrid,.previewdays{grid-template-columns:1fr}.createchoice{min-height:0}.manualgrid{grid-template-columns:1fr}.subviewbox,.createhub{max-width:480px}}
-@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.edlabel{min-height:auto}.editorbox,.subviewbox,.createhub{padding:14px}.edsticky,.importactions{bottom:-14px;margin-left:-14px;margin-right:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:38px;height:42px}.edexhead{gap:7px}.edwucdrow{grid-template-columns:1fr 72px}.edwucdmove{grid-column:1/-1;justify-content:flex-end}.manualdays{gap:3px}.manualday{min-height:42px;font-size:9px}.previewstats{gap:5px}.previewstat{padding:8px 4px}}
+@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.edlabel{min-height:auto}.editorbox,.subviewbox,.createhub{padding:14px}.edsticky,.importactions{bottom:-14px;margin-left:-14px;margin-right:-14px}.edsticky{margin-bottom:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:38px;height:42px}.edexhead{gap:7px}.edwucdrow{grid-template-columns:1fr 72px}.edwucdmove{grid-column:1/-1;justify-content:flex-end}.manualdays{gap:3px}.manualday{min-height:42px;font-size:9px}.previewstats{gap:5px}.previewstat{padding:8px 4px}}
 @media(max-width:760px){.rsummary{grid-template-columns:repeat(2,minmax(0,1fr))}.rweekgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.rexgrid{grid-template-columns:1fr}}
 @media(max-width:520px){.reportwrap{padding-left:13px;padding-right:13px}.reporthead{margin-left:-13px;margin-right:-13px;gap:8px}.reporthead h1{font-size:19px}.reportactions .histbtn{font-size:0;padding:9px}.reportactions .histbtn:before{content:"PDF";font-size:11px}.reportintro{display:block}.reportlocal{margin-top:10px}.rmetric{padding:11px}.rmetric .rval{font-size:18px}.rpanel{padding:13px}.rsession{grid-template-columns:minmax(0,1fr) auto}.rsessionmeta{grid-column:1/-1;text-align:left}.rdetailsbody{padding-left:9px;padding-right:9px}.rtbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.rtbl th,.rtbl td{min-width:88px}.rtbl .exn{min-width:150px}}
 html[data-theme="light"] .tag.orange{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
@@ -2902,7 +2904,7 @@ function openProgramEditor(id){
 function openProgramDraft(draft,returnView,source){
  loadExerciseLibraryForEditor();
  editorSourceId=null;editorProgramSource=source==="coach"?"coach":null;editorUnsavedDraft=true;editorReturnView=returnView||"create";editorDraft=cloneJSON(draft);delete editorDraft._anleitung;
- editorInitialJSON=JSON.stringify(editorDraft);editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=0;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorOpenSections={};editorPendingReplacementRefs={};editorRenameChoices={};
+ editorInitialJSON=JSON.stringify(editorDraft);editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorOpenSections={};editorPendingReplacementRefs={};editorRenameChoices={};
  renderProgramEditor();
 }
 function editorOption(value,label,current){return'<option value="'+attr(value)+'"'+(value===current?' selected':'')+'>'+esc(label)+'</option>';}

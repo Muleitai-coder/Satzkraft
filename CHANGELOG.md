@@ -32,6 +32,8 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Behoben
 
+- Beim Öffnen eines neuen oder importierten Programms im Editor ist nicht mehr automatisch die erste Übung ausgewählt.
+- Die Speicherleiste des Programmeditors deckt auf iPhones auch den Bereich unterhalb der Buttons vollständig ab; die darunterliegende Ansicht scheint nicht mehr durch.
 - Auf kleinen Smartphone-Bildschirmen brechen die Protokollaktionen in der unteren Leiste sauber um und werden nicht mehr seitlich abgeschnitten.
 - Das Programm „Calisthenics Einstieg“ lässt sich wieder fehlerfrei laden und bis zur Vorschau öffnen.
 - Das Umschalten automatischer Wiederholungsbereiche schließt die geöffnete Trainingsgruppe im Editor nicht mehr.

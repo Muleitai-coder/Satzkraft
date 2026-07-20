@@ -62,6 +62,10 @@ test('keeps editor drafts deeply separated from the original program', () => {
 
 test('starts in the familiar training view and separates novice from expert settings', () => {
   assert.match(html, /editorView="training"/);
+  assert.match(
+    html,
+    /function openProgramDraft[\s\S]*?editorExerciseIndex=null;[\s\S]*?renderProgramEditor\(\);/
+  );
   assert.match(html, />Training<\/button>.*>Wochen<\/button>.*>Details<\/button>/s);
   assert.match(html, /Anstrengung/);
   assert.match(html, /Satzzahlen der Trainingsgruppen/);
@@ -69,6 +73,12 @@ test('starts in the familiar training view and separates novice from expert sett
   assert.match(html, /So funktioniert der Editor/);
   assert.match(html, /EDITOR_INFO=/);
   assert.match(html, /data-ed-section=/);
+});
+
+test('covers the iPhone safe area below the editor actions', () => {
+  assert.match(html, /\.edsticky:after\{[^}]*height:calc\(22px \+ env\(safe-area-inset-bottom\)\)[^}]*background:#141920/);
+  assert.match(html, /html\[data-theme="light"\] \.edsticky:after\{background:#fff\}/);
+  assert.match(html, /\.edsticky\{margin-bottom:-14px\}/);
 });
 
 test('uses one clear rename path and compact program actions', () => {

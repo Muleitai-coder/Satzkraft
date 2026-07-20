@@ -561,6 +561,42 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     ).toEqual([]);
   });
 
+  test('VIS-19/P0: neuer Editor startet geschlossen und deckt den unteren iPhone-Rand ab', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState());
+    await page.evaluate(() => {
+      openProgramDraft(exportTranslate(PROG()), 'create');
+      document.querySelector('#lib').classList.add('open');
+    });
+
+    await expect(page.locator('#lib h1')).toHaveText('Programm erstellen');
+    await expect(page.locator('#lib .editorbox')).not.toHaveClass(
+      /editing-exercise/
+    );
+    await expect(page.locator('#lib .edexercise.open')).toHaveCount(0);
+    await expect(page.locator('#lib .edsticky button')).toHaveText([
+      'Nur speichern',
+      'Speichern & aktivieren',
+    ]);
+
+    const footerCoverage = await page.locator('#lib').evaluate((lib) => {
+      lib.scrollTop = lib.scrollHeight;
+      const footer = lib.querySelector('.edsticky');
+      const footerRect = footer.getBoundingClientRect();
+      const extension = getComputedStyle(footer, '::after');
+      return {
+        background: extension.backgroundColor,
+        extensionBottom: footerRect.bottom + parseFloat(extension.height),
+        viewportBottom: lib.getBoundingClientRect().bottom,
+      };
+    });
+    expect(footerCoverage.background).toBe('rgb(20, 25, 32)');
+    expect(footerCoverage.extensionBottom).toBeGreaterThanOrEqual(
+      footerCoverage.viewportBottom - 1
+    );
+  });
+
   test('VIS-23/P1: höchstens eine Entscheidungsebene liegt sichtbar über der App', async ({
     page,
   }) => {
