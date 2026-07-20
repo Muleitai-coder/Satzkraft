@@ -684,6 +684,24 @@ test.describe('3 · Redundanz-Check', () => {
     await expect(page.locator('#app .topright .appversion')).toHaveCount(0);
   });
 
+  test('RED-03/P0: Trainingskarten zeigen keine redundante Klasse, Satzanzahl oder Zielzeile', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState());
+    const card = page.locator('#app .ex:has(.presc)').first();
+    await expect(card).toBeVisible();
+    await expect(card.locator('.tag')).toHaveCount(0);
+    await expect(card.locator('.presc')).not.toContainText('Sätze');
+    await expect(card.locator('.presc')).not.toContainText('Ziel');
+    await expect(card.locator('[data-plates]')).toHaveText(
+      'Scheibenrechner'
+    );
+    await expect(card.locator('input[id^="wt-"]').first()).toHaveAttribute(
+      'placeholder',
+      /\d/
+    );
+  });
+
   test('RED-02/P0: laufendes Training hat genau eine Zeit- und Steuerleiste', async ({
     page,
   }) => {

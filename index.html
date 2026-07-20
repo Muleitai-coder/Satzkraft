@@ -82,7 +82,6 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .ex{background:#141920;border:1px solid #242b35;border-radius:16px;padding:16px;margin-bottom:12px}
 .ex.done{border-color:rgba(16,185,129,.5)}
 .excompact{display:flex;align-items:center;gap:9px;padding:10px 12px}
-.excompact .tag{flex:none}
 .excompactname{flex:1;min-width:0;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .excompactcheck{color:#34d399;font-size:17px;font-weight:800}
 .ex.rest-focus{border-color:#34d399;box-shadow:0 0 0 1px rgba(52,211,153,.25),0 20px 55px rgba(0,0,0,.5)}
@@ -111,10 +110,10 @@ body.rest-lock .ex:not(.rest-focus){opacity:.55;transform:scale(.99)}
 .links{display:flex;flex-wrap:nowrap;align-items:center;gap:4px 12px;margin-top:7px;max-width:100%;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
 .links::-webkit-scrollbar{display:none}
 .links>*{flex:none}
-.links a,.links .g,.notebtn,.swapbtn{font-size:11px;color:#71717a;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.links a,.links .g,.notebtn,.swapbtn,.plateaction{font-size:11px;color:#71717a;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
 .links a:active{color:#34d399}
-.notebtn,.swapbtn{border:0;background:none;padding:0;cursor:pointer;font-family:inherit}
-.notebtn:active,.notebtn:hover,.swapbtn:active,.swapbtn:hover{color:#34d399}
+.notebtn,.swapbtn,.plateaction{border:0;background:none;padding:0;cursor:pointer;font-family:inherit}
+.notebtn:active,.notebtn:hover,.swapbtn:active,.swapbtn:hover,.plateaction:active,.plateaction:hover{color:#34d399}
 .swapqueued{margin:8px 0;padding:7px 9px;border:1px solid rgba(245,158,11,.3);border-radius:8px;background:rgba(245,158,11,.07);color:#fde68a;font-size:11px;line-height:1.4}
 .exnoteline{display:block;width:100%;margin:2px 0 9px;padding:7px 9px;border:1px solid rgba(113,113,122,.25);border-radius:8px;background:rgba(10,13,18,.26);color:#a1a1aa;font:inherit;font-size:11px;line-height:1.45;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .g.ok{color:rgba(16,185,129,.85)}
@@ -132,8 +131,6 @@ body.rest-lock .ex:not(.rest-focus){opacity:.55;transform:scale(.99)}
 .targetcontext{font-size:10px;font-weight:750;color:#6ee7b7}
 .targetcontext.sky{color:#7dd3fc}
 .targetcontext:empty{display:none}
-.platebtn{border:0;background:none;padding:3px 1px;margin:-3px -1px;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:#71717a;text-underline-offset:3px}
-.platebtn:hover,.platebtn:focus-visible{color:#6ee7b7}
 .last{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:12px;min-width:0;width:100%;background:none;border:none;text-align:left;padding:4px 0;cursor:pointer;font-family:inherit}
 .last:active{opacity:.6}
 .last .l{color:#71717a;flex-shrink:0}
@@ -582,6 +579,9 @@ html[data-theme="light"] #wucd{background:#f4f4f5}
 .librarypreviewday{margin-top:9px;padding:10px 11px;border:1px solid #2b3440;border-radius:10px;background:#10151b}
 .librarypreviewday b{display:block;font-size:11px}
 .librarypreviewday ul{margin:6px 0 0;padding-left:18px;color:#a1a1aa;font-size:10px;line-height:1.55}
+.librarypreviewexercise{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:3px 0}
+.librarypreviewexercise>span:first-child{min-width:0;overflow-wrap:anywhere}
+.librarypreviewexercise .tag{flex:none;font-size:8px;padding:1px 5px}
 .calibrationguidebody{padding:11px;border-top:1px solid #2b3440;color:#a1a1aa;font-size:11px;line-height:1.55}
 .calibrationguidebody ol{margin:8px 0;padding-left:20px}.calibrationguidebody li{margin-bottom:7px}.calibrationguidebody p{margin:8px 0}
 .importactions{position:sticky;bottom:-18px;z-index:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:16px -18px -18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #242b35;background:rgba(20,25,32,.97)}
@@ -1637,21 +1637,20 @@ function scheduleDoneCollapse(ex){cancelDoneCollapse(ex.id);doneCollapseTimers[e
 function collapseDoneExcept(exid){Object.keys(doneCollapseTimers).forEach(function(id){if(id===exid)return;var other=findEx(id);if(other)collapseDoneCard(other);else cancelDoneCollapse(id);});}
 function exCardHtml(ex){
  var sets=getSets(ex),wk=PROG().weeks[S.week-1],rr=catReps(ex,wk.phase),tw=targetWeight(ex),last=lastPerf(ex),otherLast=latestOtherDayPerf(ex),done=isDone(ex),swap=currentExerciseSwap(ex),displayName=swap||ex.name,hasEntered=exerciseHasEnteredData(ex);
- if(active()&&done&&!expandedDoneExercises[ex.id])return'<div class="ex done excompact" id="card-'+attr(ex.id)+'"><span class="tag '+catColor(ex)+'">'+esc(catLabel(ex))+'</span><span class="excompactname">'+esc(displayName)+(swap?'<small>getauscht</small>':'')+'</span><span class="excompactcheck" aria-label="Erledigt">'+icon("check")+'</span><button class="edmini" data-expand-done="'+attr(ex.id)+'">Öffnen</button></div>';
+ if(active()&&done&&!expandedDoneExercises[ex.id])return'<div class="ex done excompact" id="card-'+attr(ex.id)+'"><span class="excompactname">'+esc(displayName)+(swap?'<small>getauscht</small>':'')+'</span><span class="excompactcheck" aria-label="Erledigt">'+icon("check")+'</span><button class="edmini" data-expand-done="'+attr(ex.id)+'">Öffnen</button></div>';
  var h='<div class="ex'+(done?" done":"")+(active()?"":" locked")+'" id="card-'+ex.id+'">';
  h+='<div class="exhead"><div class="info">';
- h+='<span class="tag '+catColor(ex)+'">'+esc(catLabel(ex))+'</span>';
  h+='<h3 class="exname">'+esc(displayName)+'</h3>'+(swap?'<p class="exswap">Für dieses Training statt '+esc(ex.name)+'</p>':(ex.en?'<p class="exen">'+esc(ex.en)+'</p>':'')+(ex.sub?'<p class="exsub">'+esc(ex.sub)+'</p>':''));
  if(ex.fromWeek>1)h+='<button type="button" class="notebtn" data-timeline="'+attr(ex.id)+'">seit Woche '+ex.fromWeek+'</button>';
  h+='<div class="links"><a href="'+ytUrl(swap?(displayName+" Technik"):(ex.q||(ex.name+" Technik")))+'" target="_blank" rel="noopener noreferrer">'+icon("play")+' Video</a>';
  h+='<button type="button" class="notebtn" data-note="'+attr(ex.id)+'" aria-label="Notiz für '+attr(ex.name)+' öffnen">'+icon("edit")+' Notiz</button>';
+ if(ex.w&&!ex.bw)h+='<button type="button" class="plateaction" data-plates="'+attr(ex.id)+'" aria-label="Scheibenrechner für '+attr(ex.name)+' öffnen">'+icon("info")+' Scheibenrechner</button>';
  if(!done&&!hasEntered&&(active()||workoutAccess(S.week,S.day).allowed))h+='<button type="button" class="swapbtn" data-swap-ex="'+attr(ex.id)+'" aria-label="'+attr(ex.name)+' tauschen">'+icon("undo")+' Übung tauschen</button>';
  h+='</div></div><div class="exdoneactions">'+(active()?'<button class="donecollapse'+(done?' ready':'')+'" data-collapse-done="'+attr(ex.id)+'" aria-label="Übung einklappen" title="Einklappen"'+(done?'':' disabled aria-hidden="true"')+'>'+icon("chevron-left")+'</button>':'')+'<div class="chk'+(done?" done":"")+'" id="chk-'+ex.id+'">'+icon("check")+'</div></div></div>';
  if(S.notes[ex.id])h+='<button type="button" class="exnoteline" data-note="'+attr(ex.id)+'" aria-label="Notiz für '+attr(ex.name)+' bearbeiten">Notiz: '+esc(S.notes[ex.id])+'</button>';
  var progressHint=progressContextHtml(ex,last,done,tw);
- h+='<div class="presc"><span><b>'+sets.length+'</b> Sätze</span><span class="dot">·</span>';
- h+=rr?'<span class="presctarget"><b>'+(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'–'+rr[1]+' Wdh')+'</b>'+(!ex.w?progressHint:"")+'</span>':'<span class="presctarget"><b>'+esc(ex.target||"—")+'</b>'+(!ex.w?progressHint:"")+'</span>';
- if(ex.w)h+='<span class="dot">·</span><span class="presctarget">Ziel '+(!ex.bw?'<button type="button" class="platebtn" data-plates="'+attr(ex.id)+'" aria-label="Scheibenrechner für '+attr(ex.name)+' öffnen"><b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"—")+'</b></button>':'<b id="tgt-'+ex.id+'">'+(tw>0?tw+" kg":"Körpergew.")+'</b>')+progressHint+'</span>';
+ h+='<div class="presc">';
+ h+=rr?'<span class="presctarget"><b>'+(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'–'+rr[1]+' Wdh')+'</b>'+progressHint+'</span>':'<span class="presctarget"><b>'+esc(ex.target||"—")+'</b>'+progressHint+'</span>';
  var pauseLabel=restLabel(catRest(ex));h+='<span class="dot">·</span><span class="prescpause" aria-label="Pause '+attr(pauseLabel)+'" title="Pause '+attr(pauseLabel)+'">'+icon("timer")+' <b>'+pauseLabel+'</b></span></div>';
  if(last){var v=performanceSummary(ex,last.sets);h+='<button class="last" data-hist="'+ex.id+'" aria-label="Verlauf für '+attr(ex.name)+' öffnen"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+esc(v)+'</span><span class="histhint">Verlauf <span aria-hidden="true">'+icon("chevron-right")+'</span></span></button>';}
  if(otherLast){var ov=performanceSummary(otherLast.exercise,otherLast.sets);h+='<div class="otherlast"><span class="l">Letzter Wert an anderem Tag · '+esc(otherLast.day.wd||otherLast.day.title||otherLast.day.key)+' (W'+otherLast.week+'):</span> <span class="v">'+esc(ov)+'</span></div>';}
@@ -1696,7 +1695,7 @@ function updateProgressUI(){
 }
 function updateTargetWeightUi(ex){
  if(!ex||!ex.w)return;
- var tw=targetWeight(ex),target=document.getElementById("tgt-"+ex.id);if(target)target.textContent=tw>0?tw+" kg":(ex.bw?"Körpergew.":"—");
+ var tw=targetWeight(ex),sets=getSets(ex);for(var i=0;i<sets.length;i++){var input=document.getElementById("wt-"+ex.id+"-"+i);if(input&&input.value==="")input.placeholder=tw>0?tw:"";}
  var hint=document.getElementById("proghint-"+ex.id);if(hint)hint.outerHTML=progressContextHtml(ex,lastPerf(ex),isDone(ex),tw);
 }
 function updateCard(ex){
@@ -3283,7 +3282,7 @@ function renderImportPreview(){
  var prepared=pendingProgramImport;if(!prepared||!prepared.program){renderImportEntry();return;}var p=prepared.program,exerciseCount=p.days.reduce(function(sum,day){return sum+day.ex.length;},0),h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importpreviewback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm prüfen</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(prepared.origin))+(prepared.sourceName?' · '+esc(prepared.sourceName):'')+'</span>';
  h+='<div class="previewhero"><h2>'+esc(p.name)+'</h2><p>'+(p.description?esc(p.description):'Keine Beschreibung hinterlegt.')+'</p><div class="previewstats"><div class="previewstat"><b>'+p.weeks.length+'</b><span>Wochen</span></div><div class="previewstat"><b>'+p.days.length+'</b><span>Trainingstage</span></div><div class="previewstat"><b>'+exerciseCount+'</b><span>Übungen</span></div></div></div>';
  h+='<div class="libsec" style="margin-top:14px">Trainingstage</div><div class="previewdays">';p.days.forEach(function(day){h+='<div class="previewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><span>'+day.ex.length+' Übungen'+((day.wu&&day.wu.length)||(day.cd&&day.cd.length)?' · Warm-up/Cool-down':'')+'</span></div>';});h+='</div>';
- if(prepared.origin==="library"){h+='<div class="librarypreview"><div class="libsec">Wochenstruktur</div>';p.weeks.forEach(function(week){h+='<div class="librarypreviewweek"><b>Woche '+week.n+':</b> '+esc(week.label||week.phase)+' · RIR '+esc(week.rir||"–")+(week.note?' · '+esc(week.note):'')+'</div>';});h+='<div class="libsec">Alle Übungen</div>';p.days.forEach(function(day){h+='<div class="librarypreviewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><ul>';if(day.wu&&day.wu.length)h+='<li>Warm-up: '+day.wu.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';day.ex.forEach(function(ex){h+='<li>'+esc(ex.name)+'</li>';});if(day.cd&&day.cd.length)h+='<li>Cool-down: '+day.cd.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';h+='</ul></div>';});h+='</div>';}
+ if(prepared.origin==="library"){h+='<div class="librarypreview"><div class="libsec">Wochenstruktur</div>';p.weeks.forEach(function(week){h+='<div class="librarypreviewweek"><b>Woche '+week.n+':</b> '+esc(week.label||week.phase)+' · RIR '+esc(week.rir||"–")+(week.note?' · '+esc(week.note):'')+'</div>';});h+='<div class="libsec">Alle Übungen</div>';p.days.forEach(function(day){h+='<div class="librarypreviewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><ul>';if(day.wu&&day.wu.length)h+='<li>Warm-up: '+day.wu.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';day.ex.forEach(function(ex){var category=p.categories[ex.cat]||{},color=CAT_COLORS.indexOf(category.color)>=0?category.color:"slate";h+='<li><span class="librarypreviewexercise"><span>'+esc(ex.name)+'</span><span class="tag '+color+'">'+esc(category.label||ex.cat)+'</span></span></li>';});if(day.cd&&day.cd.length)h+='<li>Cool-down: '+day.cd.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';h+='</ul></div>';});h+='</div>';}
  if(prepared.duplicateId){var existing=S.programs[prepared.duplicateId];h+='<div class="importnotice warn"><strong>Bereits vorhanden</strong>„'+esc(existing.name)+'“ hat denselben Inhalt. Es wird nicht unbemerkt doppelt gespeichert.</div>';}
  else if(prepared.sameNameIds.length)h+='<div class="importnotice warn"><strong>Name bereits vorhanden</strong>Der Inhalt unterscheidet sich. Du kannst das neue Programm trotzdem unter demselben Namen speichern oder es vorher umbenennen.</div>';
  if(prepared.duplicateId)h+='<div class="importactions"><button class="smallbtn go wide" id="importexisting">'+(prepared.duplicateId===S.active?'Vorhandenes bearbeiten':'Vorhandenes aktivieren')+'</button><button class="smallbtn" id="importcopy">Trotzdem als Kopie speichern</button><button class="smallbtn" id="importcancel">Abbrechen</button></div>';

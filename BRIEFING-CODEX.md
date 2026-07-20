@@ -906,3 +906,4 @@ Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 
 | Feedback-ID | Status | Verbindliches Verhalten |
 |---|---|---|
 | `FB-20260720-01` | umgesetzt | Während eines laufenden Trainings wird die informative Seitenfußzeile vollständig ausgeblendet. Versions- und Lokalhinweis, Entwicklerangabe sowie Hell-/Dunkelmodus bleiben außerhalb des Trainings unverändert verfügbar. |
+| `FB-20260720-02` | umgesetzt; präzisiert `FB-20260718-10` und `FB-20260719-02` | Die eigentliche Trainingskarte zeigt weder Trainingsgruppe noch Satzanzahl noch eine separate Zielgewichtsangabe. Zielgewichte bleiben direkt in den Gewichtsfeldern der Satzzeilen sichtbar; Wiederholungs-/Zeitvorgabe, Pause und Progressionskontext bleiben erhalten. Der Scheibenrechner bleibt als Kartenaktion verfügbar. Im Programmeditor und in der Programmvorschau wird die Trainingsgruppe als Orientierung weiterhin angezeigt. |

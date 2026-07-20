@@ -15,6 +15,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Geändert
 
+- Trainingskarten zeigen keine Trainingsgruppe, Satzanzahl oder separate Zielgewichtszeile mehr. Wiederholungs- beziehungsweise Zeitvorgabe, Pause und die einzelnen Satzfelder reichen als direkte Trainingsinformation; der Scheibenrechner bleibt als Kartenaktion verfügbar. Editor und Programmvorschau zeigen die Trainingsgruppe weiterhin.
 - Während eines laufenden Trainings wird die informative Seitenfußzeile mit Versionshinweis, Entwicklerangabe und Hell-/Dunkelmodus ausgeblendet.
 - Die App öffnet nach dem Update ohne zusätzlichen Start-Hinweis direkt in der Trainingsansicht.
 - Beim Tauschen bleibt ein frei bearbeitbares Feld „Ersatzübung“. Während der Eingabe stehen deutsche Datenbanktreffer direkt darunter zur Auswahl; nach der Auswahl bleibt nur der Name im Feld. Ein separater Bereich zeigt zusätzlich genau eine empfohlene Ersatzübung.

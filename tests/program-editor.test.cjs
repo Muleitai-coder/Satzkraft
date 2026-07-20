@@ -136,6 +136,8 @@ test('uses a shared preview and a dedicated unsaved draft mode', () => {
   assert.match(html, /id="edsavenew"/);
   assert.match(html, /id="edsavenewactive"/);
   assert.match(html, /Plan prüfen &amp; speichern/);
+  assert.match(html, /class="librarypreviewexercise"/);
+  assert.match(html, /class="tag '\+color/);
 });
 
 test('applies the live preview order and requires approval before swapping occupied days', () => {

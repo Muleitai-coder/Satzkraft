@@ -331,12 +331,25 @@ test('hides the informational page footer during an active workout', () => {
   assert.match(renderView, /if\(!active\(\)\)h\+='<div class="legend"/);
 });
 
+test('keeps training cards focused on the set rows and prescription', () => {
+  const cardSource = html.slice(
+    html.indexOf('function exCardHtml'),
+    html.indexOf('function renderView')
+  );
+  assert.doesNotMatch(cardSource, /catLabel\(ex\)|catColor\(ex\)/);
+  assert.doesNotMatch(cardSource, /sets\.length[^;\n]*Sätze/);
+  assert.doesNotMatch(cardSource, /presctarget">Ziel/);
+  assert.match(cardSource, /class="presctarget"[^;\n]*progressHint/);
+  assert.match(cardSource, /class="plateaction" data-plates=/);
+});
+
 test('keeps the calibration entry compact and removes it from program previews', () => {
   assert.match(html, /Arbeitsgewicht noch offen/);
   assert.match(html, /Startgewicht bestimmen/);
   assert.doesNotMatch(html, /class="wwrow"/);
   assert.doesNotMatch(html.slice(html.indexOf('function renderImportPreview'), html.indexOf('function returnFromImportFlow')), /missingWeights|Übungen ohne Startgewicht|Startgewichte finden/);
-  assert.match(html, /tw>0\?tw\+" kg":\(ex\.bw\?"Körpergew\.":"—"\)/);
+  assert.match(html, /var wPH=tw>0\?\(""\+tw\):""/);
+  assert.match(html, /if\(input&&input\.value===""\)input\.placeholder=tw>0\?tw:""/);
 });
 
 test('runs timed holds in the shared bar and records them before the set rest', () => {
