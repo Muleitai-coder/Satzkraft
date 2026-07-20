@@ -20,10 +20,10 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Die App öffnet nach dem Update ohne zusätzlichen Start-Hinweis direkt in der Trainingsansicht.
 - Beim Tauschen bleibt ein frei bearbeitbares Feld „Ersatzübung“. Während der Eingabe stehen deutsche Datenbanktreffer direkt darunter zur Auswahl; nach der Auswahl bleibt nur der Name im Feld. Ein separater Bereich zeigt zusätzlich genau eine empfohlene Ersatzübung.
 - Aktionen auf Programmkarten wie „Bearbeiten“, „Aktivieren“, „Folgeblock starten“, „Archivieren“ und Archivaktionen werden einheitlich als anklickbare Textaktionen ohne Button-Fläche dargestellt.
-- Der Hinweis „Arbeitsgewicht noch offen“ steht in Trainingskarten immer unter dem Verlauf und unmittelbar vor den Satzzeilen.
+- Fehlt ein Arbeitsgewicht, zeigt die Trainingskarte nur noch die dezente Aktion „Startgewicht bestimmen“ statt eines zusätzlichen Erklärungshinweises.
 - Zeitvorgaben und protokollierte Zeitwerte werden einheitlich im Format Minuten:Sekunden angezeigt, beispielsweise `1:15 min` statt `75 Sek`.
 - Beim Fortsetzen eines unterbrochenen Trainings gilt das dreistündige Sicherheitslimit nur für den aktuell gestarteten Abschnitt. Bereits gespeicherte Abschnitte lösen keinen sofortigen automatischen Stopp mehr aus; beim Wechsel in den Hintergrund wird die Trainingszeit pausiert.
-- Die zusätzliche Zeile „Arbeitsgewicht“ in Trainingskarten entfällt. Das Ziel bleibt oben sichtbar; fehlt es, übernimmt der erste eingetragene Satz den Arbeitswert, und spätere Sätze verwenden vorrangig das zuletzt tatsächlich verwendete Gewicht.
+- Die zusätzliche Zeile „Arbeitsgewicht“ in Trainingskarten entfällt. Das Zielgewicht steht direkt in den Gewichtsfeldern; fehlt es, übernimmt der erste eingetragene Satz den Arbeitswert, und spätere Sätze verwenden vorrangig das zuletzt tatsächlich verwendete Gewicht.
 - Empfehlungen erscheinen direkt nach den abgeschlossenen Sätzen. In der offenen Folgewoche steht nur ein kompakter Herkunfts- oder Erholungshinweis fest neben der betroffenen kg-, Wiederholungs- oder Zeitvorgabe.
 - Die Fußleiste einer abgeschlossenen älteren Einheit enthält nur noch „Werte korrigieren“. Der erklärende Protokollsatz und die redundante Aktion „Diesen Inhalt heute trainieren“ entfallen.
 - Direkte Änderungen und die Korrekturansicht erklären vor dem Speichern einheitlich, dass spätere Empfehlungen und Zielwerte neu berechnet werden.

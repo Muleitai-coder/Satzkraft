@@ -344,8 +344,9 @@ test('keeps training cards focused on the set rows and prescription', () => {
 });
 
 test('keeps the calibration entry compact and removes it from program previews', () => {
-  assert.match(html, /Arbeitsgewicht noch offen/);
+  assert.doesNotMatch(html, /Arbeitsgewicht noch offen|Trag beim ersten Satz dein verwendetes Gewicht ein/);
   assert.match(html, /Startgewicht bestimmen/);
+  assert.match(html, /class="editnote calibrationhint"[^;]*><button type="button" class="calibrationmore"/);
   assert.doesNotMatch(html, /class="wwrow"/);
   assert.doesNotMatch(html.slice(html.indexOf('function renderImportPreview'), html.indexOf('function returnFromImportFlow')), /missingWeights|Übungen ohne Startgewicht|Startgewichte finden/);
   assert.match(html, /var wPH=tw>0\?\(""\+tw\):""/);
