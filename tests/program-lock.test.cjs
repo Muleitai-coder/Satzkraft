@@ -12,7 +12,8 @@ function loadItemContext(workout) {
   const context = {
     S: { active: 'active', workout },
     esc: value => String(value == null ? '' : value),
-    attr: value => String(value == null ? '' : value)
+    attr: value => String(value == null ? '' : value),
+    icon: () => ''
   };
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);

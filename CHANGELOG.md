@@ -12,6 +12,10 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Nach einem vollständig beendeten Training fragt Satzkraft für jede getauschte Übung einzeln, ob der Tausch dauerhaft gelten oder nur im gerade beendeten Training bleiben soll. Ist im aktuellen Block keine offene Folgewoche mehr vorhanden, wird ein bestätigter Tausch in den nächsten Folgeblock übernommen.
 - Die nächste Trainingswoche zeigt die aus der vorigen Einheit abgeleitete Progressionsempfehlung direkt an der jeweiligen Übung.
 - Eine leicht verständliche PDF-Anleitung erklärt den Programmeditor mit seinen Bereichen Training, Wochen und Details.
+- Jede Übungskarte hat ein Drei-Punkte-Menü mit „Übungen neu ordnen“, „Übung tauschen“, dem Scheibenrechner und „Übung entfernen (nur heute)“.
+- Ein Zahnrad oben rechts öffnet die neuen Einstellungen, unter anderem mit der Wahl zwischen dunklem und hellem Farbmodus.
+- „Workout bearbeiten“ ersetzt „Training wiederholen“: Änderungen am aktuellen Trainingstag lassen sich mit „Abbrechen“ vollständig verwerfen oder mit „Speichern“ übernehmen.
+- Programme kennen die neuen optionalen Felder „art“ und „bereich“ mit fester Bereichsliste. Der Import lehnt ungültige Bereichswerte mit einer klaren Fehlermeldung ab, der Export enthält beide Felder, und die vier mitgelieferten Programmvorlagen sind entsprechend ergänzt.
 
 ### Geändert
 
@@ -31,6 +35,12 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Die automatische Satzpause startet auch nach dem letzten Satz. Der zusätzliche Knopf „Pause starten“ entfällt.
 - Trainingskarten, Programmeditor, Programmverwaltung und Erstellen-Auswahl wurden typografisch beruhigt und ausgerichtet. Sichtbare Garmin-Bezeichnungen entfallen; die bisherigen Datenfelder bleiben für kompatible Importe erhalten.
 - Bibliotheksvorschauen zeigen Übungen ohne zusätzliche Trainingsgruppen-Zuordnung und ohne redundante Startgewicht-Zählung.
+- Vollständig überarbeitetes Erscheinungsbild: neue Farb- und Typografie-Basis mit Smaragd-Akzent in dunklem und hellem Schema sowie den Schriften Hanken Grotesk und JetBrains Mono. Beide Schriften liegen lokal in der App und werden vom Service Worker mitgespeichert, damit die App offline vollständig nutzbar bleibt.
+- Neue Startseite: große Wochenkarte mit Blockfortschritt (z. B. „01/08“), Wochenschiene und kompakte, aufklappbare Übungszeilen.
+- Der Trainingskopf zeigt während des Trainings eine Live-Zeitkarte mit der laufenden Trainingszeit.
+- Die Auswertung wurde überarbeitet: Prozent-Pillen und Wochen-Balken je Übung ersetzen das bisherige Wochenraster.
+- Das Programme-Fenster wurde nach der neuen Design-Vorlage neu aufgebaut.
+- Zeiten für Halteübungen wie Plank oder Seitstütz werden im Format Minuten:Sekunden eingegeben.
 
 ### Behoben
 

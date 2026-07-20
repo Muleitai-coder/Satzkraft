@@ -33,11 +33,12 @@ test('keeps bar weights and notes in every store lifecycle path', () => {
 });
 
 test('renders accessible plate and note actions and escapes stored notes', () => {
-  assert.match(html, /data-plates=/);
+  assert.match(html, /data-plate-bar=/);
+  assert.match(html, /data-plate-ex=/);
   assert.match(html, /Scheiben pro Seite/);
   assert.match(html, /data-note=/);
   assert.match(html, /maxlength="500"/);
-  assert.match(html, /Notiz: '\+esc\(S\.notes\[ex\.id\]\)/);
+  assert.match(html, /'\+esc\(S\.notes\[ex\.id\]\)\+'/);
   assert.match(html, /aria-label="Verlauf für/);
 });
 

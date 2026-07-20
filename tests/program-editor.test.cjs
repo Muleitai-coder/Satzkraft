@@ -76,8 +76,9 @@ test('starts in the familiar training view and separates novice from expert sett
 });
 
 test('covers the iPhone safe area below the editor actions', () => {
-  assert.match(html, /\.edsticky:after\{[^}]*height:calc\(22px \+ env\(safe-area-inset-bottom\)\)[^}]*background:#141920/);
-  assert.match(html, /html\[data-theme="light"\] \.edsticky:after\{background:#fff\}/);
+  assert.match(html, /\.edsticky\{[^}]*padding:12px 18px calc\(12px \+ env\(safe-area-inset-bottom\)\)[^}]*background:var\(--barbg\)/);
+  assert.match(html, /--barbg:rgba\(8,9,11,\.92\)/);
+  assert.match(html, /--barbg:rgba\(239,236,229,\.92\)/);
   assert.match(html, /\.edsticky\{margin-bottom:-14px\}/);
 });
 
@@ -114,7 +115,7 @@ test('warns about unsaved changes and locks the page behind the editor', () => {
 
 test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /\.programothersbody \.progitem\{border:0/);
-  assert.match(html, /\.progitem\.active\{[^}]*background:linear-gradient/);
+  assert.match(html, /\.progitem\.active\{[^}]*background:var\(--accg\)/);
   assert.match(html, /\.progactions\{display:flex/);
   assert.match(html, /\.progtextaction\{[^}]*background:transparent/);
   assert.match(html, /html\[data-theme="light"\] \.progitem\.active/);

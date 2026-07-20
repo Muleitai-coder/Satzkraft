@@ -145,6 +145,7 @@ function libraryContext() {
       active: 'active',
       programs: { active, other, old: archived },
       store: stores,
+      week: 1,
       workout: null
     },
     document: { getElementById: id => id === 'lib' ? library : null },
@@ -161,7 +162,7 @@ function libraryContext() {
   return { context, library, active, archived };
 }
 
-test('öffnet das Archiv separat und zeigt den Dunkelmodus nur in der Hauptseiten-Fußzeile', () => {
+test('öffnet das Archiv separat und zeigt den Farbmodus nur in den Einstellungen', () => {
   const { context, library } = libraryContext();
 
   context.renderLib();
@@ -183,8 +184,9 @@ test('öffnet das Archiv separat und zeigt den Dunkelmodus nur in der Hauptseite
 
   const mainView = functionSource('renderView');
   const libraryFooter = functionSource('libraryFooterHtml');
-  assert.match(mainView, /themeButtonHtml\(\)/, 'der Dunkelmodus gehört in die Fußzeile der Hauptseite');
-  assert.doesNotMatch(libraryFooter, /themeButtonHtml\(\)/, 'die Programm-Fußzeile darf keinen Dunkelmodus enthalten');
+  assert.match(mainView, /id="settingsbtn"/, 'die Hauptseite braucht den Einstellungen-Zahnrad');
+  assert.match(functionSource('showSettings'), /data-settheme/, 'die Einstellungen müssen den Farbmodus anbieten');
+  assert.doesNotMatch(libraryFooter, /themeButtonHtml\(\)|data-settheme/, 'die Programm-Fußzeile darf keinen Farbmodus enthalten');
 
   const libraryEvents = sourceBetween(
     'document.getElementById("lib").addEventListener("click"',
@@ -199,8 +201,8 @@ test('zeigt Status und Datum ruhig an und hält Kartenaktionen kompakt bedienbar
   const activeCard = context.programItemHtml('active', active);
   const archivedCard = context.programItemHtml('old', archived);
 
-  assert.doesNotMatch(activeCard, /●\s*Aktiv|statuspill[^>]*>[^<]*Aktiv/);
-  assert.doesNotMatch(archivedCard, /statuspill archived|>Archiv<\/span>/);
+  assert.match(activeCard, /<div class="progtopline"><span class="aktivpill">● Aktiv<\/span><span class="progweek">Woche 1 \/ 1<\/span><\/div>/, 'die aktive Karte zeigt Aktiv-Pille und Wochenstand in der Kopfzeile');
+  assert.doesNotMatch(archivedCard, /aktivpill|statuspill archived|>Archiv<\/span>/);
   assert.match(
     activeCard,
     /<div class="proghead"><div class="meta"><div class="pn">Kraftbasis<\/div><div class="pm">[\s\S]*class="programdate"[\s\S]*<\/div><\/div><span class="statuspill complete">Abgeschlossen<\/span><\/div>/
@@ -224,7 +226,9 @@ test('zeigt Status und Datum ruhig an und hält Kartenaktionen kompakt bedienbar
   assert.match(cssBody('.programdate'), /margin-left:auto/);
 
   const completeCss = cssBody('.statuspill.complete');
-  assert.match(completeCss, /(?:#f59e0b|#fbbf24|245,158,11|251,191,36)/i, 'Abgeschlossen-Badge muss einen goldenen Hintergrund verwenden');
+  assert.match(completeCss, /background:var\(--kraftg\)/, 'Abgeschlossen-Badge muss den goldenen Kraft-Hintergrund verwenden');
+  assert.match(completeCss, /color:var\(--kraft\)/, 'Abgeschlossen-Badge muss die goldene Kraft-Schriftfarbe verwenden');
+  assert.match(html, /--kraft:#f4b03e/, 'der Kraft-Farbton muss golden bleiben');
 });
 
 test('kehrt aus der Auswertung eines Archivprogramms mit Zurück ins Archiv zurück', () => {

@@ -147,6 +147,7 @@ test('tauscht und verwirft eine Übung für die ausgewählte Einheit schon vor T
 
   const todayAction = modals[0].actions.find(action => action.label === 'Übung tauschen');
   assert.ok(todayAction, 'die ausgewählte Einheit braucht eine temporäre Tauschaktion');
+  context.pendingExerciseSwapName = 'Beinpresse';
   todayAction.action();
 
   assert.equal(context.S.logs['2|B|squat'].swap, 'Beinpresse');

@@ -80,6 +80,7 @@ function appContext(overrides) {
   const context = {
     APP_VERSION: '0.22.0',
     LIMITS: { maxSets: 20, maxWeeks: 20, maxNameLen: 80 },
+    S: {},
     console,
     setTimeout: callback => {
       callback();

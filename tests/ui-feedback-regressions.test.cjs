@@ -8,7 +8,8 @@ const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), '
 test('uses the current correction and swap labels without a startup update notice', () => {
   for (const text of [
     'Werte korrigieren',
-    'Training wiederholen (ersetzt die letzte Einheit)',
+    'Workout bearbeiten',
+    'Training wiederholen?',
     'Übung tauschen',
     'Dauerhaft übernehmen',
     'Nur dieses Training'
@@ -93,6 +94,7 @@ function appContext(overrides) {
   const context = {
     APP_VERSION: 'test',
     LIMITS: { maxSets: 20, maxWeeks: 20, maxNameLen: 80 },
+    S: {},
     console,
     setTimeout: callback => {
       callback();
@@ -180,7 +182,7 @@ test('behandelt eingefrorene Einheiten in Dialog und Startleiste als wiederholba
 
   assert.equal(modalCalls.length, 1);
   assert.match(modalCalls[0].title, /Training wiederholen/);
-  assert.match(bar.innerHTML, /Training wiederholen/);
+  assert.match(bar.innerHTML, /Workout bearbeiten/);
 });
 
 test('setzt einen heutigen Übungstausch samt passender Vormerkung zurück', () => {
@@ -400,7 +402,7 @@ test('zeigt beim Übungstausch höchstens drei deduplizierte Bibliotheksvorschl�
     ['Kurzhantel-Bankdrücken', 'Brustpresse neutral']
   );
   assert.match(html, /data-swap-suggestion=/);
-  assert.match(html, /Passende Vorschläge/);
+  assert.match(html, /Empfohlene Ersatzübung/);
 });
 
 test('stellt Scroll-Anker auch nach zwei schnellen Kartenersetzungen wieder her', () => {

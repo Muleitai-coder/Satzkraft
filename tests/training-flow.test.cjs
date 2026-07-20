@@ -6,10 +6,11 @@ const vm = require('node:vm');
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 
 test('keeps workout controls reachable and explains partial stops', () => {
-  assert.match(html, /class="workoutbar/);
-  assert.match(html, /id="barpausew"/);
-  assert.match(html, /id="barresumew"/);
-  assert.match(html, /id="barstopw"/);
+  assert.match(html, /class="barwrap/);
+  assert.match(html, /class="livecard/);
+  assert.match(html, /id="pausew"/);
+  assert.match(html, /id="resumew"/);
+  assert.match(html, /id="stopw"/);
   assert.match(html, /Alle bisherigen Eingaben bleiben erhalten/);
   assert.match(html, /Speichern & später fortsetzen/);
   assert.match(html, /Math\.max\(1,Math\.round/);
@@ -308,8 +309,8 @@ test('formats long time prescriptions in minutes without changing stored seconds
   assert.equal(context.fmtSecondsRange(30, 75), '0:30–1:15 min');
   assert.equal(context.fmtSecondsRange(780, 900), '13:00–15:00 min');
   assert.equal(context.fmtMinuteInput(1200), '20,0');
-  assert.match(html, /data-time-scale="60"/);
-  assert.match(html, /minuteStep\?\.5:1/);
+  assert.match(html, /function timeInputSeconds\(/);
+  assert.match(html, /Zeit in Minuten und Sekunden/);
 });
 
 test('guards the delayed automatic rest and keeps the page scrollable', () => {
@@ -320,7 +321,7 @@ test('guards the delayed automatic rest and keeps the page scrollable', () => {
   assert.match(html, /restAfterExercise=next>=sets\.length/);
   assert.doesNotMatch(html.slice(html.indexOf('function exCardHtml'), html.indexOf('function renderView')), /class="pausebtn"/);
   assert.doesNotMatch(html, /body\.rest-lock\{position:fixed/);
-  assert.match(html, /body\.rest-lock \.ex:not\(\.rest-focus\)\{opacity:\.55/);
+  assert.match(html, /classList\.add\("rest-focus"\)/);
 });
 
 test('hides the informational page footer during an active workout', () => {
@@ -331,16 +332,17 @@ test('hides the informational page footer during an active workout', () => {
   assert.match(renderView, /if\(!active\(\)\)h\+='<div class="legend"/);
 });
 
-test('keeps training cards focused on the set rows and prescription', () => {
+test('keeps training cards focused with a group heading and menu actions', () => {
   const cardSource = html.slice(
     html.indexOf('function exCardHtml'),
     html.indexOf('function renderView')
   );
-  assert.doesNotMatch(cardSource, /catLabel\(ex\)|catColor\(ex\)/);
+  assert.match(cardSource, /class="cardcat '\+catColor\(ex\)\+'"><span>'\+esc\(catLabel\(ex\)\)/, 'die Trainingsgruppe steht als farbige Kopfzeile auf der Karte');
   assert.doesNotMatch(cardSource, /sets\.length[^;\n]*Sätze/);
   assert.doesNotMatch(cardSource, /presctarget">Ziel/);
   assert.match(cardSource, /class="presctarget"[^;\n]*progressHint/);
-  assert.match(cardSource, /class="plateaction" data-plates=/);
+  assert.doesNotMatch(cardSource, /data-plates=|class="plateaction"/, 'der Scheibenrechner gehört ins Drei-Punkte-Menü statt auf die Karte');
+  assert.match(html, /Scheibenrechner',cls:"menu"/);
 });
 
 test('keeps the calibration entry compact and removes it from program previews', () => {

@@ -80,6 +80,7 @@ function appContext(overrides) {
   const context = {
     APP_VERSION: '0.21.0',
     LIMITS: { maxNameLen: 30 },
+    S: {},
     PROGRESSION: progression,
     console,
     setTimeout: callback => {

@@ -48,6 +48,7 @@ function validationContext() {
   };
   vm.createContext(context);
   vm.runInContext(sourceBetween('var WUCD_LIB=', 'ANLEITUNG.erlaubte_werte'), context);
+  vm.runInContext(sourceBetween('var BEREICHE=', 'var DEFAULT_PROGRAM='), context);
   vm.runInContext(sourceBetween('function genId()', 'function setActive('), context);
   vm.runInContext(sourceBetween('var pendingProgramImport=', 'function deleteProgram'), context);
   return context;
@@ -89,7 +90,8 @@ test('renders the official origin line and the complete library entry points', (
     programBlockComplete: () => false,
     programWriteLocked: () => false,
     esc: value => String(value == null ? '' : value),
-    attr: value => String(value == null ? '' : value)
+    attr: value => String(value == null ? '' : value),
+    icon: () => ''
   };
   vm.createContext(context);
   vm.runInContext(functionSource('programItemHtml'), context);
