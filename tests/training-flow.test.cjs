@@ -297,7 +297,7 @@ test('onSetInput rejects stale writes from other exercises during countdown, set
 });
 
 test('formats long time prescriptions in minutes without changing stored seconds', () => {
-  const start = html.indexOf('function fmtSeconds');
+  const start = html.indexOf('function fmtTime');
   const end = html.indexOf('function dDate', start);
   const context = {};
   vm.createContext(context);
@@ -321,6 +321,14 @@ test('guards the delayed automatic rest and keeps the page scrollable', () => {
   assert.doesNotMatch(html.slice(html.indexOf('function exCardHtml'), html.indexOf('function renderView')), /class="pausebtn"/);
   assert.doesNotMatch(html, /body\.rest-lock\{position:fixed/);
   assert.match(html, /body\.rest-lock \.ex:not\(\.rest-focus\)\{opacity:\.55/);
+});
+
+test('hides the informational page footer during an active workout', () => {
+  const renderView = html.slice(
+    html.indexOf('function renderView'),
+    html.indexOf('function updateProgressUI')
+  );
+  assert.match(renderView, /if\(!active\(\)\)h\+='<div class="legend"/);
 });
 
 test('keeps the calibration entry compact and removes it from program previews', () => {

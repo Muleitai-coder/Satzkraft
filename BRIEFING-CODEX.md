@@ -898,3 +898,11 @@ Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 
 | `FB-20260719-06` | umgesetzt | Alle Aktionen innerhalb einer Programmkarte werden wie das frühere „Bearbeiten“ als anklickbare, unterstrichene Textaktionen ohne Button-Fläche dargestellt. Dazu gehören insbesondere „Aktivieren“, „Bearbeiten“, „Folgeblock starten“, „Archivieren“, „Auswertung ansehen“ und „Aus dem Archiv holen“. |
 | `FB-20260719-07` | umgesetzt | Der Dialog „Übung tauschen“ verwendet oben das frei bearbeitbare Feld „Ersatzübung“. Beim Tippen erscheinen deutsche Datenbanktreffer ohne englische Bezeichnungen oder Zusatzinformationen direkt unter dem Feld. Nach der Auswahl verschwindet die Trefferliste und der Name bleibt im Feld; er kann erneut verändert oder durch einen eigenen Namen ersetzt werden. Darunter zeigt der Dialog separat „Empfohlene Ersatzübung“ mit genau einer passenden Auswahl. |
 | `FB-20260719-08` | umgesetzt | Beim Start nach dem Update erscheint kein zusätzlicher Hinweisdialog. Die frühere einmalige Meldung „Neu: Dein Trainingstagebuch ist geschützt“ und ihr gespeicherter Gesehen-Status entfallen vollständig; die App öffnet direkt in der Trainingsansicht. |
+
+---
+
+## 21. Trainingsfokus · 20.07.2026
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260720-01` | umgesetzt | Während eines laufenden Trainings wird die informative Seitenfußzeile vollständig ausgeblendet. Versions- und Lokalhinweis, Entwicklerangabe sowie Hell-/Dunkelmodus bleiben außerhalb des Trainings unverändert verfügbar. |

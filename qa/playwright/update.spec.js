@@ -702,6 +702,7 @@ test.describe('3 · Redundanz-Check', () => {
     await expect(page.locator('#bar #barstopw')).toHaveCount(1);
     await expect(page.locator('#app #wtElapsed')).toHaveCount(0);
     await expect(page.locator('#app .workoutpanel')).toHaveCount(0);
+    await expect(page.locator('#app .legend')).toHaveCount(0);
     await expect(page.locator('#bar .workoutbar button')).toHaveText([
       'Pause',
       'Ende',

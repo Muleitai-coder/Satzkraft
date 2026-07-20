@@ -1686,7 +1686,7 @@ function renderView(){
  exercises.forEach(function(ex){h+=exCardHtml(ex);});
  if(day.cd&&day.cd.length){var cds=day.cd.reduce(function(a,x){return a+x.sec;},0);h+='<button class="smallbtn" id="cdbtn" style="width:100%;margin:4px 0 10px">'+icon("play")+' Cool-down starten \u00b7 '+day.cd.length+' \u00dcbungen \u00b7 ~'+Math.round(cds/60)+' min</button>';}
  if(!active())h+=backupReminderHtml();
- h+='<div class="legend"><div class="mainfooteractions">'+themeButtonHtml()+'</div><button type="button" class="legendversion appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+'</button> · Deine Trainingsdaten bleiben lokal auf diesem Gerät.<span class="developercredit">Entwickelt von Christian Woyack</span></div>';
+ if(!active())h+='<div class="legend"><div class="mainfooteractions">'+themeButtonHtml()+'</div><button type="button" class="legendversion appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+'</button> · Deine Trainingsdaten bleiben lokal auf diesem Gerät.<span class="developercredit">Entwickelt von Christian Woyack</span></div>';
  document.getElementById("app").innerHTML='<div class="wrap">'+h+'</div>';
 }
 
