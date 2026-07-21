@@ -15,6 +15,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Der Programmeditor folgt jetzt vollständig dem neuen Design: Feldbeschriftungen und antippbare Erklärbegriffe als einheitliche Mono-Beschriftungen, Übungs-Metazeilen in der Startseiten-Typografie und ruhige Hinweiskarten statt großer grüner Flächen.
 - „Manuell erstellen“: Die Tagesauswahl besteht wieder aus richtigen Auswahl-Chips im neuen Design (die Grundstile fehlten nach dem Redesign), der Hinweistext ist dezent formatiert.
 - Die vier Erstellen-Kacheln tragen sprechende Beschreibungen für Screenreader.
+- Die automatische Satzpause startet sofort, sobald ein Satz vollständig eingetragen ist – die bisherige Verzögerung von zwei Sekunden entfällt.
 - Bei geöffneten Hinweis- und Auswahlfenstern ist der Hintergrund fest gesperrt und scrollt nicht mehr mit; nur der Fensterinhalt bleibt scrollbar.
 - „Übungen neu ordnen“ funktioniert jetzt wie in etablierten Trainingsapps: Jede Zeile hat rechts einen Ziehgriff, die Übung wird gehalten und direkt an die neue Position gezogen; die übrigen Zeilen rücken live mit. Die Pfeiltasten verschieben weiterhin je einen Platz.
 - Die Aktionsleiste unter „Programm prüfen“ ist eine feste Leiste mit genau zwei Knöpfen: „Speichern & aktivieren“ und „Bearbeiten“. „Nur speichern“ und „Abbrechen“ entfallen; Zurück-Pfeil und X übernehmen das Verwerfen.

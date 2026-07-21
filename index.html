@@ -1788,7 +1788,7 @@ function canStartRest(ex,sets,firstOpen,allowAfterLast){
  if(restPhase)return restPhase==="set"&&firstOpen>restNextSet;
  return true;
 }
-var AUTO_REST_DELAY=2000,autoRestTimers={};
+var AUTO_REST_DELAY=0,autoRestTimers={};
 function cancelAutoRest(exid){var timer=autoRestTimers[exid];if(timer){clearTimeout(timer);delete autoRestTimers[exid];}}
 function cancelAllAutoRest(){Object.keys(autoRestTimers).forEach(cancelAutoRest);}
 function scheduleAutoRest(ex,setIndex,wasComplete,isComplete){

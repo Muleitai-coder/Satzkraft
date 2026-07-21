@@ -322,7 +322,8 @@ Pakete A–E wurden geprüft und sind **umgesetzt und abgenommen** (B3 Live-Vors
 
 ### F6 · Training: Satzpause automatisch starten
 - **Ist:** Nach vollständigem Satz muss die Pause separat gestartet werden („Pause starten“ bzw. „Nächste Satzpause“). Wunsch der Nutzer: Pause startet von selbst.
-- **Soll:** Konstante `AUTO_REST_DELAY=2000`. Wenn im aktiven Training ein Satz durch Eingabe (Tippen oder Stepper) von unvollständig auf **vollständig** wechselt:
+- **Update 21.07.2026:** Nutzerentscheidung – die Satzpause startet ohne Verzögerung (`AUTO_REST_DELAY=0`), sobald ein Satz vollständig wird. Timer-Mechanik und alle Guards bleiben unverändert bestehen.
+- **Soll (historisch):** Konstante `AUTO_REST_DELAY=2000`. Wenn im aktiven Training ein Satz durch Eingabe (Tippen oder Stepper) von unvollständig auf **vollständig** wechselt:
   - Timer über 2 s starten; jede weitere Eingabe in derselben Übung innerhalb der Frist setzt den Timer zurück; wird der Satz wieder unvollständig, abbrechen.
   - Nach Ablauf: Satzpause der Übung automatisch starten – exakt wie der manuelle Button (`startRest`), inkl. aller bestehenden Guards (`canStartRest`).
   - Gilt auch in der „set“-Phase der Pausen-Leiste (ersetzt dort das manuelle „Nächste Satzpause“; der Button bleibt als sofortige Alternative).

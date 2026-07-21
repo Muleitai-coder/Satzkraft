@@ -314,7 +314,7 @@ test('formats long time prescriptions in minutes without changing stored seconds
 });
 
 test('guards the delayed automatic rest and keeps the page scrollable', () => {
-  assert.match(html, /var AUTO_REST_DELAY=2000/);
+  assert.match(html, /var AUTO_REST_DELAY=0/);
   assert.match(html, /scheduleAutoRest\(ex,i,wasComplete,nowComplete\)/);
   assert.match(html, /canStartRest\(ex,current,firstOpen,true\)/);
   assert.match(html, /startRest\(catRest\(ex\),ex\.id,true\)/);
