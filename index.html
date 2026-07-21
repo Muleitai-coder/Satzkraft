@@ -979,7 +979,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.26.0";
+var APP_VERSION="0.27.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -1846,6 +1846,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";
 }
 var VERSION_HISTORY=[
+ {version:"v0.27.0",date:"21.07.2026",changes:["Kommt dieselbe Übung an mehreren Trainingstagen vor, zeigt die Trainingskarte zusätzlich den jüngsten eingetragenen Wert des anderen Tages.","Nach einem beendeten Training fragt Satzkraft für jede getauschte Übung einzeln, ob der Tausch dauerhaft gelten oder einmalig bleiben soll; die nächste Woche zeigt die Progressionsempfehlung direkt an der Übung.","Zeitvorgaben und protokollierte Zeitwerte erscheinen einheitlich im Format Minuten:Sekunden, und die automatische Satzpause startet auch nach dem letzten Satz.","Trainingskarten, Programmeditor und Programmverwaltung wurden aufgeräumt; Programmkarten nutzen klare Textaktionen, und eine PDF-Anleitung erklärt den Programmeditor.","Die App startet nach einem Update direkt in der Trainingsansicht; beim Fortsetzen eines unterbrochenen Trainings zählt das Sicherheitslimit nur für den aktuellen Abschnitt.","Fehler behoben: Protokollaktionen brechen auf kleinen Bildschirmen sauber um, „Calisthenics Einstieg“ lädt wieder fehlerfrei, und Deload-Empfehlungen für Zeit- und Körpergewichtsübungen sind wieder logisch."]},
  {version:"v0.26.0",date:"17.07.2026",changes:["Eingebaute Übungsbibliothek: 200 geprüfte Übungen mit sauberen deutschen und englischen Namen.","Der Editor schlägt beim Tippen passende Übungen vor und füllt Typ, Technik-Hinweis und Ersatzübung automatisch aus.","Beim Übungstausch schlägt Satzkraft gleichwertige Alternativen vor.","Fortschritte werden über Blöcke hinweg auch bei bekannten Namensvarianten zuverlässiger erkannt."]},
  {version:"v0.25.0",date:"17.07.2026",changes:["Dein Protokoll ist jetzt geschützt: Abgeschlossene Trainings bleiben unverändert, Planänderungen gelten ab jetzt und nie rückwirkend.","Mit „Werte korrigieren“ lassen sich Zahlen und vergessene Sätze ohne Änderung der Trainingszeit nachtragen.","Ersetzte Übungen behalten ihre Geschichte mit sichtbarer Zeitachse und eigenen Auswertungskarten.","Neue Einheiten starten in der aktuellen Woche; leere Einheiten der Vorwoche lassen sich nachholen."]},
  {version:"v0.24.0",date:"17.07.2026",changes:["Vier geprüfte Satzkraft-Programme für Gym, Calisthenics und hybrides Training lassen sich mit vollständiger Vorschau direkt übernehmen.","Eine zweistufige Anleitung erklärt, wie du in der ersten Einheit ein passendes Startgewicht findest.","Direkt übernommene Satzkraft-Programme sind in der Programmverwaltung als offiziell gekennzeichnet."]},
