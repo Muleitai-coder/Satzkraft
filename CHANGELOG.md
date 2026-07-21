@@ -16,6 +16,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Ein Zahnrad oben rechts öffnet die neuen Einstellungen, unter anderem mit der Wahl zwischen dunklem und hellem Farbmodus.
 - „Workout bearbeiten“ ersetzt „Training wiederholen“: Änderungen am aktuellen Trainingstag lassen sich mit „Abbrechen“ vollständig verwerfen oder mit „Speichern“ übernehmen.
 - Programme kennen die neuen optionalen Felder „art“ und „bereich“ mit fester Bereichsliste. Der Import lehnt ungültige Bereichswerte mit einer klaren Fehlermeldung ab, der Export enthält beide Felder, und die vier mitgelieferten Programmvorlagen sind entsprechend ergänzt.
+- Die Einstellungen zeigen unter „Datensicherung“ den Stand der letzten Sicherung und bieten das vollständige Backup direkt zum Herunterladen an.
 
 ### Geändert
 
@@ -41,6 +42,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Die Auswertung wurde überarbeitet: Prozent-Pillen und Wochen-Balken je Übung ersetzen das bisherige Wochenraster.
 - Das Programme-Fenster wurde nach der neuen Design-Vorlage neu aufgebaut.
 - Zeiten für Halteübungen wie Plank oder Seitstütz werden im Format Minuten:Sekunden eingegeben.
+- Die Backup-Erinnerung erscheint bereits nach drei abgeschlossenen Trainings seit der letzten Sicherung. Die bisherige Regel – Sicherung älter als 14 Tage und mindestens ein neues Training – gilt zusätzlich weiterhin.
 
 ### Behoben
 

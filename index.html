@@ -711,6 +711,9 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .setseg{display:grid;grid-template-columns:1fr 1fr;gap:2px;border:1px solid var(--hair);border-radius:999px;padding:3px}
 .setopt{border:0;border-radius:999px;background:transparent;color:var(--muted);min-height:42px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer}
 .setopt.sel{background:var(--acc);color:var(--onacc);font-weight:700}
+.setbackupstatus{font-size:12px;color:var(--ink2);line-height:1.5;margin:0 0 10px}
+.setbackupbtn{width:100%;border:1px solid var(--hair);border-radius:999px;background:transparent;color:var(--ink);min-height:42px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer}
+.setbackupbtn:active,.setbackupbtn:hover{border-color:var(--accl);color:var(--acc)}
 .cardcat{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
 .cardcollapse{border:0;background:none;color:var(--muted);padding:4px;margin:-6px -4px -6px 0;cursor:pointer;display:inline-grid;place-items:center}
 .cardcollapse:hover,.cardcollapse:active{color:var(--ink)}
@@ -1576,6 +1579,9 @@ function showSettings(){
  var h='<div class="mbox"><div class="mtitle">Einstellungen</div>';
  h+='<div class="setlabel">Farbmodus</div>';
  h+='<div class="setseg"><button class="setopt'+(light?'':' sel')+'" data-settheme="dark">Dunkel</button><button class="setopt'+(light?' sel':'')+'" data-settheme="light">Hell</button></div>';
+ h+='<div class="setlabel" style="margin-top:16px">Datensicherung</div>';
+ h+='<div class="setbackupstatus">'+esc(backupStatusText())+'</div>';
+ h+='<button type="button" class="setbackupbtn" data-settings-backup="1">Vollständiges Backup herunterladen</button>';
  h+='<div class="mbtns" style="margin-top:16px"><button class="mbtn primary" data-mi="0">Fertig</button></div></div>';
  var m=document.getElementById("modal");m.innerHTML=h;m.style.display="flex";
 }
@@ -1914,7 +1920,7 @@ function showVersionInfo(){
  showModal("Versionshistorie","<span class=\"developercredit\">Entwickelt von Christian Woyack</span><div class=\"versionintro\"><b>Aktuelle stabile Version: v"+esc(APP_VERSION)+"</b><br>Vollständige Historie aller dokumentierten Veröffentlichungen.</div>"+versionHistoryHtml(),[{label:"Schließen",cls:"primary",action:null}]);
 }
 function hideModal(){var m=document.getElementById("modal");m.style.display="none";m.innerHTML="";modalActions=[];}
-document.getElementById("modal").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.settheme){applyTheme(b.dataset.settheme,true);showSettings();return;}if(b.dataset.reorder){reorderMove(b.dataset.reorder);return;}if(b.dataset.plateBar){selectPlateBar(b.dataset.plateEx,b.dataset.plateBar);return;}if(b.dataset.swapSuggestion){var swapInput=document.getElementById("swapname");pendingExerciseSwapName=b.dataset.swapSuggestion;if(swapInput){swapInput.value=pendingExerciseSwapName;renderExerciseSwapMatches(swapInput);swapInput.focus();}return;}if(b.dataset.mi==null)return;var note=document.getElementById("exerciseNoteInput"),swap=document.getElementById("swapname");if(note)pendingExerciseNote=note.value;if(swap)pendingExerciseSwapName=swap.value;var i=+b.dataset.mi,act=modalActions[i];hideModal();if(typeof act==="function")act();});
+document.getElementById("modal").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.settheme){applyTheme(b.dataset.settheme,true);showSettings();return;}if(b.dataset.settingsBackup){var settingsBackupOk=downloadFullBackup("satzkraft-backup");if(document.getElementById("lib").classList.contains("open"))renderLib();else renderView();if(settingsBackupOk)showSettings();else showModal("Backup fehlgeschlagen","Die Sicherungsdatei konnte nicht heruntergeladen werden.",[{label:"OK",cls:"primary",action:null}]);return;}if(b.dataset.reorder){reorderMove(b.dataset.reorder);return;}if(b.dataset.plateBar){selectPlateBar(b.dataset.plateEx,b.dataset.plateBar);return;}if(b.dataset.swapSuggestion){var swapInput=document.getElementById("swapname");pendingExerciseSwapName=b.dataset.swapSuggestion;if(swapInput){swapInput.value=pendingExerciseSwapName;renderExerciseSwapMatches(swapInput);swapInput.focus();}return;}if(b.dataset.mi==null)return;var note=document.getElementById("exerciseNoteInput"),swap=document.getElementById("swapname");if(note)pendingExerciseNote=note.value;if(swap)pendingExerciseSwapName=swap.value;var i=+b.dataset.mi,act=modalActions[i];hideModal();if(typeof act==="function")act();});
 document.getElementById("modal").addEventListener("input",function(e){if(e.target.id==="exerciseNoteInput")pendingExerciseNote=e.target.value.slice(0,500);else if(e.target.id==="swapname"){pendingExerciseSwapName=e.target.value.slice(0,80);renderExerciseSwapMatches(e.target);}});
 
 // ---------- Wake Lock & Benachrichtigung ----------
@@ -2051,8 +2057,10 @@ function firstCompletedTrainingAt(){
  syncStore();var first=0;for(var id in S.store){var history=S.store[id]&&S.store[id].history;if(!Array.isArray(history))continue;history.forEach(function(entry){if(!entry||entry.complete!==true)return;var at=Number(entry.end)||Number(entry.start)||0;if(at>0&&(!first||at<first))first=at;});}return first;
 }
 function backupReminderDue(now){
- now=Number(now)||Date.now();var done=totalCompletedTrainings(),meta=readBackupMeta(),reference=meta.lastAt||meta.trackingAt||firstCompletedTrainingAt();
- return !!(done>meta.historyCount&&reference>0&&now-reference>=14*86400000&&now>=meta.snoozeUntil);
+ now=Number(now)||Date.now();var done=totalCompletedTrainings(),meta=readBackupMeta(),newSince=done-meta.historyCount,reference=meta.lastAt||meta.trackingAt||firstCompletedTrainingAt();
+ if(newSince<=0||now<meta.snoozeUntil)return false;
+ if(newSince>=3)return true;
+ return !!(reference>0&&now-reference>=14*86400000);
 }
 function backupReminderHtml(){return backupReminderDue()?'<div class="backupreminder"><span>Deine letzte Sicherung ist älter. Jetzt kurz aktualisieren?</span><span class="backupreminderactions"><button type="button" data-backup-now="1">Backup herunterladen</button><button type="button" data-backup-later="1">Später</button></span></div>':"";}
 function handleBackupReminder(action){

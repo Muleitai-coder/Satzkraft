@@ -42,7 +42,7 @@ test('renders accessible plate and note actions and escapes stored notes', () =>
   assert.match(html, /aria-label="Verlauf für/);
 });
 
-test('shows the backup reminder only after fourteen days and a newer unit', () => {
+test('shows the backup reminder after fourteen days or three new trainings', () => {
   const start = html.indexOf('function readBackupMeta');
   const end = html.indexOf('function workoutProgress', start);
   assert.ok(start >= 0 && end > start, 'Backup-Erinnerung wurde nicht gefunden');
@@ -74,9 +74,22 @@ test('shows the backup reminder only after fourteen days and a newer unit', () =
   assert.equal(context.backupReminderDue(now), false, 'ohne neue Einheit keine Erinnerung');
   storage.set('backup-meta', JSON.stringify({ lastAt: now - 15 * 86400000, historyCount: 0, snoozeUntil: now + 6 * 86400000 }));
   assert.equal(context.backupReminderDue(now), false, 'Snooze muss die Erinnerung ausblenden');
+
+  storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 0 }));
+  assert.equal(context.backupReminderDue(now), false, 'eine neue Einheit nach frischer Sicherung erinnert noch nicht');
+  context.S.store.active.history.push({ complete: true, start: now, end: now });
+  context.S.store.active.history.push({ complete: true, start: now, end: now });
+  assert.equal(context.backupReminderDue(now), true, 'drei neue Trainings erinnern auch vor Ablauf der 14 Tage');
+  storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 0, snoozeUntil: now + 6 * 86400000 }));
+  assert.equal(context.backupReminderDue(now), false, 'Snooze gilt auch für die Drei-Trainings-Regel');
+  storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 3 }));
+  assert.equal(context.backupReminderDue(now), false, 'nach einer Sicherung zählt der Zähler von vorn');
+
   storage.set('backup-meta', JSON.stringify({ lastAt: now - 15 * 86400000, historyCount: 0 }));
   assert.match(context.backupReminderHtml(), /Backup herunterladen/);
   assert.match(context.backupReminderHtml(), /Später/);
+  assert.match(html, /data-settings-backup=/);
+  assert.match(html, /Datensicherung/);
 });
 
 test('requests persistent browser storage only once', async () => {
