@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.26.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.28.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.26.0
+**Aktueller Produktstand:** Satzkraft v0.28.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 **Aktuelle Prozessentscheidung (18.07.2026):** Für Prüfungen gilt ausschließlich die risikobasierte Strategie aus `docs/TESTING.md` und `AGENTS.md`. Historische Pakettexte, die vollständige Suites oder Browsermatrizen nach jeder Änderung verlangen, dokumentieren nur den damaligen Abnahmestand und lösen keine automatischen Großtests mehr aus.
@@ -41,6 +41,24 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
 7. **Versionierung und Historie:** Jede nutzerrelevante Änderung sofort unter `Unreleased` in `CHANGELOG.md` eintragen. Bei einem Release den Abschnitt auf die neue Version mit Datum umstellen und gleichzeitig `APP_VERSION` in `index.html` sowie `CACHE` in `sw.js` synchron erhöhen (Test `version.test.cjs` prüft das). Die CSS-Klassen `appversion` und `versionfoot` müssen im Quelltext weiter vorkommen – sie dürfen aber an anderer Stelle gerendert werden. Kein Release ohne Changelog-Eintrag.
 8. **Nach jedem Arbeitspaket:** Kleinste passende Prüfung gemäß `docs/TESTING.md`; vollständige Suites und Browsermatrizen nur auf ausdrücklichen Nutzerbefehl. Tests bei geändertem Verhalten bewusst erweitern, nicht löschen.
 9. **Ein Arbeitspaket = ein Commit** (bzw. eine zusammenhängende Änderung), Reihenfolge wie unten.
+
+---
+
+## Aktueller Oberflächen-Stand nach dem Redesign (Juli 2026, verbindlich)
+
+Das komplette, vom Produktverantwortlichen abgenommene Redesign ist umgesetzt. Es ersetzt alle älteren Oberflächen-Beschreibungen in den historischen Arbeitspaketen unten; bei Widersprüchen gilt dieser Abschnitt.
+
+- **Design-System:** CSS-Design-Tokens mit Smaragd-Akzent, vollständiges dunkles und helles Schema (`data-theme`). Schriften Hanken Grotesk und JetBrains Mono liegen lokal in `fonts/` (Latin-Subset, variable Gewichte 400–800) und stehen im Service-Worker-Precache – kein Google-CDN, die App muss offline vollständig funktionieren.
+- **Startseite:** Kopfzeile mit Marke, „Programme“, „Auswertung“ und Einstellungen-Zahnrad. Wochenkarte mit Blockfortschritt (z. B. „01/08“), Phasen-Badge, RIR und Wochenschiene; darunter Tagesleiste und kompakte, aufklappbare Übungszeilen (`exrowd`, `data-expand-prev`). Fußzeile mit Versions-Knopf (`legendversion appversion`) öffnet die Versionshistorie.
+- **Einstellungen (Zahnrad):** Farbmodus-Wahl (`data-settheme`) und Bereich „Datensicherung“ mit Sicherungsstand und Backup-Download (`data-settings-backup`).
+- **Training:** Live-Zeitkarte im Kopf (`.livecard`) mit „Pause“/„Weiter“ und „Ende“ (`pausew`/`resumew`/`stopw`); die untere Leiste (`#bar`) zeigt nur Satzpause/Satzfokus/Halte-Timer. Übungskarte: farbiger Kategorie-Kopf (`cardcat`), Aktionen Video und Notiz plus Drei-Punkte-Menü (`data-exmenu`: Übungen neu ordnen, Übung ersetzen, Scheibenrechner, Übung entfernen nur für heute). Automatische Satzpause nach jedem vollständigen Satz.
+- **Abgeschlossene Einheiten:** „Workout bearbeiten“ ersetzt „Training wiederholen“ – Leiste wechselt auf „Abbrechen“/„Speichern“, Abbrechen stellt den Sicherungsstand wieder her. Direkte Einzeländerungen außerhalb dieses Modus fragen mit „Wert übernehmen?“ nach und nennen die Neuberechnungs-Konsequenz.
+- **Zeitübungen:** Eingaben und Anzeigen im Format Minuten:Sekunden (`timeInputSeconds`, `fmtClockInput`).
+- **Programme-Fenster:** Vollbild-Ansicht im Stil der Startseite. Oben die aktive Programmkarte (Aktiv-Pille, „Woche 01 / 08“, Bereichs-Zeile, Tage/Wochen-Chips, „Fortsetzen“, Teilen-Knopf `proshare`), dann „Weitere Programme“, vier Erstellen-Kacheln (KI-Coach, Import, Manuell, ChatGPT & Co.), die Programmvorlagen als Karten (`tplcard`, aus `PROGRAM_LIBRARY` mit Feld `farbe`; Aktionen Laden/Bearbeiten/Teilen), Archiv-Zugang und „Daten sichern“. Der Erstellen-Hub existiert weiter als Zwischenansicht der Erstell-Flows.
+- **Editor:** Tabs Training/Wochen/Details. Im Details-Tab stehen Erstell-/Änderungsdatum sowie die abgesicherten Bereiche „Fortschritt zurücksetzen“ und „Programm löschen“. Programmkarten zeigen kein Datum mehr.
+- **Programmfelder:** `art` und `bereich` sind optionale Felder im Austauschformat; `bereich` ist auf die Liste `BEREICHE` beschränkt, der Import lehnt andere Werte mit klarer Fehlermeldung ab, der Export enthält beide Felder.
+- **Backup:** Erinnerung erscheint nach drei abgeschlossenen Trainings seit der letzten Sicherung oder wenn die Sicherung älter als 14 Tage ist und mindestens ein neues Training vorliegt; „Später“ pausiert sieben Tage.
+- **Einmaliger Design-Update-Hinweis:** Bestandsnutzer (erkennbar an vorhandenen Trainingsdaten oder Programmen, `hasExistingTrainingData`) sehen nach dem Redesign genau einmal ein Hinweis-Modal (`maybeShowRedesignNotice`, localStorage-Schlüssel `satzkraft-design-update-v1`) mit Schließen-Knopf und Weg zur Versionshistorie. Neuinstallationen sehen keinen Hinweis; bei ihnen wird der Schlüssel still gesetzt. Kein Hinweis bei laufendem Training, Daten-Lade-Problem, anstehendem Programm-Import oder fortgesetzter Tausch-Entscheidung – er wird beim nächsten ungestörten Start nachgeholt. Die Playwright-Seeds setzen den Schlüssel standardmäßig.
 
 ---
 
@@ -898,3 +916,13 @@ Paket N (KI-Coach 2.0 Blockbegleitung) startet erst nach Abschluss der Releases 
 | `FB-20260719-06` | umgesetzt | Alle Aktionen innerhalb einer Programmkarte werden wie das frühere „Bearbeiten“ als anklickbare, unterstrichene Textaktionen ohne Button-Fläche dargestellt. Dazu gehören insbesondere „Aktivieren“, „Bearbeiten“, „Folgeblock starten“, „Archivieren“, „Auswertung ansehen“ und „Aus dem Archiv holen“. |
 | `FB-20260719-07` | umgesetzt | Der Dialog „Übung tauschen“ verwendet oben das frei bearbeitbare Feld „Ersatzübung“. Beim Tippen erscheinen deutsche Datenbanktreffer ohne englische Bezeichnungen oder Zusatzinformationen direkt unter dem Feld. Nach der Auswahl verschwindet die Trefferliste und der Name bleibt im Feld; er kann erneut verändert oder durch einen eigenen Namen ersetzt werden. Darunter zeigt der Dialog separat „Empfohlene Ersatzübung“ mit genau einer passenden Auswahl. |
 | `FB-20260719-08` | umgesetzt | Beim Start nach dem Update erscheint kein zusätzlicher Hinweisdialog. Die frühere einmalige Meldung „Neu: Dein Trainingstagebuch ist geschützt“ und ihr gespeicherter Gesehen-Status entfallen vollständig; die App öffnet direkt in der Trainingsansicht. |
+
+---
+
+## 21. Trainingsfokus · 20.07.2026
+
+| Feedback-ID | Status | Verbindliches Verhalten |
+|---|---|---|
+| `FB-20260720-01` | umgesetzt | Während eines laufenden Trainings wird die informative Seitenfußzeile vollständig ausgeblendet. Versions- und Lokalhinweis, Entwicklerangabe sowie Hell-/Dunkelmodus bleiben außerhalb des Trainings unverändert verfügbar. |
+| `FB-20260720-02` | umgesetzt; präzisiert `FB-20260718-10` und `FB-20260719-02` | Die eigentliche Trainingskarte zeigt weder Trainingsgruppe noch Satzanzahl noch eine separate Zielgewichtsangabe. Zielgewichte bleiben direkt in den Gewichtsfeldern der Satzzeilen sichtbar; Wiederholungs-/Zeitvorgabe, Pause und Progressionskontext bleiben erhalten. Der Scheibenrechner bleibt als Kartenaktion verfügbar. Im Programmeditor und in der Programmvorschau wird die Trainingsgruppe als Orientierung weiterhin angezeigt. |
+| `FB-20260720-03` | umgesetzt; ersetzt die sichtbare Ausgestaltung aus `FB-20260719-05` | Bei fehlendem Arbeitsgewicht entfallen der Titel „Arbeitsgewicht noch offen“ und der erklärende Satz in der Trainingskarte. An derselben Stelle bleibt ausschließlich die dezente Aktion „Startgewicht bestimmen“, die den vorhandenen Leitfaden öffnet. |

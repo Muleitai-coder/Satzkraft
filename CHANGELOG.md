@@ -4,6 +4,39 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [0.28.0] – 2026-07-21
+
+### Hinzugefügt
+
+- Jede Übungskarte hat ein Drei-Punkte-Menü mit „Übungen neu ordnen“, „Übung tauschen“, dem Scheibenrechner und „Übung entfernen (nur heute)“.
+- Ein Zahnrad oben rechts öffnet die neuen Einstellungen, unter anderem mit der Wahl zwischen dunklem und hellem Farbmodus.
+- „Workout bearbeiten“ ersetzt „Training wiederholen“: Änderungen am aktuellen Trainingstag lassen sich mit „Abbrechen“ vollständig verwerfen oder mit „Speichern“ übernehmen.
+- Programme kennen die neuen optionalen Felder „art“ und „bereich“ mit fester Bereichsliste. Der Import lehnt ungültige Bereichswerte mit einer klaren Fehlermeldung ab, der Export enthält beide Felder, und die vier mitgelieferten Programmvorlagen sind entsprechend ergänzt.
+- Die Einstellungen zeigen unter „Datensicherung“ den Stand der letzten Sicherung und bieten das vollständige Backup direkt zum Herunterladen an.
+- Das aktive Programm hat einen Teilen-Knopf: als Text kopieren, als Datei speichern oder als Link teilen – immer ohne den eigenen Fortschritt. Auch die Programmvorlagen lassen sich direkt teilen oder vor dem Laden im Editor öffnen.
+
+### Geändert
+
+- Trainingskarten zeigen keine Trainingsgruppe, Satzanzahl oder separate Zielgewichtszeile mehr. Wiederholungs- beziehungsweise Zeitvorgabe, Pause und die einzelnen Satzfelder reichen als direkte Trainingsinformation; der Scheibenrechner bleibt als Kartenaktion verfügbar. Editor und Programmvorschau zeigen die Trainingsgruppe weiterhin.
+- Während eines laufenden Trainings wird die informative Seitenfußzeile mit Versionshinweis, Entwicklerangabe und Hell-/Dunkelmodus ausgeblendet.
+- Bestandsnutzer sehen nach dem Design-Update genau einmal einen kurzen Hinweis auf das rundum erneuerte Design mit den wichtigsten Neuerungen und einem direkten Weg zur Versionshistorie. Der Hinweis erscheint nicht während eines laufenden Trainings, eines anstehenden Programm-Imports oder bei einem Daten-Lade-Problem und wird dann beim nächsten ungestörten Start nachgeholt. Wer Satzkraft neu installiert, startet weiterhin ohne Start-Hinweis direkt in der Trainingsansicht.
+- Fehlt ein Arbeitsgewicht, zeigt die Trainingskarte nur noch die dezente Aktion „Startgewicht bestimmen“ statt eines zusätzlichen Erklärungshinweises.
+- Die zusätzliche Zeile „Arbeitsgewicht“ in Trainingskarten entfällt. Das Zielgewicht steht direkt in den Gewichtsfeldern; fehlt es, übernimmt der erste eingetragene Satz den Arbeitswert, und spätere Sätze verwenden vorrangig das zuletzt tatsächlich verwendete Gewicht.
+- Vollständig überarbeitetes Erscheinungsbild: neue Farb- und Typografie-Basis mit Smaragd-Akzent in dunklem und hellem Schema sowie den Schriften Hanken Grotesk und JetBrains Mono. Beide Schriften liegen lokal in der App und werden vom Service Worker mitgespeichert, damit die App offline vollständig nutzbar bleibt.
+- Neue Startseite: große Wochenkarte mit Blockfortschritt (z. B. „01/08“), Wochenschiene und kompakte, aufklappbare Übungszeilen.
+- Der Trainingskopf zeigt während des Trainings eine Live-Zeitkarte mit der laufenden Trainingszeit.
+- Die Auswertung wurde überarbeitet: Prozent-Pillen und Wochen-Balken je Übung ersetzen das bisherige Wochenraster.
+- Das Programme-Fenster wurde nach der neuen Design-Vorlage neu aufgebaut.
+- Zeiten für Halteübungen wie Plank oder Seitstütz werden im Format Minuten:Sekunden eingegeben.
+- Die Backup-Erinnerung erscheint bereits nach drei abgeschlossenen Trainings seit der letzten Sicherung. Die bisherige Regel – Sicherung älter als 14 Tage und mindestens ein neues Training – gilt zusätzlich weiterhin.
+- Das Programme-Fenster ist eine Vollbild-Ansicht im Stil der Startseite: oben das aktive Programm mit Wochenstand und „Fortsetzen“, darunter vier Erstellen-Kacheln (KI-Coach, Import, Manuell, ChatGPT & Co.) und die Programmvorlagen als Karten mit Niveau, Ziel, Dauer und den Aktionen „Laden“ und „Bearbeiten“.
+- Erstell- und Änderungsdatum eines Programms stehen jetzt im Editor unter Details; dort liegt auch „Fortschritt zurücksetzen“ als abgesicherter Bereich. Die Programmkarten bleiben dadurch aufgeräumt.
+
+### Behoben
+
+- Beim Öffnen eines neuen oder importierten Programms im Editor ist nicht mehr automatisch die erste Übung ausgewählt.
+- Die Speicherleiste des Programmeditors deckt auf iPhones auch den Bereich unterhalb der Buttons vollständig ab; die darunterliegende Ansicht scheint nicht mehr durch.
+
 ## [0.27.0] – 2026-07-21
 
 ### Hinzugefügt

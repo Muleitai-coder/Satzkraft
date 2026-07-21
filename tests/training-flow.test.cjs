@@ -6,10 +6,11 @@ const vm = require('node:vm');
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 
 test('keeps workout controls reachable and explains partial stops', () => {
-  assert.match(html, /class="workoutbar/);
-  assert.match(html, /id="barpausew"/);
-  assert.match(html, /id="barresumew"/);
-  assert.match(html, /id="barstopw"/);
+  assert.match(html, /class="barwrap/);
+  assert.match(html, /class="livecard/);
+  assert.match(html, /id="pausew"/);
+  assert.match(html, /id="resumew"/);
+  assert.match(html, /id="stopw"/);
   assert.match(html, /Alle bisherigen Eingaben bleiben erhalten/);
   assert.match(html, /Speichern & später fortsetzen/);
   assert.match(html, /Math\.max\(1,Math\.round/);
@@ -297,7 +298,7 @@ test('onSetInput rejects stale writes from other exercises during countdown, set
 });
 
 test('formats long time prescriptions in minutes without changing stored seconds', () => {
-  const start = html.indexOf('function fmtSeconds');
+  const start = html.indexOf('function fmtTime');
   const end = html.indexOf('function dDate', start);
   const context = {};
   vm.createContext(context);
@@ -308,8 +309,8 @@ test('formats long time prescriptions in minutes without changing stored seconds
   assert.equal(context.fmtSecondsRange(30, 75), '0:30–1:15 min');
   assert.equal(context.fmtSecondsRange(780, 900), '13:00–15:00 min');
   assert.equal(context.fmtMinuteInput(1200), '20,0');
-  assert.match(html, /data-time-scale="60"/);
-  assert.match(html, /minuteStep\?\.5:1/);
+  assert.match(html, /function timeInputSeconds\(/);
+  assert.match(html, /Zeit in Minuten und Sekunden/);
 });
 
 test('guards the delayed automatic rest and keeps the page scrollable', () => {
@@ -320,15 +321,38 @@ test('guards the delayed automatic rest and keeps the page scrollable', () => {
   assert.match(html, /restAfterExercise=next>=sets\.length/);
   assert.doesNotMatch(html.slice(html.indexOf('function exCardHtml'), html.indexOf('function renderView')), /class="pausebtn"/);
   assert.doesNotMatch(html, /body\.rest-lock\{position:fixed/);
-  assert.match(html, /body\.rest-lock \.ex:not\(\.rest-focus\)\{opacity:\.55/);
+  assert.match(html, /classList\.add\("rest-focus"\)/);
+});
+
+test('hides the informational page footer during an active workout', () => {
+  const renderView = html.slice(
+    html.indexOf('function renderView'),
+    html.indexOf('function updateProgressUI')
+  );
+  assert.match(renderView, /if\(!active\(\)\)h\+='<div class="legend"/);
+});
+
+test('keeps training cards focused with a group heading and menu actions', () => {
+  const cardSource = html.slice(
+    html.indexOf('function exCardHtml'),
+    html.indexOf('function renderView')
+  );
+  assert.match(cardSource, /class="cardcat '\+catColor\(ex\)\+'"><span>'\+esc\(catLabel\(ex\)\)/, 'die Trainingsgruppe steht als farbige Kopfzeile auf der Karte');
+  assert.doesNotMatch(cardSource, /sets\.length[^;\n]*Sätze/);
+  assert.doesNotMatch(cardSource, /presctarget">Ziel/);
+  assert.match(cardSource, /class="presctarget"[^;\n]*progressHint/);
+  assert.doesNotMatch(cardSource, /data-plates=|class="plateaction"/, 'der Scheibenrechner gehört ins Drei-Punkte-Menü statt auf die Karte');
+  assert.match(html, /Scheibenrechner',cls:"menu"/);
 });
 
 test('keeps the calibration entry compact and removes it from program previews', () => {
-  assert.match(html, /Arbeitsgewicht noch offen/);
+  assert.doesNotMatch(html, /Arbeitsgewicht noch offen|Trag beim ersten Satz dein verwendetes Gewicht ein/);
   assert.match(html, /Startgewicht bestimmen/);
+  assert.match(html, /class="editnote calibrationhint"[^;]*><button type="button" class="calibrationmore"/);
   assert.doesNotMatch(html, /class="wwrow"/);
   assert.doesNotMatch(html.slice(html.indexOf('function renderImportPreview'), html.indexOf('function returnFromImportFlow')), /missingWeights|Übungen ohne Startgewicht|Startgewichte finden/);
-  assert.match(html, /tw>0\?tw\+" kg":\(ex\.bw\?"Körpergew\.":"—"\)/);
+  assert.match(html, /var wPH=tw>0\?\(""\+tw\):""/);
+  assert.match(html, /if\(input&&input\.value===""\)input\.placeholder=tw>0\?tw:""/);
 });
 
 test('runs timed holds in the shared bar and records them before the set rest', () => {

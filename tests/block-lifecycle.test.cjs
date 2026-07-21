@@ -80,6 +80,7 @@ function appContext(overrides) {
   const context = {
     APP_VERSION: '0.21.0',
     LIMITS: { maxNameLen: 30 },
+    S: {},
     PROGRESSION: progression,
     console,
     setTimeout: callback => {
@@ -430,6 +431,7 @@ test('separates archived programs, exposes read-only actions and blocks stale ac
   };
   context.document = { getElementById: id => id === 'lib' ? library : null };
   context.programWriteLocked = () => false;
+  context.PROGRAM_LIBRARY = [];
   context.themeButtonHtml = context.backupReminderHtml = context.icon = () => '';
   context.backupStatusText = () => 'Keine Sicherung';
   context.esc = context.attr = value => String(value == null ? '' : value);
@@ -450,14 +452,11 @@ test('separates archived programs, exposes read-only actions and blocks stale ac
   const programNameEnd = activeCard.indexOf('</div>', activeCard.indexOf('class="pn"'));
   const programActionsStart = activeCard.indexOf('class="progactions"');
   const secondaryMeta = activeCard.slice(programNameEnd, programActionsStart);
-  assert.match(secondaryMeta, /1 Tag(?:e)? · 3 Wochen/);
-  assert.match(secondaryMeta, /16\.07\.2026/);
-  assert.doesNotMatch(secondaryMeta, /15\.07\.2026/);
+  assert.match(secondaryMeta, /class="chip">1 Tag<\/span><span class="chip">3 Wochen<\/span>/);
   assert.match(secondaryMeta, /Abgeschlossen/);
-
-  const copyWithoutUpdate = Object.assign({}, other, { createdAt: Date.UTC(2026, 6, 14, 12) });
-  const copyCard = context.programItemHtml('other', copyWithoutUpdate);
-  assert.match(copyCard, /14\.07\.2026/);
+  assert.doesNotMatch(activeCard, /programdate|16\.07\.2026/, 'Datum steht jetzt im Editor statt auf der Karte');
+  assert.match(html, /'Erstellt am '\+edCreated/, 'der Editor zeigt das Erstelldatum');
+  assert.match(html, /'Zuletzt geändert am '\+edUpdated/, 'der Editor zeigt das Änderungsdatum');
 
   const legacyCard = context.programItemHtml('other', other);
   assert.doesNotMatch(legacyCard, /Invalid Date|01\.01\.1970/);
@@ -465,9 +464,6 @@ test('separates archived programs, exposes read-only actions and blocks stale ac
   const programMetaCss = html.match(/\.progitem \.pm\{([^}]*)\}/);
   assert.ok(programMetaCss, 'Metazeile der Programmkarte fehlt');
   assert.match(programMetaCss[1], /display:flex/);
-  const programDateCss = html.match(/\.programdate\{([^}]*)\}/);
-  assert.ok(programDateCss, 'Datumsregel der Programmkarte fehlt');
-  assert.match(programDateCss[1], /margin-left:auto/);
   assert.equal(context.setActive('old'), false);
   assert.equal(context.S.active, 'basis');
   assert.match(functionSource('openProgramEditor'), /archived/);

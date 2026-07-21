@@ -28,6 +28,10 @@ function loadRealBackupValidator() {
   const backupEnd = html.indexOf('function confirmBackupRestore', backupStart);
   assert.ok(programStart >= 0 && programEnd > programStart, 'Programmvalidierung wurde nicht gefunden');
   assert.ok(backupStart >= 0 && backupEnd > backupStart, 'Backup-Validierung wurde nicht gefunden');
+  const bereichStart = html.indexOf('var BEREICHE=');
+  const bereichEnd = html.indexOf('var DEFAULT_PROGRAM=', bereichStart);
+  assert.ok(bereichStart >= 0 && bereichEnd > bereichStart, 'Bereichsliste wurde nicht gefunden');
+  vm.runInContext(html.slice(bereichStart, bereichEnd), context);
   vm.runInContext(html.slice(programStart, programEnd), context);
   vm.runInContext(html.slice(backupStart, backupEnd), context);
   return context;

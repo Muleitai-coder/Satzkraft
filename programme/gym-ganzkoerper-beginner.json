@@ -2,6 +2,8 @@
   "format": "trainings-block",
   "version": 2,
   "name": "Gym Ganzkörper Beginner",
+  "art": "Einsteiger",
+  "bereich": "Ganzkörper",
   "description": "Sicheres Ganzkörpertraining an Geräten und mit Kurzhanteln. 3 Tage pro Woche, etwa 50 bis 65 Minuten.",
   "settings": {
     "progressionSystem": "double_progression",
