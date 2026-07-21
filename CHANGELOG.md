@@ -23,7 +23,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 - Trainingskarten zeigen keine Trainingsgruppe, Satzanzahl oder separate Zielgewichtszeile mehr. Wiederholungs- beziehungsweise Zeitvorgabe, Pause und die einzelnen Satzfelder reichen als direkte Trainingsinformation; der Scheibenrechner bleibt als Kartenaktion verfügbar. Editor und Programmvorschau zeigen die Trainingsgruppe weiterhin.
 - Während eines laufenden Trainings wird die informative Seitenfußzeile mit Versionshinweis, Entwicklerangabe und Hell-/Dunkelmodus ausgeblendet.
-- Die App öffnet nach dem Update ohne zusätzlichen Start-Hinweis direkt in der Trainingsansicht.
+- Bestandsnutzer sehen nach dem Design-Update genau einmal einen kurzen Hinweis auf das rundum erneuerte Design mit den wichtigsten Neuerungen und einem direkten Weg zur Versionshistorie. Der Hinweis erscheint nicht während eines laufenden Trainings, eines anstehenden Programm-Imports oder bei einem Daten-Lade-Problem und wird dann beim nächsten ungestörten Start nachgeholt. Wer Satzkraft neu installiert, startet weiterhin ohne Start-Hinweis direkt in der Trainingsansicht.
 - Beim Tauschen bleibt ein frei bearbeitbares Feld „Ersatzübung“. Während der Eingabe stehen deutsche Datenbanktreffer direkt darunter zur Auswahl; nach der Auswahl bleibt nur der Name im Feld. Ein separater Bereich zeigt zusätzlich genau eine empfohlene Ersatzübung.
 - Aktionen auf Programmkarten wie „Bearbeiten“, „Aktivieren“, „Folgeblock starten“, „Archivieren“ und Archivaktionen werden einheitlich als anklickbare Textaktionen ohne Button-Fläche dargestellt.
 - Fehlt ein Arbeitsgewicht, zeigt die Trainingskarte nur noch die dezente Aktion „Startgewicht bestimmen“ statt eines zusätzlichen Erklärungshinweises.

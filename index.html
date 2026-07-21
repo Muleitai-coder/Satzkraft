@@ -323,6 +323,7 @@ body.rest-lock{--rest-mode:1}
 .htbl tr.cur td{color:var(--acc)}
 .mtitle{font-size:17px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px}
 .mmsg{font-size:13px;color:var(--ink2);line-height:1.5;margin-bottom:16px}
+.updatelist{margin:10px 0 0;padding-left:18px}.updatelist li{margin:0 0 6px;line-height:1.45}
 .mbtns{display:flex;flex-direction:column;gap:8px}
 .mbtn{border:1px solid var(--hair2);border-radius:12px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;background:var(--panel);color:var(--ink)}
 .mbtn.primary{border-color:transparent;background:var(--acc);color:var(--onacc);font-weight:800}
@@ -976,6 +977,7 @@ var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
 var BACKUP_META_KEY="satzkraft-backup-meta-v1";
 var PERSIST_REQUEST_KEY="satzkraft-storage-persist-v1";
+var REDESIGN_NOTICE_KEY="satzkraft-design-update-v1";
 function currentTheme(){return document.documentElement.dataset.theme==="light"?"light":"dark";}
 function themeButtonHtml(){
  var light=currentTheme()==="light";
@@ -3652,6 +3654,45 @@ if(loadIssueText){
   showModal("Trainingsdaten konnten nicht geladen werden",loadIssueText+" Die beschädigten Originaldaten wurden nicht überschrieben. Sichere sie bitte, bevor du neue Trainingswerte einträgst.",actions);
  },0);
 }
+
+// ---------- Einmaliger Hinweis auf das Design-Update ----------
+function hasExistingTrainingData(state){
+ if(!state||!state.programs||!state.store)return false;
+ if(Object.keys(state.programs).length>1)return true;
+ if(state.active&&state.active!=="default")return true;
+ var ids=Object.keys(state.store);
+ for(var i=0;i<ids.length;i++){
+  var st=state.store[ids[i]];
+  if(!st)continue;
+  if(Array.isArray(st.history)&&st.history.length)return true;
+  if(st.logs&&typeof st.logs==="object"&&Object.keys(st.logs).length)return true;
+  if(st.tg&&typeof st.tg==="object"&&Object.keys(st.tg).length)return true;
+  if(st.workout)return true;
+ }
+ return false;
+}
+function redesignNoticeSeen(){try{return !!localStorage.getItem(REDESIGN_NOTICE_KEY);}catch(e){return true;}}
+function markRedesignNoticeSeen(){try{localStorage.setItem(REDESIGN_NOTICE_KEY,"1");}catch(e){}}
+function showRedesignNotice(){
+ showModal("Großes Update: neues Design ✨",
+  'Satzkraft wurde von Grund auf neu gestaltet. Deine Programme und dein gesamter Fortschritt bleiben dabei unverändert erhalten.'+
+  '<ul class="updatelist">'+
+  '<li>Neue Startseite mit großer Wochenkarte</li>'+
+  '<li>Neues Programme-Fenster mit Vorlagen zum Laden, Bearbeiten und Teilen</li>'+
+  '<li>Einstellungen über das Zahnrad oben rechts: heller oder dunkler Farbmodus und Datensicherung</li>'+
+  '<li>Abgeschlossene Trainings lassen sich mit „Workout bearbeiten“ anpassen</li>'+
+  '</ul>',
+  [{label:"Alles klar",cls:"primary",action:null},{label:"Alle Neuerungen ansehen",action:showVersionInfo}]);
+}
+function maybeShowRedesignNotice(){
+ if(redesignNoticeSeen())return false;
+ if(!hasExistingTrainingData(S)){markRedesignNoticeSeen();return false;}
+ if(loadIssueText||active()||pendingProgramImport||resumedPendingWorkoutSwaps)return false;
+ markRedesignNoticeSeen();
+ showRedesignNotice();
+ return true;
+}
+maybeShowRedesignNotice();
 </script>
 </body>
 </html>

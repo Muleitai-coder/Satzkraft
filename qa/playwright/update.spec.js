@@ -4,6 +4,7 @@ const { test, expect } = require('@playwright/test');
 
 const APP_STATE_KEY = 'cali-plan-v3';
 const THEME_KEY = 'training-theme-v1';
+const REDESIGN_NOTICE_KEY = 'satzkraft-design-update-v1';
 const REPORT_BACKUP = JSON.parse(
   fs.readFileSync(
     path.resolve(__dirname, '../../TESTBACKUP-AUSWERTUNG.json'),
@@ -52,16 +53,19 @@ function compactWorkoutState(exerciseCount = 1) {
 async function openWithState(page, state, options = {}) {
   const theme = options.theme || 'dark';
   await page.addInitScript(
-    ({ appStateKey, themeKey, seededState, seededTheme }) => {
+    ({ appStateKey, themeKey, noticeKey, seededState, seededTheme, showUpdateNotice }) => {
       localStorage.clear();
       localStorage.setItem(themeKey, seededTheme);
+      if (!showUpdateNotice) localStorage.setItem(noticeKey, '1');
       localStorage.setItem(appStateKey, JSON.stringify(seededState));
     },
     {
       appStateKey: APP_STATE_KEY,
       themeKey: THEME_KEY,
+      noticeKey: REDESIGN_NOTICE_KEY,
       seededState: state,
       seededTheme: theme,
+      showUpdateNotice: options.updateNotice === true,
     }
   );
   await page.goto('/index.html');
@@ -1250,5 +1254,42 @@ test.describe('4 · Regression & Kernfunktion', () => {
     await page.locator('#pdf').click();
     await expect(page.locator('#report.open')).toBeVisible();
     expect(errors).toEqual([]);
+  });
+
+  test('UPD-01/P0: Bestandsnutzer sehen den Design-Update-Hinweis genau einmal', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState(), { updateNotice: true });
+
+    const modal = page.locator('#modal');
+    await expect(modal).toBeVisible();
+    await expect(modal.locator('.mtitle')).toContainText('neues Design');
+    await expect(modal.locator('.updatelist li')).toHaveCount(4);
+    await expect(
+      modal.getByRole('button', { name: 'Alle Neuerungen ansehen' })
+    ).toBeVisible();
+
+    await modal.getByRole('button', { name: 'Alles klar' }).click();
+    await expect(modal).toBeHidden();
+    expect(
+      await page.evaluate(
+        (key) => localStorage.getItem(key),
+        REDESIGN_NOTICE_KEY
+      )
+    ).toBe('1');
+  });
+
+  test('UPD-02/P0: Neuinstallation startet ohne Design-Update-Hinweis', async ({
+    page,
+  }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('#app .ptitle')).toBeVisible();
+    await expect(page.locator('#modal')).toBeHidden();
+    expect(
+      await page.evaluate(
+        (key) => localStorage.getItem(key),
+        REDESIGN_NOTICE_KEY
+      )
+    ).toBe('1');
   });
 });

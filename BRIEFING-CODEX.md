@@ -58,6 +58,7 @@ Das komplette, vom Produktverantwortlichen abgenommene Redesign ist umgesetzt. E
 - **Editor:** Tabs Training/Wochen/Details. Im Details-Tab stehen Erstell-/Änderungsdatum sowie die abgesicherten Bereiche „Fortschritt zurücksetzen“ und „Programm löschen“. Programmkarten zeigen kein Datum mehr.
 - **Programmfelder:** `art` und `bereich` sind optionale Felder im Austauschformat; `bereich` ist auf die Liste `BEREICHE` beschränkt, der Import lehnt andere Werte mit klarer Fehlermeldung ab, der Export enthält beide Felder.
 - **Backup:** Erinnerung erscheint nach drei abgeschlossenen Trainings seit der letzten Sicherung oder wenn die Sicherung älter als 14 Tage ist und mindestens ein neues Training vorliegt; „Später“ pausiert sieben Tage.
+- **Einmaliger Design-Update-Hinweis:** Bestandsnutzer (erkennbar an vorhandenen Trainingsdaten oder Programmen, `hasExistingTrainingData`) sehen nach dem Redesign genau einmal ein Hinweis-Modal (`maybeShowRedesignNotice`, localStorage-Schlüssel `satzkraft-design-update-v1`) mit Schließen-Knopf und Weg zur Versionshistorie. Neuinstallationen sehen keinen Hinweis; bei ihnen wird der Schlüssel still gesetzt. Kein Hinweis bei laufendem Training, Daten-Lade-Problem, anstehendem Programm-Import oder fortgesetzter Tausch-Entscheidung – er wird beim nächsten ungestörten Start nachgeholt. Die Playwright-Seeds setzen den Schlüssel standardmäßig.
 
 ---
 
