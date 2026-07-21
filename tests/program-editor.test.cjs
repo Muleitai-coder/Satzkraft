@@ -79,7 +79,7 @@ test('covers the iPhone safe area below the editor actions', () => {
   assert.match(html, /\.edsticky\{[^}]*padding:12px 18px calc\(12px \+ env\(safe-area-inset-bottom\)\)[^}]*background:var\(--barbg\)/);
   assert.match(html, /--barbg:rgba\(8,9,11,\.92\)/);
   assert.match(html, /--barbg:rgba\(239,236,229,\.92\)/);
-  assert.match(html, /\.edsticky\{margin-bottom:-14px\}/);
+  assert.match(html, /\.edsticky,\.importactions\{[^}]*margin-bottom:-14px\}/);
 });
 
 test('uses one clear rename path and compact program actions', () => {
@@ -133,7 +133,9 @@ test('uses a shared preview and a dedicated unsaved draft mode', () => {
   assert.match(html, /function renderImportPreview/);
   assert.match(html, /Speichern &amp; aktivieren/);
   assert.match(html, /Nur speichern/);
-  assert.match(html, /Vorher bearbeiten/);
+  assert.match(html, /id="importactivate"/);
+  assert.match(html, /id="importedit"/);
+  assert.doesNotMatch(html, /Vorher bearbeiten|id="importsave"|id="importcancel"/);
   assert.match(html, /editorUnsavedDraft/);
   assert.match(html, /id="edsavenew"/);
   assert.match(html, /id="edsavenewactive"/);

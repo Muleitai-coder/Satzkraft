@@ -12,6 +12,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Aufgeklappte Übungszeilen der Startseite klappen beim Wechsel des Trainingstags oder der Woche automatisch wieder zu.
 - Alle Hinweis- und Entscheidungsfenster sowie sämtliche Knöpfe und Eingabefelder verwenden durchgehend die neue App-Schrift des Redesigns.
 - Der alte Zwischen-Hub „Neues Programm“ entfällt ersatzlos. Die vier Erstellen-Kacheln führen direkt in ihre Ansicht; Zurück und das Schließen-X führen aus KI-Coach, Import, Manuell und ChatGPT & Co. immer direkt zur Programme-Ansicht.
+- Die Aktionsleiste unter „Programm prüfen“ ist eine feste Leiste mit genau zwei Knöpfen: „Speichern & aktivieren“ und „Bearbeiten“. „Nur speichern“ und „Abbrechen“ entfallen; Zurück-Pfeil und X übernehmen das Verwerfen.
 - „Programm prüfen“ ist im Stil der Startseite aufgebaut: Kopf mit Programmname und Chips, Trainingstage als aufklappbare Karten mit Übungszeilen samt Kategorie, Sätzen und Pausen sowie eine aufklappbare Wochenstruktur. Die bisherigen Statistik-Kacheln und Doppel-Listen entfallen.
 
 ### Behoben
