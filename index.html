@@ -1456,11 +1456,11 @@ function resetDayLogs(w,dk){
 }
 function changeWeek(target){
  if(active()||target===S.week||target<1||target>PROG().weeks.length)return;
- correctionCell=null;S.week=target;save();renderView();renderBar();
+ correctionCell=null;expandedPreviewRows={};S.week=target;save();renderView();renderBar();
 }
 function changeDay(target){
  if(active()||target===S.day||dayKeys().indexOf(target)<0)return;
- correctionCell=null;S.day=target;save();renderView();renderBar();
+ correctionCell=null;expandedPreviewRows={};S.day=target;save();renderView();renderBar();
 }
 function skippedBeforeSelection(){
  var ordered=weekLayout().filter(function(day){return !!day;});

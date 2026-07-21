@@ -9,6 +9,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 ### Geändert
 
 - Die Zeile mit dem Wert des anderen Trainingstags heißt jetzt kompakt „Anderer Tag · Mi (W1)“ und bleibt wie die übrige Verlaufszeile immer einzeilig, ohne Zeilenumbruch.
+- Aufgeklappte Übungszeilen der Startseite klappen beim Wechsel des Trainingstags oder der Woche automatisch wieder zu.
 - Alle Hinweis- und Entscheidungsfenster sowie sämtliche Knöpfe und Eingabefelder verwenden durchgehend die neue App-Schrift des Redesigns.
 - Der alte Zwischen-Hub „Neues Programm“ entfällt ersatzlos. Die vier Erstellen-Kacheln führen direkt in ihre Ansicht; Zurück und das Schließen-X führen aus KI-Coach, Import, Manuell und ChatGPT & Co. immer direkt zur Programme-Ansicht.
 - „Programm prüfen“ ist im Stil der Startseite aufgebaut: Kopf mit Programmname und Chips, Trainingstage als aufklappbare Karten mit Übungszeilen samt Kategorie, Sätzen und Pausen sowie eine aufklappbare Wochenstruktur. Die bisherigen Statistik-Kacheln und Doppel-Listen entfallen.
