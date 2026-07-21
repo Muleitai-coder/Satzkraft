@@ -446,7 +446,6 @@ body.rest-lock{--rest-mode:1}
 .libta:focus{border-color:var(--acc)}
 .librow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .libnote{font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}
-.edintro{background:var(--accg);border:1px solid var(--accl);border-radius:12px;padding:10px 12px;color:var(--ink2);font-size:12px;line-height:1.5;margin-bottom:12px}
 .edsection,.edcard{background:var(--panel2);border:1px solid var(--hair);border-radius:14px;margin:9px 0;overflow:hidden}
 .edsection>summary,.edcard>summary{cursor:pointer;list-style:none;padding:12px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 .edsection>summary::-webkit-details-marker,.edcard>summary::-webkit-details-marker{display:none}
@@ -455,9 +454,10 @@ body.rest-lock{--rest-mode:1}
 .edbody{padding:2px 12px 12px}
 .edgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .edfield{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--ink2);font-size:11px;font-weight:600}
-.edlabel{display:flex;align-items:center;min-height:40px}
+.edlabel{display:flex;align-items:center;min-height:40px;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .infoterm{display:inline-flex;align-items:center;min-height:40px;margin:-4px -6px;padding:4px 6px;border:none;background:transparent;color:inherit;font:inherit;font-weight:inherit;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--muted);text-underline-offset:3px}
 .infoterm:hover,.infoterm:focus-visible{color:var(--acc)}
+.edlabel .infoterm{text-transform:uppercase;letter-spacing:.12em}
 .edfield small{color:var(--muted);font-size:10px;font-weight:500;line-height:1.35}
 .edfield.wide{grid-column:1/-1}
 .edfield input,.edfield select,.edfield textarea{width:100%;min-height:39px;background:var(--panel);border:1px solid var(--hair2);border-radius:9px;color:var(--ink);padding:8px 9px;font:inherit;font-size:13px;outline:none}
@@ -491,8 +491,8 @@ body.rest-lock{--rest-mode:1}
 .edtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:transparent;border:1px solid var(--hair);border-radius:999px;padding:3px;margin-bottom:14px}
 .edtab{border:0;border-radius:999px;background:transparent;color:var(--muted);min-height:38px;font-size:12px;font-weight:700;cursor:pointer}
 .edtab.active{background:var(--acc);color:var(--onacc)}
-.edguide{display:flex;gap:10px;align-items:flex-start;background:var(--accg);border:1px solid var(--accl);border-radius:13px;padding:11px 12px;margin-bottom:13px;color:var(--ink2);font-size:12px;line-height:1.45}
-.edguide strong{display:block;color:var(--ink);margin-bottom:2px}
+.edguide{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid var(--hair);border-radius:13px;padding:11px 13px;margin-bottom:13px;color:var(--muted);font-size:11.5px;line-height:1.5}
+.edguide strong{display:block;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:4px}
 .edguide .num{display:grid;place-items:center;flex:0 0 24px;height:24px;border-radius:50%;background:var(--acc);color:var(--onacc);font-family:var(--mono);font-weight:800}
 .edviewhead{display:flex;align-items:flex-start;gap:10px;margin:3px 2px 11px}
 .edviewhead .meta{flex:1;min-width:0}
@@ -524,7 +524,7 @@ body.rest-lock{--rest-mode:1}
 .edexnum{display:grid;place-items:center;flex:0 0 26px;height:26px;background:var(--up);border-radius:8px;color:var(--ink2);font-family:var(--mono);font-size:11px;font-weight:800}
 .edexmain{flex:1;min-width:0}
 .edexname{font-size:14px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
-.edexmeta{display:flex;flex-direction:column;align-items:flex-start;gap:3px;font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+.edexmeta{display:flex;flex-direction:column;align-items:flex-start;gap:3px;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.4}
 .edexmeta .tag{flex:none}
 .edexmeta .edexparams{display:block}
 .edexedit{margin-top:12px;padding-top:12px;border-top:1px solid var(--hair)}
@@ -581,6 +581,11 @@ body.rest-lock{--rest-mode:1}
 .createtitle{font-size:13px;font-weight:750;color:var(--ink);margin-bottom:4px}
 .createfoot{margin-top:13px;padding-top:13px;border-top:1px solid var(--hair)}
 .subviewbox{max-width:620px}
+.manualgrid{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:10px}
+.manualdays{display:flex;gap:6px;margin-top:2px}
+.manualday{flex:1;min-height:46px;border:1px solid var(--hair);border-radius:12px;background:var(--panel);color:var(--muted);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.manualday.sel{background:var(--acc);border-color:transparent;color:var(--onacc)}
+.manualhint{color:var(--muted);font-size:11px;line-height:1.5;margin:8px 0 0}
 .subviewlead{font-size:12px;color:var(--ink2);line-height:1.55;margin:-2px 0 14px}
 .importdrop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px dashed var(--hair2);border-radius:13px;background:var(--panel2);margin:10px 0}
 .importtextwrap{position:relative}
@@ -3332,10 +3337,10 @@ function renderLib(){
  var otherIds=Object.keys(S.programs).filter(function(id){return id!==S.active&&S.programs[id].archived!==true;});
  if(otherIds.length){h+='<details class="programothers"><summary>Weitere Programme ('+otherIds.length+')</summary><div class="programothersbody">';otherIds.forEach(function(id){h+=programItemHtml(id,S.programs[id]);});h+='</div></details>';}
  h+='<div class="createtiles">';
- h+='<button class="createtile" id="coachbtn"'+lockedAttr+'><span class="ticon acc">'+icon("sparkle")+'</span><b>KI-Coach</b><small>Plan erstellen lassen</small></button>';
- h+='<button class="createtile" id="importbtn"'+lockedAttr+'><span class="ticon">'+icon("download")+'</span><b>Import</b><small>Eigenes JSON laden</small></button>';
- h+='<button class="createtile" id="manualcreate"'+lockedAttr+'><span class="ticon">'+icon("edit")+'</span><b>Manuell</b><small>Selbst zusammenstellen</small></button>';
- h+='<button class="createtile" id="externalaibtn"'+lockedAttr+'><span class="ticon">'+icon("external")+'</span><b>ChatGPT &amp; Co.</b><small>Mit externer KI erstellen</small></button>';
+ h+='<button class="createtile" id="coachbtn" aria-label="Programm mit dem Satzkraft KI-Coach erstellen"'+lockedAttr+'><span class="ticon acc">'+icon("sparkle")+'</span><b>KI-Coach</b><small>Plan erstellen lassen</small></button>';
+ h+='<button class="createtile" id="importbtn" aria-label="Fertiges Programm importieren"'+lockedAttr+'><span class="ticon">'+icon("download")+'</span><b>Import</b><small>Eigenes JSON laden</small></button>';
+ h+='<button class="createtile" id="manualcreate" aria-label="Programm manuell erstellen"'+lockedAttr+'><span class="ticon">'+icon("edit")+'</span><b>Manuell</b><small>Selbst zusammenstellen</small></button>';
+ h+='<button class="createtile" id="externalaibtn" aria-label="Programm mit ChatGPT oder einer anderen KI erstellen"'+lockedAttr+'><span class="ticon">'+icon("external")+'</span><b>ChatGPT &amp; Co.</b><small>Mit externer KI erstellen</small></button>';
  h+='</div>';
  h+='<div class="libsec">Vorlagen · '+PROGRAM_LIBRARY.length+'</div><div class="tpllist">';
  PROGRAM_LIBRARY.forEach(function(item,index){h+='<div class="tplcard '+(item.farbe||'sky')+'"><span class="tplbar"></span><div class="tplmain"><div class="tpltop"><span class="tpllevel">'+esc(item.level)+'</span><span class="tplmeta">'+item.days+' Tage · '+esc(item.duration)+'</span></div><div class="tplname">'+esc(item.name)+'</div><div class="tplgoal">'+esc(item.goal)+'</div><div class="tpldesc">'+esc(item.description)+'</div><div class="progactions"><button class="progtextaction" data-library-index="'+index+'"'+lockedAttr+'>Laden</button><button class="progtextaction" data-library-edit="'+index+'"'+lockedAttr+'>Bearbeiten</button><button type="button" class="iconbtn sharebtn" data-library-share="'+index+'" aria-label="Vorlage '+attr(item.name)+' teilen" title="Teilen">'+icon("share")+'</button></div></div></div>';});
