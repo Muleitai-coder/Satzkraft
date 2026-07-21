@@ -49,6 +49,7 @@ function loadReportContext() {
   const archivedProgram = weightedProgram('Archivblock', 'Archiv-Kniebeuge', { archived: true });
   const context = {
     APP_VERSION: 'test',
+    PROGRAM_LIBRARY: [],
     S: {
       active: 'active',
       programs: { active: activeProgram, archive: archivedProgram },

@@ -44,6 +44,23 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
 
 ---
 
+## Aktueller Oberflächen-Stand nach dem Redesign (Juli 2026, verbindlich)
+
+Das komplette, vom Produktverantwortlichen abgenommene Redesign ist umgesetzt. Es ersetzt alle älteren Oberflächen-Beschreibungen in den historischen Arbeitspaketen unten; bei Widersprüchen gilt dieser Abschnitt.
+
+- **Design-System:** CSS-Design-Tokens mit Smaragd-Akzent, vollständiges dunkles und helles Schema (`data-theme`). Schriften Hanken Grotesk und JetBrains Mono liegen lokal in `fonts/` (Latin-Subset, variable Gewichte 400–800) und stehen im Service-Worker-Precache – kein Google-CDN, die App muss offline vollständig funktionieren.
+- **Startseite:** Kopfzeile mit Marke, „Programme“, „Auswertung“ und Einstellungen-Zahnrad. Wochenkarte mit Blockfortschritt (z. B. „01/08“), Phasen-Badge, RIR und Wochenschiene; darunter Tagesleiste und kompakte, aufklappbare Übungszeilen (`exrowd`, `data-expand-prev`). Fußzeile mit Versions-Knopf (`legendversion appversion`) öffnet die Versionshistorie.
+- **Einstellungen (Zahnrad):** Farbmodus-Wahl (`data-settheme`) und Bereich „Datensicherung“ mit Sicherungsstand und Backup-Download (`data-settings-backup`).
+- **Training:** Live-Zeitkarte im Kopf (`.livecard`) mit „Pause“/„Weiter“ und „Ende“ (`pausew`/`resumew`/`stopw`); die untere Leiste (`#bar`) zeigt nur Satzpause/Satzfokus/Halte-Timer. Übungskarte: farbiger Kategorie-Kopf (`cardcat`), Aktionen Video und Notiz plus Drei-Punkte-Menü (`data-exmenu`: Übungen neu ordnen, Übung ersetzen, Scheibenrechner, Übung entfernen nur für heute). Automatische Satzpause nach jedem vollständigen Satz.
+- **Abgeschlossene Einheiten:** „Workout bearbeiten“ ersetzt „Training wiederholen“ – Leiste wechselt auf „Abbrechen“/„Speichern“, Abbrechen stellt den Sicherungsstand wieder her. Direkte Einzeländerungen außerhalb dieses Modus fragen mit „Wert übernehmen?“ nach und nennen die Neuberechnungs-Konsequenz.
+- **Zeitübungen:** Eingaben und Anzeigen im Format Minuten:Sekunden (`timeInputSeconds`, `fmtClockInput`).
+- **Programme-Fenster:** Vollbild-Ansicht im Stil der Startseite. Oben die aktive Programmkarte (Aktiv-Pille, „Woche 01 / 08“, Bereichs-Zeile, Tage/Wochen-Chips, „Fortsetzen“, Teilen-Knopf `proshare`), dann „Weitere Programme“, vier Erstellen-Kacheln (KI-Coach, Import, Manuell, ChatGPT & Co.), die Programmvorlagen als Karten (`tplcard`, aus `PROGRAM_LIBRARY` mit Feld `farbe`; Aktionen Laden/Bearbeiten/Teilen), Archiv-Zugang und „Daten sichern“. Der Erstellen-Hub existiert weiter als Zwischenansicht der Erstell-Flows.
+- **Editor:** Tabs Training/Wochen/Details. Im Details-Tab stehen Erstell-/Änderungsdatum sowie die abgesicherten Bereiche „Fortschritt zurücksetzen“ und „Programm löschen“. Programmkarten zeigen kein Datum mehr.
+- **Programmfelder:** `art` und `bereich` sind optionale Felder im Austauschformat; `bereich` ist auf die Liste `BEREICHE` beschränkt, der Import lehnt andere Werte mit klarer Fehlermeldung ab, der Export enthält beide Felder.
+- **Backup:** Erinnerung erscheint nach drei abgeschlossenen Trainings seit der letzten Sicherung oder wenn die Sicherung älter als 14 Tage ist und mindestens ein neues Training vorliegt; „Später“ pausiert sieben Tage.
+
+---
+
 ## 3. Arbeitspakete
 
 ### Paket A – Quick Wins (Import, Texte, Auswertung, Druck)

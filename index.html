@@ -330,9 +330,9 @@ body.rest-lock{--rest-mode:1}
 .histbtn{background:var(--acc);color:var(--onacc);border:none;border-radius:12px;padding:8px 12px;font-size:13px;font-weight:800;cursor:pointer}
 .overlay{position:fixed;inset:0;background:var(--bg);z-index:60;overflow-y:auto;display:none}
 .overlay.open{display:block}
-#lib{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:85;display:none;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-#lib.open{display:flex}
-.libbox{background:var(--panel);border:1px solid var(--hair);border-radius:20px;width:100%;max-width:480px;margin:auto;padding:18px}
+#lib{position:fixed;inset:0;background:var(--bg);z-index:85;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#lib.open{display:block}
+.libbox{background:transparent;border:0;border-radius:0;width:100%;max-width:560px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom))}
 .owrap{max-width:560px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 40px}
 .ohdr{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .ohdr h1{font-size:18px;margin:0;flex:1;font-weight:800;letter-spacing:-.01em}
@@ -417,7 +417,7 @@ body.rest-lock{--rest-mode:1}
 .rdetailsbody{padding:4px 14px 14px}
 .rfootnote{font-size:10px;line-height:1.5;color:var(--muted);margin:12px 2px 0}
 .progitem{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px 14px;margin-bottom:8px}
-.progitem.active{border-color:var(--accl);background:var(--accg);box-shadow:0 12px 28px rgba(0,0,0,.14)}
+.progitem.active{border-color:var(--accl);background:var(--panel);box-shadow:0 12px 28px rgba(0,0,0,.14)}
 .proghead{display:flex;align-items:flex-start;gap:10px}
 .progitem .meta{flex:1;min-width:0}
 .progitem .pn{font-size:14px;font-weight:700;letter-spacing:-.01em}
@@ -777,6 +777,37 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .liveactions{display:flex;gap:8px;flex:none}
 .liveinfo{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--muted);margin-top:5px}
 .topright .brand{margin-right:auto;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.progitem.active{position:relative;overflow:hidden;padding-top:16px}
+.progitem.active:before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc)}
+.progsub{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:7px}
+.progitem .progresume{width:100%;margin-top:14px;min-height:46px;font-weight:800;border-radius:14px}
+.sharebtn{display:inline-grid;place-items:center;width:34px;height:34px;padding:0;color:var(--ink2)}
+.sharebtn .ico{width:16px;height:16px}
+.tpllist{display:flex;flex-direction:column;gap:9px}
+.tplcard{display:flex;gap:14px;width:100%;text-align:left;padding:15px;border:1px solid var(--hair);border-radius:16px;background:var(--panel);color:var(--ink);font-family:var(--font);transition:.16s}
+.tplcard:hover{border-color:var(--hair2)}
+.tplbar{width:3px;align-self:stretch;border-radius:3px;background:var(--faint);flex:none}
+.tplmain{flex:1;min-width:0}
+.tplmain>.tpltop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tpllevel{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tplmeta{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--muted)}
+.tplname{font-size:15px;font-weight:700;letter-spacing:-.01em;margin-top:8px}
+.tplgoal{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--acc);margin-top:6px}
+.tpldesc{font-size:11.5px;line-height:1.45;color:var(--ink2);margin-top:8px}
+.tplcard .progactions{margin-top:10px}
+.tplcard.sky .tplbar{background:var(--core)}.tplcard.sky .tpllevel{color:var(--core)}
+.tplcard.amber .tplbar{background:var(--kraft)}.tplcard.amber .tpllevel{color:var(--kraft)}
+.tplcard.violet .tplbar{background:var(--skill)}.tplcard.violet .tpllevel{color:var(--skill)}
+.tplcard.emerald .tplbar{background:var(--hyp)}.tplcard.emerald .tpllevel{color:var(--hyp)}
+.createtiles{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 0}
+.createtile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:1px dashed var(--hair2);border-radius:15px;background:transparent;color:var(--ink);padding:14px 15px;cursor:pointer;text-align:left;font-family:var(--font);transition:.15s}
+.createtile:hover{border-color:var(--acc)}
+.createtile:disabled{opacity:.5;cursor:default}
+.createtile .ticon{color:var(--ink2)}
+.createtile .ticon.acc{color:var(--acc)}
+.createtile .ticon .ico{width:17px;height:17px;display:block}
+.createtile b{font-size:12.5px;font-weight:700;margin-top:4px}
+.createtile small{font-family:var(--mono);font-size:10px;line-height:1.35;color:var(--muted)}
 /* ===== Redesign-Layout: Startseite ===== */
 .heroeyebrow{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--acc)}
 .hdr .ptitle{font-size:29px;font-weight:800;letter-spacing:-.02em;line-height:1.05;margin-top:10px}
@@ -980,7 +1011,7 @@ function dClock(ts){return new Date(ts).toLocaleTimeString("de-DE",{hour:"2-digi
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function attr(s){return esc(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
 function icon(name){
- var paths={play:'<path d="M8 5l11 7-11 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1"/>',timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2M9 2h6"/>',plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="M5 12l4 4 10-10"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',info:'<path fill="currentColor" stroke="none" d="M10.7 10h2.6v8h-2.6zM12 5.2a1.55 1.55 0 1 1 0 3.1 1.55 1.55 0 0 1 0-3.1z"/>',lock:'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',"chevron-left":'<path d="M15 5l-7 7 7 7"/>',"chevron-right":'<path d="M9 5l7 7-7 7"/>',undo:'<path d="M9 7H5V3M5 7c2-3 5-4 8-3 4 1 7 5 6 9s-5 7-9 6c-2 0-4-2-5-4"/>',edit:'<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>',external:'<path d="M14 5h5v5M11 13l8-8M19 13v6H5V5h6"/>',download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',sparkle:'<path d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4zM18 15l.7 2.3L21 18l-2.3.7L18 21l-.7-2.3L15 18l2.3-.7z"/>',more:'<circle cx="12" cy="5" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.7" fill="currentColor" stroke="none"/>',reorder:'<path d="M8 5v14M8 19l-3-3M8 19l3-3M16 19V5M16 5l-3 3M16 5l3 3"/>',gear:'<path d="M10.5 3h3l.5 2.3a7 7 0 0 1 2 1.2l2.2-.8 1.5 2.6-1.7 1.6a7 7 0 0 1 0 2.2l1.7 1.6-1.5 2.6-2.2-.8a7 7 0 0 1-2 1.2l-.5 2.3h-3l-.5-2.3a7 7 0 0 1-2-1.2l-2.2.8-1.5-2.6 1.7-1.6a7 7 0 0 1 0-2.2L4.3 8.3l1.5-2.6 2.2.8a7 7 0 0 1 2-1.2z"/><circle cx="12" cy="12" r="2.7"/>'};
+ var paths={play:'<path d="M8 5l11 7-11 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1"/>',timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2M9 2h6"/>',plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="M5 12l4 4 10-10"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',info:'<path fill="currentColor" stroke="none" d="M10.7 10h2.6v8h-2.6zM12 5.2a1.55 1.55 0 1 1 0 3.1 1.55 1.55 0 0 1 0-3.1z"/>',lock:'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',"chevron-left":'<path d="M15 5l-7 7 7 7"/>',"chevron-right":'<path d="M9 5l7 7-7 7"/>',undo:'<path d="M9 7H5V3M5 7c2-3 5-4 8-3 4 1 7 5 6 9s-5 7-9 6c-2 0-4-2-5-4"/>',edit:'<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>',external:'<path d="M14 5h5v5M11 13l8-8M19 13v6H5V5h6"/>',download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',sparkle:'<path d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4zM18 15l.7 2.3L21 18l-2.3.7L18 21l-.7-2.3L15 18l2.3-.7z"/>',more:'<circle cx="12" cy="5" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.7" fill="currentColor" stroke="none"/>',reorder:'<path d="M8 5v14M8 19l-3-3M8 19l3-3M16 19V5M16 5l-3 3M16 5l3 3"/>',share:'<path d="M12 15V4M12 4L8 8M12 4l4 4M5 12v8h14v-8"/>',gear:'<path d="M10.5 3h3l.5 2.3a7 7 0 0 1 2 1.2l2.2-.8 1.5 2.6-1.7 1.6a7 7 0 0 1 0 2.2l1.7 1.6-1.5 2.6-2.2-.8a7 7 0 0 1-2 1.2l-.5 2.3h-3l-.5-2.3a7 7 0 0 1-2-1.2l-2.2.8-1.5-2.6 1.7-1.6a7 7 0 0 1 0-2.2L4.3 8.3l1.5-2.6 2.2.8a7 7 0 0 1 2-1.2z"/><circle cx="12" cy="12" r="2.7"/>'};
  return'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||"")+'</svg>';
 }
 
@@ -2527,10 +2558,10 @@ function importBackup(text){
 }
 var pendingProgramImport=null,importInputText="",importSourceName="",importIssue=null,externalAiWish="";
 var PROGRAM_LIBRARY=[
- {file:"./programme/gym-ganzkoerper-beginner.json",name:"Gym Ganzkörper Beginner",goal:"Kraftbasis & Muskelaufbau",level:"Einsteiger",days:3,duration:"50–65 min",description:"Geräte und Kurzhanteln mit bewusst einfacher Übungsauswahl."},
- {file:"./programme/gym-ganzkoerper-fortgeschritten.json",name:"Gym Ganzkörper Fortgeschritten",goal:"Kraft & Muskelaufbau",level:"Fortgeschritten",days:3,duration:"65–80 min",description:"Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende."},
- {file:"./programme/calisthenics-einstieg.json",name:"Calisthenics Einstieg",goal:"Körpergewichtskraft",level:"Einsteiger",days:3,duration:"40–50 min",description:"Ganzkörpertraining mit Boden, Bank, Stange, Ringen und Band."},
- {file:"./programme/hybrid-gym-calisthenics.json",name:"Hybrid: Gym + Calisthenics",goal:"Kraft & Körperkontrolle",level:"Grundlagenerfahrung",days:3,duration:"60–75 min",description:"Langhantel, Kurzhanteln, Kabelzug und Körpergewicht kombiniert."}
+ {file:"./programme/gym-ganzkoerper-beginner.json",name:"Gym Ganzkörper Beginner",goal:"Kraftbasis & Muskelaufbau",level:"Einsteiger",farbe:"sky",days:3,duration:"50–65 min",description:"Geräte und Kurzhanteln mit bewusst einfacher Übungsauswahl."},
+ {file:"./programme/gym-ganzkoerper-fortgeschritten.json",name:"Gym Ganzkörper Fortgeschritten",goal:"Kraft & Muskelaufbau",level:"Fortgeschritten",farbe:"amber",days:3,duration:"65–80 min",description:"Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende."},
+ {file:"./programme/calisthenics-einstieg.json",name:"Calisthenics Einstieg",goal:"Körpergewichtskraft",level:"Einsteiger",farbe:"violet",days:3,duration:"40–50 min",description:"Ganzkörpertraining mit Boden, Bank, Stange, Ringen und Band."},
+ {file:"./programme/hybrid-gym-calisthenics.json",name:"Hybrid: Gym + Calisthenics",goal:"Kraft & Körperkontrolle",level:"Grundlagenerfahrung",farbe:"emerald",days:3,duration:"60–75 min",description:"Langhantel, Kurzhanteln, Kabelzug und Körpergewicht kombiniert."}
 ];
 function programSourceLabel(origin){return origin==="coach"?"Satzkraft KI-Coach":origin==="library"?"Satzkraft-Programm":origin==="link"?"Geteilter Link":origin==="file"?"Datei":"Eingefügtes JSON";}
 function calibrationGuideHtml(){
@@ -3125,6 +3156,13 @@ function renderEditorDetails(d,catKeys){
   if(hasReps){[["aufbau","Aufbau"],["intensiv","Intensiv"],["deload","Erholung"]].forEach(function(item){var range=c.reps[item[0]]||[8,12];h+=editorInput(item[1]+' min.',range[0],'data-ed-cat="'+attr(key)+'" data-ed-rep="'+item[0]+'" data-ed-range="0"',{type:'number',min:1,max:100,step:'1'});h+=editorInput(item[1]+' max.',range[1],'data-ed-cat="'+attr(key)+'" data-ed-rep="'+item[0]+'" data-ed-range="1"',{type:'number',min:1,max:100,step:'1'});});}
   h+='</div><div class="edactions"><span class="edkey">Technischer Schlüssel: '+esc(key)+'</span><span class="spacer"></span><button class="smallbtn del" data-ed-delcat="'+attr(key)+'"'+((catKeys.length<=1||editorCategoryInUse(d,key))?' disabled':'')+'>Trainingsgruppe löschen</button></div></div></details>';});
  h+='<div class="edactions"><button class="smallbtn" id="edaddcat"'+(catKeys.length>=20?' disabled':'')+'>'+icon("plus")+' Trainingsgruppe</button></div></div></details>';
+ var srcProgram=editorSourceId?S.programs[editorSourceId]:null;
+ if(srcProgram){
+  var edCreated=typeof srcProgram.createdAt==="number"&&isFinite(srcProgram.createdAt)?new Date(srcProgram.createdAt).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}):null;
+  var edUpdated=typeof srcProgram.updatedAt==="number"&&isFinite(srcProgram.updatedAt)?new Date(srcProgram.updatedAt).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}):null;
+  if(edCreated||edUpdated)h+='<div class="libnote" style="margin:10px 0 0">'+(edCreated?'Erstellt am '+edCreated:'')+(edCreated&&edUpdated?' · ':'')+(edUpdated?'Zuletzt geändert am '+edUpdated:'')+'</div>';
+ }
+ if(editorSourceId===S.active)h+='<details class="edadvanced eddanger"><summary>Fortschritt zurücksetzen</summary><div class="edbody"><div class="libnote" style="margin:0 0 10px">Löscht eingetragene Sätze &amp; Verlauf dieses Programms. Das Programm selbst bleibt erhalten.</div><button class="smallbtn del" id="libreset"'+(programWriteLocked()?' disabled':'')+'>Fortschritt zurücksetzen</button></div></details>';
  if(editorSourceId&&editorSourceId!=="default")h+='<details class="edadvanced eddanger"><summary>Programm löschen</summary><div class="edbody"><div class="libnote" style="margin:0 0 10px">Löscht dieses Programm und seinen gesamten Trainingsfortschritt. Vorher erscheint noch eine Sicherheitsabfrage.</div><button class="smallbtn del" id="eddeleteprogram">Programm endgültig löschen</button></div></details>';
  h+='<div class="libnote">Beim Speichern prüft Satzkraft den gesamten Plan. Einstellungen aus dem KI-Import sowie Warm-up und Cool-down bleiben erhalten.</div>';
  return h;
@@ -3284,35 +3322,50 @@ function createFollowupBlock(sourceId,libraryReady){
 }
 function libraryFooterHtml(){return'<div class="libraryfooter"><button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span></div>';}
 function programItemHtml(id,p){
- var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{},history:[]},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs,store.history),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,dateValue=hasUpdated?p.updatedAt:(hasCreated?p.createdAt:null),dateLabel=hasUpdated&&(!hasCreated||p.updatedAt>p.createdAt)?"Geändert am":"Erstellt am",dateText=dateValue==null?"":new Date(dateValue).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}),date=dateText?'<span class="programdate" title="'+dateLabel+' '+attr(dateText)+'">'+dateLabel+' '+dateText+'</span>':'',origin=p.origin==="satzkraft"?'<span class="programorigin">Offizielles Satzkraft-Programm</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+origin+date+'</div>';
+ var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{},history:[]},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs,store.history),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,origin=p.origin==="satzkraft"?'<span class="programorigin">Offizielles Satzkraft-Programm</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+origin+'</div>';
  if(archived)return'<div class="progitem archived"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+(p.art?' <span class="pnsub2">'+esc(p.art)+'</span>':'')+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-report-program="'+attr(id)+'">Auswertung ansehen</button><button class="progtextaction" data-unarchive="'+attr(id)+'"'+lockedAttr+'>Aus dem Archiv holen</button></div></div>';
  var artTeil=p.art?' <span class="pnsub2">'+esc(p.art)+'</span>':'';
- return '<div class="progitem'+(active?" active":"")+'">'+(active?'<div class="progtopline"><span class="aktivpill">● Aktiv</span><span class="progweek">Woche '+S.week+' / '+p.weeks.length+'</span></div>':'')+'<div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+meta+'</div>'+badge+'</div>'+(active?'<button class="smallbtn go progresume" id="libresume">'+icon("play")+' Fortsetzen</button>':'')+'<div class="progactions">'+(active?'':'<button class="progtextaction" data-sel="'+attr(id)+'" aria-label="Programm '+attr(p.name)+' aktivieren"'+lockedAttr+'>Aktivieren</button>')+'<button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
+ var pad2=function(n){return ('0'+n).slice(-2);};
+ if(active){
+  var sub=p.bereich?'<div class="progsub">'+esc(p.bereich)+'</div>':'';
+  return '<div class="progitem active"><div class="progtopline"><span class="aktivpill">● Aktiv</span><span class="progweek">Woche '+pad2(S.week)+' / '+pad2(p.weeks.length)+'</span></div><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+sub+'<div class="chiprow" style="margin-top:11px"><span class="chip">'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+'</span><span class="chip">'+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span></div>'+(origin?'<div class="pm" style="margin-top:8px">'+origin+'</div>':'')+'</div>'+badge+'</div><button class="smallbtn go progresume" id="libresume">'+icon("play")+' Fortsetzen</button><div class="progactions"><button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button><button type="button" class="iconbtn sharebtn" id="proshare" aria-label="Programm teilen" title="Teilen">'+icon("share")+'</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
+ }
+ return '<div class="progitem"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-sel="'+attr(id)+'" aria-label="Programm '+attr(p.name)+' aktivieren"'+lockedAttr+'>Aktivieren</button><button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
+}
+function showShareModal(){
+ showModal("Programm teilen",'„'+esc(PROG().name)+'“ wird ohne deinen Fortschritt geteilt.',[
+  {label:"Als Text kopieren",cls:"menu",action:function(){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);}},
+  {label:"Als Datei",cls:"menu",action:function(){downloadText((PROG().name||"programm").replace(/[^a-z0-9]+/gi,"_")+".json",exportCurrentJSON());}},
+  {label:"Link teilen",cls:"menu",action:function(){var eo=exportTranslate(PROG());delete eo._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(eo))));var okl=copyText(u);showModal(okl?"Link kopiert":"Kopieren nicht möglich",okl?"Wer den Link öffnet, bekommt dein Programm zum Laden angeboten (ohne deinen Fortschritt). Bei sehr großen Programmen kann der Link von Messengern gekürzt werden – dann Datei-Export nutzen.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);}},
+  {label:"Abbrechen",action:null}
+ ]);
 }
 function renderLib(){
- var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',archiveIds=Object.keys(S.programs).filter(function(id){return S.programs[id].archived===true;}),h='<div class="libbox"><div class="ohdr"><div class="ohdrmain"><div class="libeyebrow">Programme</div><h1>Deine Bibliothek</h1></div><div class="programheadtools"><button class="linkbtn" id="archivebtn">Archiv'+(archiveIds.length?' ('+archiveIds.length+')':'')+'</button><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div></div>';
- h+='<div class="libnote" style="margin:0 0 8px">Dein aktives Programm steht immer oben. Name und Löschen findest du gesammelt unter „Bearbeiten“.</div>';
+ var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',archiveIds=Object.keys(S.programs).filter(function(id){return S.programs[id].archived===true;}),h='<div class="libbox"><div class="hdr"><div class="topright"><span class="brand">Satzkraft</span><button class="linkbtn" id="archivebtn">Archiv'+(archiveIds.length?' ('+archiveIds.length+')':'')+'</button><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="heroeyebrow">Programme</div><h1 class="ptitle">Deine Bibliothek</h1></div>';
  if(locked)h+='<div class="importnotice warn"><strong>Training läuft</strong>Beende zuerst dein Training, um Programme zu ändern, ein anderes zu aktivieren, den Fortschritt zurückzusetzen oder ein Backup wiederherzustellen.</div>';
  var activeProgram=S.programs[S.active];if(activeProgram)h+=programItemHtml(S.active,activeProgram);
  var otherIds=Object.keys(S.programs).filter(function(id){return id!==S.active&&S.programs[id].archived!==true;});
  if(otherIds.length){h+='<details class="programothers"><summary>Weitere Programme ('+otherIds.length+')</summary><div class="programothersbody">';otherIds.forEach(function(id){h+=programItemHtml(id,S.programs[id]);});h+='</div></details>';}
- h+='<button class="createchoice primary" id="createhubbtn" aria-label="Neues Programm erstellen"'+lockedAttr+' style="width:100%;min-height:0;margin:15px 0 5px"><span class="createicon" aria-hidden="true">'+icon("plus")+'</span><b>Neues Programm erstellen</b><small>Manuell, mit dem KI-Coach, über eine externe KI oder aus einer fertigen Datei.</small></button>';
- h+='<div class="libsec">Exportieren &amp; Teilen</div><div class="libnote">Aktives Programm „'+esc(PROG().name)+'“ als Datei oder Link – ohne deinen Fortschritt.</div><div class="librow"><button class="smallbtn" id="expcopy">Aktuelles kopieren</button><button class="smallbtn" id="expfile">Als Datei</button><button class="smallbtn" id="explink">Link teilen</button></div>';
+ h+='<div class="createtiles">';
+ h+='<button class="createtile" id="coachbtn"'+lockedAttr+'><span class="ticon acc">'+icon("sparkle")+'</span><b>KI-Coach</b><small>Plan erstellen lassen</small></button>';
+ h+='<button class="createtile" id="importbtn"'+lockedAttr+'><span class="ticon">'+icon("download")+'</span><b>Import</b><small>Eigenes JSON laden</small></button>';
+ h+='<button class="createtile" id="manualcreate"'+lockedAttr+'><span class="ticon">'+icon("edit")+'</span><b>Manuell</b><small>Selbst zusammenstellen</small></button>';
+ h+='<button class="createtile" id="externalaibtn"'+lockedAttr+'><span class="ticon">'+icon("external")+'</span><b>ChatGPT &amp; Co.</b><small>Mit externer KI erstellen</small></button>';
+ h+='</div>';
+ h+='<div class="libsec">Vorlagen · '+PROGRAM_LIBRARY.length+'</div><div class="tpllist">';
+ PROGRAM_LIBRARY.forEach(function(item,index){h+='<div class="tplcard '+(item.farbe||'sky')+'"><span class="tplbar"></span><div class="tplmain"><div class="tpltop"><span class="tpllevel">'+esc(item.level)+'</span><span class="tplmeta">'+item.days+' Tage · '+esc(item.duration)+'</span></div><div class="tplname">'+esc(item.name)+'</div><div class="tplgoal">'+esc(item.goal)+'</div><div class="tpldesc">'+esc(item.description)+'</div><div class="progactions"><button class="progtextaction" data-library-index="'+index+'"'+lockedAttr+'>Laden</button><button class="progtextaction" data-library-edit="'+index+'"'+lockedAttr+'>Bearbeiten</button><button type="button" class="iconbtn sharebtn" data-library-share="'+index+'" aria-label="Vorlage '+attr(item.name)+' teilen" title="Teilen">'+icon("share")+'</button></div></div></div>';});
+ h+='</div>';
  h+='<div class="libsec">Daten sichern</div>';
  h+='<div class="libnote"><b>'+esc(backupStatusText())+'</b><br>Das vollständige Backup enthält alle Programme, Satzwerte und Trainingsverläufe. Es bleibt als Datei bei dir und wird nicht an einen Server gesendet.</div>';
  h+=backupReminderHtml();
  h+='<div class="librow"><button class="smallbtn go" id="libbackup">Vollständiges Backup</button><label class="smallbtn'+(locked?' disabled':'')+'"'+(locked?' aria-disabled="true" title="Training läuft – zuerst beenden"':'')+' style="display:inline-flex;align-items:center">Backup wiederherstellen<input type="file" id="backupfile" accept=".json,application/json"'+lockedAttr+' style="display:none"></label></div>';
- h+='<div class="libsec">Fortschritt zurücksetzen</div>';
- h+='<div class="libnote">Löscht eingetragene Sätze &amp; Verlauf des aktiven Programms („'+esc(PROG().name)+'"). Das Programm selbst bleibt erhalten.</div>';
- h+='<div class="librow"><button class="smallbtn del" id="libreset"'+lockedAttr+'>Fortschritt zurücksetzen</button></div>';
- h+=libraryFooterHtml();
  document.getElementById("lib").innerHTML=h+'</div>';
 }
 function renderArchive(){
  var locked=programWriteLocked(),archiveIds=Object.keys(S.programs).filter(function(id){return S.programs[id].archived===true;}),h='<div class="libbox"><div class="ohdr"><button class="iconbtn" id="archiveback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Archiv</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Abgelegte Programme bleiben mit ihrem vollständigen Trainingsverlauf erhalten.</div>';
  if(locked)h+='<div class="importnotice warn"><strong>Training läuft</strong>Auswertungen bleiben verfügbar. Programme kannst du erst nach dem Training aus dem Archiv holen.</div>';
  if(archiveIds.length)archiveIds.forEach(function(id){h+=programItemHtml(id,S.programs[id]);});else h+='<div class="archiveempty"><b>Das Archiv ist leer.</b><br>Archivierte Programme erscheinen später hier.</div>';
- h+=libraryFooterHtml();document.getElementById("lib").innerHTML=h+'</div>';
+ document.getElementById("lib").innerHTML=h+'</div>';
 }
 function renderCreateHub(){
  var h='<div class="libbox createhub"><div class="ohdr"><button class="iconbtn" id="createback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Neues Programm</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Wähle den Weg, der zu dir passt. Egal wie der Plan entsteht: Vor dem Speichern kannst du ihn prüfen und bearbeiten.</div><div class="creategrid">';
@@ -3321,7 +3374,7 @@ function renderCreateHub(){
  h+='<button class="createchoice" id="coachbtn" aria-label="Programm mit dem Satzkraft KI-Coach erstellen"><span class="createicon" aria-hidden="true">'+icon("sparkle")+'</span><b>Satzkraft KI-Coach <span style="color:var(--muted);font-size:10px">Beta</span></b><small>Beantworte die ausführlichen Fragen und lass dir einen gezielten Trainingsplan erstellen.</small></button>';
  h+='<button class="createchoice" id="externalaibtn" aria-label="Programm mit ChatGPT oder einer anderen KI erstellen"><span class="createicon" aria-hidden="true">'+icon("external")+'</span><b>Mit ChatGPT &amp; Co. erstellen</b><small>Fertigen Anweisungstext kopieren, bei einer beliebigen KI einfügen, Ergebnis importieren.</small></button>';
  h+='<button class="createchoice wide" id="importbtn" aria-label="Fertiges Programm importieren"><span class="createicon" aria-hidden="true">'+icon("download")+'</span><b>Fertiges Programm importieren</b><small>Programm-Datei oder kopiertes JSON einfügen. Satzkraft prüft alles vor dem Speichern.</small></button>';
- h+='</div>'+libraryFooterHtml()+'</div>';document.getElementById("lib").innerHTML=h;
+ h+='</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderProgramLibrary(){
  var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Fertige Programme</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Vier geprüfte Programme mit passenden Trainingswochen, Warm-up und Cool-down. Du kannst jedes Programm vor dem Speichern vollständig ansehen.</div>';
@@ -3331,6 +3384,25 @@ function renderProgramLibrary(){
 function loadProgramLibraryItem(index){
  if(programWriteLocked()){showProgramWriteLocked();return;}var item=PROGRAM_LIBRARY[index];if(!item)return;
  fetch(item.file).then(function(response){if(!response.ok)throw new Error("HTTP "+response.status);return response.text();}).then(function(text){beginProgramImport(text,"library",item.name);}).catch(function(){showModal("Programm nicht geladen","Das Programm konnte nicht geladen werden. Öffne die Liste einmal mit Internet – danach funktioniert sie auch offline.",[{label:"OK",cls:"primary",action:null}]);});
+}
+function editProgramLibraryItem(index){
+ if(programWriteLocked()){showProgramWriteLocked();return;}var item=PROGRAM_LIBRARY[index];if(!item)return;
+ fetch(item.file).then(function(response){if(!response.ok)throw new Error("HTTP "+response.status);return response.text();}).then(function(text){
+  var checked=parseProgram(text);
+  if(checked.err){showModal("Vorlage fehlerhaft",checked.err,[{label:"OK",action:null}]);return;}
+  openProgramDraft(JSON.parse(text),"create");
+ }).catch(function(){showModal("Vorlage nicht geladen","Die Vorlage konnte nicht geladen werden. Öffne die Liste einmal mit Internet – danach ist sie auch offline verfügbar.",[{label:"OK",action:null}]);});
+}
+function shareProgramLibraryItem(index){
+ var item=PROGRAM_LIBRARY[index];if(!item)return;
+ fetch(item.file).then(function(response){if(!response.ok)throw new Error("HTTP "+response.status);return response.text();}).then(function(text){
+  showModal("Vorlage teilen",'„'+esc(item.name)+'“ wird als Programmdatei geteilt.',[
+   {label:"Als Text kopieren",cls:"menu",action:function(){var ok=copyText(text);showModal(ok?"Kopiert":"Kopieren nicht möglich",ok?"Die Vorlage liegt als JSON in der Zwischenablage.":"Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);}},
+   {label:"Als Datei",cls:"menu",action:function(){downloadText(item.name.replace(/[^a-z0-9]+/gi,"_")+".json",text);}},
+   {label:"Link teilen",cls:"menu",action:function(){try{var obj=JSON.parse(text);delete obj._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(obj))));var ok2=copyText(u);showModal(ok2?"Link kopiert":"Kopieren nicht möglich",ok2?"Wer den Link öffnet, bekommt die Vorlage zum Laden angeboten.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);}catch(e){showModal("Link nicht möglich","Die Vorlage konnte nicht in einen Link umgewandelt werden.",[{label:"OK",action:null}]);}}},
+   {label:"Abbrechen",action:null}
+  ]);
+ }).catch(function(){showModal("Vorlage nicht geladen","Die Vorlage konnte nicht geladen werden. Öffne die Liste einmal mit Internet – danach ist sie auch offline verfügbar.",[{label:"OK",action:null}]);});
 }
 function renderExternalAiCreate(){
  var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Mit ChatGPT &amp; Co.</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">In drei Schritten zu deinem Programm. Satzkraft liefert einen fertigen Text für die KI und prüft das Ergebnis vor dem Speichern.</div>';
@@ -3439,7 +3511,6 @@ document.getElementById("bar").addEventListener("click",function(e){
 document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose"||b.id==="repback")closeReport();else if(b.id==="reprint")printReport();});
 window.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("report").classList.contains("open")){e.preventDefault();closeReport();}});
 document.getElementById("lib").addEventListener("click",function(e){
- if(e.target.id==="lib"){closeLib();return;}
  var b=e.target.closest("button");if(!b)return;
  if(b.dataset.versionInfo){showVersionInfo();return;}
  if(b.dataset.backupNow){handleBackupReminder("download");return;}
@@ -3484,6 +3555,8 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="createback"){renderLib();return;}
  if(b.id==="createhubback"){syncManualCreatorForm();renderCreateHub();return;}
  if(b.id==="programlibrarybtn"){renderProgramLibrary();return;}
+ if(b.dataset.libraryEdit!=null){editProgramLibraryItem(+b.dataset.libraryEdit);return;}
+ if(b.dataset.libraryShare!=null){shareProgramLibraryItem(+b.dataset.libraryShare);return;}
  if(b.dataset.libraryIndex!=null){loadProgramLibraryItem(+b.dataset.libraryIndex);return;}
  if(b.id==="manualcreate"){renderManualCreator();return;}
  if(b.id==="manualcancel"){syncManualCreatorForm();renderCreateHub();return;}
@@ -3513,6 +3586,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="libreset"){confirmReset();return;}
  if(b.id==="libbackup"){var backupOk=downloadFullBackup("satzkraft-backup");if(backupOk)renderLib();showModal(backupOk?"Backup gespeichert":"Backup fehlgeschlagen",backupOk?"Die vollständige Sicherungsdatei wurde heruntergeladen. Bewahre sie an einem sicheren Ort auf.":"Die Sicherungsdatei konnte nicht heruntergeladen werden.",[{label:"OK",cls:backupOk?"primary":"",action:null}]);return;}
  if(b.id==="libload"){var ta=document.getElementById("libpaste");beginProgramImport(ta?ta.value:importInputText,"json","");return;}
+ if(b.id==="proshare"){showShareModal();return;}
  if(b.id==="explink"){var eo=exportTranslate(PROG());delete eo._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(eo))));var okl=copyText(u);showModal(okl?"Link kopiert":"Kopieren nicht möglich",okl?"Wer den Link öffnet, bekommt dein Programm zum Laden angeboten (ohne deinen Fortschritt). Bei sehr großen Programmen kann der Link von Messengern gekürzt werden – dann Datei-Export nutzen.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);return;}
  if(b.id==="expfile"){downloadText((PROG().name||"programm").replace(/[^a-z0-9]+/gi,"_")+".json",exportCurrentJSON());return;}
  if(b.id==="expcopy"){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);return;}

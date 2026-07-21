@@ -156,7 +156,8 @@ function libraryContext() {
     icon: name => `[${name}]`,
     themeButtonHtml: () => '<button class="linkbtn themebtn" id="themebtn">Dunkelmodus</button>',
     backupReminderHtml: () => '',
-    backupStatusText: () => 'Keine Sicherung'
+    backupStatusText: () => 'Keine Sicherung',
+    PROGRAM_LIBRARY: []
   });
   context.PROG = () => context.S.programs[context.S.active];
   return { context, library, active, archived };
@@ -201,16 +202,13 @@ test('zeigt Status und Datum ruhig an und hält Kartenaktionen kompakt bedienbar
   const activeCard = context.programItemHtml('active', active);
   const archivedCard = context.programItemHtml('old', archived);
 
-  assert.match(activeCard, /<div class="progtopline"><span class="aktivpill">● Aktiv<\/span><span class="progweek">Woche 1 \/ 1<\/span><\/div>/, 'die aktive Karte zeigt Aktiv-Pille und Wochenstand in der Kopfzeile');
+  assert.match(activeCard, /<div class="progtopline"><span class="aktivpill">● Aktiv<\/span><span class="progweek">Woche 01 \/ 01<\/span><\/div>/, 'die aktive Karte zeigt Aktiv-Pille und zweistelligen Wochenstand in der Kopfzeile');
   assert.doesNotMatch(archivedCard, /aktivpill|statuspill archived|>Archiv<\/span>/);
-  assert.match(
-    activeCard,
-    /<div class="proghead"><div class="meta"><div class="pn">Kraftbasis<\/div><div class="pm">[\s\S]*class="programdate"[\s\S]*<\/div><\/div><span class="statuspill complete">Abgeschlossen<\/span><\/div>/
-  );
-  const meta = activeCard.match(/<div class="pm">([\s\S]*?)<\/div>/);
-  assert.ok(meta, 'Metazeile des aktiven Programms fehlt');
-  assert.ok(meta[1].indexOf('1 Tag') < meta[1].indexOf('programdate'), 'Datum muss ganz rechts nach Tagen und Wochen stehen');
-  assert.match(meta[1], /programdate[^>]*>Erstellt[^<]*16\.07\.2026<\/span>\s*$/);
+  assert.match(activeCard, /<div class="pn">Kraftbasis<\/div>/);
+  assert.match(activeCard, /class="chip">1 Tag<\/span><span class="chip">1 Woche<\/span>/, 'Tage und Wochen stehen als Chips auf der aktiven Karte');
+  assert.match(activeCard, /<span class="statuspill complete">Abgeschlossen<\/span>/);
+  assert.doesNotMatch(activeCard, /programdate/, 'Datum steht jetzt im Editor statt auf der Karte');
+  assert.match(html, /Zuletzt geändert am/, 'der Editor nennt das Änderungsdatum');
 
   for (const [label, card] of [['Bearbeiten', activeCard], ['Auswertung ansehen', archivedCard], ['Aus dem Archiv holen', archivedCard]]) {
     assert.match(card, new RegExp(`<button[^>]+class="[^"]*progtextaction[^"]*"[^>]*>${label}<\\/button>`), `${label} muss ein semantischer Text-Button bleiben`);

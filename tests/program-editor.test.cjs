@@ -85,7 +85,6 @@ test('covers the iPhone safe area below the editor actions', () => {
 test('uses one clear rename path and compact program actions', () => {
   assert.doesNotMatch(html, /data-ren=/);
   assert.doesNotMatch(html, /libRenameId/);
-  assert.match(html, /Name und Löschen findest du gesammelt unter „Bearbeiten“/);
   assert.match(html, /data-edit=/);
   assert.match(html, /progtextaction/);
   assert.match(html, /Weitere Programme \('/);
@@ -115,12 +114,14 @@ test('warns about unsaved changes and locks the page behind the editor', () => {
 
 test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /\.programothersbody \.progitem\{border:0/);
-  assert.match(html, /\.progitem\.active\{[^}]*background:var\(--accg\)/);
+  assert.match(html, /\.progitem\.active\{[^}]*background:var\(--panel\)/);
   assert.match(html, /\.progactions\{display:flex/);
   assert.match(html, /\.progtextaction\{[^}]*background:transparent/);
   assert.match(html, /html\[data-theme="light"\] \.progitem\.active/);
-  assert.match(html, /id="createhubbtn"/);
-  assert.match(html, /Neues Programm erstellen/);
+  assert.match(html, /id="coachbtn"/);
+  assert.match(html, /id="importbtn"/);
+  assert.match(html, /id="manualcreate"/);
+  assert.match(html, /id="externalaibtn"/);
   assert.match(html, /Manuell erstellen/);
   assert.match(html, /Satzkraft KI-Coach/);
   assert.match(html, /Mit ChatGPT &amp; Co\. erstellen/);

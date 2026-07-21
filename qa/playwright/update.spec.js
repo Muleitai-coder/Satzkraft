@@ -75,7 +75,9 @@ async function openPrograms(page) {
 
 async function openCreateHub(page) {
   await openPrograms(page);
-  await page.locator('#createhubbtn').click();
+  await page.locator('#manualcreate').click();
+  await expect(page.locator('#lib h1')).toHaveText('Manuell erstellen');
+  await page.locator('#createhubback').click();
   await expect(page.locator('#lib h1')).toHaveText('Neues Programm');
 }
 
@@ -318,6 +320,30 @@ test.describe('1 · Texte & Kommunikation', () => {
     page,
   }) => {
     await openWithState(page, reportState());
+    await openPrograms(page);
+
+    const templates = page.locator('#lib .tplcard');
+    await expect(templates).toHaveCount(4);
+    await expect(templates.locator('.tplname')).toHaveText([
+      'Gym Ganzkörper Beginner',
+      'Gym Ganzkörper Fortgeschritten',
+      'Calisthenics Einstieg',
+      'Hybrid: Gym + Calisthenics',
+    ]);
+    await expect(templates.locator('.tplmeta')).toHaveText([
+      '3 Tage · 50–65 min',
+      '3 Tage · 65–80 min',
+      '3 Tage · 40–50 min',
+      '3 Tage · 60–75 min',
+    ]);
+    await expect(templates.locator('.tpllevel')).toHaveText([
+      'Einsteiger',
+      'Fortgeschritten',
+      'Einsteiger',
+      'Grundlagenerfahrung',
+    ]);
+    await page.locator('#libclose').click();
+
     await openProgramLibrary(page);
 
     await expect(page.locator('#lib .subviewlead')).toHaveText(
@@ -603,14 +629,14 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
       const footer = lib.querySelector('.edsticky');
       const footerRect = footer.getBoundingClientRect();
       const style = getComputedStyle(footer);
-      const libStyle = getComputedStyle(lib);
+      const boxStyle = getComputedStyle(lib.querySelector('.libbox'));
+      const restGap =
+        parseFloat(boxStyle.paddingBottom) + parseFloat(style.bottom);
       return {
         background: style.backgroundColor,
         paddingBottom: parseFloat(style.paddingBottom),
         footerBottom: footerRect.bottom,
-        scrollportBottom:
-          lib.getBoundingClientRect().bottom -
-          parseFloat(libStyle.paddingBottom),
+        scrollportBottom: lib.getBoundingClientRect().bottom - restGap,
       };
     });
     expect(footerCoverage.background).toBe('rgba(8, 9, 11, 0.92)');
@@ -629,6 +655,12 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await openPrograms(page);
     expect(await visibleOverlayIds(page)).toEqual(['lib']);
 
+    await page.locator('#lib .progitem.active [data-edit]').click();
+    await expect(page.locator('#lib h1')).toHaveText('Programm bearbeiten');
+    await page.locator('#lib [data-ed-tab="details"]').click();
+    await page
+      .locator('#lib .eddanger > summary', { hasText: 'Fortschritt zurücksetzen' })
+      .click();
     await page.locator('#libreset').click();
     expect(await visibleOverlayIds(page)).toEqual(['modal', 'lib']);
     await expect(page.locator('#modal .mtitle')).toHaveText(
@@ -768,11 +800,26 @@ test.describe('3 · Redundanz-Check', () => {
     await expect(page.locator('#app .legend')).toHaveCount(0);
   });
 
-  test('RED-06/P1: Erstellen-Hub hat fünf eindeutige Wege und Bibliothek zuerst', async ({
+  test('RED-06/P1: Erstellen-Kacheln und Hub bieten eindeutige Wege ohne Doppelungen', async ({
     page,
   }) => {
     await openWithState(page, reportState());
-    await openCreateHub(page);
+    await openPrograms(page);
+
+    const tiles = page.locator('#lib .createtile');
+    await expect(tiles).toHaveCount(4);
+    await expect(tiles.locator('b')).toHaveText([
+      'KI-Coach',
+      'Import',
+      'Manuell',
+      'ChatGPT & Co.',
+    ]);
+    await expect(page.locator('#lib .tplcard')).toHaveCount(4);
+
+    await page.locator('#manualcreate').click();
+    await expect(page.locator('#lib h1')).toHaveText('Manuell erstellen');
+    await page.locator('#createhubback').click();
+    await expect(page.locator('#lib h1')).toHaveText('Neues Programm');
 
     const choices = page.locator('#lib .createchoice');
     await expect(choices).toHaveCount(5);

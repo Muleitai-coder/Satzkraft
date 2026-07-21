@@ -17,6 +17,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - „Workout bearbeiten“ ersetzt „Training wiederholen“: Änderungen am aktuellen Trainingstag lassen sich mit „Abbrechen“ vollständig verwerfen oder mit „Speichern“ übernehmen.
 - Programme kennen die neuen optionalen Felder „art“ und „bereich“ mit fester Bereichsliste. Der Import lehnt ungültige Bereichswerte mit einer klaren Fehlermeldung ab, der Export enthält beide Felder, und die vier mitgelieferten Programmvorlagen sind entsprechend ergänzt.
 - Die Einstellungen zeigen unter „Datensicherung“ den Stand der letzten Sicherung und bieten das vollständige Backup direkt zum Herunterladen an.
+- Das aktive Programm hat einen Teilen-Knopf: als Text kopieren, als Datei speichern oder als Link teilen – immer ohne den eigenen Fortschritt. Auch die Programmvorlagen lassen sich direkt teilen oder vor dem Laden im Editor öffnen.
 
 ### Geändert
 
@@ -43,6 +44,8 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Das Programme-Fenster wurde nach der neuen Design-Vorlage neu aufgebaut.
 - Zeiten für Halteübungen wie Plank oder Seitstütz werden im Format Minuten:Sekunden eingegeben.
 - Die Backup-Erinnerung erscheint bereits nach drei abgeschlossenen Trainings seit der letzten Sicherung. Die bisherige Regel – Sicherung älter als 14 Tage und mindestens ein neues Training – gilt zusätzlich weiterhin.
+- Das Programme-Fenster ist eine Vollbild-Ansicht im Stil der Startseite: oben das aktive Programm mit Wochenstand und „Fortsetzen“, darunter vier Erstellen-Kacheln (KI-Coach, Import, Manuell, ChatGPT & Co.) und die Programmvorlagen als Karten mit Niveau, Ziel, Dauer und den Aktionen „Laden“ und „Bearbeiten“.
+- Erstell- und Änderungsdatum eines Programms stehen jetzt im Editor unter Details; dort liegt auch „Fortschritt zurücksetzen“ als abgesicherter Bereich. Die Programmkarten bleiben dadurch aufgeräumt.
 
 ### Behoben
 
