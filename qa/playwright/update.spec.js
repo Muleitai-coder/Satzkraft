@@ -77,18 +77,9 @@ async function openPrograms(page) {
   await expect(page.locator('#lib.open')).toBeVisible();
 }
 
-async function openCreateHub(page) {
-  await openPrograms(page);
-  await page.locator('#manualcreate').click();
-  await expect(page.locator('#lib h1')).toHaveText('Manuell erstellen');
-  await page.locator('#createhubback').click();
-  await expect(page.locator('#lib h1')).toHaveText('Neues Programm');
-}
-
 async function openProgramLibrary(page) {
-  await openCreateHub(page);
-  await page.locator('#programlibrarybtn').click();
-  await expect(page.locator('#lib h1')).toHaveText('Fertige Programme');
+  await openPrograms(page);
+  await expect(page.locator('#lib .tplcard')).toHaveCount(4);
 }
 
 async function openFirstExerciseInEditor(page) {
@@ -347,26 +338,6 @@ test.describe('1 · Texte & Kommunikation', () => {
       'Grundlagenerfahrung',
     ]);
     await page.locator('#libclose').click();
-
-    await openProgramLibrary(page);
-
-    await expect(page.locator('#lib .subviewlead')).toHaveText(
-      'Vier geprüfte Programme mit passenden Trainingswochen, Warm-up und Cool-down. Du kannst jedes Programm vor dem Speichern vollständig ansehen.'
-    );
-    const items = page.locator('#lib [data-library-index]');
-    await expect(items).toHaveCount(4);
-    await expect(items.locator('b')).toHaveText([
-      'Gym Ganzkörper Beginner',
-      'Gym Ganzkörper Fortgeschritten',
-      'Calisthenics Einstieg',
-      'Hybrid: Gym + Calisthenics',
-    ]);
-    await expect(items.locator('.libraryprogrammeta')).toHaveText([
-      'Kraftbasis & Muskelaufbau · Einsteiger · 3 Tage · 50–65 min',
-      'Kraft & Muskelaufbau · Fortgeschritten · 3 Tage · 65–80 min',
-      'Körpergewichtskraft · Einsteiger · 3 Tage · 40–50 min',
-      'Kraft & Körperkontrolle · Grundlagenerfahrung · 3 Tage · 60–75 min',
-    ]);
   });
 
   test('TXT-19/P1: Ladefehler der Programmbibliothek ist kurz, konkret und handlungsorientiert', async ({
@@ -511,7 +482,7 @@ test.describe('1 · Texte & Kommunikation', () => {
 
     await page.locator('[data-expand-prev="A_0"]').click();
     await expect(page.locator('#card-A_0 .otherlast')).toHaveText(
-      'Letzter Wert an anderem Tag · Mittwoch (W7): 6×90 kg · 6×90 kg · 5×90 kg'
+      'Anderer Tag · Mi (W7): 6×90 kg · 6×90 kg · 5×90 kg'
     );
     await expect(page.locator('#card-A_0 .last')).toContainText(
       'Zuletzt (W6):'
@@ -539,7 +510,7 @@ test.describe('1 · Texte & Kommunikation', () => {
 
     await page.locator('[data-expand-prev="A_0"]').click();
     await expect(page.locator('#card-A_0 .otherlast')).toHaveText(
-      'Letzter Wert an anderem Tag · Mittwoch (W6): 10×87.5 kg · 9×87.5 kg · 9×87.5 kg'
+      'Anderer Tag · Mi (W6): 10×87.5 kg · 9×87.5 kg · 9×87.5 kg'
     );
     await expect(page.locator('#card-A_0 .otherlast')).not.toContainText(
       '90 kg'
@@ -562,13 +533,13 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await expect(page).toHaveScreenshot('protokoll-wegweiser-dunkel.png');
   });
 
-  test('@visual VIS-06/P1: Erstellen-Hub bleibt auch im Hellmodus klar priorisiert', async ({
+  test('@visual VIS-06/P1: Programme-Ansicht bleibt auch im Hellmodus klar priorisiert', async ({
     page,
   }) => {
     await openWithState(page, reportState(), { theme: 'light' });
-    await openCreateHub(page);
+    await openPrograms(page);
     await waitForFonts(page);
-    await expect(page).toHaveScreenshot('erstellen-hub-hell.png');
+    await expect(page).toHaveScreenshot('programme-hell.png');
   });
 
   test('@visual VIS-17/P1: Mehrtag-Zeile bricht bei Mobile ohne Verschiebung um', async ({
@@ -603,7 +574,7 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
       ])
     ).toEqual([]);
 
-    await openCreateHub(page);
+    await openPrograms(page);
     expect(
       await horizontalOverflow(page, ['html', 'body', '#lib', '#lib .libbox'])
     ).toEqual([]);
@@ -804,7 +775,7 @@ test.describe('3 · Redundanz-Check', () => {
     await expect(page.locator('#app .legend')).toHaveCount(0);
   });
 
-  test('RED-06/P1: Erstellen-Kacheln und Hub bieten eindeutige Wege ohne Doppelungen', async ({
+  test('RED-06/P1: Erstellen-Kacheln führen direkt und ohne alten Zwischen-Hub', async ({
     page,
   }) => {
     await openWithState(page, reportState());
@@ -819,26 +790,19 @@ test.describe('3 · Redundanz-Check', () => {
       'ChatGPT & Co.',
     ]);
     await expect(page.locator('#lib .tplcard')).toHaveCount(4);
+    const ids = await tiles.evaluateAll((nodes) => nodes.map((node) => node.id));
+    expect(new Set(ids).size).toBe(ids.length);
 
     await page.locator('#manualcreate').click();
     await expect(page.locator('#lib h1')).toHaveText('Manuell erstellen');
     await page.locator('#createhubback').click();
-    await expect(page.locator('#lib h1')).toHaveText('Neues Programm');
+    await expect(page.locator('#lib h1')).toHaveText('Deine Bibliothek');
+    await expect(page.locator('#lib .createchoice')).toHaveCount(0);
 
-    const choices = page.locator('#lib .createchoice');
-    await expect(choices).toHaveCount(5);
-    await expect(choices.locator('b')).toHaveText([
-      'Fertiges Programm wählen',
-      'Manuell erstellen',
-      'Satzkraft KI-Coach Beta',
-      'Mit ChatGPT & Co. erstellen',
-      'Fertiges Programm importieren',
-    ]);
-    const ids = await choices.evaluateAll((nodes) => nodes.map((node) => node.id));
-    expect(new Set(ids).size).toBe(ids.length);
-    expect(ids[0]).toBe('programlibrarybtn');
-    await expect(choices.nth(0)).not.toHaveClass(/primary/);
-    await expect(choices.nth(1)).not.toHaveClass(/primary/);
+    await page.locator('#externalaibtn').click();
+    await expect(page.locator('#lib h1')).toHaveText('Mit ChatGPT & Co.');
+    await page.locator('#subclose').click();
+    await expect(page.locator('#lib h1')).toHaveText('Deine Bibliothek');
   });
 
   test('RED-07/P1: Bibliotheken begrenzen und deduplizieren Auswahlmengen', async ({
@@ -846,10 +810,10 @@ test.describe('3 · Redundanz-Check', () => {
   }) => {
     await openWithState(page, reportState());
     await openProgramLibrary(page);
-    const programs = page.locator('#lib [data-library-index]');
+    const programs = page.locator('#lib .tplcard');
     await expect(programs).toHaveCount(4);
     const programNames = await programs
-      .locator('b')
+      .locator('.tplname')
       .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
     expect(new Set(programNames).size).toBe(4);
   });
@@ -955,11 +919,9 @@ test.describe('4 · Regression & Offline-PWA', () => {
       return;
     }
     await page.locator('#lib [data-library-index="0"]').click();
-    await expect(page.locator('#lib .libsec')).toHaveText([
-      'Trainingstage',
-      'Wochenstruktur',
-      'Alle Übungen',
-    ]);
+    await expect(page.locator('#lib h1')).toHaveText('Programm prüfen');
+    await expect(page.locator('#lib .pvday')).toHaveCount(3);
+    await expect(page.locator('#lib .pvweeks')).toBeVisible();
     await expect(page.locator('#lib .calibrationguide')).toHaveCount(0);
   });
 });
@@ -981,17 +943,15 @@ test.describe('4 · Regression & Kernfunktion', () => {
     for (let index = 0; index < programNames.length; index += 1) {
       await page.locator(`#lib [data-library-index="${index}"]`).click();
       await expect(page.locator('#lib h1')).toHaveText('Programm prüfen');
-      await expect(page.locator('#lib .previewhero h2')).toHaveText(
+      await expect(page.locator('#lib .pvhdr .ptitle')).toHaveText(
         programNames[index]
       );
-      await expect(page.locator('#lib .previewstats .previewstat')).toHaveCount(
-        3
-      );
-      await expect(page.locator('#lib .librarypreview')).toBeVisible();
+      await expect(page.locator('#lib .pvday')).toHaveCount(3);
+      await expect(page.locator('#lib .pvweeks')).toBeVisible();
       await expect(page.locator('#lib .calibrationguide')).toHaveCount(0);
 
       await page.locator('#importpreviewback').click();
-      await expect(page.locator('#lib h1')).toHaveText('Fertige Programme');
+      await expect(page.locator('#lib h1')).toHaveText('Deine Bibliothek');
       await expect(page.locator('#lib [data-library-index]')).toHaveCount(4);
     }
   });
@@ -1247,9 +1207,11 @@ test.describe('4 · Regression & Kernfunktion', () => {
     page.on('pageerror', (error) => errors.push(error.message));
 
     await openWithState(page, reportState());
-    await openProgramLibrary(page);
+    await openPrograms(page);
+    await page.locator('#manualcreate').click();
     await page.locator('#createhubback').click();
-    await page.locator('#createback').click();
+    await page.locator('#coachbtn').click();
+    await page.locator('#subclose').click();
     await page.locator('#libclose').click();
     await page.locator('#pdf').click();
     await expect(page.locator('#report.open')).toBeVisible();

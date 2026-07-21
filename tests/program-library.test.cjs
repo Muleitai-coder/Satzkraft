@@ -100,9 +100,10 @@ test('renders the official origin line and the complete library entry points', (
   });
 
   assert.match(card, /Offizielles Satzkraft-Programm/);
-  assert.match(sourceBetween('function renderCreateHub', 'function renderExternalAiCreate'), /Fertiges Programm wählen/);
+  assert.match(functionSource('renderLib'), /data-library-index/);
+  assert.doesNotMatch(html, /renderCreateHub/);
   assert.match(functionSource('renderImportPreview'), /Wochenstruktur/);
-  assert.match(functionSource('renderImportPreview'), /Alle Übungen/);
+  assert.match(functionSource('renderImportPreview'), /class="pvrow /);
   assert.doesNotMatch(functionSource('renderImportPreview'), /Startgewichte finden|missingWeights|Sicher automatisch bereinigt/);
   assert.doesNotMatch(functionSource('renderImportPreview'), /category&&category\.label/);
   assert.match(functionSource('showCalibrationGuide'), /Startgewicht finden/);

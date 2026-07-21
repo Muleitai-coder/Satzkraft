@@ -62,6 +62,7 @@ html[data-theme="light"]{
 html{color-scheme:dark}
 html[data-theme="light"]{color-scheme:light}
 body{margin:0;background:var(--bodybg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:var(--font)}
 body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 ::-webkit-scrollbar{width:9px;height:9px}
 ::-webkit-scrollbar-thumb{background:var(--hair2);border-radius:9px}
@@ -185,9 +186,9 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .last .l{color:var(--muted);flex-shrink:0}
 .last .v{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .last .histhint{margin-left:auto;color:var(--muted);flex-shrink:0;font-weight:600}
-.otherlast{font-size:11px;line-height:1.4;color:var(--muted);margin:-4px 0 12px;min-width:0}
-.otherlast .l{color:var(--muted)}
-.otherlast .v{color:var(--ink2);overflow-wrap:anywhere}
+.otherlast{display:flex;align-items:center;gap:6px;font-size:11px;line-height:1.4;color:var(--muted);margin:-4px 0 12px;min-width:0}
+.otherlast .l{color:var(--muted);flex-shrink:0}
+.otherlast .v{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .inp{background:var(--panel2);border:1px solid var(--hair2);border-radius:10px;padding:6px;color:var(--ink);text-align:center;font-family:var(--mono);font-size:16px;font-weight:700;outline:none;min-width:0}
 .inp:focus{border-color:var(--acc)}
 .inp:disabled{opacity:.4}
@@ -240,7 +241,6 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .rec.orange .reccontext,.rec.orange .ico{color:var(--orange)}
 .ico{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}
 .iconbtn .ico{width:20px;height:20px}
-.createicon .ico{width:20px;height:20px}
 .programheadtools{display:flex;align-items:center;gap:5px;margin-left:auto}
 @keyframes setpulse{0%{background:var(--accl);transform:scale(.99)}100%{background:var(--accg);transform:scale(1)}}
 @keyframes checkpop{0%{transform:scale(.72)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
@@ -428,7 +428,7 @@ body.rest-lock{--rest-mode:1}
 .progtextaction{width:auto;min-height:36px;border:0;background:transparent;color:var(--muted);padding:5px 1px;font:inherit;font-size:11px;font-weight:650;cursor:pointer;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 .progtextaction:disabled{opacity:.38;cursor:default;text-decoration:none}
 .progtextaction:hover,.progtextaction:focus-visible{color:var(--ink);text-decoration-color:currentColor}
-.createchoice:disabled,.smallbtn.disabled{opacity:.38;cursor:default;filter:none}
+.smallbtn.disabled{opacity:.38;cursor:default;filter:none}
 .progarchiveaction{margin-left:auto}
 .statuspill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:var(--accg);color:var(--acc);border:1px solid transparent;padding:4px 8px;font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .statuspill.complete{background:var(--kraftg);border-color:transparent;color:var(--kraft)}
@@ -577,16 +577,6 @@ body.rest-lock{--rest-mode:1}
 .createblock{padding:13px 0}
 .createblock+.createblock{border-top:1px solid var(--hair)}
 .createtitle{font-size:13px;font-weight:750;color:var(--ink);margin-bottom:4px}
-.createhub{max-width:760px}
-.creategrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.createchoice{display:flex;flex-direction:column;align-items:flex-start;min-height:154px;padding:16px;border:1px solid var(--hair);border-radius:16px;background:var(--panel2);color:var(--ink);text-align:left;cursor:pointer}
-.createchoice.wide{grid-column:1/-1}
-.createchoice:hover{border-color:var(--hair2)}
-.createchoice.primary{border-color:var(--accl);background:var(--accg)}
-.createchoice .createicon{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--up);color:var(--acc);font-size:19px;font-weight:800;margin-bottom:13px}
-.createchoice.primary .createicon{background:var(--acc);color:var(--onacc)}
-.createchoice b{font-size:14px;line-height:1.3}
-.createchoice small{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.5;font-weight:500}
 .createfoot{margin-top:13px;padding-top:13px;border-top:1px solid var(--hair)}
 .subviewbox{max-width:620px}
 .subviewlead{font-size:12px;color:var(--ink2);line-height:1.55;margin:-2px 0 14px}
@@ -609,41 +599,30 @@ body.rest-lock{--rest-mode:1}
 .importtechnical>summary{list-style:none;cursor:pointer;padding:10px 11px;color:var(--ink2);font-size:11px;font-weight:700}
 .importtechnical>summary::-webkit-details-marker{display:none}
 .importtechnical pre{margin:0;padding:11px;border-top:1px solid var(--hair);background:var(--bg);color:var(--ink2);font:10px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
-.previewhero{border:1px solid var(--accl);border-radius:16px;background:var(--accg);padding:15px;margin-bottom:12px}
-.previewhero h2{font-size:18px;line-height:1.3;font-weight:800;letter-spacing:-.01em;margin:0 0 5px;overflow-wrap:anywhere}
-.previewhero p{margin:0;color:var(--ink2);font-size:11px;line-height:1.5}
-.previewstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}
-.previewstat{background:var(--panel);border:1px solid var(--hair);border-radius:10px;padding:9px;text-align:center}
-.previewstat b{display:block;color:var(--ink);font-family:var(--mono);font-size:16px;font-weight:800}
-.previewstat span{display:block;color:var(--muted);font-family:var(--mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
-.previewdays{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
-.previewday{border:1px solid var(--hair);border-radius:11px;background:var(--panel2);padding:10px 11px;min-width:0}
-.previewday b{display:block;font-size:11px;overflow-wrap:anywhere}
-.previewday span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
-.libraryprograms{display:grid;gap:9px;margin-top:10px}
-.libraryprogram{display:block;width:100%;padding:13px;border:1px solid var(--hair);border-radius:13px;background:var(--panel2);color:var(--ink);text-align:left;cursor:pointer}
-.libraryprogram:hover{border-color:var(--hair2)}
-.libraryprogram b{display:block;font-size:13px}
-.libraryprogrammeta{display:block;margin-top:5px;color:var(--acc);font-family:var(--mono);font-size:9.5px;font-weight:700}
-.libraryprogramdesc{display:block;margin-top:6px;color:var(--ink2);font-size:11px;line-height:1.45}
-.librarypreview{margin:12px 0}
-.librarypreviewweek{font-size:10px;line-height:1.5;color:var(--ink2)}
-.librarypreviewday{margin-top:9px;padding:10px 11px;border:1px solid var(--hair);border-radius:11px;background:var(--panel2)}
-.librarypreviewday b{display:block;font-size:11px}
-.librarypreviewday ul{margin:6px 0 0;padding-left:18px;color:var(--ink2);font-size:10px;line-height:1.55}
-.calibrationguidebody{padding:11px;border-top:1px solid var(--hair);color:var(--ink2);font-size:11px;line-height:1.55}
-.librarypreviewexercise{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:3px 0}
-.librarypreviewexercise>span:first-child{min-width:0;overflow-wrap:anywhere}
-.librarypreviewexercise .tag{flex:none;font-size:8px;padding:1px 5px}
-.calibrationguidebody ol{margin:8px 0;padding-left:20px}.calibrationguidebody li{margin-bottom:7px}.calibrationguidebody p{margin:8px 0}
-.importactions{position:sticky;bottom:-18px;z-index:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:16px -18px -18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--hair);background:var(--barbg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.importactions .smallbtn{min-height:42px;white-space:normal}
-.importactions .wide{grid-column:1/-1}
-.manualgrid{display:grid;grid-template-columns:1fr 150px;gap:10px}
-.manualdays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:9px 0 4px}
-.manualday{min-width:0;min-height:44px;border:1px solid var(--hair2);border-radius:11px;background:var(--panel2);color:var(--muted);font-family:var(--mono);font-size:10px;font-weight:800;cursor:pointer}
-.manualday.sel{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
-.manualhint{color:var(--muted);font-size:10px;line-height:1.45;margin-top:7px}
+.pvhdr{margin:4px 0 14px}
+.pvhdr .ptitle{font-size:24px;margin-top:8px}
+.pvdesc{margin:11px 0 0;color:var(--ink2);font-size:12px;line-height:1.55}
+.pvday{border:1px solid var(--hair);border-radius:16px;background:var(--panel);margin-bottom:8px}
+.pvday>summary{display:flex;align-items:center;gap:14px;padding:14px 15px;cursor:pointer;list-style:none}
+.pvday>summary::-webkit-details-marker{display:none}
+.pvmain{flex:1;min-width:0}
+.pvwd,.pvtitle,.pvmeta{display:block}
+.pvwd{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pvtitle{font-size:14.5px;font-weight:700;margin-top:5px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pvmeta{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);margin-top:5px}
+.pvchev{color:var(--muted);flex:none;transform:rotate(180deg);transition:transform .16s}
+.pvday[open]>summary .pvchev{transform:rotate(270deg)}
+.pvrows{padding:0 15px 6px;display:flex;flex-direction:column}
+.pvrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--hair)}
+.pvextra{font-family:var(--mono);font-size:10px;line-height:1.5;color:var(--muted);padding:10px 0;border-top:1px solid var(--hair)}
+.pvweeks{border:1px solid var(--hair);border-radius:16px;background:var(--panel);margin:12px 0 8px}
+.pvweeks>summary{display:flex;align-items:center;gap:14px;padding:14px 15px;cursor:pointer;list-style:none}
+.pvweeks>summary::-webkit-details-marker{display:none}
+.pvweekrows{padding:0 15px 6px}
+.pvweekrow{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-top:1px solid var(--hair);font-size:11.5px;min-width:0}
+.pvweekrow b{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--muted);width:32px;flex:none}
+.pvweekrow .wklabel{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pvweekrow .wkrir{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted);flex:none}
 .sourcepill{display:inline-flex;align-items:center;border:1px solid var(--hair2);border-radius:999px;padding:4px 8px;color:var(--muted);font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
 .programorigin{color:var(--acc)}
 .versionfoot{display:flex;justify-content:center;margin:22px auto 2px;color:var(--muted);font-size:10px;font-weight:650;letter-spacing:.03em;background:none;border:0;padding:4px;cursor:pointer;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
@@ -689,8 +668,8 @@ body.rest-lock{--rest-mode:1}
 html[data-theme="light"] .progitem.active{box-shadow:0 10px 24px rgba(12,154,103,.1)}
 html[data-theme="light"] .edexercise.open{box-shadow:0 0 0 1px var(--accl),0 14px 34px rgba(40,32,20,.12)}
 html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"] .edexercise.pendingreplacement.open{box-shadow:0 0 0 1px var(--kraftl),0 14px 34px rgba(40,32,20,.12)}
-@media(max-width:600px){.creategrid,.previewdays{grid-template-columns:1fr}.createchoice{min-height:0}.manualgrid{grid-template-columns:1fr}.subviewbox,.createhub{max-width:480px}}
-@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.edlabel{min-height:auto}.editorbox,.subviewbox,.createhub{padding:14px}.edsticky,.importactions{bottom:-14px;margin-left:-14px;margin-right:-14px}.edsticky{margin-bottom:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:38px;height:42px}.edexhead{gap:7px}.edwucdrow{grid-template-columns:1fr 72px}.edwucdmove{grid-column:1/-1;justify-content:flex-end}.manualdays{gap:3px}.manualday{min-height:42px;font-size:9px}.previewstats{gap:5px}.previewstat{padding:8px 4px}}
+@media(max-width:600px){.manualgrid{grid-template-columns:1fr}.subviewbox{max-width:480px}}
+@media(max-width:430px){.edgrid{grid-template-columns:1fr}.edfield.wide{grid-column:auto}.edlabel{min-height:auto}.editorbox,.subviewbox{padding:14px}.edsticky,.importactions{bottom:-14px;margin-left:-14px;margin-right:-14px}.edsticky{margin-bottom:-14px}.edtophelp{font-size:0}.edtophelp:after{content:"?";font-size:16px}.edundo span{display:none}.edviewhead{margin-top:1px}.edprescgrid{grid-template-columns:1fr 1fr}.edprescgrid .edfield:first-child{grid-column:1/-1}.eddrag{flex-basis:38px;height:42px}.edexhead{gap:7px}.edwucdrow{grid-template-columns:1fr 72px}.edwucdmove{grid-column:1/-1;justify-content:flex-end}.manualdays{gap:3px}.manualday{min-height:42px;font-size:9px}}
 @media(max-width:760px){.rsummary{grid-template-columns:repeat(2,minmax(0,1fr))}.rweekgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.rexgrid{grid-template-columns:1fr}}
 @media(max-width:520px){.reportwrap{padding-left:13px;padding-right:13px}.reporthead{margin-left:-13px;margin-right:-13px;gap:8px}.reporthead h1{font-size:19px}.reportactions .histbtn{font-size:0;padding:9px}.reportactions .histbtn:before{content:"PDF";font-size:11px}.reportintro{display:block}.reportlocal{margin-top:10px}.rmetric{padding:11px}.rmetric .rval{font-size:18px}.rpanel{padding:13px}.rsession{grid-template-columns:minmax(0,1fr) auto}.rsessionmeta{grid-column:1/-1;text-align:left}.rdetailsbody{padding-left:9px;padding-right:9px}.rtbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.rtbl th,.rtbl td{min-width:88px}.rtbl .exn{min-width:150px}}
 .exnamelink{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--faint);text-underline-offset:4px}
@@ -844,22 +823,22 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .todaycount b{color:var(--acc);font-weight:700}
 .exrowd{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 15px;border:1px solid var(--hair);border-radius:16px;background:var(--panel);margin-bottom:8px;cursor:pointer;font-family:var(--font);color:var(--ink);transition:.16s}
 .exrowd:hover{border-color:var(--hair2);transform:translateX(2px)}
-.exrowd .rowbar{width:3px;align-self:stretch;border-radius:3px;background:var(--faint);flex:none}
-.exrowd .rowmain{flex:1;min-width:0}
-.exrowd .rowcat,.exrowd .rowname,.exrowd .rowpresc{display:block}
-.exrowd .rowcat{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.exrowd .rowname{font-size:14.5px;font-weight:700;margin-top:5px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exrowd .rowbar,.pvrow .rowbar{width:3px;align-self:stretch;border-radius:3px;background:var(--faint);flex:none}
+.exrowd .rowmain,.pvrow .rowmain{flex:1;min-width:0}
+.exrowd .rowcat,.exrowd .rowname,.exrowd .rowpresc,.pvrow .rowcat,.pvrow .rowname,.pvrow .rowpresc{display:block}
+.exrowd .rowcat,.pvrow .rowcat{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.exrowd .rowname,.pvrow .rowname{font-size:14.5px;font-weight:700;margin-top:5px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .exrowd .rowname small{color:var(--kraft);font-size:10px;font-weight:700}
-.exrowd .rowpresc{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.exrowd .rowidx{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--faint)}
+.exrowd .rowpresc,.pvrow .rowpresc{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exrowd .rowidx,.pvrow .rowidx{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--faint)}
 .exrowd .rowidx.done{color:var(--acc)}
 .exrowd .rowidx .ico{width:17px;height:17px}
-.exrowd.violet .rowbar{background:var(--skill)}.exrowd.violet .rowcat{color:var(--skill)}
-.exrowd.amber .rowbar{background:var(--kraft)}.exrowd.amber .rowcat{color:var(--kraft)}
-.exrowd.emerald .rowbar{background:var(--hyp)}.exrowd.emerald .rowcat{color:var(--hyp)}
-.exrowd.sky .rowbar{background:var(--core)}.exrowd.sky .rowcat{color:var(--core)}
-.exrowd.orange .rowbar{background:var(--orange)}.exrowd.orange .rowcat{color:var(--orange)}
-.exrowd.rose .rowbar{background:var(--danger)}.exrowd.rose .rowcat{color:var(--danger)}
+.exrowd.violet .rowbar,.pvrow.violet .rowbar{background:var(--skill)}.exrowd.violet .rowcat,.pvrow.violet .rowcat{color:var(--skill)}
+.exrowd.amber .rowbar,.pvrow.amber .rowbar{background:var(--kraft)}.exrowd.amber .rowcat,.pvrow.amber .rowcat{color:var(--kraft)}
+.exrowd.emerald .rowbar,.pvrow.emerald .rowbar{background:var(--hyp)}.exrowd.emerald .rowcat,.pvrow.emerald .rowcat{color:var(--hyp)}
+.exrowd.sky .rowbar,.pvrow.sky .rowbar{background:var(--core)}.exrowd.sky .rowcat,.pvrow.sky .rowcat{color:var(--core)}
+.exrowd.orange .rowbar,.pvrow.orange .rowbar{background:var(--orange)}.exrowd.orange .rowcat,.pvrow.orange .rowcat{color:var(--orange)}
+.exrowd.rose .rowbar,.pvrow.rose .rowbar{background:var(--danger)}.exrowd.rose .rowcat,.pvrow.rose .rowcat{color:var(--danger)}
 .exrowd.slate .rowbar{background:var(--faint)}.exrowd.slate .rowcat{color:var(--muted)}
 @media print{
  @page{size:A4;margin:13mm}
@@ -1697,7 +1676,7 @@ function collapseDoneExcept(exid){Object.keys(doneCollapseTimers).forEach(functi
 function exCardHtml(ex){
  var sets=getSets(ex),wk=PROG().weeks[S.week-1],rr=catReps(ex,wk.phase),tw=targetWeight(ex),last=lastPerf(ex),otherLast=latestOtherDayPerf(ex),done=isDone(ex),swap=currentExerciseSwap(ex),displayName=swap||ex.name,hasEntered=exerciseHasEnteredData(ex);
  if(active()&&done&&!expandedDoneExercises[ex.id])return'<div class="ex done excompact" id="card-'+attr(ex.id)+'"><span class="excompactname">'+esc(displayName)+(swap?'<small>getauscht</small>':'')+'</span><span class="excompactcheck" aria-label="Erledigt">'+icon("check")+'</span><button type="button" class="cardexpand" data-expand-done="'+attr(ex.id)+'" aria-label="'+attr(displayName)+' aufklappen" title="Aufklappen">'+icon("chevron-left")+'</button></div>';
- var h='<div class="ex'+(done?" done":"")+(active()?"":" locked")+'" id="card-'+ex.id+'">';
+ var h='<div class="ex'+(done?" done":"")+(active()||correctionActive()?"":" locked")+'" id="card-'+ex.id+'">';
  var collapseBtn='';
  if(!active()&&expandedPreviewRows[ex.id])collapseBtn='<button type="button" class="cardcollapse" data-collapse-prev="'+attr(ex.id)+'" aria-label="Übung einklappen" title="Einklappen">'+icon("chevron-left")+'</button>';
  else if(active()&&done)collapseBtn='<button type="button" class="cardcollapse" data-collapse-done="'+attr(ex.id)+'" aria-label="Übung einklappen" title="Einklappen">'+icon("chevron-left")+'</button>';
@@ -1713,7 +1692,7 @@ function exCardHtml(ex){
  h+=rr?'<span class="presctarget"><b>'+(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'–'+rr[1]+' Wdh')+'</b>'+progressHint+'</span>':'<span class="presctarget"><b>'+esc(ex.target||"—")+'</b>'+progressHint+'</span>';
  var pauseLabel=restLabel(catRest(ex));h+='<span class="dot">·</span><span class="prescpause" aria-label="Pause '+attr(pauseLabel)+'" title="Pause '+attr(pauseLabel)+'">'+icon("timer")+' <b>'+pauseLabel+'</b></span></div>';
  if(last){var v=performanceSummary(ex,last.sets);h+='<button class="last" data-hist="'+ex.id+'" aria-label="Verlauf für '+attr(ex.name)+' öffnen"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+esc(v)+'</span><span class="histhint">Verlauf <span aria-hidden="true">'+icon("chevron-right")+'</span></span></button>';}
- if(otherLast){var ov=performanceSummary(otherLast.exercise,otherLast.sets);h+='<div class="otherlast"><span class="l">Letzter Wert an anderem Tag · '+esc(otherLast.day.wd||otherLast.day.title||otherLast.day.key)+' (W'+otherLast.week+'):</span> <span class="v">'+esc(ov)+'</span></div>';}
+ if(otherLast){var ov=performanceSummary(otherLast.exercise,otherLast.sets),od=otherLast.day,odl=od.wd?od.wd.slice(0,2):(od.title||od.key);h+='<div class="otherlast"><span class="l">Anderer Tag · '+esc(odl)+' (W'+otherLast.week+'):</span> <span class="v">'+esc(ov)+'</span></div>';}
  if(ex.w&&!ex.bw&&tw<=0&&!sets.some(function(s){return Number(s.weight)>0;}))h+='<div class="editnote calibrationhint" id="calib-'+attr(ex.id)+'"><button type="button" class="calibrationmore" data-calibration-guide="1">Startgewicht bestimmen</button></div>';
  var firstOpen=firstOpenSet(ex,sets);
  var hasData=sets.some(function(s){return s.reps!==""||s.weight!=="";});
@@ -2818,7 +2797,7 @@ function coachSummary(){
  }).filter(Boolean).join("");
 }
 function renderCoach(){
- var h='<div class="libbox"><div class="ohdr"><button class="iconbtn" id="coachback" aria-label="Zur\u00fcck">'+icon("chevron-left")+'</button><h1>KI-Coach <span style="font-size:11px;color:var(--muted);font-weight:600">Beta</span></h1><button class="iconbtn" id="libclose" aria-label="Schlie\u00dfen">'+icon("close")+'</button></div>';
+ var h='<div class="libbox"><div class="ohdr"><button class="iconbtn" id="coachback" aria-label="Zur\u00fcck">'+icon("chevron-left")+'</button><h1>KI-Coach <span style="font-size:11px;color:var(--muted);font-weight:600">Beta</span></h1><button class="iconbtn" id="subclose" aria-label="Zur\u00fcck zu Programme">'+icon("close")+'</button></div>';
  if(coachReusePrompt){
   h+='<div class="importnotice ok"><strong>Antworten vom letzten Mal übernehmen?</strong>Du kannst sie übernehmen und anschließend jede Antwort normal ändern.</div><div class="librow"><button class="smallbtn go" id="coachreuse">Übernehmen</button><button class="smallbtn" id="coachnew">Neu starten</button></div>';
  }else if(coachBusy){
@@ -3260,7 +3239,7 @@ function syncEditorForm(){
 function resetProgramEditorState(){editorDraft=null;editorSourceId=null;editorProgramSource=null;editorInitialJSON="";editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorUnsavedDraft=false;editorReturnView="library";editorOpenSections={};editorPendingReplacementRefs={};editorRenameChoices={};}
 function editorHasUnsavedChanges(){if(!editorDraft)return false;syncEditorForm();return editorUnsavedDraft||JSON.stringify(editorDraft)!==editorInitialJSON;}
 function finishEditorSave(exitMode){if(exitMode==="back"){resetProgramEditorState();renderLib();}else closeLib(true);}
-function discardEditorAndReturn(exitMode){var target=editorReturnView,hadPending=editorHasPendingReplacements();resetProgramEditorState();if(hadPending)clearPendingReplacementRequests();if(exitMode==="close")closeLib(true);else if(target==="preview"&&pendingProgramImport)renderImportPreview();else if(target==="create")renderCreateHub();else renderLib();if(hadPending)finishPendingReplacementFlow();}
+function discardEditorAndReturn(exitMode){var target=editorReturnView,hadPending=editorHasPendingReplacements();resetProgramEditorState();if(hadPending)clearPendingReplacementRequests();if(exitMode==="close")closeLib(true);else if(target==="preview"&&pendingProgramImport)renderImportPreview();else renderLib();if(hadPending)finishPendingReplacementFlow();}
 function confirmEditorExit(exitMode){
  var isNew=!editorSourceId,pendingContext=editorHasPendingReplacements(),replaceOriginal=!isNew&&(editorSourceId!=="default"||pendingContext),saveLabel=isNew?"Speichern & aktivieren":replaceOriginal?"Original ersetzen":"Als Kopie speichern";
  showModal("Änderungen noch nicht gespeichert",isNew?"Dieses neue Programm wurde noch nicht gespeichert. Möchtest du es sichern, bevor du den Editor verlässt?":"Du hast dieses Programm verändert. Möchtest du die Änderungen speichern, bevor du den Editor verlässt?",[{label:saveLabel,cls:"primary",action:function(){editorStoreProgram(replaceOriginal,isNew?exitMode:"back",isNew);}},{label:"Änderungen verwerfen",cls:"danger",action:function(){discardEditorAndReturn(exitMode);}},{label:"Weiter bearbeiten",action:null}]);
@@ -3371,20 +3350,6 @@ function renderArchive(){
  if(archiveIds.length)archiveIds.forEach(function(id){h+=programItemHtml(id,S.programs[id]);});else h+='<div class="archiveempty"><b>Das Archiv ist leer.</b><br>Archivierte Programme erscheinen später hier.</div>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
-function renderCreateHub(){
- var h='<div class="libbox createhub"><div class="ohdr"><button class="iconbtn" id="createback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Neues Programm</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Wähle den Weg, der zu dir passt. Egal wie der Plan entsteht: Vor dem Speichern kannst du ihn prüfen und bearbeiten.</div><div class="creategrid">';
- h+='<button class="createchoice" id="programlibrarybtn" aria-label="Fertiges Satzkraft-Programm wählen"><span class="createicon" aria-hidden="true">'+icon("check")+'</span><b>Fertiges Programm wählen</b><small>Vier geprüfte Satzkraft-Programme – ansehen, übernehmen, lostrainieren.</small></button>';
- h+='<button class="createchoice" id="manualcreate" aria-label="Programm manuell erstellen"><span class="createicon" aria-hidden="true">'+icon("edit")+'</span><b>Manuell erstellen</b><small>Name, Wochen und Trainingstage festlegen. Danach baust du den Plan in der vertrauten Trainingsansicht auf.</small></button>';
- h+='<button class="createchoice" id="coachbtn" aria-label="Programm mit dem Satzkraft KI-Coach erstellen"><span class="createicon" aria-hidden="true">'+icon("sparkle")+'</span><b>Satzkraft KI-Coach <span style="color:var(--muted);font-size:10px">Beta</span></b><small>Beantworte die ausführlichen Fragen und lass dir einen gezielten Trainingsplan erstellen.</small></button>';
- h+='<button class="createchoice" id="externalaibtn" aria-label="Programm mit ChatGPT oder einer anderen KI erstellen"><span class="createicon" aria-hidden="true">'+icon("external")+'</span><b>Mit ChatGPT &amp; Co. erstellen</b><small>Fertigen Anweisungstext kopieren, bei einer beliebigen KI einfügen, Ergebnis importieren.</small></button>';
- h+='<button class="createchoice wide" id="importbtn" aria-label="Fertiges Programm importieren"><span class="createicon" aria-hidden="true">'+icon("download")+'</span><b>Fertiges Programm importieren</b><small>Programm-Datei oder kopiertes JSON einfügen. Satzkraft prüft alles vor dem Speichern.</small></button>';
- h+='</div></div>';document.getElementById("lib").innerHTML=h;
-}
-function renderProgramLibrary(){
- var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Fertige Programme</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Vier geprüfte Programme mit passenden Trainingswochen, Warm-up und Cool-down. Du kannst jedes Programm vor dem Speichern vollständig ansehen.</div>';
- if(locked)h+='<div class="importnotice warn"><strong>Training läuft</strong>Beende zuerst dein Training, bevor du ein neues Programm übernimmst.</div>';
- h+='<div class="libraryprograms">';PROGRAM_LIBRARY.forEach(function(item,index){h+='<button class="libraryprogram" data-library-index="'+index+'"'+lockedAttr+'><b>'+esc(item.name)+'</b><span class="libraryprogrammeta">'+esc(item.goal)+' · '+esc(item.level)+' · '+item.days+' Tage · '+esc(item.duration)+'</span><span class="libraryprogramdesc">'+esc(item.description)+'</span></button>';});h+='</div></div>';document.getElementById("lib").innerHTML=h;
-}
 function loadProgramLibraryItem(index){
  if(programWriteLocked()){showProgramWriteLocked();return;}var item=PROGRAM_LIBRARY[index];if(!item)return;
  fetch(item.file).then(function(response){if(!response.ok)throw new Error("HTTP "+response.status);return response.text();}).then(function(text){beginProgramImport(text,"library",item.name);}).catch(function(){showModal("Programm nicht geladen","Das Programm konnte nicht geladen werden. Öffne die Liste einmal mit Internet – danach funktioniert sie auch offline.",[{label:"OK",cls:"primary",action:null}]);});
@@ -3409,38 +3374,53 @@ function shareProgramLibraryItem(index){
  }).catch(function(){showModal("Vorlage nicht geladen","Die Vorlage konnte nicht geladen werden. Öffne die Liste einmal mit Internet – danach ist sie auch offline verfügbar.",[{label:"OK",action:null}]);});
 }
 function renderExternalAiCreate(){
- var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Mit ChatGPT &amp; Co.</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">In drei Schritten zu deinem Programm. Satzkraft liefert einen fertigen Text für die KI und prüft das Ergebnis vor dem Speichern.</div>';
+ var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Mit ChatGPT &amp; Co.</h1><button class="iconbtn" id="subclose" aria-label="Zurück zu Programme">'+icon("close")+'</button></div><div class="subviewlead">In drei Schritten zu deinem Programm. Satzkraft liefert einen fertigen Text für die KI und prüft das Ergebnis vor dem Speichern.</div>';
  h+='<div class="createblock"><div class="createtitle">1 · Trainingswunsch eintragen</div><div class="libnote">Schreibe einfach, was du brauchst – zum Beispiel Ziel, Trainingstage, Dauer, Erfahrung, Equipment, Einschränkungen und ob Warm-up/Cool-down gewünscht ist.</div><textarea class="libta" id="externalwish" aria-label="Trainingswunsch" placeholder="Zum Beispiel: Muskelaufbau, 3-mal pro Woche Mo/Mi/Fr, je 60 Minuten, Langhantel und Kurzhanteln, 1 Jahr Erfahrung, keine Einschränkungen, mit Warm-up und Cool-down.">'+esc(externalAiWish)+'</textarea></div>';
  h+='<div class="createblock"><div class="createtitle">2 · Text für ChatGPT kopieren</div><div class="libnote">Satzkraft verbindet deinen Wunsch automatisch mit der vollständigen technischen Vorlage. Du musst bei der KI nichts mehr ausfüllen.</div><div class="librow"><button class="smallbtn go" id="tplpromptcopy"'+(externalAiWish.trim()?'':' disabled')+'>Text für ChatGPT kopieren</button></div></div>';
  h+='<div class="createblock"><div class="createtitle">3 · Ergebnis importieren</div><div class="libnote">Füge den kopierten Text bei ChatGPT oder einer anderen KI ein. Kopiere anschließend die komplette JSON-Antwort vom ersten <b>{</b> bis zum letzten <b>}</b>. Satzkraft prüft fehlende oder falsche Felder vor dem Speichern.</div><div class="librow"><button class="smallbtn go" id="importbtn">JSON prüfen &amp; importieren</button></div></div><div class="createfoot libnote">Du willst dein aktuelles Programm umbauen lassen? Kopiere es unter Programme → Exportieren &amp; Teilen.</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportEntry(){
- var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm importieren</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Füge das JSON einer beliebigen KI ein oder wähle eine Datei. Es wird zunächst nur geprüft – dein aktives Programm und dein Fortschritt bleiben unverändert.</div>';
+ var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm importieren</h1><button class="iconbtn" id="subclose" aria-label="Zurück zu Programme">'+icon("close")+'</button></div><div class="subviewlead">Füge das JSON einer beliebigen KI ein oder wähle eine Datei. Es wird zunächst nur geprüft – dein aktives Programm und dein Fortschritt bleiben unverändert.</div>';
  h+='<div class="importtextwrap"><textarea class="libta" id="libpaste" aria-label="Programm-JSON einfügen" placeholder="JSON hier einfügen …">'+esc(importInputText)+'</textarea><button class="importclear" id="importclear"'+(importInputText?'':' hidden')+'>'+icon("close")+' Leeren</button></div>';
  h+='<div class="importdrop" id="importdrop"><div><strong>'+(importSourceName?esc(importSourceName):'JSON-Datei auswählen')+'</strong><small>Bis 5 MB · JSON oder Textdatei</small></div><label class="smallbtn" style="display:inline-flex;align-items:center">Datei wählen<input type="file" id="libfile" accept=".json,application/json,text/plain" style="display:none"></label></div>';
  h+='<div class="librow"><button class="smallbtn go" id="libload">Prüfen &amp; Vorschau</button><button class="smallbtn" id="tplcopy">Vorlage kopieren</button></div><div class="importnotice"><strong>Noch nichts wird gespeichert</strong>Erst in der nächsten Ansicht entscheidest du zwischen „Nur speichern“, „Speichern &amp; aktivieren“ oder „Vorher bearbeiten“.</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportError(){
- var issue=importIssue&&importIssue.error?importIssue.error:explainProgramError("Das Programm konnte nicht geprüft werden."),origin=importIssue&&importIssue.origin||"json",h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Import korrigieren</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(origin))+(importIssue&&importIssue.sourceName?' · '+esc(importIssue.sourceName):'')+'</span>';
+ var issue=importIssue&&importIssue.error?importIssue.error:explainProgramError("Das Programm konnte nicht geprüft werden."),origin=importIssue&&importIssue.origin||"json",h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Import korrigieren</h1><button class="iconbtn" id="subclose" aria-label="Zurück zu Programme">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(origin))+(importIssue&&importIssue.sourceName?' · '+esc(importIssue.sourceName):'')+'</span>';
  h+='<div class="importnotice err"><strong>'+esc(issue.area)+'</strong>'+esc(issue.message)+'<br><br><b>So behebst du es:</b> '+esc(issue.remedy)+'</div>';
  h+='<details class="importtechnical"><summary>Technische Details anzeigen</summary><pre>'+esc(issue.technical)+'</pre></details><div class="librow"><button class="smallbtn go" id="importeditjson">JSON weiter bearbeiten</button><button class="smallbtn" id="tplcopy">Vorlage kopieren</button></div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportPreview(){
- var prepared=pendingProgramImport;if(!prepared||!prepared.program){renderImportEntry();return;}var p=prepared.program,exerciseCount=p.days.reduce(function(sum,day){return sum+day.ex.length;},0),h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importpreviewback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm prüfen</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(prepared.origin))+(prepared.sourceName?' · '+esc(prepared.sourceName):'')+'</span>';
- h+='<div class="previewhero"><h2>'+esc(p.name)+'</h2><p>'+(p.description?esc(p.description):'Keine Beschreibung hinterlegt.')+'</p><div class="previewstats"><div class="previewstat"><b>'+p.weeks.length+'</b><span>Wochen</span></div><div class="previewstat"><b>'+p.days.length+'</b><span>Trainingstage</span></div><div class="previewstat"><b>'+exerciseCount+'</b><span>Übungen</span></div></div></div>';
- h+='<div class="libsec" style="margin-top:14px">Trainingstage</div><div class="previewdays">';p.days.forEach(function(day){h+='<div class="previewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><span>'+day.ex.length+' Übungen'+((day.wu&&day.wu.length)||(day.cd&&day.cd.length)?' · Warm-up/Cool-down':'')+'</span></div>';});h+='</div>';
- if(prepared.origin==="library"){h+='<div class="librarypreview"><div class="libsec">Wochenstruktur</div>';p.weeks.forEach(function(week){h+='<div class="librarypreviewweek"><b>Woche '+week.n+':</b> '+esc(week.label||week.phase)+' · RIR '+esc(week.rir||"–")+(week.note?' · '+esc(week.note):'')+'</div>';});h+='<div class="libsec">Alle Übungen</div>';p.days.forEach(function(day){h+='<div class="librarypreviewday"><b>'+esc((day.wd?day.wd+' · ':'')+(day.title||day.key))+'</b><ul>';if(day.wu&&day.wu.length)h+='<li>Warm-up: '+day.wu.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';day.ex.forEach(function(ex){var category=p.categories[ex.cat]||{},color=CAT_COLORS.indexOf(category.color)>=0?category.color:"slate";h+='<li><span class="librarypreviewexercise"><span>'+esc(ex.name)+'</span><span class="tag '+color+'">'+esc(category.label||ex.cat)+'</span></span></li>';});if(day.cd&&day.cd.length)h+='<li>Cool-down: '+day.cd.map(function(item){return esc(item.name)+' ('+item.sec+' Sek)';}).join(', ')+'</li>';h+='</ul></div>';});h+='</div>';}
+ var prepared=pendingProgramImport;if(!prepared||!prepared.program){renderImportEntry();return;}var p=prepared.program,exerciseCount=p.days.reduce(function(sum,day){return sum+day.ex.length;},0),h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importpreviewback" aria-label="Zur\u00fcck">'+icon("chevron-left")+'</button><h1>Programm pr\u00fcfen</h1><button class="iconbtn" id="subclose" aria-label="Zur\u00fcck zu Programme">'+icon("close")+'</button></div>';
+ h+='<div class="pvhdr"><div class="heroeyebrow">'+esc(programSourceLabel(prepared.origin))+(prepared.sourceName&&prepared.sourceName!==p.name?' \u00b7 '+esc(prepared.sourceName):'')+'</div><h2 class="ptitle">'+esc(p.name)+'</h2><div class="chiprow"><span class="chip">'+p.days.length+' Tage</span><span class="chip">'+p.weeks.length+' Wochen</span><span class="chip">'+exerciseCount+' \u00dcbungen</span>'+(p.bereich?'<span class="chip">'+esc(p.bereich)+'</span>':'')+'</div>'+(p.description?'<p class="pvdesc">'+esc(p.description)+'</p>':'')+'</div>';
+ var w1=p.weeks[0]||{};
+ p.days.forEach(function(day,di){
+  h+='<details class="pvday"'+(di===0?' open':'')+'><summary><span class="pvmain"><span class="pvwd">'+esc(day.wd||'Tag '+(di+1))+'</span><span class="pvtitle">'+esc(day.title||day.key)+'</span><span class="pvmeta">'+day.ex.length+' \u00dcbungen'+((day.wu&&day.wu.length)||(day.cd&&day.cd.length)?' \u00b7 Warm-up/Cool-down':'')+'</span></span><span class="pvchev">'+icon("chevron-left")+'</span></summary><div class="pvrows">';
+  if(day.wu&&day.wu.length)h+='<div class="pvextra">Warm-up \u00b7 '+day.wu.map(function(item){return esc(item.name)+' ('+fmtTime(item.sec)+' min)';}).join(', ')+'</div>';
+  day.ex.forEach(function(ex,i){
+   var category=p.categories[ex.cat]||{},color=CAT_COLORS.indexOf(category.color)>=0?category.color:"slate";
+   var setCount=ex.sets!=null?ex.sets:(w1.sets&&w1.sets[ex.cat]!=null?w1.sets[ex.cat]:3),rr=category.reps&&(category.reps[w1.phase]||category.reps.aufbau);
+   var summary=setCount+' \u00d7 '+(Array.isArray(rr)?(ex.unit==="seconds"?fmtSecondsRange(rr[0],rr[1]):rr[0]+'\u2013'+rr[1]):esc(ex.target||'\u2014'));
+   if(category.rest!=null)summary+=' \u00b7 '+fmtTime(category.rest);
+   h+='<div class="pvrow '+color+'"><span class="rowbar"></span><span class="rowmain"><span class="rowcat">'+esc(category.label||ex.cat)+'</span><span class="rowname">'+esc(ex.name)+'</span><span class="rowpresc">'+summary+'</span></span><span class="rowidx">'+('0'+(i+1)).slice(-2)+'</span></div>';
+  });
+  if(day.cd&&day.cd.length)h+='<div class="pvextra">Cool-down \u00b7 '+day.cd.map(function(item){return esc(item.name)+' ('+fmtTime(item.sec)+' min)';}).join(', ')+'</div>';
+  h+='</div></details>';
+ });
+ h+='<details class="pvweeks"><summary><span class="pvmain"><span class="pvwd">Wochenstruktur</span><span class="pvtitle">'+p.weeks.length+' Wochen im Block</span></span><span class="pvchev">'+icon("chevron-left")+'</span></summary><div class="pvweekrows">';
+ p.weeks.forEach(function(week){h+='<div class="pvweekrow"><b>W'+week.n+'</b><span class="wklabel">'+esc(week.label||week.phase)+'</span>'+(week.rir?'<span class="wkrir">RIR '+esc(week.rir)+'</span>':'')+'</div>';});
+ h+='</div></details>';
  if(prepared.duplicateId){var existing=S.programs[prepared.duplicateId];h+='<div class="importnotice warn"><strong>Bereits vorhanden</strong>„'+esc(existing.name)+'“ hat denselben Inhalt. Es wird nicht unbemerkt doppelt gespeichert.</div>';}
  else if(prepared.sameNameIds.length)h+='<div class="importnotice warn"><strong>Name bereits vorhanden</strong>Der Inhalt unterscheidet sich. Du kannst das neue Programm trotzdem unter demselben Namen speichern oder es vorher umbenennen.</div>';
  if(prepared.duplicateId)h+='<div class="importactions"><button class="smallbtn go wide" id="importexisting">'+(prepared.duplicateId===S.active?'Vorhandenes bearbeiten':'Vorhandenes aktivieren')+'</button><button class="smallbtn" id="importcopy">Trotzdem als Kopie speichern</button><button class="smallbtn" id="importcancel">Abbrechen</button></div>';
  else h+='<div class="importactions"><button class="smallbtn go wide" id="importactivate">Speichern &amp; aktivieren</button><button class="smallbtn" id="importsave">Nur speichern</button><button class="smallbtn" id="importedit">Vorher bearbeiten</button><button class="smallbtn wide" id="importcancel">Abbrechen</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
 }
-function returnFromImportFlow(){var origin=(pendingProgramImport&&pendingProgramImport.origin)||(importIssue&&importIssue.origin)||"json";pendingProgramImport=null;importIssue=null;if(origin==="coach")renderCoach();else if(origin==="library")renderProgramLibrary();else if(origin==="link")renderLib();else renderImportEntry();}
+function returnFromImportFlow(){var origin=(pendingProgramImport&&pendingProgramImport.origin)||(importIssue&&importIssue.origin)||"json";pendingProgramImport=null;importIssue=null;if(origin==="coach")renderCoach();else if(origin==="library"||origin==="link")renderLib();else renderImportEntry();}
 var manualCreatorState={name:"",description:"",weeks:8,days:[0,2,4]};
 function syncManualCreatorForm(){var name=document.getElementById("manualname"),description=document.getElementById("manualdescription"),weeks=document.getElementById("manualweeks");if(name)manualCreatorState.name=name.value;if(description)manualCreatorState.description=description.value;if(weeks)manualCreatorState.weeks=Math.max(1,Math.min(LIMITS.maxWeeks,Math.round(Number(weeks.value)||8)));}
 function renderManualCreator(){
- var s=manualCreatorState,h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Manuell erstellen</h1><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="subviewlead">Lege nur die Grundlage fest. Übungen, Sätze und Wiederholungen bearbeitest du danach in der gewohnten Trainingsansicht.</div><div class="manualgrid">';
+ var s=manualCreatorState,h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Manuell erstellen</h1><button class="iconbtn" id="subclose" aria-label="Zurück zu Programme">'+icon("close")+'</button></div><div class="subviewlead">Lege nur die Grundlage fest. Übungen, Sätze und Wiederholungen bearbeitest du danach in der gewohnten Trainingsansicht.</div><div class="manualgrid">';
  h+=editorInput('Programmname',s.name,'id="manualname"',{max:LIMITS.maxNameLen});h+=editorInput('Wochen',s.weeks,'id="manualweeks"',{type:'number',min:1,max:LIMITS.maxWeeks,step:'1'});h+='</div>';
  h+='<div class="edgrid" style="margin-top:10px">'+editorInput('Beschreibung (optional)',s.description,'id="manualdescription"',{wide:true,area:true,max:200})+'</div><div class="libsec" style="margin-top:16px">An welchen Tagen wird trainiert?</div><div class="manualdays" role="group" aria-label="Trainingstage auswählen">';
  WD_ABBR.forEach(function(label,index){h+='<button class="manualday'+(s.days.indexOf(index)>=0?' sel':'')+'" data-manual-day="'+index+'" aria-pressed="'+(s.days.indexOf(index)>=0)+'">'+label+'</button>';});h+='</div><div class="manualhint">Mindestens ein Trainingstag. Die Reihenfolge folgt Montag bis Sonntag und kann später im Editor geändert werden.</div>';
@@ -3555,15 +3535,13 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.dataset.edMoveex){var mdi=+b.dataset.edDay,mei=+b.dataset.edEx,move=+b.dataset.edMoveex;editorPushUndo("Übung verschoben");editorMoveExercise(mdi,mei,move);renderProgramEditor("days",mdi,mei+move);return;}
  if(b.id==="eddeleteprogram"){confirmEditorDeleteProgram();return;}
  if(b.dataset.sel){if(setActive(b.dataset.sel))closeLib();return;}
- if(b.id==="createhubbtn"){renderCreateHub();return;}
- if(b.id==="createback"){renderLib();return;}
- if(b.id==="createhubback"){syncManualCreatorForm();renderCreateHub();return;}
- if(b.id==="programlibrarybtn"){renderProgramLibrary();return;}
+ if(b.id==="createhubback"){syncManualCreatorForm();renderLib();return;}
+ if(b.id==="subclose"){coachAbort();syncManualCreatorForm();pendingProgramImport=null;importIssue=null;renderLib();return;}
  if(b.dataset.libraryEdit!=null){editProgramLibraryItem(+b.dataset.libraryEdit);return;}
  if(b.dataset.libraryShare!=null){shareProgramLibraryItem(+b.dataset.libraryShare);return;}
  if(b.dataset.libraryIndex!=null){loadProgramLibraryItem(+b.dataset.libraryIndex);return;}
  if(b.id==="manualcreate"){renderManualCreator();return;}
- if(b.id==="manualcancel"){syncManualCreatorForm();renderCreateHub();return;}
+ if(b.id==="manualcancel"){syncManualCreatorForm();renderLib();return;}
  if(b.id==="manualstart"){startManualProgram();return;}
  if(b.dataset.manualDay!=null){syncManualCreatorForm();var md=+b.dataset.manualDay,pos=manualCreatorState.days.indexOf(md);if(pos>=0)manualCreatorState.days.splice(pos,1);else manualCreatorState.days.push(md);manualCreatorState.days.sort(function(a,b){return a-b;});renderManualCreator();return;}
  if(b.id==="externalaibtn"){renderExternalAiCreate();return;}
@@ -3576,7 +3554,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="importexisting"){useExistingDuplicate();return;}
  if(b.id==="importedit"){if(pendingProgramImport)openProgramDraft(pendingProgramImport.external,"preview",pendingProgramImport.origin);return;}
  if(b.id==="coachbtn"){coachStart();return;}
- if(b.id==="coachback"){if(coachBusy)return;coachCaptureFreeInput();saveCoachPreferences();if(coachStep>0&&!coachProgram&&!coachErr){coachAdvance(-1);renderCoach();}else{coachSessionActive=false;renderCreateHub();}return;}
+ if(b.id==="coachback"){if(coachBusy)return;coachCaptureFreeInput();saveCoachPreferences();if(coachStep>0&&!coachProgram&&!coachErr){coachAdvance(-1);renderCoach();}else{coachSessionActive=false;renderLib();}return;}
  if(b.id==="coachreuse"){coachAns=loadCoachPreferences();coachReusePrompt=false;renderCoach();return;}
  if(b.id==="coachnew"){clearCoachPreferences();coachReset();coachSessionActive=true;renderCoach();return;}
  if(b.dataset.opt){var cst=COACH_STEPS[coachStep];if(cst){coachAns[cst.k]=b.dataset.opt;renderCoach();}return;}

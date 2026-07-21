@@ -4,6 +4,23 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [Unreleased]
+
+### Geändert
+
+- Die Zeile mit dem Wert des anderen Trainingstags heißt jetzt kompakt „Anderer Tag · Mi (W1)“ und bleibt wie die übrige Verlaufszeile immer einzeilig, ohne Zeilenumbruch.
+- Alle Hinweis- und Entscheidungsfenster sowie sämtliche Knöpfe und Eingabefelder verwenden durchgehend die neue App-Schrift des Redesigns.
+- Der alte Zwischen-Hub „Neues Programm“ entfällt ersatzlos. Die vier Erstellen-Kacheln führen direkt in ihre Ansicht; Zurück und das Schließen-X führen aus KI-Coach, Import, Manuell und ChatGPT & Co. immer direkt zur Programme-Ansicht.
+- „Programm prüfen“ ist im Stil der Startseite aufgebaut: Kopf mit Programmname und Chips, Trainingstage als aufklappbare Karten mit Übungszeilen samt Kategorie, Sätzen und Pausen sowie eine aufklappbare Wochenstruktur. Die bisherigen Statistik-Kacheln und Doppel-Listen entfallen.
+
+### Behoben
+
+- „Workout bearbeiten“ dimmt die Übungskarten nicht mehr aus; die Bearbeitungsansicht wirkt nicht länger eingegraut.
+
+### Dokumentation
+
+- Neues verbindliches Design-Briefing in `docs/DESIGN-BRIEFING.md`, abgeleitet aus der neuen Startseite (Tokens, Typografie, Komponenten, Interaktionsregeln).
+
 ## [0.28.0] – 2026-07-21
 
 ### Hinzugefügt

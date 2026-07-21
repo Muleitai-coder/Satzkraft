@@ -124,8 +124,8 @@ test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /id="externalaibtn"/);
   assert.match(html, /Manuell erstellen/);
   assert.match(html, /Satzkraft KI-Coach/);
-  assert.match(html, /Mit ChatGPT &amp; Co\. erstellen/);
-  assert.match(html, /Fertiges Programm importieren/);
+  assert.match(html, /Mit ChatGPT &amp; Co\./);
+  assert.match(html, /Programm importieren/);
 });
 
 test('uses a shared preview and a dedicated unsaved draft mode', () => {
@@ -138,8 +138,8 @@ test('uses a shared preview and a dedicated unsaved draft mode', () => {
   assert.match(html, /id="edsavenew"/);
   assert.match(html, /id="edsavenewactive"/);
   assert.match(html, /Plan prüfen &amp; speichern/);
-  assert.match(html, /class="librarypreviewexercise"/);
-  assert.match(html, /class="tag '\+color/);
+  assert.match(html, /class="pvrow '\+color/);
+  assert.match(html, /class="pvday"/);
 });
 
 test('applies the live preview order and requires approval before swapping occupied days', () => {
