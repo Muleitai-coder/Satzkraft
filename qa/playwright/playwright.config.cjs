@@ -3,6 +3,8 @@ const { defineConfig, devices } = require('@playwright/test');
 
 const repoRoot = path.resolve(__dirname, '../..');
 const reportDir = path.join(__dirname, 'playwright-report');
+// PORT erlaubt parallele Testläufe (z. B. Haupt-Repo und Git-Worktree gleichzeitig)
+const port = Number(process.env.PORT) || 4173;
 
 module.exports = defineConfig({
   testDir: __dirname,
@@ -28,7 +30,7 @@ module.exports = defineConfig({
   snapshotPathTemplate:
     '{testDir}/__screenshots__/{platform}/{projectName}/{testFilePath}/{arg}{ext}',
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL: 'http://127.0.0.1:' + port,
     locale: 'de-DE',
     timezoneId: 'Europe/Berlin',
     colorScheme: 'dark',
@@ -41,7 +43,7 @@ module.exports = defineConfig({
   webServer: {
     command: 'node qa/playwright/static-server.cjs',
     cwd: repoRoot,
-    url: 'http://127.0.0.1:4173/index.html',
+    url: 'http://127.0.0.1:' + port + '/index.html',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,
     stdout: 'ignore',

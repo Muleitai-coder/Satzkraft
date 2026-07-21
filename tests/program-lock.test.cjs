@@ -12,7 +12,8 @@ function loadItemContext(workout) {
   const context = {
     S: { active: 'active', workout },
     esc: value => String(value == null ? '' : value),
-    attr: value => String(value == null ? '' : value)
+    attr: value => String(value == null ? '' : value),
+    icon: () => ''
   };
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
@@ -44,9 +45,14 @@ test('keeps program actions enabled outside a training', () => {
 
 test('renders a clear read-only notice and disables all structural library actions', () => {
   assert.match(html, /Training läuft[^<]*<\/strong>Beende zuerst dein Training, um Programme zu ändern/);
-  assert.match(html, /id="createhubbtn"[^>]*\+lockedAttr/);
+  assert.match(html, /id="coachbtn"'\+lockedAttr/);
+  assert.match(html, /id="importbtn"'\+lockedAttr/);
+  assert.match(html, /id="manualcreate"'\+lockedAttr/);
+  assert.match(html, /id="externalaibtn"'\+lockedAttr/);
+  assert.match(html, /data-library-index="'\+index\+'"'\+lockedAttr/);
+  assert.match(html, /data-library-edit="'\+index\+'"'\+lockedAttr/);
   assert.match(html, /id="backupfile"[^>]*\+lockedAttr/);
-  assert.match(html, /id="libreset"[^>]*\+lockedAttr/);
+  assert.match(html, /id="libreset"'\+\(programWriteLocked\(\)\?' disabled':''\)/);
 });
 
 test('guards stale or indirect mutation paths in addition to disabled controls', () => {
@@ -59,7 +65,8 @@ test('guards stale or indirect mutation paths in addition to disabled controls',
 });
 
 test('keeps safe read-only and backup-download actions available', () => {
-  assert.doesNotMatch(html, /id="(?:expcopy|expfile|explink|libbackup)"[^>]*\+lockedAttr/);
-  assert.match(html, /id="expcopy"/);
+  assert.doesNotMatch(html, /id="(?:proshare|libbackup)"[^>]*\+lockedAttr/);
+  assert.doesNotMatch(html, /data-library-share="'\+index\+'"[^>]*lockedAttr/);
+  assert.match(html, /id="proshare"/);
   assert.match(html, /id="libbackup"/);
 });

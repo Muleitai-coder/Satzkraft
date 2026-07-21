@@ -4,6 +4,7 @@ const { test, expect } = require('@playwright/test');
 
 const APP_STATE_KEY = 'cali-plan-v3';
 const THEME_KEY = 'training-theme-v1';
+const REDESIGN_NOTICE_KEY = 'satzkraft-design-update-v1';
 const REPORT_BACKUP = JSON.parse(
   fs.readFileSync(
     path.resolve(__dirname, '../../TESTBACKUP-AUSWERTUNG.json'),
@@ -52,16 +53,19 @@ function compactWorkoutState(exerciseCount = 1) {
 async function openWithState(page, state, options = {}) {
   const theme = options.theme || 'dark';
   await page.addInitScript(
-    ({ appStateKey, themeKey, seededState, seededTheme }) => {
+    ({ appStateKey, themeKey, noticeKey, seededState, seededTheme, showUpdateNotice }) => {
       localStorage.clear();
       localStorage.setItem(themeKey, seededTheme);
+      if (!showUpdateNotice) localStorage.setItem(noticeKey, '1');
       localStorage.setItem(appStateKey, JSON.stringify(seededState));
     },
     {
       appStateKey: APP_STATE_KEY,
       themeKey: THEME_KEY,
+      noticeKey: REDESIGN_NOTICE_KEY,
       seededState: state,
       seededTheme: theme,
+      showUpdateNotice: options.updateNotice === true,
     }
   );
   await page.goto('/index.html');
@@ -75,7 +79,9 @@ async function openPrograms(page) {
 
 async function openCreateHub(page) {
   await openPrograms(page);
-  await page.locator('#createhubbtn').click();
+  await page.locator('#manualcreate').click();
+  await expect(page.locator('#lib h1')).toHaveText('Manuell erstellen');
+  await page.locator('#createhubback').click();
   await expect(page.locator('#lib h1')).toHaveText('Neues Programm');
 }
 
@@ -156,7 +162,7 @@ test.describe('1 · Texte & Kommunikation', () => {
     const bar = page.locator('#bar');
     await expect(bar.locator('button')).toHaveCount(1);
     await expect(bar.locator('#correctvalues')).toHaveText(
-      'Werte korrigieren'
+      'Workout bearbeiten'
     );
     await expect(bar).not.toContainText(
       'Diese Einheit ist Teil deines Protokolls'
@@ -165,7 +171,7 @@ test.describe('1 · Texte & Kommunikation', () => {
     await expect(bar.locator('#startw')).toHaveCount(0);
   });
 
-  test('TXT-05/P0: Korrektur benennt die Konsequenz und verändert keine History', async ({
+  test('TXT-05/P0: Workout bearbeiten ändert Werte mit Sicherungsstand und verändert keine History', async ({
     page,
   }) => {
     await openWithState(
@@ -181,19 +187,22 @@ test.describe('1 · Texte & Kommunikation', () => {
     );
 
     await page.locator('#correctvalues').click();
-    const modal = page.locator('#modal');
-    await expect(modal.locator('.mtitle')).toHaveText('Werte korrigieren');
-    await expect(modal.locator('.mmsg')).toHaveText(CORRECTION_EFFECT_COPY);
-    await expect(modal.locator('.mbtn')).toHaveText([
-      'Werte korrigieren',
-      'Abbrechen',
-    ]);
-    await modal
-      .getByRole('button', { name: 'Werte korrigieren', exact: true })
-      .click();
-
-    await expect(page.locator('#bar #finishcorrection')).toHaveText('Fertig');
+    await expect(page.locator('#bar #finishcorrection')).toHaveText(
+      'Speichern'
+    );
+    await expect(page.locator('#bar #cancelcorrection')).toHaveText(
+      'Abbrechen'
+    );
     await expect(page.locator('#card-A_0 .editnote')).toHaveCount(0);
+
+    await page.locator('#rep-A_0-0').fill('9');
+    await page.locator('#cancelcorrection').click();
+    await expect(page.locator('#bar #correctvalues')).toBeVisible();
+    expect(
+      await page.evaluate(() => window.S.logs['1|A|A_0'].sets[0].reps)
+    ).toBe('8');
+
+    await page.locator('#correctvalues').click();
     await page.locator('#rep-A_0-0').fill('9');
     await page.locator('#finishcorrection').click();
 
@@ -223,6 +232,7 @@ test.describe('1 · Texte & Kommunikation', () => {
     const historyBefore = await page.evaluate(() =>
       JSON.parse(JSON.stringify(window.S.history))
     );
+    await page.locator('[data-expand-prev="A_0"]').click();
     const input = page.locator('#rep-A_0-0');
     const modal = page.locator('#modal');
     await expect(input).toHaveValue('8');
@@ -267,7 +277,7 @@ test.describe('1 · Texte & Kommunikation', () => {
     expect(result.workout).toBeNull();
   });
 
-  test('TXT-08/P0: Wiederholen warnt exakt vor neu berechneten Empfehlungen', async ({
+  test('TXT-08/P0: Workout bearbeiten ersetzt den Wiederholen-Knopf und warnt vor neu berechneten Empfehlungen', async ({
     page,
   }) => {
     await openWithState(
@@ -287,21 +297,26 @@ test.describe('1 · Texte & Kommunikation', () => {
       })
     );
 
-    await expect(page.locator('#startw')).toHaveText(
-      'Training wiederholen (ersetzt die letzte Einheit)'
+    const bar = page.locator('#bar');
+    await expect(bar.locator('#correctvalues')).toHaveText(
+      'Workout bearbeiten'
     );
-    await page.locator('#startw').click();
+    await expect(bar.locator('#startw')).toHaveCount(0);
+    await expect(bar).not.toContainText('Training wiederholen');
+
+    await page.locator('[data-expand-prev="A_0"]').click();
+    const input = page.locator('#rep-A_0-0');
+    await input.fill('10');
+    await input.press('Tab');
 
     const modal = page.locator('#modal');
-    await expect(modal.locator('.mtitle')).toHaveText(
-      'Training wiederholen?'
-    );
-    expect(await modal.locator('.mmsg').innerText()).toBe(
-      'Alle eingetragenen Satzwerte dieses Tages werden geleert. Beim Beenden ersetzt die neue Trainingszeit außerdem die bisher gespeicherte Zeit.\n\nEmpfehlungen der folgenden Wochen werden aus den neuen Werten neu berechnet. Deine eingetragenen Werte bleiben unverändert.'
+    await expect(modal.locator('.mtitle')).toHaveText('Wert übernehmen?');
+    await expect(modal.locator('.mmsg')).toContainText(
+      CORRECTION_EFFECT_COPY
     );
     await expect(modal.locator('.mbtn')).toHaveText([
-      'Zurücksetzen & wiederholen',
-      'Abbrechen',
+      'Übernehmen',
+      'Verwerfen',
     ]);
   });
 
@@ -309,6 +324,30 @@ test.describe('1 · Texte & Kommunikation', () => {
     page,
   }) => {
     await openWithState(page, reportState());
+    await openPrograms(page);
+
+    const templates = page.locator('#lib .tplcard');
+    await expect(templates).toHaveCount(4);
+    await expect(templates.locator('.tplname')).toHaveText([
+      'Gym Ganzkörper Beginner',
+      'Gym Ganzkörper Fortgeschritten',
+      'Calisthenics Einstieg',
+      'Hybrid: Gym + Calisthenics',
+    ]);
+    await expect(templates.locator('.tplmeta')).toHaveText([
+      '3 Tage · 50–65 min',
+      '3 Tage · 65–80 min',
+      '3 Tage · 40–50 min',
+      '3 Tage · 60–75 min',
+    ]);
+    await expect(templates.locator('.tpllevel')).toHaveText([
+      'Einsteiger',
+      'Fortgeschritten',
+      'Einsteiger',
+      'Grundlagenerfahrung',
+    ]);
+    await page.locator('#libclose').click();
+
     await openProgramLibrary(page);
 
     await expect(page.locator('#lib .subviewlead')).toHaveText(
@@ -421,16 +460,19 @@ test.describe('1 · Texte & Kommunikation', () => {
       })
     );
 
-    await page.locator('[data-swap-ex="A_0"]').click();
+    await page.locator('[data-expand-prev="A_0"]').click();
+    await page.locator('[data-exmenu="A_0"]').click();
     const modal = page.locator('#modal');
+    await modal.getByRole('button', { name: 'Übung ersetzen' }).click();
+
     await expect(modal.locator('.mtitle')).toHaveText('Übung tauschen');
     await expect(modal.locator('.edlabel')).toHaveText('Ersatzübung');
     await expect(modal.locator('#swapname')).toHaveAttribute(
       'placeholder',
-      'Zum Beispiel Kurzhantel-Bankdrücken'
+      'Übungsname eingeben'
     );
     await expect(modal.locator('.swapsuggestions > span')).toHaveText(
-      'Passende Vorschläge'
+      'Empfohlene Ersatzübung'
     );
 
     const suggestions = modal.locator('[data-swap-suggestion]');
@@ -467,13 +509,18 @@ test.describe('1 · Texte & Kommunikation', () => {
       })
     );
 
+    await page.locator('[data-expand-prev="A_0"]').click();
     await expect(page.locator('#card-A_0 .otherlast')).toHaveText(
       'Letzter Wert an anderem Tag · Mittwoch (W7): 6×90 kg · 6×90 kg · 5×90 kg'
     );
     await expect(page.locator('#card-A_0 .last')).toContainText(
       'Zuletzt (W6):'
     );
-    await expect(page.locator('#ww-A_0')).not.toHaveValue('90');
+    await expect(page.locator('#wt-A_0-0')).not.toHaveValue('90');
+    await expect(page.locator('#wt-A_0-0')).not.toHaveAttribute(
+      'placeholder',
+      '90'
+    );
   });
 
   test('FUN-X-03/P0: getauschter Fremdwert zählt nicht als Originalwert', async ({
@@ -490,6 +537,7 @@ test.describe('1 · Texte & Kommunikation', () => {
       })
     );
 
+    await page.locator('[data-expand-prev="A_0"]').click();
     await expect(page.locator('#card-A_0 .otherlast')).toHaveText(
       'Letzter Wert an anderem Tag · Mittwoch (W6): 10×87.5 kg · 9×87.5 kg · 9×87.5 kg'
     );
@@ -561,6 +609,47 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     ).toEqual([]);
   });
 
+  test('VIS-19/P0: neuer Editor startet geschlossen und deckt den unteren iPhone-Rand ab', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState());
+    await page.evaluate(() => {
+      openProgramDraft(exportTranslate(PROG()), 'create');
+      document.querySelector('#lib').classList.add('open');
+    });
+
+    await expect(page.locator('#lib h1')).toHaveText('Programm erstellen');
+    await expect(page.locator('#lib .editorbox')).not.toHaveClass(
+      /editing-exercise/
+    );
+    await expect(page.locator('#lib .edexercise.open')).toHaveCount(0);
+    await expect(page.locator('#lib .edsticky button')).toHaveText([
+      'Nur speichern',
+      'Speichern & aktivieren',
+    ]);
+
+    const footerCoverage = await page.locator('#lib').evaluate((lib) => {
+      lib.scrollTop = lib.scrollHeight;
+      const footer = lib.querySelector('.edsticky');
+      const footerRect = footer.getBoundingClientRect();
+      const style = getComputedStyle(footer);
+      const boxStyle = getComputedStyle(lib.querySelector('.libbox'));
+      const restGap =
+        parseFloat(boxStyle.paddingBottom) + parseFloat(style.bottom);
+      return {
+        background: style.backgroundColor,
+        paddingBottom: parseFloat(style.paddingBottom),
+        footerBottom: footerRect.bottom,
+        scrollportBottom: lib.getBoundingClientRect().bottom - restGap,
+      };
+    });
+    expect(footerCoverage.background).toBe('rgba(8, 9, 11, 0.92)');
+    expect(footerCoverage.paddingBottom).toBeGreaterThanOrEqual(12);
+    expect(footerCoverage.footerBottom).toBeGreaterThanOrEqual(
+      footerCoverage.scrollportBottom - 2
+    );
+  });
+
   test('VIS-23/P1: höchstens eine Entscheidungsebene liegt sichtbar über der App', async ({
     page,
   }) => {
@@ -570,6 +659,12 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await openPrograms(page);
     expect(await visibleOverlayIds(page)).toEqual(['lib']);
 
+    await page.locator('#lib .progitem.active [data-edit]').click();
+    await expect(page.locator('#lib h1')).toHaveText('Programm bearbeiten');
+    await page.locator('#lib [data-ed-tab="details"]').click();
+    await page
+      .locator('#lib .eddanger > summary', { hasText: 'Fortschritt zurücksetzen' })
+      .click();
     await page.locator('#libreset').click();
     expect(await visibleOverlayIds(page)).toEqual(['modal', 'lib']);
     await expect(page.locator('#modal .mtitle')).toHaveText(
@@ -591,7 +686,12 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
       })
     );
 
-    await page.locator('[data-swap-ex="A_0"]').click();
+    await page.locator('[data-expand-prev="A_0"]').click();
+    await page.locator('[data-exmenu="A_0"]').click();
+    await page
+      .locator('#modal')
+      .getByRole('button', { name: 'Übung ersetzen' })
+      .click();
     await page.locator('#swapname').fill('Beinpresse');
     await page
       .getByRole('button', {
@@ -601,7 +701,11 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
       .click();
     await expect(page.locator('#card-A_0 .exname')).toHaveText('Beinpresse');
     await page.locator('#startw').click();
-    await page.locator('[data-swap-ex="A_0"]').click();
+    await page.locator('[data-exmenu="A_0"]').click();
+    await page
+      .locator('#modal')
+      .getByRole('button', { name: 'Übung ersetzen' })
+      .click();
 
     const actions = page.locator('#modal .mbtn');
     await expect(actions).toHaveCount(3);
@@ -637,15 +741,44 @@ test.describe('3 · Redundanz-Check', () => {
     expect(duplicates).toEqual([]);
   });
 
-  test('RED-01/P1: Kopfzeile enthält nur Programme und Auswertung', async ({
+  test('RED-01/P1: Kopfzeile enthält nur Programme, Auswertung und Einstellungen', async ({
     page,
   }) => {
     await openWithState(page, reportState());
     const buttons = page.locator('#app .topright > button');
-    await expect(buttons).toHaveCount(2);
-    await expect(buttons).toHaveText(['Programme', 'Auswertung']);
+    await expect(buttons).toHaveCount(3);
+    await expect(buttons.nth(0)).toHaveText('Programme');
+    await expect(buttons.nth(1)).toHaveText('Auswertung');
+    await expect(buttons.nth(2)).toHaveAttribute(
+      'aria-label',
+      'Einstellungen'
+    );
     await expect(page.locator('#app .topright #themebtn')).toHaveCount(0);
     await expect(page.locator('#app .topright .appversion')).toHaveCount(0);
+  });
+
+  test('RED-03/P0: Trainingskarten zeigen keine redundante Klasse, Satzanzahl oder Zielzeile', async ({
+    page,
+  }) => {
+    await openWithState(
+      page,
+      reportState((state, program, store) => {
+        store.week = 8;
+        store.day = 'A';
+      })
+    );
+    await page.locator('[data-expand-prev="A_0"]').click();
+    const card = page.locator('#app .ex:has(.presc)').first();
+    await expect(card).toBeVisible();
+    await expect(card.locator('.tag')).toHaveCount(0);
+    await expect(card.locator('.presc')).not.toContainText('Sätze');
+    await expect(card.locator('.presc')).not.toContainText('Ziel');
+    await expect(card.locator('[data-plates]')).toHaveCount(0);
+    await expect(card.locator('[data-exmenu]')).toHaveCount(1);
+    await expect(card.locator('input[id^="wt-"]').first()).toHaveAttribute(
+      'placeholder',
+      /\d/
+    );
   });
 
   test('RED-02/P0: laufendes Training hat genau eine Zeit- und Steuerleiste', async ({
@@ -660,23 +793,37 @@ test.describe('3 · Redundanz-Check', () => {
     );
     await page.locator('#startw').click();
 
-    await expect(page.locator('#bar .workoutbar')).toHaveCount(1);
-    await expect(page.locator('#bar #barWtElapsed')).toHaveCount(1);
-    await expect(page.locator('#bar #barpausew')).toHaveCount(1);
-    await expect(page.locator('#bar #barstopw')).toHaveCount(1);
-    await expect(page.locator('#app #wtElapsed')).toHaveCount(0);
+    const livecard = page.locator('#app .livecard');
+    await expect(livecard).toHaveCount(1);
+    await expect(livecard.locator('#liveWtElapsed')).toHaveCount(1);
+    await expect(livecard.locator('#pausew')).toHaveCount(1);
+    await expect(livecard.locator('#stopw')).toHaveCount(1);
+    await expect(livecard.locator('button')).toHaveText(['Pause', 'Ende']);
+    await expect(page.locator('#bar .restbar')).toHaveCount(0);
     await expect(page.locator('#app .workoutpanel')).toHaveCount(0);
-    await expect(page.locator('#bar .workoutbar button')).toHaveText([
-      'Pause',
-      'Ende',
-    ]);
+    await expect(page.locator('#app .legend')).toHaveCount(0);
   });
 
-  test('RED-06/P1: Erstellen-Hub hat fünf eindeutige Wege und Bibliothek zuerst', async ({
+  test('RED-06/P1: Erstellen-Kacheln und Hub bieten eindeutige Wege ohne Doppelungen', async ({
     page,
   }) => {
     await openWithState(page, reportState());
-    await openCreateHub(page);
+    await openPrograms(page);
+
+    const tiles = page.locator('#lib .createtile');
+    await expect(tiles).toHaveCount(4);
+    await expect(tiles.locator('b')).toHaveText([
+      'KI-Coach',
+      'Import',
+      'Manuell',
+      'ChatGPT & Co.',
+    ]);
+    await expect(page.locator('#lib .tplcard')).toHaveCount(4);
+
+    await page.locator('#manualcreate').click();
+    await expect(page.locator('#lib h1')).toHaveText('Manuell erstellen');
+    await page.locator('#createhubback').click();
+    await expect(page.locator('#lib h1')).toHaveText('Neues Programm');
 
     const choices = page.locator('#lib .createchoice');
     await expect(choices).toHaveCount(5);
@@ -707,7 +854,7 @@ test.describe('3 · Redundanz-Check', () => {
     expect(new Set(programNames).size).toBe(4);
   });
 
-  test('RED-08/P0: Übungskarte zeigt nur drei Hilfsaktionen in einer Zeile und keinen alten Ballast', async ({
+  test('RED-08/P0: Übungskarte zeigt nur zwei Hilfsaktionen plus Menü und keinen alten Ballast', async ({
     page,
   }) => {
     await openWithState(
@@ -718,9 +865,11 @@ test.describe('3 · Redundanz-Check', () => {
       })
     );
 
+    await page.locator('[data-expand-prev="A_0"]').click();
     const actions = page.locator('#card-A_0 .links > a, #card-A_0 .links > button');
-    await expect(actions).toHaveCount(3);
-    await expect(actions).toHaveText(['Video', 'Notiz', 'Übung tauschen']);
+    await expect(actions).toHaveCount(2);
+    await expect(actions).toHaveText(['Video', 'Notiz']);
+    await expect(page.locator('#card-A_0 [data-exmenu]')).toHaveCount(1);
     const actionTops = await actions.evaluateAll((nodes) =>
       nodes.map((node) => Math.round(node.getBoundingClientRect().top))
     );
@@ -912,6 +1061,7 @@ test.describe('4 · Regression & Kernfunktion', () => {
   test('REG-05/P0: zwei Tausche werden nach Trainingsende einzeln und unabhängig entschieden', async ({
     page,
   }) => {
+    test.slow();
     await openWithState(page, compactWorkoutState(2));
     await page.evaluate(() => {
       window.AUTO_REST_DELAY = 0;
@@ -922,7 +1072,12 @@ test.describe('4 · Regression & Kernfunktion', () => {
       ['A_0', 'Beinpresse'],
       ['A_1', 'Kurzhantel-Bankdrücken'],
     ]) {
-      await page.locator(`[data-swap-ex="${exerciseId}"]`).click();
+      await page.locator(`[data-expand-prev="${exerciseId}"]`).click();
+      await page.locator(`[data-exmenu="${exerciseId}"]`).click();
+      await page
+        .locator('#modal')
+        .getByRole('button', { name: 'Übung ersetzen' })
+        .click();
       await page.locator('#swapname').fill(replacement);
       await page
         .getByRole('button', { name: 'Übung tauschen', exact: true })
@@ -931,12 +1086,14 @@ test.describe('4 · Regression & Kernfunktion', () => {
 
     await page.locator('#startw').click();
     await page.locator('#rep-A_0-0').fill('8');
+    await page.locator('#wt-A_0-0').fill('60');
     await expect(page.locator('#bar .restbar .subline')).toHaveText(
       'Satzpause'
     );
     await page.locator('#stopr').click();
 
     await page.locator('#rep-A_1-0').fill('8');
+    await page.locator('#wt-A_1-0').fill('40');
     await expect(page.locator('#bar .restbar .subline')).toHaveText(
       'Satzpause'
     );
@@ -1025,11 +1182,13 @@ test.describe('4 · Regression & Kernfunktion', () => {
     );
 
     await page.locator('#startw').click();
-    await expect(page.locator('#bar')).toContainText('Training läuft');
+    await expect(page.locator('#app .livecard')).toContainText(
+      'Training läuft'
+    );
 
     await page.locator('#rep-A_0-0').fill('8');
     await page.locator('#wt-A_0-0').fill('60');
-    await page.locator('#barstopw').click();
+    await page.locator('#stopw').click();
 
     const modal = page.locator('#modal');
     await expect(modal.locator('.mtitle')).toHaveText('Training beenden?');
@@ -1095,5 +1254,42 @@ test.describe('4 · Regression & Kernfunktion', () => {
     await page.locator('#pdf').click();
     await expect(page.locator('#report.open')).toBeVisible();
     expect(errors).toEqual([]);
+  });
+
+  test('UPD-01/P0: Bestandsnutzer sehen den Design-Update-Hinweis genau einmal', async ({
+    page,
+  }) => {
+    await openWithState(page, reportState(), { updateNotice: true });
+
+    const modal = page.locator('#modal');
+    await expect(modal).toBeVisible();
+    await expect(modal.locator('.mtitle')).toContainText('neues Design');
+    await expect(modal.locator('.updatelist li')).toHaveCount(4);
+    await expect(
+      modal.getByRole('button', { name: 'Alle Neuerungen ansehen' })
+    ).toBeVisible();
+
+    await modal.getByRole('button', { name: 'Alles klar' }).click();
+    await expect(modal).toBeHidden();
+    expect(
+      await page.evaluate(
+        (key) => localStorage.getItem(key),
+        REDESIGN_NOTICE_KEY
+      )
+    ).toBe('1');
+  });
+
+  test('UPD-02/P0: Neuinstallation startet ohne Design-Update-Hinweis', async ({
+    page,
+  }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('#app .ptitle')).toBeVisible();
+    await expect(page.locator('#modal')).toBeHidden();
+    expect(
+      await page.evaluate(
+        (key) => localStorage.getItem(key),
+        REDESIGN_NOTICE_KEY
+      )
+    ).toBe('1');
   });
 });

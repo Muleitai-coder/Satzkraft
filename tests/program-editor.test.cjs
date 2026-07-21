@@ -62,6 +62,10 @@ test('keeps editor drafts deeply separated from the original program', () => {
 
 test('starts in the familiar training view and separates novice from expert settings', () => {
   assert.match(html, /editorView="training"/);
+  assert.match(
+    html,
+    /function openProgramDraft[\s\S]*?editorExerciseIndex=null;[\s\S]*?renderProgramEditor\(\);/
+  );
   assert.match(html, />Training<\/button>.*>Wochen<\/button>.*>Details<\/button>/s);
   assert.match(html, /Anstrengung/);
   assert.match(html, /Satzzahlen der Trainingsgruppen/);
@@ -71,10 +75,16 @@ test('starts in the familiar training view and separates novice from expert sett
   assert.match(html, /data-ed-section=/);
 });
 
+test('covers the iPhone safe area below the editor actions', () => {
+  assert.match(html, /\.edsticky\{[^}]*padding:12px 18px calc\(12px \+ env\(safe-area-inset-bottom\)\)[^}]*background:var\(--barbg\)/);
+  assert.match(html, /--barbg:rgba\(8,9,11,\.92\)/);
+  assert.match(html, /--barbg:rgba\(239,236,229,\.92\)/);
+  assert.match(html, /\.edsticky\{margin-bottom:-14px\}/);
+});
+
 test('uses one clear rename path and compact program actions', () => {
   assert.doesNotMatch(html, /data-ren=/);
   assert.doesNotMatch(html, /libRenameId/);
-  assert.match(html, /Name und Löschen findest du gesammelt unter „Bearbeiten“/);
   assert.match(html, /data-edit=/);
   assert.match(html, /progtextaction/);
   assert.match(html, /Weitere Programme \('/);
@@ -104,12 +114,14 @@ test('warns about unsaved changes and locks the page behind the editor', () => {
 
 test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /\.programothersbody \.progitem\{border:0/);
-  assert.match(html, /\.progitem\.active\{[^}]*background:linear-gradient/);
+  assert.match(html, /\.progitem\.active\{[^}]*background:var\(--panel\)/);
   assert.match(html, /\.progactions\{display:flex/);
   assert.match(html, /\.progtextaction\{[^}]*background:transparent/);
   assert.match(html, /html\[data-theme="light"\] \.progitem\.active/);
-  assert.match(html, /id="createhubbtn"/);
-  assert.match(html, /Neues Programm erstellen/);
+  assert.match(html, /id="coachbtn"/);
+  assert.match(html, /id="importbtn"/);
+  assert.match(html, /id="manualcreate"/);
+  assert.match(html, /id="externalaibtn"/);
   assert.match(html, /Manuell erstellen/);
   assert.match(html, /Satzkraft KI-Coach/);
   assert.match(html, /Mit ChatGPT &amp; Co\. erstellen/);
@@ -126,6 +138,8 @@ test('uses a shared preview and a dedicated unsaved draft mode', () => {
   assert.match(html, /id="edsavenew"/);
   assert.match(html, /id="edsavenewactive"/);
   assert.match(html, /Plan prüfen &amp; speichern/);
+  assert.match(html, /class="librarypreviewexercise"/);
+  assert.match(html, /class="tag '\+color/);
 });
 
 test('applies the live preview order and requires approval before swapping occupied days', () => {

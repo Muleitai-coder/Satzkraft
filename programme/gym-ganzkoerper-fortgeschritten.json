@@ -2,6 +2,8 @@
   "format": "trainings-block",
   "version": 2,
   "name": "Gym Ganzkörper Fortgeschritten",
+  "art": "Fortgeschritten",
+  "bereich": "Ganzkörper",
   "description": "Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende. 3 Tage pro Woche, etwa 65 bis 80 Minuten.",
   "settings": {
     "progressionSystem": "double_progression",

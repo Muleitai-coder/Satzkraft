@@ -30,6 +30,10 @@ const context = {
   setActive(id) { context.S.active = id; }
 };
 vm.createContext(context);
+const bereichStart = html.indexOf("var BEREICHE=");
+const bereichEnd = html.indexOf("var DEFAULT_PROGRAM=", bereichStart);
+assert.ok(bereichStart > 0 && bereichEnd > bereichStart, "bereich definitions must exist");
+vm.runInContext(html.slice(bereichStart, bereichEnd), context);
 vm.runInContext(html.slice(start, end), context);
 
 const importStart = html.indexOf("var pendingProgramImport=");
