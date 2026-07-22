@@ -20,7 +20,6 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - „Übungen neu ordnen“ funktioniert jetzt wie in etablierten Trainingsapps: Jede Zeile hat rechts einen Ziehgriff, die Übung wird gehalten und direkt an die neue Position gezogen; die übrigen Zeilen rücken live mit. Die Pfeiltasten verschieben weiterhin je einen Platz.
 - Die Aktionsleiste unter „Programm prüfen“ ist eine feste Leiste mit genau zwei Knöpfen: „Speichern & aktivieren“ und „Bearbeiten“. „Nur speichern“ und „Abbrechen“ entfallen; Zurück-Pfeil und X übernehmen das Verwerfen.
 - „Programm prüfen“ ist im Stil der Startseite aufgebaut: Kopf mit Programmname und Chips, Trainingstage als aufklappbare Karten mit Übungszeilen samt Kategorie, Sätzen und Pausen sowie eine aufklappbare Wochenstruktur. Die bisherigen Statistik-Kacheln und Doppel-Listen entfallen.
-
 - Verpasste Einheiten blockieren die nächste Woche nicht mehr: Leere Einheiten der direkten Folgewoche lassen sich jederzeit starten – wer Mittwoch und Freitag verpasst hat, kann am neuen Montag einfach mit dem Montags-Training weitermachen. Verpasste Einheiten bleiben markiert und über die Vorwochen-Regel nachholbar.
 
 ### Behoben
