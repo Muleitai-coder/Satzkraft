@@ -400,7 +400,7 @@ test('uses one SVG icon system, larger training text and subtle completion feedb
   assert.doesNotMatch(html, /workoutPanelHtml/);
 });
 
-test('enforces the current-week, previous-week and latest-repeat start matrix', () => {
+test('enforces the current-week, neighbour-week and latest-repeat start matrix', () => {
   const start = html.indexOf('function unitHasSetValues');
   const end = html.indexOf('var REC_COLOR', start);
   const context = {
@@ -420,6 +420,7 @@ test('enforces the current-week, previous-week and latest-repeat start matrix', 
 
   assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: true, mode: 'start' });
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'start' });
+  assert.deepEqual({ ...context.workoutAccess(4, 'A') }, { allowed: true, mode: 'start' });
   assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: false, mode: 'locked' });
 
   context.unitEmpty = () => false;

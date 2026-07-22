@@ -1447,6 +1447,7 @@ function workoutAccess(w,dk){
  if(complete)return isLatestCompletedUnit(w,dk)?{allowed:true,mode:"repeat"}:{allowed:false,mode:"complete"};
  if(w===current)return{allowed:true,mode:interrupted?"continue":"start"};
  if(w===current-1&&unitEmpty(w,dk))return{allowed:true,mode:"start"};
+ if(w===current+1&&w<=PROG().weeks.length&&unitEmpty(w,dk))return{allowed:true,mode:"start"};
  if(interrupted&&(w===current||w===current-1))return{allowed:true,mode:"continue"};
  return{allowed:false,mode:"locked"};
 }

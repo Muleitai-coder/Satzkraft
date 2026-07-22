@@ -833,7 +833,7 @@ Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, blei
 1. **Unverlierbarkeit:** Keine Planänderung löscht trainierte Daten; entfernte/ersetzte Übungen *enden* (`untilWeek`), ihre Historie bleibt.
 2. **Korrigieren ist nicht Wiederholen:** Satzwerte abgeschlossener Einheiten sind jederzeit still korrigierbar; Struktur und Trainingszeit sind eingefroren.
 3. **Abgeschlossen bleibt abgeschlossen:** Vollständigkeit wird beim Beenden festgeschrieben (`history[].complete`).
-4. **Trainiert wird vorne:** Startbar sind nur die aktuelle Woche und leere Einheiten der Vorwoche.
+4. **Trainiert wird vorne:** Startbar sind die aktuelle Woche, leere Einheiten der Vorwoche und leere Einheiten der direkten Folgewoche (Nutzerentscheidung 21.07.2026: Verpasste Einheiten dürfen liegen bleiben, ohne die nächste Woche zu blockieren; sie bleiben über die Vorwochen-Regel nachholbar).
 5. **Wiederholen nur zuletzt:** Nur die zuletzt abgeschlossene Einheit ist wiederholbar; die neue ersetzt die alte.
 6. **Eine Zelle, eine Wahrheit:** Je Woche×Tag genau eine Einheit.
 7. **Planänderungen gelten ab der nächsten offenen Einheit je Tag** – nie rückwirkend.
