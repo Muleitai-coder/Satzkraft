@@ -4,6 +4,15 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [0.30.0] – 2026-07-22
+
+### Geändert
+
+- Die Auswertung ist neu aufgebaut: „Einheiten“, „Trainingszeit“ und „Bewegtes Gewicht“ stehen untereinander in voller Breite. Die Fenster „Fortschritt im Trainingsblock“ und „Letzte Einheiten“ entfallen; der Blockfortschritt steht kompakt in der Einheiten-Kachel.
+- „Fortschritt je Übung“: Gleiche Übungen an mehreren Wochentagen werden zu einer gemeinsamen Karte zusammengefasst. Jede Karte zeigt immer zwölf Balkenplätze – ein Balken je Ausführung (bei mehr als zwölf die letzten zwölf), skaliert zwischen schlechtester und bester Ausführung, damit Auf und Ab im Verlauf sichtbar werden; noch offene Plätze erscheinen als graue Stummel. Getauschte Übungen und Deload-Wochen fließen weiterhin nicht ein.
+- Das vollständige Trainingsprotokoll ist eine eigene Seite statt eines Aufklapp-Bereichs: mit Zurück-Pfeil, eigenem „Drucken / PDF“-Knopf und passendem PDF-Dateinamen („… – Trainingsprotokoll“). Die Auswertung selbst druckt immer ohne Protokoll.
+- Scrollbalken sind in der gesamten App ausgeblendet; Scrollen funktioniert unverändert.
+
 ## [0.29.0] – 2026-07-22
 
 ### Geändert
