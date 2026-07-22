@@ -85,9 +85,9 @@ test('shows the backup reminder after fourteen days or three new trainings', () 
   storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 3 }));
   assert.equal(context.backupReminderDue(now), false, 'nach einer Sicherung zählt der Zähler von vorn');
 
-  storage.set('backup-meta', JSON.stringify({ lastAt: now - 15 * 86400000, historyCount: 0 }));
-  assert.match(context.backupReminderHtml(), /Backup herunterladen/);
-  assert.match(context.backupReminderHtml(), /Später/);
+  assert.match(html, /function maybeShowBackupReminder/);
+  assert.match(html, /Zeit für ein Backup/);
+  assert.match(html, /Backup herunterladen/);
   assert.match(html, /data-settings-backup=/);
   assert.match(html, /Datensicherung/);
 });
