@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.28.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.29.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.28.0
+**Aktueller Produktstand:** Satzkraft v0.29.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 **Aktuelle Prozessentscheidung (18.07.2026):** Für Prüfungen gilt ausschließlich die risikobasierte Strategie aus `docs/TESTING.md` und `AGENTS.md`. Historische Pakettexte, die vollständige Suites oder Browsermatrizen nach jeder Änderung verlangen, dokumentieren nur den damaligen Abnahmestand und lösen keine automatischen Großtests mehr aus.
