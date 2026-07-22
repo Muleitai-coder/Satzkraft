@@ -2114,9 +2114,7 @@ function startWorkout(){
  }
  var skipped=skippedBeforeSelection();
  if(!skipped.length){beginWorkout();return;}
- var shown=skipped.slice(0,4).map(function(item){var day=item.day;return"• Woche "+item.week+" · "+esc(day.wd||day.key)+(day.title?" · "+esc(day.title):"");}).join("<br>");
- if(skipped.length>4)shown+="<br>• … und "+(skipped.length-4)+" weitere";
- showModal("Offene Trainings überspringen?","Vor diesem Training "+(skipped.length===1?"ist noch ein früherer Termin":"sind noch "+skipped.length+" frühere Termine")+" offen:<br><br>"+shown+"<br><br>Möchtest du das ausgewählte Training trotzdem starten?",[
+ showModal("Offene Trainings überspringen?",(skipped.length===1?"Ein früheres Training ist noch offen":skipped.length+" frühere Trainings sind noch offen")+" – nachholen geht jederzeit.",[
   {label:"Trotzdem starten",cls:"danger",action:beginWorkout},
   {label:"Zur Auswahl",action:null}
  ]);
