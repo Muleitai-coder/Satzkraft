@@ -550,8 +550,6 @@ body.rest-lock{--rest-mode:1}
 .edprescgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .edinherited{display:flex;align-items:flex-start;gap:8px;background:var(--coreg);border:1px solid var(--corel);border-radius:10px;padding:9px 10px;color:var(--ink2);font-size:11px;line-height:1.45}
 .edcategoryhelp{background:var(--coreg);border:1px solid var(--corel);border-radius:11px;padding:10px 11px;color:var(--ink2);font-size:11px;line-height:1.5;margin:0 0 10px}
-.eddanger{border-color:var(--dangerl);background:var(--dangerg)}
-.eddanger>summary{color:var(--danger)}
 .programothers{margin:12px 0 5px;border:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);border-radius:0}
 .programothers>summary{list-style:none;cursor:pointer;padding:13px 4px;color:var(--ink2);font-size:12px;font-weight:700;background:transparent}
 .programothers>summary::-webkit-details-marker{display:none}
@@ -678,6 +676,7 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .exnamelink{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--faint);text-underline-offset:4px}
 .exnamelink:active,.exnamelink:hover{color:var(--acc)}
 .kebab{width:34px;height:34px;display:inline-grid;place-items:center;border:0;background:none;color:var(--muted);border-radius:9px;cursor:pointer;padding:0}
+.progkebab{margin-left:auto;flex:none}
 .kebab:active,.kebab:hover{background:var(--up);color:var(--ink)}
 .kebab .ico{width:20px;height:20px}
 .mbtn.menu{display:flex;align-items:center;gap:10px;text-align:left}
@@ -3222,8 +3221,6 @@ function renderEditorDetails(d,catKeys){
   var edUpdated=typeof srcProgram.updatedAt==="number"&&isFinite(srcProgram.updatedAt)?new Date(srcProgram.updatedAt).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}):null;
   if(edCreated||edUpdated)h+='<div class="libnote" style="margin:10px 0 0">'+(edCreated?'Erstellt am '+edCreated:'')+(edCreated&&edUpdated?' · ':'')+(edUpdated?'Zuletzt geändert am '+edUpdated:'')+'</div>';
  }
- if(editorSourceId===S.active)h+='<details class="edadvanced eddanger"><summary>Fortschritt zurücksetzen</summary><div class="edbody"><div class="libnote" style="margin:0 0 10px">Löscht eingetragene Sätze &amp; Verlauf dieses Programms. Das Programm selbst bleibt erhalten.</div><button class="smallbtn del" id="libreset"'+(programWriteLocked()?' disabled':'')+'>Fortschritt zurücksetzen</button></div></details>';
- if(editorSourceId&&editorSourceId!=="default")h+='<details class="edadvanced eddanger"><summary>Programm löschen</summary><div class="edbody"><div class="libnote" style="margin:0 0 10px">Löscht dieses Programm und seinen gesamten Trainingsfortschritt. Vorher erscheint noch eine Sicherheitsabfrage.</div><button class="smallbtn del" id="eddeleteprogram">Programm endgültig löschen</button></div></details>';
  h+='<div class="libnote">Beim Speichern prüft Satzkraft den gesamten Plan. Einstellungen aus dem KI-Import sowie Warm-up und Cool-down bleiben erhalten.</div>';
  return h;
 }
@@ -3283,10 +3280,6 @@ function confirmEditorDeleteDay(index){
  var day=editorDraft.days[index];if(!day||editorDraft.days.length<=1)return;
  if(editorSourceId&&S.programs[editorSourceId]){var sourceProgram=S.programs[editorSourceId],store=S.store[editorSourceId]||newStore(sourceProgram),completed=false;for(var completedWeek=1;completedWeek<=sourceProgram.weeks.length&&!completed;completedWeek++)completed=programUnitComplete(sourceProgram,store,completedWeek,day.key);if(completed){showModal("Trainingstag bleibt erhalten","Dieser Trainingstag hat bereits mindestens eine abgeschlossene Einheit. Damit dein Protokoll vollständig und verständlich bleibt, kann der Tag nicht gelöscht werden.",[{label:"OK",cls:"primary",action:null}]);return;}}
  showModal("Trainingstag wirklich löschen?","<b>"+esc(day.weekday+" · "+(day.title||day.key))+"</b> und seine "+day.exercises.length+" Übungen werden aus dem Programm entfernt. Du kannst den Schritt anschließend rückgängig machen.",[{label:"Trainingstag löschen",cls:"danger",action:function(){editorPushUndo("Trainingstag gelöscht");editorDraft.days.splice(index,1);editorDayIndex=Math.max(0,index-1);editorExerciseIndex=null;renderProgramEditor("days",editorDayIndex,null);}},{label:"Abbrechen",action:null}]);
-}
-function confirmEditorDeleteProgram(){
- var id=editorSourceId,p=S.programs[id];if(!p||id==="default")return;
- showModal("Programm wirklich löschen?","<b>"+esc(p.name)+"</b> und der gesamte zugehörige Trainingsfortschritt werden dauerhaft gelöscht.",[{label:"Programm löschen",cls:"danger",action:function(){if(!deleteProgram(id))return;resetProgramEditorState();showModal("Programm gelöscht","„"+esc(p.name)+"“ wurde entfernt. Du bist zurück bei deinen Programmen.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
 }
 function clearEditorDropTargets(){var root=document.getElementById("lib");if(!root)return;root.querySelectorAll(".eddaytarget,.live-reordered").forEach(function(el){el.classList.remove("eddaytarget","live-reordered");});}
 function clearEditorDragTargets(){var root=document.getElementById("lib");if(!root)return;clearEditorDropTargets();root.querySelectorAll(".dragging-source").forEach(function(el){el.classList.remove("dragging-source");});root.querySelectorAll("[data-ed-drag-original]").forEach(function(el){delete el.dataset.edDragOriginal;});var box=root.querySelector(".editorbox");if(box)box.classList.remove("dragging");}
@@ -3386,11 +3379,26 @@ function programItemHtml(id,p){
  if(archived)return'<div class="progitem archived"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+(p.art?' <span class="pnsub2">'+esc(p.art)+'</span>':'')+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-report-program="'+attr(id)+'">Auswertung ansehen</button><button class="progtextaction" data-unarchive="'+attr(id)+'"'+lockedAttr+'>Aus dem Archiv holen</button></div></div>';
  var artTeil=p.art?' <span class="pnsub2">'+esc(p.art)+'</span>':'';
  var pad2=function(n){return ('0'+n).slice(-2);};
+ var kebab=(active||id!=="default")?'<button type="button" class="kebab progkebab" data-progmenu="'+attr(id)+'" aria-label="Weitere Aktionen für '+attr(p.name)+'">'+icon("more")+'</button>':'';
  if(active){
   var sub=p.bereich?'<div class="progsub">'+esc(p.bereich)+'</div>':'';
-  return '<div class="progitem active"><div class="progtopline"><span class="aktivpill">● Aktiv</span><span class="progweek">Woche '+pad2(S.week)+' / '+pad2(p.weeks.length)+'</span></div><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+sub+'<div class="chiprow" style="margin-top:11px"><span class="chip">'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+'</span><span class="chip">'+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span></div>'+(origin?'<div class="pm" style="margin-top:8px">'+origin+'</div>':'')+'</div>'+badge+'</div><button class="smallbtn go progresume" id="libresume">'+icon("play")+' Fortsetzen</button><div class="progactions"><button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button><button type="button" class="iconbtn sharebtn" id="proshare" aria-label="Programm teilen" title="Teilen">'+icon("share")+'</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
+  return '<div class="progitem active"><div class="progtopline"><span class="aktivpill">● Aktiv</span><span class="progweek">Woche '+pad2(S.week)+' / '+pad2(p.weeks.length)+'</span></div><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+sub+'<div class="chiprow" style="margin-top:11px"><span class="chip">'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+'</span><span class="chip">'+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span></div>'+(origin?'<div class="pm" style="margin-top:8px">'+origin+'</div>':'')+'</div>'+badge+kebab+'</div><button class="smallbtn go progresume" id="libresume">'+icon("play")+' Fortsetzen</button><div class="progactions"><button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button><button type="button" class="iconbtn sharebtn" id="proshare" aria-label="Programm teilen" title="Teilen">'+icon("share")+'</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
  }
- return '<div class="progitem"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-sel="'+attr(id)+'" aria-label="Programm '+attr(p.name)+' aktivieren"'+lockedAttr+'>Aktivieren</button><button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
+ return '<div class="progitem"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artTeil+'</div>'+meta+'</div>'+badge+kebab+'</div><div class="progactions"><button class="progtextaction" data-sel="'+attr(id)+'" aria-label="Programm '+attr(p.name)+' aktivieren"'+lockedAttr+'>Aktivieren</button><button class="progtextaction" data-edit="'+attr(id)+'"'+lockedAttr+'>Bearbeiten</button>'+(completed?'<button class="progtextaction" data-followup="'+attr(id)+'"'+lockedAttr+'>Folgeblock starten</button>':'')+'<button class="progtextaction progarchiveaction" data-archive="'+attr(id)+'"'+lockedAttr+'>Archivieren</button></div></div>';
+}
+function showProgramMenu(id){
+ var p=S.programs[id];if(!p)return;
+ var btns=[];
+ if(id===S.active)btns.push({label:icon("undo")+' Fortschritt zurücksetzen',cls:"menu danger",action:function(){confirmReset();}});
+ if(id!=="default")btns.push({label:icon("close")+' Programm löschen',cls:"menu danger",action:function(){confirmDeleteProgram(id);}});
+ btns.push({label:"Abbrechen",action:null});
+ if(btns.length===1)return;
+ showModal(esc(p.name),"",btns);
+}
+function confirmDeleteProgram(id){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
+ var p=S.programs[id];if(!p||id==="default")return;
+ showModal("Programm wirklich löschen?","<b>"+esc(p.name)+"</b> und der gesamte zugehörige Trainingsfortschritt werden dauerhaft gelöscht.",[{label:"Programm löschen",cls:"danger",action:function(){if(!deleteProgram(id))return;showModal("Programm gelöscht","„"+esc(p.name)+"“ wurde entfernt.",[{label:"OK",cls:"primary",action:null}]);}},{label:"Abbrechen",action:null}]);
 }
 function showShareModal(){
  showModal("Programm teilen",'„'+esc(PROG().name)+'“ wird ohne deinen Fortschritt geteilt.',[
@@ -3605,10 +3613,10 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.dataset.edWucdMove){var mwd=+b.dataset.edDay,mwk=b.dataset.edWucdKind,mwi=+b.dataset.edWucdIndex,mto=mwi+(+b.dataset.edWucdMove),mwl=editorDraft.days[mwd][mwk];if(mwl&&mto>=0&&mto<mwl.length){editorPushUndo("Timer-Eintrag verschoben");var mit=mwl.splice(mwi,1)[0];mwl.splice(mto,0,mit);renderProgramEditor("days",mwd,editorExerciseIndex);}return;}
  if(b.dataset.edDelex){var ddi=+b.dataset.edDay,dei=+b.dataset.edEx;editorPushUndo("Übung gelöscht");editorDraft.days[ddi].exercises.splice(dei,1);editorExerciseIndex=null;renderProgramEditor("days",ddi,null);return;}
  if(b.dataset.edMoveex){var mdi=+b.dataset.edDay,mei=+b.dataset.edEx,move=+b.dataset.edMoveex;editorPushUndo("Übung verschoben");editorMoveExercise(mdi,mei,move);renderProgramEditor("days",mdi,mei+move);return;}
- if(b.id==="eddeleteprogram"){confirmEditorDeleteProgram();return;}
  if(b.dataset.sel){if(setActive(b.dataset.sel))closeLib();return;}
  if(b.id==="createhubback"){syncManualCreatorForm();renderLib();return;}
  if(b.id==="subclose"){coachAbort();syncManualCreatorForm();pendingProgramImport=null;importIssue=null;renderLib();return;}
+ if(b.dataset.progmenu){showProgramMenu(b.dataset.progmenu);return;}
  if(b.dataset.libraryEdit!=null){editProgramLibraryItem(+b.dataset.libraryEdit);return;}
  if(b.dataset.libraryShare!=null){shareProgramLibraryItem(+b.dataset.libraryShare);return;}
  if(b.dataset.libraryIndex!=null){loadProgramLibraryItem(+b.dataset.libraryIndex);return;}
@@ -3636,7 +3644,6 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="coachadj"){coachAdjust=!coachAdjust;renderCoach();return;}
  if(b.id==="adjsend"){coachSendAdj();return;}
  if(b.id==="coachrestart"){clearCoachPreferences();coachReset();coachSessionActive=true;renderCoach();return;}
- if(b.id==="libreset"){confirmReset();return;}
  if(b.id==="libbackup"){var backupOk=downloadFullBackup("satzkraft-backup");if(backupOk)renderLib();showModal(backupOk?"Backup gespeichert":"Backup fehlgeschlagen",backupOk?"Die vollständige Sicherungsdatei wurde heruntergeladen. Bewahre sie an einem sicheren Ort auf.":"Die Sicherungsdatei konnte nicht heruntergeladen werden.",[{label:"OK",cls:backupOk?"primary":"",action:null}]);return;}
  if(b.id==="libload"){var ta=document.getElementById("libpaste");beginProgramImport(ta?ta.value:importInputText,"json","");return;}
  if(b.id==="proshare"){showShareModal();return;}

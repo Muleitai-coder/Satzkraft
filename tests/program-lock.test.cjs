@@ -52,7 +52,9 @@ test('renders a clear read-only notice and disables all structural library actio
   assert.match(html, /data-library-index="'\+index\+'"'\+lockedAttr/);
   assert.match(html, /data-library-edit="'\+index\+'"'\+lockedAttr/);
   assert.match(html, /id="backupfile"[^>]*\+lockedAttr/);
-  assert.match(html, /id="libreset"'\+\(programWriteLocked\(\)\?' disabled':''\)/);
+  assert.match(html, /function confirmReset\(\)\{\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function confirmDeleteProgram\(id\)\{\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /data-progmenu=/);
 });
 
 test('guards stale or indirect mutation paths in addition to disabled controls', () => {

@@ -151,36 +151,33 @@ test('keeps local program timestamps out of the version-2 exchange format', () =
   assert.equal(exported.updatedAt, undefined);
 });
 
-test('deleting from the editor keeps the program list open and clears editor state', () => {
-  const confirmSource = sourceBetween('function confirmEditorDeleteProgram', 'function clearEditorDropTargets');
-  assert.doesNotMatch(confirmSource, /\bcloseLib\s*\(\s*true\s*\)/);
+test('deleting from the program card keeps the program list open', () => {
+  const confirmSource = sourceBetween('function confirmDeleteProgram', 'function showShareModal');
+  assert.doesNotMatch(confirmSource, /\bcloseLib\s*\(/);
 
   let overlayOpen = true;
-  let editorReset = 0;
   let listRendered = 0;
   const deleted = [];
   const modals = [];
   const context = {
-    editorSourceId: 'plan',
-    S: { programs: { plan: { name: 'Mein Plan' } } },
+    S: { programs: { plan: { name: 'Mein Plan' } }, active: 'plan' },
     esc: value => String(value == null ? '' : value),
+    programWriteLocked: () => false,
+    showProgramWriteLocked() {},
     closeLib() { overlayOpen = false; },
-    openLib() { overlayOpen = true; listRendered++; },
-    resetProgramEditorState() { editorReset++; },
-    renderLib() { listRendered++; },
     deleteProgram(id) { deleted.push(id); listRendered++; return true; },
     showModal(title, message, actions) { modals.push({ title, message, actions }); }
   };
   vm.createContext(context);
   vm.runInContext(confirmSource, context);
 
-  context.confirmEditorDeleteProgram();
+  context.confirmDeleteProgram('plan');
   const confirmation = modals[0];
   assert.equal(confirmation.title, 'Programm wirklich löschen?');
   confirmation.actions[0].action();
 
   assert.equal(overlayOpen, true, 'Programme-Overlay darf beim Löschen nicht geschlossen werden');
   assert.deepEqual(deleted, ['plan']);
-  assert.equal(editorReset, 1, 'Gelöschter Editorentwurf muss verworfen werden');
   assert.ok(listRendered >= 1, 'Programmliste muss nach dem Löschen sichtbar neu gerendert werden');
+  assert.equal(modals[1].title, 'Programm gelöscht');
 });

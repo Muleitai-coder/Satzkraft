@@ -5,6 +5,7 @@ const { test, expect } = require('@playwright/test');
 const APP_STATE_KEY = 'cali-plan-v3';
 const THEME_KEY = 'training-theme-v1';
 const REDESIGN_NOTICE_KEY = 'satzkraft-design-update-v1';
+const BACKUP_META_KEY = 'satzkraft-backup-meta-v1';
 const REPORT_BACKUP = JSON.parse(
   fs.readFileSync(
     path.resolve(__dirname, '../../TESTBACKUP-AUSWERTUNG.json'),
@@ -53,19 +54,26 @@ function compactWorkoutState(exerciseCount = 1) {
 async function openWithState(page, state, options = {}) {
   const theme = options.theme || 'dark';
   await page.addInitScript(
-    ({ appStateKey, themeKey, noticeKey, seededState, seededTheme, showUpdateNotice }) => {
+    ({ appStateKey, themeKey, noticeKey, backupKey, seededState, seededTheme, showUpdateNotice, showBackupReminder }) => {
       localStorage.clear();
       localStorage.setItem(themeKey, seededTheme);
       if (!showUpdateNotice) localStorage.setItem(noticeKey, '1');
+      if (!showBackupReminder)
+        localStorage.setItem(
+          backupKey,
+          JSON.stringify({ snoozeUntil: Date.now() + 365 * 86400000 })
+        );
       localStorage.setItem(appStateKey, JSON.stringify(seededState));
     },
     {
       appStateKey: APP_STATE_KEY,
       themeKey: THEME_KEY,
       noticeKey: REDESIGN_NOTICE_KEY,
+      backupKey: BACKUP_META_KEY,
       seededState: state,
       seededTheme: theme,
       showUpdateNotice: options.updateNotice === true,
+      showBackupReminder: options.backupReminder === true,
     }
   );
   await page.goto('/index.html');
@@ -630,13 +638,10 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     await openPrograms(page);
     expect(await visibleOverlayIds(page)).toEqual(['lib']);
 
-    await page.locator('#lib .progitem.active [data-edit]').click();
-    await expect(page.locator('#lib h1')).toHaveText('Programm bearbeiten');
-    await page.locator('#lib [data-ed-tab="details"]').click();
+    await page.locator('#lib .progitem.active [data-progmenu]').click();
     await page
-      .locator('#lib .eddanger > summary', { hasText: 'Fortschritt zurücksetzen' })
+      .locator('#modal .mbtn', { hasText: 'Fortschritt zurücksetzen' })
       .click();
-    await page.locator('#libreset').click();
     expect(await visibleOverlayIds(page)).toEqual(['modal', 'lib']);
     await expect(page.locator('#modal .mtitle')).toHaveText(
       'Fortschritt zurücksetzen?'
