@@ -44,6 +44,16 @@ function loadReportContext() {
     },
     focus() {}
   };
+  const protocol = {
+    innerHTML: '',
+    classList: {
+      values: new Set(),
+      add(value) { this.values.add(value); },
+      remove(value) { this.values.delete(value); },
+      contains(value) { return this.values.has(value); }
+    },
+    focus() {}
+  };
   const close = { focus() {} };
   const activeProgram = weightedProgram('Aktivblock', 'Aktive Übung');
   const archivedProgram = weightedProgram('Archivblock', 'Archiv-Kniebeuge', { archived: true });
@@ -76,6 +86,7 @@ function loadReportContext() {
       contains: () => true,
       getElementById(id) {
         if (id === 'report') return report;
+        if (id === 'protocol') return protocol;
         if (id === 'repclose') return close;
         return null;
       }
@@ -90,17 +101,22 @@ function loadReportContext() {
   context.PROG = () => context.S.programs[context.S.active];
   vm.createContext(context);
   vm.runInContext(html.slice(reportStart, reportEnd), context);
-  return { context, report };
+  return { context, report, protocol };
 }
 
 test('buildReport resolves an archived program and its own store instead of active aliases', () => {
-  const { context, report } = loadReportContext();
+  const { context, report, protocol } = loadReportContext();
   context.buildReport('archive');
 
   assert.match(report.innerHTML, /Archivblock/);
   assert.match(report.innerHTML, /Archiv-Kniebeuge/);
-  assert.match(report.innerHTML, /Datum-1111/);
+  assert.match(report.innerHTML, /id="repprotocol"/);
   assert.doesNotMatch(report.innerHTML, /Aktivblock|Aktive Übung|999/);
+
+  context.buildProtocol('archive');
+  assert.match(protocol.innerHTML, /Trainingsprotokoll/);
+  assert.match(protocol.innerHTML, /Datum-1111/);
+  assert.doesNotMatch(protocol.innerHTML, /Aktivblock|999/);
 });
 
 test('openReport forwards the requested program id through the read-only report path', () => {
