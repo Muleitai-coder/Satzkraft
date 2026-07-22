@@ -286,6 +286,7 @@
           "name": "Ausfallschritte (KH)",
           "en": "Dumbbell Lunge",
           "category": "assistenz",
+          "cue": "Mach einen großen Schritt nach vorn und senke das hintere Knie kontrolliert Richtung Boden, bevor du dich zurückdrückst.",
           "weighted": true,
           "increment": 2,
           "startWeight": 0,
@@ -307,6 +308,7 @@
           "name": "Plank",
           "en": "Plank",
           "category": "core",
+          "cue": "Bilde vom Kopf bis zu den Fersen eine feste Linie und spann Bauch und Gesäß aktiv an.",
           "unit": "seconds",
           "timerMode": "target",
           "reps": [
@@ -524,6 +526,7 @@
           "name": "Hollow Body Hold",
           "en": "Hollow Body Hold",
           "category": "core",
+          "cue": "Drück den unteren Rücken in den Boden und halte Schultern und Beine knapp über dem Boden.",
           "unit": "seconds",
           "timerMode": "target",
           "reps": [

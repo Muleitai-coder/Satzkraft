@@ -1,4 +1,4 @@
-var CACHE = "satzkraft-v0.30.0";
+var CACHE = "satzkraft-v0.31.0";
 var ASSETS = ["./", "./index.html", "./js/progression.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./uebungen.json", "./fonts/hanken-grotesk-latin.woff2", "./fonts/jetbrains-mono-latin.woff2", "./programme/gym-ganzkoerper-beginner.json", "./programme/gym-ganzkoerper-fortgeschritten.json", "./programme/calisthenics-einstieg.json", "./programme/hybrid-gym-calisthenics.json"];
 
 self.addEventListener("install", function (e) {

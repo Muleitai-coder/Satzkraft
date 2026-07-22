@@ -695,7 +695,7 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .topright .iconbtn{display:inline-grid;place-items:center;padding:0;width:32px;height:32px;min-height:0}
 .topright .iconbtn .ico{width:15px;height:15px;display:block}
 .rstand{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
-.pnsub2{color:var(--muted);font-weight:600}
+.pnsub2{display:block;color:var(--muted);font-weight:600}
 .libeyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
 .ohdrmain{flex:1;min-width:0}
 .ohdrmain h1{font-size:20px;margin:0}
@@ -930,7 +930,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.30.0";
+var APP_VERSION="0.31.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=4;
 var THEME_KEY="training-theme-v1";
@@ -1711,7 +1711,7 @@ function renderView(){
   h+='<div class="hdr"><div class="topright"><span class="brand">Satzkraft</span><button class="linkbtn" id="libbtn">Programme</button><button class="linkbtn" id="pdf">Auswertung</button><button class="iconbtn" id="settingsbtn" aria-label="Einstellungen" title="Einstellungen">'+icon("gear")+'</button></div><div class="heroeyebrow">Workout bearbeiten</div><h1 class="ptitle">Woche '+wk.n+' <span class="pnsub">/ '+P.weeks.length+'</span></h1><div class="chiprow"><span class="chip">'+esc(day.wd||day.key)+(day.title?' · '+esc(day.title):'')+'</span></div></div>';
   h+='<div class="livecard"><div class="livemain"><div class="livelabel">Trainiert am</div><div class="livetime">'+(ce?dDate(ce.start):'—')+'</div>'+(ce?'<div class="liveinfo">'+((ce.segments||1)>1?'Dauer '+fmtTime(ce.dur)+' · '+ce.segments+' Abschnitte':dClock(ce.start)+'–'+dClock(ce.end)+' Uhr · Dauer '+fmtTime(ce.dur))+'</div>':'')+'</div></div>';
  }else{
-  h+='<div class="hdr"><div class="topright"><span class="brand">Satzkraft</span><button class="linkbtn" id="libbtn">Programme</button><button class="linkbtn" id="pdf">Auswertung</button><button class="iconbtn" id="settingsbtn" aria-label="Einstellungen" title="Einstellungen">'+icon("gear")+'</button></div><div class="heroeyebrow">Aktiver Block</div><h1 class="ptitle">'+esc(nmMain)+(nmSub?' <span class="pnsub">'+esc(nmSub)+'</span>':'')+'</h1><div class="chiprow"><span class="chip">'+P.days.length+' Tage</span><span class="chip">'+P.weeks.length+' Wochen</span>'+(P.bereich?'<span class="chip">'+esc(P.bereich)+'</span>':'')+'</div></div>';
+  h+='<div class="hdr"><div class="topright"><span class="brand">Satzkraft</span><button class="linkbtn" id="libbtn">Programme</button><button class="linkbtn" id="pdf">Auswertung</button><button class="iconbtn" id="settingsbtn" aria-label="Einstellungen" title="Einstellungen">'+icon("gear")+'</button></div><div class="heroeyebrow">Aktiver Block</div><h1 class="ptitle">'+esc(nmMain)+(nmSub?' <span class="pnsub2">'+esc(nmSub)+'</span>':'')+'</h1><div class="chiprow"><span class="chip">'+P.days.length+' Tage</span><span class="chip">'+P.weeks.length+' Wochen</span>'+(P.bereich?'<span class="chip">'+esc(P.bereich)+'</span>':'')+'</div></div>';
   var pad2=function(n){return ('0'+n).slice(-2);};
   h+='<div class="blockcard"><div class="blocktop"><div class="bigwk">'+pad2(wk.n)+'<span>/'+pad2(P.weeks.length)+'</span></div><div class="blockright"><span class="phasepill'+(wk.phase==="deload"?" deload":"")+'">'+esc(wk.label)+'</span>'+(wk.rir?'<span class="blockrir">RIR '+esc(wk.rir)+' \u00b7 Woche '+wk.n+'</span>':'')+'</div></div>';
   h+='<div class="rail"><button class="railnav" id="prev" aria-label="Vorherige Woche"'+(S.week===1?" disabled":"")+'>'+icon("chevron-left")+'</button>';
@@ -1893,6 +1893,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';m.style.display="flex";lockModalSurface();
 }
 var VERSION_HISTORY=[
+ {version:"v0.31.0",date:"22.07.2026",changes:["Die Stufe eines Programms (z. B. Einsteiger) steht überall als eigene Zeile unter dem Programmnamen – und nie mehr doppelt, wenn sie schon im Namen steckt.","Die Programmvorlagen heißen jetzt kurz „Gym Ganzkörper“ und „Calisthenics“; die Stufe steht im Untertitel. Alle Vorlagen-Übungen bringen einen Technik-Hinweis aus der Übungsbibliothek mit.","Programmnamen bleiben in Überschriften einzeilig; zu lange Namen enden mit „…“.","Die eingebaute Anleitung für ChatGPT & Co. ist rundum aktualisiert: korrekter Import-Weg, alle Meta-Felder mit Grenzen und erlaubten Werten, Warm-up und Cool-down erklärt."]},
  {version:"v0.30.0",date:"22.07.2026",changes:["Die Auswertung ist neu aufgebaut: Einheiten, Trainingszeit und Bewegtes Gewicht stehen untereinander in voller Breite; die bisherigen Fenster zum Blockfortschritt und zum Einheiten-Verlauf entfallen.","Fortschritt je Übung: Gleiche Übungen an mehreren Wochentagen bilden eine gemeinsame Karte. Jede Karte zeigt immer zwölf Balkenplätze – ein Balken je Ausführung, skaliert zwischen schlechtester und bester Ausführung, damit der Verlauf wirklich sichtbar wird.","Das vollständige Trainingsprotokoll ist eine eigene Seite mit Zurück-Pfeil und eigenem Drucken/PDF-Knopf; die Auswertung druckt jetzt ohne Protokoll.","Scrollbalken sind in der ganzen App ausgeblendet – Scrollen funktioniert unverändert."]},
  {version:"v0.29.0",date:"22.07.2026",changes:["Verpasste Trainings blockieren nicht mehr: Einheiten der Folgewoche lassen sich starten, und leere oder angebrochene Einheiten aller vergangenen Wochen können jederzeit nachgeholt werden.","„Übungen neu ordnen“ wie in großen Trainingsapps: Übung am Griff ziehen, die Liste rückt live mit; bei offenen Fenstern ist der Hintergrund jetzt immer gesperrt.","Die Satzpause startet sofort nach dem vollständigen Satz, und die Verlaufszeile des anderen Trainingstags ist kompakt und einzeilig.","„Programm prüfen“ im Stil der Startseite mit aufklappbaren Tageskarten, Wochenstruktur und genau zwei Aktionen; der alte Zwischen-Hub „Neues Programm“ entfällt.","Jede Programmkarte hat ein Drei-Punkte-Menü mit „Fortschritt zurücksetzen“ und „Programm löschen“; Editor, Manuell-Ansicht und alle Hinweisfenster folgen vollständig dem neuen Design.","Die Backup-Erinnerung kommt als deutliches Hinweisfenster – nach 14 Tagen oder fünf neuen Trainings; „Workout bearbeiten“ wirkt nicht mehr eingegraut."]},
  {version:"v0.28.0",date:"21.07.2026",changes:["Rundum erneuertes Design: neue Farb- und Typografie-Basis mit Smaragd-Akzent in dunklem und hellem Schema; die Schriften liegen lokal in der App und bleiben offline verfügbar.","Neue Startseite mit großer Wochenkarte, Blockfortschritt und aufklappbaren Übungszeilen; während des Trainings zeigt der Kopf eine Live-Zeitkarte mit der laufenden Trainingszeit.","Ein Zahnrad oben rechts öffnet die neuen Einstellungen mit Farbmodus-Wahl und Datensicherung; jede Übungskarte hat ein Drei-Punkte-Menü mit Neuordnen, Tauschen, Scheibenrechner und Entfernen.","Das Programme-Fenster ist eine Vollbild-Ansicht mit aktivem Programm, vier Erstellen-Kacheln und Programmvorlagen als Karten; das aktive Programm und die Vorlagen lassen sich direkt teilen.","Die Auswertung zeigt Prozent-Pillen und Wochen-Balken je Übung; „Workout bearbeiten“ ersetzt „Training wiederholen“, und die Backup-Erinnerung kommt bereits nach drei Trainings.","Der Programmeditor wurde für iPhones korrigiert, und Bestandsnutzer sehen einmalig einen kurzen Hinweis auf das neue Design."]},
@@ -2346,7 +2347,8 @@ function printProtocol(){
 
 // ---------- Programm-Bibliothek (Import/Export) ----------
 var ANLEITUNG={
- anleitung:"Trainingsplan fuer die App 'Trainings-Block'. Eine KI darf Werte aendern oder im SELBEN Aufbau ein neues Programm bauen. Behalte die Struktur und alle Pflichtfelder, erfinde keine neuen Feldnamen, halte dich an 'erlaubte_werte'. Diese Datei ist bereits ein vollstaendiges, korrektes Beispiel – am besten daran orientieren. Danach in der App unter 'Programme' -> 'Neues Programm erstellen' -> 'Fertiges Programm importieren' einfuegen. '_anleitung' wird beim Laden ignoriert und darf drinbleiben.",
+ anleitung:"Trainingsplan fuer die Trainings-App 'Satzkraft' (Austauschformat 'trainings-block', Version 2). Eine KI darf Werte aendern oder im SELBEN Aufbau ein neues Programm bauen. Behalte die Struktur und alle Pflichtfelder, erfinde keine neuen Feldnamen, halte dich an 'erlaubte_werte'. Diese Datei ist bereits ein vollstaendiges, korrektes Beispiel – am besten daran orientieren. Danach in der App unter 'Programme' -> 'Import' einfuegen. '_anleitung' wird beim Laden ignoriert und darf drinbleiben.",
+ meta:"'name' (max 30 Zeichen) benennt das Programm ohne Stufenwort. 'art' (OPTIONAL, max 24 Zeichen, z.B. 'Einsteiger', 'Fortgeschritten', 'Standard') zeigt die App als eigene Zeile unter dem Namen – das Wort daher NICHT im Namen wiederholen. 'bereich' (OPTIONAL) muss ein Wert aus erlaubte_werte.bereich sein. 'description' (1-2 Saetze, max 200 Zeichen) erscheint in der Programmvorschau.",
  trainings_richtlinien:[
   "Blockaufbau: 2-3 Aufbauwochen, dann 1 Deload-Woche. Laengere Blöcke danach mit Intensivierungswochen fortsetzen. Die letzte Woche eines Blocks ist idealerweise ein Deload.",
   "Anstrengung (rir) ueber den Block absenken: Aufbau 3 -> 2, Intensiv 2 -> 1, Deload 4-5.",
@@ -2367,26 +2369,28 @@ var ANLEITUNG={
   "Haltezeit-Uebung: unit:'seconds'. Feste Zielzeit: timerMode:'target' + sets + reps:[minSekunden,maxSekunden]. Maximaltest bis zum eigenen Stopp: timerMode:'max'. Reine Wiederholungsuebung ohne Gewicht: weighted weglassen.",
   "OPTIONAL pro Uebung: sets (Anzahl) und reps:[min,max]. Diese eigene Vorgabe ueberschreibt fuer diese Uebung die Standardwerte ihrer Kategorie.",
   "'description' (1-2 Saetze) mitliefern – die App zeigt sie in der Programmvorschau an.",
+  "'art' nicht im 'name' wiederholen – die App zeigt 'art' automatisch als Untertitel unter dem Namen.",
   "Nur die in diesem Beispiel gezeigten Felder verwenden. Bei Unsicherheit: Beispiel kopieren und nur die Werte anpassen."
  ],
- grenzen:"max 7 Trainingstage, max 16 Wochen, max 12 Uebungen pro Tag, max 10 Saetze je Trainingsgruppe/Woche oder Uebung, 'name' max 30 Zeichen, 'weekday' max 16 Zeichen. Bei Fehlern wird das Programm NICHT geladen, eine konkrete Meldung erscheint und das aktive Programm bleibt unveraendert.",
+ grenzen:"max 7 Trainingstage, max 16 Wochen, max 12 Uebungen pro Tag, max 10 Saetze je Trainingsgruppe/Woche oder Uebung, 'name' max 30 Zeichen, 'art' max 24 Zeichen, 'description' max 200 Zeichen, 'weekday' max 16 Zeichen. Bei Fehlern wird das Programm NICHT geladen, eine konkrete Meldung erscheint und das aktive Programm bleibt unveraendert.",
  erlaubte_werte:{
   phase:["aufbau","intensiv","deload"],
   color:["amber","emerald","violet","sky","orange","rose","slate"],
   unit:["reps","seconds"],
   progressionMode:["weight","added_weight","reps","seconds","progression","none"],
-  timerMode:["target","max"]
+  timerMode:["target","max"],
+  bereich:["Ganzkörper","Oberkörper","Unterkörper","Push","Pull","Beine","Brust","Rücken","Schultern","Arme","Core","Hybrid","Calisthenics","Cardio"]
  },
  settings:"OPTIONAL (Coach-/Progressionslogik). Fehlt das Feld, nutzt die App Defaults. Felder: progressionSystem ('double_progression'), deloadMultiplier (Deload-Gewichtsfaktor, Default 0.6), requireAllSetsForIncrease (Default true), allowAutoDecrease (Default true), postDeloadReturnMultiplier (Wiedereinstieg nach Deload, Default 0.925).",
  categories:"Frei definierbare Trainingsgruppen (technisches Feld: categories). Sie liefern gemeinsame Standardwerte fuer aehnliche Uebungen. Schluessel (z.B. 'kraft') -> {label, color, rest (Pause in Sekunden), reps (OPTIONAL, [min,max] je phase)}. Eine Uebung kann diese Standardwerte mit eigenen sets und reps ueberschreiben.",
  weeks:"Eine Woche pro Eintrag: {n, phase (aus erlaubte_werte; 'deload' = leichtere Erholungswoche), label, rir (Text z.B. '2'), note, sets {kategorie-schluessel: anzahl saetze}}. Ueblicher Block: 2-3 Aufbauwochen + 1 Deload.",
- days:"Ein Trainingstag pro Eintrag: {key (eindeutig), weekday (echter Wochentag), title, exercises}. Die App zeigt immer Mo-So und markiert Trainings- und erledigte Tage.",
+ days:"Ein Trainingstag pro Eintrag: {key (eindeutig), weekday (echter Wochentag), title, exercises}. OPTIONAL warmup und cooldown als Liste aus {name, seconds} – die App fuehrt sie vor bzw. nach dem Training als eigenen Ablauf. Die App zeigt immer Mo-So und markiert Trainings- und erledigte Tage.",
  exercises:"Pro Uebung: name + category. OPTIONAL: sets (eigene Satzanzahl), reps:[min,max] (eigener Wiederholungs- oder Sekundenbereich), en, cue, video, garmin, proxy, target und progressionMode. Eigene sets/reps gelten in allen Wochen und ueberschreiben die Trainingsgruppe. Gewicht: weighted:true + increment + startWeight (+ bodyweight:true bei Zusatzgewicht). Zeit: unit:'seconds' und optional timerMode:'target' (stoppt am oberen Ziel automatisch) oder 'max' (laeuft bis zum manuellen Stopp)."
 };
 // Vollstaendiges, valides Beispiel – zeigt alle Faelle korrekt (Gewicht, Zusatzgewicht, Zeit, reine Reps, Deload, settings).
 var BLANK_TEMPLATE={
  _anleitung:ANLEITUNG,
- format:"trainings-block",version:2,name:"Beispiel Ganzkörper 2x",
+ format:"trainings-block",version:2,name:"Beispiel Ganzkörper 2x",art:"Standard",bereich:"Ganzkörper",
  description:"Ganzkörper-Beispielplan mit 2 Einheiten pro Woche – zeigt alle Übungstypen und Felder.",
  settings:{progressionSystem:"double_progression",deloadMultiplier:0.6,requireAllSetsForIncrease:true,allowAutoDecrease:true,postDeloadReturnMultiplier:0.925},
  categories:{

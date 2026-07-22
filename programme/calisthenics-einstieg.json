@@ -229,7 +229,7 @@
           "proxy": "Liegestütze an der Wand"
         },
         {
-          "name": "Rudern an niedriger Stange",
+          "name": "Rudern an der Stange",
           "en": "Inverted Row",
           "category": "zug",
           "cue": "Brust zur Stange; Füße weiter vor, sobald die Obergrenze sicher gelingt",
@@ -327,6 +327,7 @@
           "name": "Seitstütz",
           "en": "Side Plank",
           "category": "core",
+          "cue": "Stütz dich auf dem Unterarm ab und halte die Hüfte hoch in einer geraden Linie.",
           "unit": "seconds",
           "timerMode": "target",
           "reps": [

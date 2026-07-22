@@ -98,7 +98,7 @@ test('keeps every replacement resolvable and every normalized name collision-fre
   });
 });
 
-test('recognizes all 50 unique exercise names used by the official programs', () => {
+test('recognizes all 49 unique exercise names used by the official programs', () => {
   const aliases = new Set();
   library.forEach(entry => [entry.de, entry.en, ...entry.alias].forEach(name => aliases.add(normalize(name))));
   const names = new Set();
@@ -106,7 +106,7 @@ test('recognizes all 50 unique exercise names used by the official programs', ()
     const program = JSON.parse(fs.readFileSync(new URL(`programme/${file}`, root), 'utf8'));
     program.days.forEach(day => day.exercises.forEach(exercise => names.add(exercise.name)));
   }
-  assert.equal(names.size, 50);
+  assert.equal(names.size, 49);
   for (const name of names) assert.ok(aliases.has(normalize(name)), `Programmübung nicht erkannt: ${name}`);
 });
 

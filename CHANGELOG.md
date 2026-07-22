@@ -4,9 +4,13 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
-## [Unreleased]
+## [0.31.0] – 2026-07-22
 
 ### Geändert
+
+- Die Stufe eines Programms („Art", z. B. Einsteiger) steht jetzt überall als eigene Zeile unter dem Programmnamen statt daneben.
+- Alle Übungen der vier Programmvorlagen tragen jetzt einen Technik-Hinweis aus der Übungsbibliothek; „Rudern an niedriger Stange" heißt wie in der Bibliothek „Rudern an der Stange".
+- Die eingebaute Anleitung für KI-Programme („ChatGPT & Co.") ist auf den neuesten Stand gebracht: richtiger App-Name und Import-Weg, die Meta-Felder „art" und „bereich" sind mit Grenzen und erlaubten Werten dokumentiert, Warm-up/Cool-down wird erklärt, und das Beispielprogramm zeigt alle Meta-Felder.
 
 - Die Programmvorlagen wiederholen ihre Stufe nicht mehr im Namen: „Gym Ganzkörper“ (Einsteiger), „Gym Ganzkörper“ (Fortgeschritten) und „Calisthenics“ (Einsteiger). Die Stufe steht im Feld „Art“ und auf der Vorlagen-Karte.
 - Der graue Art-Untertitel wird nicht mehr angezeigt, wenn der Programmname das Wort bereits enthält – das verhindert Dopplungen wie „Gym Ganzkörper Fortgeschritten · Fortgeschritten“ auch bei importierten oder KI-erstellten Programmen.
