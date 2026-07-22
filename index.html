@@ -68,7 +68,7 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 ::-webkit-scrollbar{display:none}
 .wrap{max-width:560px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 130px}
 .hdr{margin-bottom:16px}
-.ptitle{font-size:22px;font-weight:800;margin:0;letter-spacing:-.02em;line-height:1.2}
+.ptitle{font-size:22px;font-weight:800;margin:0;letter-spacing:-.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .iconbtn{background:none;border:none;color:var(--muted);font-size:18px;padding:6px;border-radius:8px;cursor:pointer}
 .iconbtn:active{background:var(--up)}
 .sub{font-size:12px;color:var(--muted);margin:6px 0 0}
@@ -1701,7 +1701,7 @@ function exRowHtml(ex,ei){
 function renderView(){
  document.body.classList.toggle("training",active());
  var P=PROG(),wk=P.weeks[S.week-1],day=dayByKey(S.day),exercises=dayExercisesFor(day,S.week),h="";
- var nmMain=P.name,nmSub=P.art||"";if(!nmSub){var pm=P.name.match(/^(.+?)\s*\((.+)\)\s*$/);if(pm){nmMain=pm[1];nmSub=pm[2];}}
+ var nmMain=P.name,nmSub=artSubtitleText(P.name,P.art);if(!P.art){var pm=P.name.match(/^(.+?)\s*\((.+)\)\s*$/);if(pm){nmMain=pm[1];nmSub=pm[2];}}
  if(active()){
   var lw=S.workout;
   h+='<div class="hdr"><div class="topright"><span class="brand">Satzkraft</span><button class="linkbtn" id="libbtn">Programme</button><button class="linkbtn" id="pdf">Auswertung</button><button class="iconbtn" id="settingsbtn" aria-label="Einstellungen" title="Einstellungen">'+icon("gear")+'</button></div><div class="heroeyebrow">Laufendes Training</div><h1 class="ptitle">Woche '+wk.n+' <span class="pnsub">/ '+P.weeks.length+'</span></h1><div class="chiprow"><span class="chip">'+esc(day.wd||day.key)+(day.title?' · '+esc(day.title):'')+'</span></div></div>';
@@ -2212,6 +2212,9 @@ setInterval(function(){
 
 // ---------- Auswertung / PDF ----------
 function reportFinite(value){var number=Number(value);return isFinite(number)&&number>=0?number:null;}
+// Der Art-Untertitel entfällt, wenn der Programmname das Wort bereits enthält (verhindert Dopplungen wie „… Fortgeschritten Fortgeschritten“).
+function artSubtitleText(name,art){if(typeof art!=="string"||!art.trim())return"";art=art.trim();return String(name||"").toLowerCase().indexOf(art.toLowerCase())>=0?"":art;}
+function artSubtitleHtml(name,art){var sub=artSubtitleText(name,art);return sub?' <span class="pnsub2">'+esc(sub)+'</span>':"";}
 function reportSetHasData(set){return !!(set&&set.reps!==""&&set.reps!=null&&reportFinite(set.reps)!=null);}
 function reportEstimate1RM(weight,reps){weight=reportFinite(weight);reps=reportFinite(reps);if(weight==null||reps==null||weight<=0||reps<=0)return null;return Math.round((weight*(1+Math.min(reps,30)/30))*2)/2;}
 function buildReportData(program,logs,history){
@@ -2297,7 +2300,7 @@ function reportDetailedProtocol(program,logs,history,notes){
  return any?out:'<div class="rempty"><strong>Noch kein Trainingsprotokoll</strong>Sobald du Satzwerte einträgst, erscheint hier die vollständige Übersicht.</div>';
 }
 function buildReport(programId,returnView){
- programId=programId&&S.programs[programId]?programId:S.active;var program=S.programs[programId],store=S.store[programId]||newStore(program),data=buildReportData(program,store.logs,store.history),previous=programId===S.active&&program.archived!==true?previousBlockMetrics(programId):{},now=Date.now(),back=returnView==="archive",b='<div class="owrap reportwrap"><header class="reporthead">'+(back?'<button class="iconbtn reportback" id="repback" aria-label="Zurück zum Archiv">'+icon("chevron-left")+'</button>':'')+'<div class="reportheadmain"><div class="reporteyebrow">Auswertung</div><h1 id="reporttitle">'+esc(program.name)+(program.art?' <span class="pnsub2">'+esc(program.art)+'</span>':'')+'</h1></div><div class="reportactions"><button class="histbtn" id="reprint">'+icon("download")+' Drucken / PDF</button>'+(back?'':'<button class="iconbtn" id="repclose" aria-label="Auswertung schließen">'+icon("close")+'</button>')+'</div></header>';
+ programId=programId&&S.programs[programId]?programId:S.active;var program=S.programs[programId],store=S.store[programId]||newStore(program),data=buildReportData(program,store.logs,store.history),previous=programId===S.active&&program.archived!==true?previousBlockMetrics(programId):{},now=Date.now(),back=returnView==="archive",b='<div class="owrap reportwrap"><header class="reporthead">'+(back?'<button class="iconbtn reportback" id="repback" aria-label="Zurück zum Archiv">'+icon("chevron-left")+'</button>':'')+'<div class="reportheadmain"><div class="reporteyebrow">Auswertung</div><h1 id="reporttitle">'+esc(program.name)+artSubtitleHtml(program.name,program.art)+'</h1></div><div class="reportactions"><button class="histbtn" id="reprint">'+icon("download")+' Drucken / PDF</button>'+(back?'':'<button class="iconbtn" id="repclose" aria-label="Auswertung schließen">'+icon("close")+'</button>')+'</div></header>';
  b+='<div class="reportintro"><p class="rstand">Stand '+dDate(now)+' · '+dClock(now)+' Uhr · Kennzahlen aus deinen eingetragenen Daten</p><span class="reportlocal">Nur lokal gespeichert</span></div>';
  b+='<section class="rsummary" aria-label="Zusammenfassung"><div class="rmetric"><span class="rlab">Einheiten</span><span class="rval">'+data.completedSessions+'<span class="rvalsuf"> / '+data.totalPlanned+'</span></span><span class="rsub">'+data.completionPct+' % des Trainingsblocks · gezählt wird jede vollständig beendete Einheit</span></div><div class="rmetric"><span class="rlab">Trainingszeit</span><span class="rval">'+reportDuration(data.totalDuration)+'</span><span class="rsub">dokumentiert, inkl. Fortsetzungen</span></div><div class="rmetric"><span class="rlab">Bewegtes Gewicht</span><span class="rval">'+reportNumber(data.totalVolume,0)+'<span class="rvalsuf"> kg</span></span><span class="rsub">Gewicht × Wiederholungen</span></div></section>';
  b+='<div class="rsechead"><span>Fortschritt je Übung</span><span class="rsecmeta">Gesch. 1RM · Bestwert</span></div><section class="rsecplain">';
@@ -2316,7 +2319,7 @@ function printReport(){
 var protocolReturnFocus=null,protocolProgramId=null;
 function buildProtocol(programId){
  var program=S.programs[programId],store=S.store[programId]||newStore(program),now=Date.now();
- var b='<div class="owrap reportwrap"><header class="reporthead"><button class="iconbtn reportback" id="protback" aria-label="Zurück zur Auswertung">'+icon("chevron-left")+'</button><div class="reportheadmain"><div class="reporteyebrow">Trainingsprotokoll</div><h1 id="protocoltitle">'+esc(program.name)+(program.art?' <span class="pnsub2">'+esc(program.art)+'</span>':'')+'</h1></div><div class="reportactions"><button class="histbtn" id="protprint">'+icon("download")+' Drucken / PDF</button></div></header>';
+ var b='<div class="owrap reportwrap"><header class="reporthead"><button class="iconbtn reportback" id="protback" aria-label="Zurück zur Auswertung">'+icon("chevron-left")+'</button><div class="reportheadmain"><div class="reporteyebrow">Trainingsprotokoll</div><h1 id="protocoltitle">'+esc(program.name)+artSubtitleHtml(program.name,program.art)+'</h1></div><div class="reportactions"><button class="histbtn" id="protprint">'+icon("download")+' Drucken / PDF</button></div></header>';
  b+='<div class="reportintro"><p class="rstand">Stand '+dDate(now)+' · '+dClock(now)+' Uhr · alle eingetragenen Sätze, Zeiten und Notizen</p><span class="reportlocal">Nur lokal gespeichert</span></div>';
  b+=reportDetailedProtocol(program,store.logs,store.history,store.notes)+'</div>';
  document.getElementById("protocol").innerHTML=b;
@@ -2624,9 +2627,9 @@ function importBackup(text){
 }
 var pendingProgramImport=null,importInputText="",importSourceName="",importIssue=null,externalAiWish="";
 var PROGRAM_LIBRARY=[
- {file:"./programme/gym-ganzkoerper-beginner.json",name:"Gym Ganzkörper Beginner",goal:"Kraftbasis & Muskelaufbau",level:"Einsteiger",farbe:"sky",days:3,duration:"50–65 min",description:"Geräte und Kurzhanteln mit bewusst einfacher Übungsauswahl."},
- {file:"./programme/gym-ganzkoerper-fortgeschritten.json",name:"Gym Ganzkörper Fortgeschritten",goal:"Kraft & Muskelaufbau",level:"Fortgeschritten",farbe:"amber",days:3,duration:"65–80 min",description:"Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende."},
- {file:"./programme/calisthenics-einstieg.json",name:"Calisthenics Einstieg",goal:"Körpergewichtskraft",level:"Einsteiger",farbe:"violet",days:3,duration:"40–50 min",description:"Ganzkörpertraining mit Boden, Bank, Stange, Ringen und Band."},
+ {file:"./programme/gym-ganzkoerper-beginner.json",name:"Gym Ganzkörper",goal:"Kraftbasis & Muskelaufbau",level:"Einsteiger",farbe:"sky",days:3,duration:"50–65 min",description:"Geräte und Kurzhanteln mit bewusst einfacher Übungsauswahl."},
+ {file:"./programme/gym-ganzkoerper-fortgeschritten.json",name:"Gym Ganzkörper",goal:"Kraft & Muskelaufbau",level:"Fortgeschritten",farbe:"amber",days:3,duration:"65–80 min",description:"Langhantel-basiertes Ganzkörpertraining für erfahrene Trainierende."},
+ {file:"./programme/calisthenics-einstieg.json",name:"Calisthenics",goal:"Körpergewichtskraft",level:"Einsteiger",farbe:"violet",days:3,duration:"40–50 min",description:"Ganzkörpertraining mit Boden, Bank, Stange, Ringen und Band."},
  {file:"./programme/hybrid-gym-calisthenics.json",name:"Hybrid: Gym + Calisthenics",goal:"Kraft & Körperkontrolle",level:"Grundlagenerfahrung",farbe:"emerald",days:3,duration:"60–75 min",description:"Langhantel, Kurzhanteln, Kabelzug und Körpergewicht kombiniert."}
 ];
 function programSourceLabel(origin){return origin==="coach"?"Satzkraft KI-Coach":origin==="library"?"Satzkraft-Programm":origin==="link"?"Geteilter Link":origin==="file"?"Datei":"Eingefügtes JSON";}
@@ -3383,8 +3386,8 @@ function createFollowupBlock(sourceId,libraryReady){
 function libraryFooterHtml(){return'<div class="libraryfooter"><button type="button" class="versionfoot appversion" data-version-info="1">Satzkraft v'+esc(APP_VERSION)+' · Versionshistorie anzeigen</button><span class="developercredit" style="text-align:center">Entwickelt von Christian Woyack</span></div>';}
 function programItemHtml(id,p){
  var active=id===S.active,archived=p.archived===true,stores=S.store||{},store=stores[id]||{logs:{},history:[]},completed=typeof programBlockComplete==="function"&&programBlockComplete(p,store.logs,store.history),locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',badge=completed?'<span class="statuspill complete">Abgeschlossen</span>':'',hasUpdated=typeof p.updatedAt==="number"&&isFinite(p.updatedAt)&&p.updatedAt>=0,hasCreated=typeof p.createdAt==="number"&&isFinite(p.createdAt)&&p.createdAt>=0,origin=p.origin==="satzkraft"?'<span class="programorigin">Offizielles Satzkraft-Programm</span>':'',meta='<div class="pm"><span>'+p.days.length+' '+(p.days.length===1?'Tag':'Tage')+' · '+p.weeks.length+' '+(p.weeks.length===1?'Woche':'Wochen')+'</span>'+origin+'</div>';
- if(archived)return'<div class="progitem archived"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+(p.art?' <span class="pnsub2">'+esc(p.art)+'</span>':'')+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-report-program="'+attr(id)+'">Auswertung ansehen</button><button class="progtextaction" data-unarchive="'+attr(id)+'"'+lockedAttr+'>Aus dem Archiv holen</button></div></div>';
- var artTeil=p.art?' <span class="pnsub2">'+esc(p.art)+'</span>':'';
+ if(archived)return'<div class="progitem archived"><div class="proghead"><div class="meta"><div class="pn">'+esc(p.name)+artSubtitleHtml(p.name,p.art)+'</div>'+meta+'</div>'+badge+'</div><div class="progactions"><button class="progtextaction" data-report-program="'+attr(id)+'">Auswertung ansehen</button><button class="progtextaction" data-unarchive="'+attr(id)+'"'+lockedAttr+'>Aus dem Archiv holen</button></div></div>';
+ var artTeil=artSubtitleHtml(p.name,p.art);
  var pad2=function(n){return ('0'+n).slice(-2);};
  var kebab=(active||id!=="default")?'<button type="button" class="kebab progkebab" data-progmenu="'+attr(id)+'" aria-label="Weitere Aktionen für '+attr(p.name)+'">'+icon("more")+'</button>':'';
  if(active){

@@ -94,9 +94,11 @@ test('renders the official origin line and the complete library entry points', (
     icon: () => ''
   };
   vm.createContext(context);
+  vm.runInContext(functionSource('artSubtitleText'), context);
+  vm.runInContext(functionSource('artSubtitleHtml'), context);
   vm.runInContext(functionSource('programItemHtml'), context);
   const card = context.programItemHtml('official', {
-    name: 'Gym Ganzkörper Beginner', origin: 'satzkraft', days: [{ key: 'A' }], weeks: [{ n: 1 }]
+    name: 'Gym Ganzkörper', origin: 'satzkraft', days: [{ key: 'A' }], weeks: [{ n: 1 }]
   });
 
   assert.match(card, /Offizielles Satzkraft-Programm/);

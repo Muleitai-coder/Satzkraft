@@ -13,7 +13,8 @@ function loadItemContext(workout) {
     S: { active: 'active', workout },
     esc: value => String(value == null ? '' : value),
     attr: value => String(value == null ? '' : value),
-    icon: () => ''
+    icon: () => '',
+    artSubtitleHtml: () => ''
   };
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);

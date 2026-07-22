@@ -328,9 +328,9 @@ test.describe('1 · Texte & Kommunikation', () => {
     const templates = page.locator('#lib .tplcard');
     await expect(templates).toHaveCount(4);
     await expect(templates.locator('.tplname')).toHaveText([
-      'Gym Ganzkörper Beginner',
-      'Gym Ganzkörper Fortgeschritten',
-      'Calisthenics Einstieg',
+      'Gym Ganzkörper',
+      'Gym Ganzkörper',
+      'Calisthenics',
       'Hybrid: Gym + Calisthenics',
     ]);
     await expect(templates.locator('.tplmeta')).toHaveText([
@@ -915,7 +915,7 @@ test.describe('4 · Regression & Offline-PWA', () => {
     expect(cachedAssets).toEqual({
       shellReady: true,
       exerciseCount: 200,
-      programName: 'Gym Ganzkörper Beginner',
+      programName: 'Gym Ganzkörper',
     });
 
     await openProgramLibrary(page);
@@ -939,9 +939,9 @@ test.describe('4 · Regression & Kernfunktion', () => {
     await openProgramLibrary(page);
 
     const programNames = [
-      'Gym Ganzkörper Beginner',
-      'Gym Ganzkörper Fortgeschritten',
-      'Calisthenics Einstieg',
+      'Gym Ganzkörper',
+      'Gym Ganzkörper',
+      'Calisthenics',
       'Hybrid: Gym + Calisthenics',
     ];
 

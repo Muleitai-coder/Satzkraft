@@ -4,6 +4,14 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [Unreleased]
+
+### Geändert
+
+- Die Programmvorlagen wiederholen ihre Stufe nicht mehr im Namen: „Gym Ganzkörper“ (Einsteiger), „Gym Ganzkörper“ (Fortgeschritten) und „Calisthenics“ (Einsteiger). Die Stufe steht im Feld „Art“ und auf der Vorlagen-Karte.
+- Der graue Art-Untertitel wird nicht mehr angezeigt, wenn der Programmname das Wort bereits enthält – das verhindert Dopplungen wie „Gym Ganzkörper Fortgeschritten · Fortgeschritten“ auch bei importierten oder KI-erstellten Programmen.
+- Programmnamen in Überschriften bleiben immer einzeilig; zu lange Namen enden mit „…“ statt umzubrechen.
+
 ## [0.30.0] – 2026-07-22
 
 ### Geändert
