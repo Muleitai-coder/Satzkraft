@@ -79,7 +79,7 @@ function noticeContext(overrides) {
 
 test('der Start-Aufruf und der eigene Speicher-Schlüssel sind verdrahtet', () => {
   assert.match(html, /var REDESIGN_NOTICE_KEY="satzkraft-design-update-v1";/);
-  assert.match(html, /maybeShowRedesignNotice\(\);/);
+  assert.match(html, /if\(!maybeShowRedesignNotice\(\)\)maybeShowBackupReminder\(\);/);
   assert.doesNotMatch(html, /zonesIntroSeen|showZonesIntroOnce/);
 });
 

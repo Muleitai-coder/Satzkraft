@@ -4,6 +4,35 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [0.29.0] – 2026-07-22
+
+### Geändert
+
+- Die Zeile mit dem Wert des anderen Trainingstags heißt jetzt kompakt „Anderer Tag · Mi (W1)“ und bleibt wie die übrige Verlaufszeile immer einzeilig, ohne Zeilenumbruch.
+- Aufgeklappte Übungszeilen der Startseite klappen beim Wechsel des Trainingstags oder der Woche automatisch wieder zu.
+- Alle Hinweis- und Entscheidungsfenster sowie sämtliche Knöpfe und Eingabefelder verwenden durchgehend die neue App-Schrift des Redesigns.
+- Der alte Zwischen-Hub „Neues Programm“ entfällt ersatzlos. Die vier Erstellen-Kacheln führen direkt in ihre Ansicht; Zurück und das Schließen-X führen aus KI-Coach, Import, Manuell und ChatGPT & Co. immer direkt zur Programme-Ansicht.
+- Der Programmeditor folgt jetzt vollständig dem neuen Design: Feldbeschriftungen und antippbare Erklärbegriffe als einheitliche Mono-Beschriftungen, Übungs-Metazeilen in der Startseiten-Typografie und ruhige Hinweiskarten statt großer grüner Flächen.
+- „Manuell erstellen“: Die Tagesauswahl besteht wieder aus richtigen Auswahl-Chips im neuen Design (die Grundstile fehlten nach dem Redesign), der Hinweistext ist dezent formatiert.
+- Die vier Erstellen-Kacheln tragen sprechende Beschreibungen für Screenreader.
+- Die automatische Satzpause startet sofort, sobald ein Satz vollständig eingetragen ist – die bisherige Verzögerung von zwei Sekunden entfällt.
+- Bei geöffneten Hinweis- und Auswahlfenstern ist der Hintergrund fest gesperrt und scrollt nicht mehr mit; nur der Fensterinhalt bleibt scrollbar.
+- „Übungen neu ordnen“ funktioniert jetzt wie in etablierten Trainingsapps: Jede Zeile hat rechts einen Ziehgriff, die Übung wird gehalten und direkt an die neue Position gezogen; die übrigen Zeilen rücken live mit. Die Pfeiltasten verschieben weiterhin je einen Platz.
+- Die Aktionsleiste unter „Programm prüfen“ ist eine feste Leiste mit genau zwei Knöpfen: „Speichern & aktivieren“ und „Bearbeiten“. „Nur speichern“ und „Abbrechen“ entfallen; Zurück-Pfeil und X übernehmen das Verwerfen.
+- „Programm prüfen“ ist im Stil der Startseite aufgebaut: Kopf mit Programmname und Chips, Trainingstage als aufklappbare Karten mit Übungszeilen samt Kategorie, Sätzen und Pausen sowie eine aufklappbare Wochenstruktur. Die bisherigen Statistik-Kacheln und Doppel-Listen entfallen.
+- Jede Programmkarte hat ein Drei-Punkte-Menü direkt neben dem Programmnamen mit „Fortschritt zurücksetzen“ (nur aktives Programm) und „Programm löschen“. Beide Aktionen sind dafür aus dem Editor-Bereich „Details“ ausgezogen – Bearbeiten kümmert sich nur noch um den Plan selbst.
+- Die Backup-Erinnerung erscheint als deutliches Hinweisfenster („Zeit für ein Backup“) beim App-Start oder nach dem Trainingsende statt als kleine Karte am Seitenende. Sie kommt nach 14 Tagen seit der letzten Sicherung oder nach fünf neuen Trainings – je nachdem, was zuerst eintritt; „Später“ pausiert wie bisher für sieben Tage.
+- Der Überspringen-Hinweis vor dem Trainingsstart ist kurz gefasst: Er nennt nur noch die Anzahl offener Trainings statt einer Auflistung – welche es sind, zeigt die Wochenübersicht ohnehin.
+- Verpasste Einheiten blockieren die nächste Woche nicht mehr und lassen sich jederzeit nachholen: Leere Einheiten der direkten Folgewoche sind startbar, und leere oder angebrochene Einheiten aller vergangenen Wochen können nachgeholt beziehungsweise fortgesetzt werden. Nur mehr als eine Woche voraus bleibt gesperrt.
+
+### Behoben
+
+- „Workout bearbeiten“ dimmt die Übungskarten nicht mehr aus; die Bearbeitungsansicht wirkt nicht länger eingegraut.
+
+### Dokumentation
+
+- Neues verbindliches Design-Briefing in `docs/DESIGN-BRIEFING.md`, abgeleitet aus der neuen Startseite (Tokens, Typografie, Komponenten, Interaktionsregeln).
+
 ## [0.28.0] – 2026-07-21
 
 ### Hinzugefügt

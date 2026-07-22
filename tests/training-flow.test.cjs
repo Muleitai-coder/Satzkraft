@@ -314,7 +314,7 @@ test('formats long time prescriptions in minutes without changing stored seconds
 });
 
 test('guards the delayed automatic rest and keeps the page scrollable', () => {
-  assert.match(html, /var AUTO_REST_DELAY=2000/);
+  assert.match(html, /var AUTO_REST_DELAY=0/);
   assert.match(html, /scheduleAutoRest\(ex,i,wasComplete,nowComplete\)/);
   assert.match(html, /canStartRest\(ex,current,firstOpen,true\)/);
   assert.match(html, /startRest\(catRest\(ex\),ex\.id,true\)/);
@@ -400,7 +400,7 @@ test('uses one SVG icon system, larger training text and subtle completion feedb
   assert.doesNotMatch(html, /workoutPanelHtml/);
 });
 
-test('enforces the current-week, previous-week and latest-repeat start matrix', () => {
+test('enforces the current-week, neighbour-week and latest-repeat start matrix', () => {
   const start = html.indexOf('function unitHasSetValues');
   const end = html.indexOf('var REC_COLOR', start);
   const context = {
@@ -420,11 +420,16 @@ test('enforces the current-week, previous-week and latest-repeat start matrix', 
 
   assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: true, mode: 'start' });
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'start' });
-  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: false, mode: 'locked' });
+  assert.deepEqual({ ...context.workoutAccess(4, 'A') }, { allowed: true, mode: 'start' });
+  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: true, mode: 'start' });
+  context.currentTrainingWeek = () => 1;
+  assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: false, mode: 'locked' });
+  context.currentTrainingWeek = () => 3;
 
   context.unitEmpty = () => false;
   context.dayWasInterrupted = () => true;
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'continue' });
+  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: true, mode: 'continue' });
 
   context.unitComplete = () => true;
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: false, mode: 'complete' });

@@ -79,7 +79,7 @@ test('covers the iPhone safe area below the editor actions', () => {
   assert.match(html, /\.edsticky\{[^}]*padding:12px 18px calc\(12px \+ env\(safe-area-inset-bottom\)\)[^}]*background:var\(--barbg\)/);
   assert.match(html, /--barbg:rgba\(8,9,11,\.92\)/);
   assert.match(html, /--barbg:rgba\(239,236,229,\.92\)/);
-  assert.match(html, /\.edsticky\{margin-bottom:-14px\}/);
+  assert.match(html, /\.edsticky,\.importactions\{[^}]*margin-bottom:-14px\}/);
 });
 
 test('uses one clear rename path and compact program actions', () => {
@@ -124,8 +124,8 @@ test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /id="externalaibtn"/);
   assert.match(html, /Manuell erstellen/);
   assert.match(html, /Satzkraft KI-Coach/);
-  assert.match(html, /Mit ChatGPT &amp; Co\. erstellen/);
-  assert.match(html, /Fertiges Programm importieren/);
+  assert.match(html, /Mit ChatGPT &amp; Co\./);
+  assert.match(html, /Programm importieren/);
 });
 
 test('uses a shared preview and a dedicated unsaved draft mode', () => {
@@ -133,13 +133,15 @@ test('uses a shared preview and a dedicated unsaved draft mode', () => {
   assert.match(html, /function renderImportPreview/);
   assert.match(html, /Speichern &amp; aktivieren/);
   assert.match(html, /Nur speichern/);
-  assert.match(html, /Vorher bearbeiten/);
+  assert.match(html, /id="importactivate"/);
+  assert.match(html, /id="importedit"/);
+  assert.doesNotMatch(html, /Vorher bearbeiten|id="importsave"|id="importcancel"/);
   assert.match(html, /editorUnsavedDraft/);
   assert.match(html, /id="edsavenew"/);
   assert.match(html, /id="edsavenewactive"/);
   assert.match(html, /Plan prüfen &amp; speichern/);
-  assert.match(html, /class="librarypreviewexercise"/);
-  assert.match(html, /class="tag '\+color/);
+  assert.match(html, /class="pvrow '\+color/);
+  assert.match(html, /class="pvday"/);
 });
 
 test('applies the live preview order and requires approval before swapping occupied days', () => {

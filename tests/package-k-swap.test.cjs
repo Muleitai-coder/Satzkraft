@@ -245,7 +245,7 @@ test('shows the latest matching exercise value from another day without merging 
   assert.equal(context.performanceSummary(otherDay.exercise, otherDay.sets), '8×70 kg');
   assert.equal(context.lastPerf(exercise).week, 1, '„Zuletzt“ bleibt auf den ausgewählten Trainingstag begrenzt');
   assert.equal(context.sessionFor(exercise, 2), null, 'die Progression darf den anderen Trainingstag nicht übernehmen');
-  assert.match(functionSource('exCardHtml'), /Letzter Wert an anderem Tag/);
+  assert.match(functionSource('exCardHtml'), /Anderer Tag \u00b7 /);
 });
 
 test('ignores swapped holds when calculating the original exercise best time', () => {

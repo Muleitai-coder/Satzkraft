@@ -1,8 +1,8 @@
-# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.28.0
+# Briefing: Satzkraft – Architektur, Produktregeln und Umsetzungsstand bis v0.29.0
 
 **An:** Umsetzenden Entwickler / Coding-Agent (Codex)
 **Von:** App-Architektur (fortlaufend gepflegt seit Review Juli 2026, ursprüngliche Basis: Satzkraft v0.14.1)
-**Aktueller Produktstand:** Satzkraft v0.28.0
+**Aktueller Produktstand:** Satzkraft v0.29.0
 **Ziel:** Verbindliche Architektur- und Produktregeln sowie den umgesetzten Stand festhalten. Die App bleibt bewusst einfach – nichts hinzufügen, was nicht in diesem Briefing oder einer aktuellen Nutzerentscheidung steht.
 
 **Aktuelle Prozessentscheidung (18.07.2026):** Für Prüfungen gilt ausschließlich die risikobasierte Strategie aus `docs/TESTING.md` und `AGENTS.md`. Historische Pakettexte, die vollständige Suites oder Browsermatrizen nach jeder Änderung verlangen, dokumentieren nur den damaligen Abnahmestand und lösen keine automatischen Großtests mehr aus.
@@ -48,7 +48,7 @@ Kernkonzepte im Datenmodell (intern): Programm = `categories` (Trainingsgruppen 
 
 Das komplette, vom Produktverantwortlichen abgenommene Redesign ist umgesetzt. Es ersetzt alle älteren Oberflächen-Beschreibungen in den historischen Arbeitspaketen unten; bei Widersprüchen gilt dieser Abschnitt.
 
-- **Design-System:** CSS-Design-Tokens mit Smaragd-Akzent, vollständiges dunkles und helles Schema (`data-theme`). Schriften Hanken Grotesk und JetBrains Mono liegen lokal in `fonts/` (Latin-Subset, variable Gewichte 400–800) und stehen im Service-Worker-Precache – kein Google-CDN, die App muss offline vollständig funktionieren.
+- **Design-System:** CSS-Design-Tokens mit Smaragd-Akzent, vollständiges dunkles und helles Schema (`data-theme`). Schriften Hanken Grotesk und JetBrains Mono liegen lokal in `fonts/` (Latin-Subset, variable Gewichte 400–800) und stehen im Service-Worker-Precache – kein Google-CDN, die App muss offline vollständig funktionieren. Die verbindlichen Gestaltungsregeln für alle Ansichten stehen in `docs/DESIGN-BRIEFING.md` (abgeleitet aus der neuen Startseite); jede neue oder überarbeitete Ansicht muss ihnen folgen.
 - **Startseite:** Kopfzeile mit Marke, „Programme“, „Auswertung“ und Einstellungen-Zahnrad. Wochenkarte mit Blockfortschritt (z. B. „01/08“), Phasen-Badge, RIR und Wochenschiene; darunter Tagesleiste und kompakte, aufklappbare Übungszeilen (`exrowd`, `data-expand-prev`). Fußzeile mit Versions-Knopf (`legendversion appversion`) öffnet die Versionshistorie.
 - **Einstellungen (Zahnrad):** Farbmodus-Wahl (`data-settheme`) und Bereich „Datensicherung“ mit Sicherungsstand und Backup-Download (`data-settings-backup`).
 - **Training:** Live-Zeitkarte im Kopf (`.livecard`) mit „Pause“/„Weiter“ und „Ende“ (`pausew`/`resumew`/`stopw`); die untere Leiste (`#bar`) zeigt nur Satzpause/Satzfokus/Halte-Timer. Übungskarte: farbiger Kategorie-Kopf (`cardcat`), Aktionen Video und Notiz plus Drei-Punkte-Menü (`data-exmenu`: Übungen neu ordnen, Übung ersetzen, Scheibenrechner, Übung entfernen nur für heute). Automatische Satzpause nach jedem vollständigen Satz.
@@ -57,7 +57,7 @@ Das komplette, vom Produktverantwortlichen abgenommene Redesign ist umgesetzt. E
 - **Programme-Fenster:** Vollbild-Ansicht im Stil der Startseite. Oben die aktive Programmkarte (Aktiv-Pille, „Woche 01 / 08“, Bereichs-Zeile, Tage/Wochen-Chips, „Fortsetzen“, Teilen-Knopf `proshare`), dann „Weitere Programme“, vier Erstellen-Kacheln (KI-Coach, Import, Manuell, ChatGPT & Co.), die Programmvorlagen als Karten (`tplcard`, aus `PROGRAM_LIBRARY` mit Feld `farbe`; Aktionen Laden/Bearbeiten/Teilen), Archiv-Zugang und „Daten sichern“. Der Erstellen-Hub existiert weiter als Zwischenansicht der Erstell-Flows.
 - **Editor:** Tabs Training/Wochen/Details. Im Details-Tab stehen Erstell-/Änderungsdatum sowie die abgesicherten Bereiche „Fortschritt zurücksetzen“ und „Programm löschen“. Programmkarten zeigen kein Datum mehr.
 - **Programmfelder:** `art` und `bereich` sind optionale Felder im Austauschformat; `bereich` ist auf die Liste `BEREICHE` beschränkt, der Import lehnt andere Werte mit klarer Fehlermeldung ab, der Export enthält beide Felder.
-- **Backup:** Erinnerung erscheint nach drei abgeschlossenen Trainings seit der letzten Sicherung oder wenn die Sicherung älter als 14 Tage ist und mindestens ein neues Training vorliegt; „Später“ pausiert sieben Tage.
+- **Backup:** Erinnerung erscheint nach fünf abgeschlossenen Trainings seit der letzten Sicherung (Nutzerentscheidung 22.07.2026, vorher drei) oder wenn die Sicherung älter als 14 Tage ist und mindestens ein neues Training vorliegt; „Später“ pausiert sieben Tage. Seit 21.07.2026 als Hinweisfenster (`maybeShowBackupReminder`, höchstens einmal je Sitzung) beim App-Start oder nach Trainingsende statt als Inline-Karte; die Playwright-Seeds setzen standardmäßig einen Snooze im Schlüssel `satzkraft-backup-meta-v1`.
 - **Einmaliger Design-Update-Hinweis:** Bestandsnutzer (erkennbar an vorhandenen Trainingsdaten oder Programmen, `hasExistingTrainingData`) sehen nach dem Redesign genau einmal ein Hinweis-Modal (`maybeShowRedesignNotice`, localStorage-Schlüssel `satzkraft-design-update-v1`) mit Schließen-Knopf und Weg zur Versionshistorie. Neuinstallationen sehen keinen Hinweis; bei ihnen wird der Schlüssel still gesetzt. Kein Hinweis bei laufendem Training, Daten-Lade-Problem, anstehendem Programm-Import oder fortgesetzter Tausch-Entscheidung – er wird beim nächsten ungestörten Start nachgeholt. Die Playwright-Seeds setzen den Schlüssel standardmäßig.
 
 ---
@@ -322,7 +322,8 @@ Pakete A–E wurden geprüft und sind **umgesetzt und abgenommen** (B3 Live-Vors
 
 ### F6 · Training: Satzpause automatisch starten
 - **Ist:** Nach vollständigem Satz muss die Pause separat gestartet werden („Pause starten“ bzw. „Nächste Satzpause“). Wunsch der Nutzer: Pause startet von selbst.
-- **Soll:** Konstante `AUTO_REST_DELAY=2000`. Wenn im aktiven Training ein Satz durch Eingabe (Tippen oder Stepper) von unvollständig auf **vollständig** wechselt:
+- **Update 21.07.2026:** Nutzerentscheidung – die Satzpause startet ohne Verzögerung (`AUTO_REST_DELAY=0`), sobald ein Satz vollständig wird. Timer-Mechanik und alle Guards bleiben unverändert bestehen.
+- **Soll (historisch):** Konstante `AUTO_REST_DELAY=2000`. Wenn im aktiven Training ein Satz durch Eingabe (Tippen oder Stepper) von unvollständig auf **vollständig** wechselt:
   - Timer über 2 s starten; jede weitere Eingabe in derselben Übung innerhalb der Frist setzt den Timer zurück; wird der Satz wieder unvollständig, abbrechen.
   - Nach Ablauf: Satzpause der Übung automatisch starten – exakt wie der manuelle Button (`startRest`), inkl. aller bestehenden Guards (`canStartRest`).
   - Gilt auch in der „set“-Phase der Pausen-Leiste (ersetzt dort das manuelle „Nächste Satzpause“; der Button bleibt als sofortige Alternative).
@@ -832,7 +833,7 @@ Grundprinzip: *Satzkraft ist ein Trainingstagebuch – was trainiert wurde, blei
 1. **Unverlierbarkeit:** Keine Planänderung löscht trainierte Daten; entfernte/ersetzte Übungen *enden* (`untilWeek`), ihre Historie bleibt.
 2. **Korrigieren ist nicht Wiederholen:** Satzwerte abgeschlossener Einheiten sind jederzeit still korrigierbar; Struktur und Trainingszeit sind eingefroren.
 3. **Abgeschlossen bleibt abgeschlossen:** Vollständigkeit wird beim Beenden festgeschrieben (`history[].complete`).
-4. **Trainiert wird vorne:** Startbar sind nur die aktuelle Woche und leere Einheiten der Vorwoche.
+4. **Trainiert wird vorne, nachgeholt wird hinten:** Startbar sind die aktuelle Woche, leere sowie angebrochene Einheiten aller vergangenen Wochen (Nachholen) und leere Einheiten der direkten Folgewoche (Nutzerentscheidungen 21.07.2026: Verpasste Einheiten blockieren die nächste Woche nicht und bleiben in jeder vergangenen Woche nachholbar; mehr als eine Woche voraus bleibt gesperrt).
 5. **Wiederholen nur zuletzt:** Nur die zuletzt abgeschlossene Einheit ist wiederholbar; die neue ersetzt die alte.
 6. **Eine Zelle, eine Wahrheit:** Je Woche×Tag genau eine Einheit.
 7. **Planänderungen gelten ab der nächsten offenen Einheit je Tag** – nie rückwirkend.

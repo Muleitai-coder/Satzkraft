@@ -45,14 +45,16 @@ test('keeps program actions enabled outside a training', () => {
 
 test('renders a clear read-only notice and disables all structural library actions', () => {
   assert.match(html, /Training läuft[^<]*<\/strong>Beende zuerst dein Training, um Programme zu ändern/);
-  assert.match(html, /id="coachbtn"'\+lockedAttr/);
-  assert.match(html, /id="importbtn"'\+lockedAttr/);
-  assert.match(html, /id="manualcreate"'\+lockedAttr/);
-  assert.match(html, /id="externalaibtn"'\+lockedAttr/);
+  assert.match(html, /id="coachbtn"[^>]*'\+lockedAttr/);
+  assert.match(html, /id="importbtn"[^>]*'\+lockedAttr/);
+  assert.match(html, /id="manualcreate"[^>]*'\+lockedAttr/);
+  assert.match(html, /id="externalaibtn"[^>]*'\+lockedAttr/);
   assert.match(html, /data-library-index="'\+index\+'"'\+lockedAttr/);
   assert.match(html, /data-library-edit="'\+index\+'"'\+lockedAttr/);
   assert.match(html, /id="backupfile"[^>]*\+lockedAttr/);
-  assert.match(html, /id="libreset"'\+\(programWriteLocked\(\)\?' disabled':''\)/);
+  assert.match(html, /function confirmReset\(\)\{\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function confirmDeleteProgram\(id\)\{\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /data-progmenu=/);
 });
 
 test('guards stale or indirect mutation paths in addition to disabled controls', () => {
