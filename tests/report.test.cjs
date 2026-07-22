@@ -136,16 +136,23 @@ test('ignores malformed and contradictory values instead of inventing progress',
 
 test('renders a responsive and accessible report with local-data and print guidance', () => {
   assert.match(html, /id="report" class="overlay" role="dialog" aria-modal="true"/);
-  assert.match(html, /Fortschritt im Trainingsblock/);
+  assert.doesNotMatch(html, /Fortschritt im Trainingsblock/);
+  assert.doesNotMatch(html, /Letzte Einheiten/);
   assert.match(html, /Fortschritt je Übung/);
   assert.match(html, /Nur lokal gespeichert/);
-  assert.match(html, /Vollständiges Trainingsprotokoll/);
+  assert.match(html, /id="protocol" class="overlay" role="dialog" aria-modal="true"/);
+  assert.match(html, /rprotocollinktitle">Trainingsprotokoll/);
+  assert.match(html, /b\.id==="repprotocol"\)openProtocol\(\)/);
   assert.match(html, /@media\(max-width:760px\).*\.rexgrid\{grid-template-columns:1fr\}/s);
-  assert.match(html, /\.rdetails:not\(\[open\]\)\{display:none !important\}/);
+  assert.match(html, /body\.protocol-open #report\{display:none !important\}/);
+  assert.match(html, /\.rprotocollink\{display:none !important\}/);
   assert.match(html, /Deload-Wochen fließen nicht in den Übungstrend ein/);
   assert.match(html, /function printReport\(\)/);
+  assert.match(html, /function printProtocol\(\)/);
   assert.match(html, /b\.id==="reprint"\)printReport\(\)/);
+  assert.match(html, /b\.id==="protprint"\)printProtocol\(\)/);
   assert.doesNotMatch(html, /window\.open\("","_blank"\)/);
   assert.match(html, /var program=S\.programs\[reportProgramId\]\|\|PROG\(\);document\.title=\(program\.name\|\|"Satzkraft"\)\+" – Auswertung"/);
-  assert.match(html, /e\.key==="Escape".*closeReport/s);
+  assert.match(html, /var program=S\.programs\[protocolProgramId\]\|\|PROG\(\);document\.title=\(program\.name\|\|"Satzkraft"\)\+" – Trainingsprotokoll"/);
+  assert.match(html, /e\.key!=="Escape".*closeProtocol\(\);return;.*closeReport\(\)/s);
 });
