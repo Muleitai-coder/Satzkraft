@@ -79,10 +79,13 @@ test('shows the backup reminder after fourteen days or three new trainings', () 
   assert.equal(context.backupReminderDue(now), false, 'eine neue Einheit nach frischer Sicherung erinnert noch nicht');
   context.S.store.active.history.push({ complete: true, start: now, end: now });
   context.S.store.active.history.push({ complete: true, start: now, end: now });
-  assert.equal(context.backupReminderDue(now), true, 'drei neue Trainings erinnern auch vor Ablauf der 14 Tage');
+  context.S.store.active.history.push({ complete: true, start: now, end: now });
+  assert.equal(context.backupReminderDue(now), false, 'vier neue Trainings erinnern noch nicht');
+  context.S.store.active.history.push({ complete: true, start: now, end: now });
+  assert.equal(context.backupReminderDue(now), true, 'fünf neue Trainings erinnern auch vor Ablauf der 14 Tage');
   storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 0, snoozeUntil: now + 6 * 86400000 }));
-  assert.equal(context.backupReminderDue(now), false, 'Snooze gilt auch für die Drei-Trainings-Regel');
-  storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 3 }));
+  assert.equal(context.backupReminderDue(now), false, 'Snooze gilt auch für die Fünf-Trainings-Regel');
+  storage.set('backup-meta', JSON.stringify({ lastAt: now - 1 * 86400000, historyCount: 5 }));
   assert.equal(context.backupReminderDue(now), false, 'nach einer Sicherung zählt der Zähler von vorn');
 
   assert.match(html, /function maybeShowBackupReminder/);

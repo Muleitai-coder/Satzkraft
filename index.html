@@ -2138,7 +2138,7 @@ function firstCompletedTrainingAt(){
 function backupReminderDue(now){
  now=Number(now)||Date.now();var done=totalCompletedTrainings(),meta=readBackupMeta(),newSince=done-meta.historyCount,reference=meta.lastAt||meta.trackingAt||firstCompletedTrainingAt();
  if(newSince<=0||now<meta.snoozeUntil)return false;
- if(newSince>=3)return true;
+ if(newSince>=5)return true;
  return !!(reference>0&&now-reference>=14*86400000);
 }
 var backupReminderPrompted=false;
