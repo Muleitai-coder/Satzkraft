@@ -421,11 +421,15 @@ test('enforces the current-week, neighbour-week and latest-repeat start matrix',
   assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: true, mode: 'start' });
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'start' });
   assert.deepEqual({ ...context.workoutAccess(4, 'A') }, { allowed: true, mode: 'start' });
-  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: false, mode: 'locked' });
+  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: true, mode: 'start' });
+  context.currentTrainingWeek = () => 1;
+  assert.deepEqual({ ...context.workoutAccess(3, 'A') }, { allowed: false, mode: 'locked' });
+  context.currentTrainingWeek = () => 3;
 
   context.unitEmpty = () => false;
   context.dayWasInterrupted = () => true;
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: true, mode: 'continue' });
+  assert.deepEqual({ ...context.workoutAccess(1, 'A') }, { allowed: true, mode: 'continue' });
 
   context.unitComplete = () => true;
   assert.deepEqual({ ...context.workoutAccess(2, 'A') }, { allowed: false, mode: 'complete' });
