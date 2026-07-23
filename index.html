@@ -2782,7 +2782,18 @@ function deleteProgram(id){
 }
 function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);return true;}}catch(e){}try{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");ta.remove();return ok;}catch(e){}return false;}
 function downloadText(name,t){try{var blob=new Blob([t],{type:"application/json"});var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1500);return true;}catch(e){return false;}}
-function exportCurrentJSON(){return JSON.stringify(exportTranslate(PROG()),null,2);}
+function exportCurrentJSON(){
+ var p=PROG(),store=S.store[S.active]||newStore(p),out=exportTranslate(p);
+ // Aktuelle Arbeitsgewichte als Startgewichte mitgeben, damit eine KI auf dem echten Stand plant (gleiche Logik wie beim Folgeblock).
+ out.days.forEach(function(dayOut,di){
+  var day=p.days[di];if(!day)return;
+  (dayOut.exercises||[]).forEach(function(exOut,ei){
+   var ex=day.ex[ei];
+   if(ex&&ex.w&&exOut.weighted){var current=followupStartWeight(p,store,day,ex);if(current!=null&&isFinite(current)&&current>=0)exOut.startWeight=current;}
+  });
+ });
+ return JSON.stringify(out,null,2);
+}
 function externalAiPrompt(wish){return "Du bist ein erfahrener Krafttrainings-Coach. Erstelle mir ein Trainingsprogramm\nim Format der folgenden Satzkraft-Vorlage (JSON). Halte dich exakt an Struktur,\nFeldnamen und erlaubte Werte aus \"_anleitung\" – erfinde keine neuen Felder.\nBeachte die Trainings-Richtlinien in der Vorlage. Antworte NUR mit dem\nvollständigen fertigen JSON, vom ersten { bis zum letzten }, ohne Erklärung oder\nMarkdown-Codeblock. Alle Pflichtfelder und alle verwendeten Kategorien müssen\nenthalten sein.\n\nMEIN TRAININGSWUNSCH:\n"+String(wish||"").trim()+"\n\nVOLLSTÄNDIGE SATZKRAFT-VORLAGE:\n"+JSON.stringify(BLANK_TEMPLATE,null,2);}
 function confirmReset(){
  if(programWriteLocked()){showProgramWriteLocked();return;}
@@ -3505,7 +3516,7 @@ function confirmDeleteProgram(id){
 }
 function showShareModal(){
  showModal("Programm teilen",'„'+esc(PROG().name)+'“ wird ohne deinen Fortschritt geteilt.',[
-  {label:"Als Text kopieren",cls:"menu",action:function(){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);}},
+  {label:"Als Text kopieren",cls:"menu",action:function(){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – mit deinen aktuellen Arbeitsgewichten als Startgewichte. Jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);}},
   {label:"Als Datei",cls:"menu",action:function(){downloadText((PROG().name||"programm").replace(/[^a-z0-9]+/gi,"_")+".json",exportCurrentJSON());}},
   {label:"Link teilen",cls:"menu",action:function(){var eo=exportTranslate(PROG());delete eo._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(eo))));var okl=copyText(u);showModal(okl?"Link kopiert":"Kopieren nicht möglich",okl?"Wer den Link öffnet, bekommt dein Programm zum Laden angeboten (ohne deinen Fortschritt). Bei sehr großen Programmen kann der Link von Messengern gekürzt werden – dann Datei-Export nutzen.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);}},
   {label:"Abbrechen",action:null}
@@ -3754,7 +3765,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="proshare"){showShareModal();return;}
  if(b.id==="explink"){var eo=exportTranslate(PROG());delete eo._anleitung;var u=location.origin+location.pathname+"#p="+btoa(unescape(encodeURIComponent(JSON.stringify(eo))));var okl=copyText(u);showModal(okl?"Link kopiert":"Kopieren nicht möglich",okl?"Wer den Link öffnet, bekommt dein Programm zum Laden angeboten (ohne deinen Fortschritt). Bei sehr großen Programmen kann der Link von Messengern gekürzt werden – dann Datei-Export nutzen.":"Nutze stattdessen den Datei-Export.",[{label:"OK",action:null}]);return;}
  if(b.id==="expfile"){downloadText((PROG().name||"programm").replace(/[^a-z0-9]+/gi,"_")+".json",exportCurrentJSON());return;}
- if(b.id==="expcopy"){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);return;}
+ if(b.id==="expcopy"){var okc=copyText(exportCurrentJSON());showModal(okc?"Kopiert":"Kopieren nicht möglich",okc?"Das Programm liegt als JSON in der Zwischenablage – mit deinen aktuellen Arbeitsgewichten als Startgewichte. Jetzt einer KI geben oder selbst bearbeiten, dann über „Fertiges Programm importieren“ wieder einfügen.":"Konnte nicht kopieren. Nutze stattdessen „Als Datei“.",[{label:"OK",action:null}]);return;}
  if(b.id==="tplcopy"){copyText(JSON.stringify(BLANK_TEMPLATE,null,2));showModal("Beispiel-Vorlage kopiert","Eine vollständige, korrekte Beispiel-Vorlage liegt in der Zwischenablage – ideal als Muster für die KI.",[{label:"OK",action:null}]);return;}
  if(b.id==="tplpromptcopy"){var wish=document.getElementById("externalwish");externalAiWish=wish?wish.value.trim():externalAiWish.trim();if(!externalAiWish){showModal("Trainingswunsch fehlt","Beschreibe zuerst kurz, wie dein Trainingsprogramm aussehen soll.",[{label:"Weiter schreiben",cls:"primary",action:null}]);return;}var promptOk=copyText(externalAiPrompt(externalAiWish));showModal(promptOk?"Text für ChatGPT kopiert":"Kopieren nicht möglich",promptOk?"Füge den Text jetzt unverändert bei ChatGPT, Claude oder einer anderen KI ein. Kopiere danach die vollständige JSON-Antwort zurück zu Satzkraft.":"Markiere den Inhalt erneut und versuche es noch einmal.",[{label:"OK",cls:promptOk?"primary":"",action:null}]);return;}
  if(b.id==="tplfile"){downloadText("vorlage-trainings-block.json",JSON.stringify(BLANK_TEMPLATE,null,2));return;}

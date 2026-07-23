@@ -91,6 +91,36 @@ test("Zuordnung: Zeitfenster-Felder aus dem Export werden entfernt, unbekannte T
   assert.equal(draft.days[1].exercises[0]._ref, undefined);
 });
 
+/* ---------- Export mit aktuellen Arbeitsgewichten ---------- */
+
+test("Export: Gewichtsübungen bekommen das aktuelle Arbeitsgewicht als Startgewicht, andere bleiben unberührt", () => {
+  const xctx = {
+    S: { active: "x", store: { x: { logs: {} } } },
+    newStore: () => ({}),
+    PROG: () => ({ days: [{ key: "A", ex: [
+      { id: "A_0", name: "Beinpresse", w: true, def: 40 },
+      { id: "A_1", name: "Plank", unit: "seconds" }
+    ] }] }),
+    exportTranslate: () => ({ name: "Plan", days: [{ key: "A", exercises: [
+      { name: "Beinpresse", weighted: true, startWeight: 40, increment: 5 },
+      { name: "Plank", unit: "seconds" }
+    ] }] }),
+    followupStartWeight: (p, s, d, ex) => (ex.id === "A_0" ? 55 : null)
+  };
+  vm.createContext(xctx);
+  vm.runInContext(slice("function exportCurrentJSON", "function externalAiPrompt"), xctx);
+  const out = JSON.parse(xctx.exportCurrentJSON());
+  assert.equal(out.days[0].exercises[0].startWeight, 55, "aktuelles Gewicht statt Woche-1-Wert");
+  assert.ok(!("startWeight" in out.days[0].exercises[1]), "Zeitübung bleibt ohne Gewicht");
+});
+
+test("Export: Hinweistext nennt die aktuellen Arbeitsgewichte, Link-Teilen bleibt ohne sie", () => {
+  assert.match(html, /mit deinen aktuellen Arbeitsgewichten als Startgewichte/);
+  assert.match(html, /function exportCurrentJSON\(\)\{[\s\S]*?followupStartWeight\(p,store,day,ex\)/);
+  // Link teilen exportiert weiterhin direkt (ohne followupStartWeight):
+  assert.match(html, /Link teilen[\s\S]{0,200}?exportTranslate\(PROG\(\)\)/);
+});
+
 test("Oberfläche: Update-Knopf, Klick-Handler und Hinweise sind verdrahtet", () => {
   assert.match(html, /id="importupdate">/);
   assert.match(html, /Laufendes Programm aktualisieren/);

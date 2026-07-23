@@ -13,6 +13,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Die Startgewicht-Hilfe erklärt jetzt, was als Gewicht zählt: Langhantel gesamt inklusive Stange, Kurzhanteln je Hantel, Maschine laut Steckgewicht, Zusatzgewicht nur das Extra.
 - Der Scheibenrechner heißt jetzt „Scheiben pro Seite (Langhantel)“, damit „pro Seite“ nicht mit dem Kurzhantel-Thema verwechselt wird.
 - Trainings-Update per Import: Wird ein Programm mit gleichem Namen, aber geändertem Inhalt eingefügt (z. B. von einer KI angepasst), bietet die Vorschau jetzt „Laufendes Programm aktualisieren“ an. Fortschritt, Gewichte und Protokoll bleiben erhalten; Übungen werden über Tag und Namen zugeordnet (Bibliotheks-Aliasse eingeschlossen), bei vermuteten Umbenennungen fragt die App nach – wie beim „Original ersetzen“ im Editor.
+- Der Programm-Export („Als Text kopieren“ / „Als Datei“) trägt jetzt deine aktuellen Arbeitsgewichte als Startgewichte ein – berechnet wie beim Folgeblock. Eine KI plant damit auf deinem echten Stand statt mit den Werten aus Woche 1. „Link teilen“ bleibt bewusst ohne persönliche Gewichte.
 
 - Programm-Editor: Im Tab „Details“ lassen sich jetzt der Untertitel (z. B. „Einsteiger“) und der Bereich (z. B. „Ganzkörper“) des Programms festlegen – bisher ging das nur über Import oder KI.
 - Programm-Editor: Die Anstrengungs-Auswahl (RIR) einer Woche bietet jetzt auch Bereiche wie „3-4“ oder „4-5“ an – dieselben Werte, die die mitgelieferten Vorlagen nutzen.
