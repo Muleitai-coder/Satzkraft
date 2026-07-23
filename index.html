@@ -2730,6 +2730,49 @@ function storeImportedProgram(activate,allowDuplicate){
  return p.id;
 }
 function useExistingDuplicate(){if(programWriteLocked()){showProgramWriteLocked();return;}var fromCoach=pendingProgramImport&&pendingProgramImport.origin==="coach",id=pendingProgramImport&&pendingProgramImport.duplicateId;if(!id||!S.programs[id])return;if(fromCoach)saveCoachPreferences();if(id===S.active){pendingProgramImport=null;openProgramEditor(id);return;}pendingProgramImport=null;if(setActive(id))closeLib(true);}
+// Trainings-Update per Import: Ein gleichnamiges, geändertes Programm (z. B. von einer KI
+// angepasst) kann das vorhandene direkt ersetzen – über die geprüfte Editor-Ersetzen-Mechanik,
+// damit Fortschritt, Gewichte und Protokoll erhalten bleiben.
+function importUpdateTargetId(prepared){
+ if(!prepared||!Array.isArray(prepared.sameNameIds))return null;
+ var ids=prepared.sameNameIds.filter(function(id){return S.programs[id]&&S.programs[id].archived!==true;});
+ if(!ids.length)return null;
+ return ids.indexOf(S.active)>=0?S.active:ids[0];
+}
+function importBuildUpdateDraft(external,target,store){
+ var draft=cloneJSON(external);delete draft._anleitung;
+ var editWeek=currentTrainingWeekFor(target,store||newStore(target));
+ draft.days.forEach(function(draftDay){
+  var oldDay=null;target.days.forEach(function(d){if(String(d.key)===String(draftDay.key))oldDay=d;});
+  if(!oldDay)return;
+  var oldActive=dayExercisesFor(oldDay,editWeek),open=oldActive.slice();
+  (draftDay.exercises||[]).forEach(function(draftEx){delete draftEx.fromWeek;delete draftEx.untilWeek;delete draftEx.prevId;});
+  (draftDay.exercises||[]).forEach(function(draftEx){
+   for(var i=0;i<open.length;i++)if(exerciseLibraryNamesMatch(open[i].name,draftEx.name)){draftEx._ref=open[i].id;open.splice(i,1);return;}
+  });
+  (draftDay.exercises||[]).forEach(function(draftEx,index){
+   if(draftEx._ref)return;
+   var oldEx=oldActive[index];
+   if(!oldEx||open.indexOf(oldEx)<0)return;
+   if(editorExerciseTypeSignature(oldEx)!==editorExternalTypeSignature(draftEx))return;
+   draftEx._ref=oldEx.id;open.splice(open.indexOf(oldEx),1);
+  });
+ });
+ return draft;
+}
+function importUpdateExisting(){
+ if(programWriteLocked()){showProgramWriteLocked();return;}
+ var prepared=pendingProgramImport;if(!prepared||!prepared.program)return;
+ var targetId=importUpdateTargetId(prepared),target=targetId&&S.programs[targetId];if(!target)return;
+ if(prepared.origin==="coach")saveCoachPreferences();
+ var draft=importBuildUpdateDraft(prepared.external,target,S.store[targetId]);
+ pendingProgramImport=null;importIssue=null;
+ editorSourceId=targetId;editorProgramSource=target.source==="coach"?"coach":null;editorUnsavedDraft=false;editorReturnView="library";
+ editorDraft=draft;editorInitialJSON=JSON.stringify(draft);
+ editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorOpenSections={};editorPendingReplacementRefs={};editorRenameChoices={};
+ renderLib();
+ editorStoreProgram(true,"back",false);
+}
 function importProgram(text){beginProgramImport(text,"json","");}
 function deleteProgram(id){
  if(programWriteLocked()){showProgramWriteLocked();return false;}
@@ -3527,7 +3570,7 @@ function renderImportEntry(){
  var h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="createhubback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Programm importieren</h1><button class="iconbtn" id="subclose" aria-label="Zurück zu Programme">'+icon("close")+'</button></div><div class="subviewlead">Füge das JSON einer beliebigen KI ein oder wähle eine Datei. Es wird zunächst nur geprüft – dein aktives Programm und dein Fortschritt bleiben unverändert.</div>';
  h+='<div class="importtextwrap"><textarea class="libta" id="libpaste" aria-label="Programm-JSON einfügen" placeholder="JSON hier einfügen …">'+esc(importInputText)+'</textarea><button class="importclear" id="importclear"'+(importInputText?'':' hidden')+'>'+icon("close")+' Leeren</button></div>';
  h+='<div class="importdrop" id="importdrop"><div><strong>'+(importSourceName?esc(importSourceName):'JSON-Datei auswählen')+'</strong><small>Bis 5 MB · JSON oder Textdatei</small></div><label class="smallbtn" style="display:inline-flex;align-items:center">Datei wählen<input type="file" id="libfile" accept=".json,application/json,text/plain" style="display:none"></label></div>';
- h+='<div class="librow"><button class="smallbtn go" id="libload">Prüfen &amp; Vorschau</button><button class="smallbtn" id="tplcopy">Vorlage kopieren</button></div><div class="importnotice"><strong>Noch nichts wird gespeichert</strong>Erst in der nächsten Ansicht entscheidest du zwischen „Speichern &amp; aktivieren“ und „Bearbeiten“.</div></div>';document.getElementById("lib").innerHTML=h;
+ h+='<div class="librow"><button class="smallbtn go" id="libload">Prüfen &amp; Vorschau</button><button class="smallbtn" id="tplcopy">Vorlage kopieren</button></div><div class="importnotice"><strong>Noch nichts wird gespeichert</strong>Erst in der nächsten Ansicht entscheidest du: speichern, bearbeiten – oder ein vorhandenes Programm mit gleichem Namen aktualisieren, ohne deinen Fortschritt zu verlieren.</div></div>';document.getElementById("lib").innerHTML=h;
 }
 function renderImportError(){
  var issue=importIssue&&importIssue.error?importIssue.error:explainProgramError("Das Programm konnte nicht geprüft werden."),origin=importIssue&&importIssue.origin||"json",h='<div class="libbox subviewbox"><div class="ohdr"><button class="iconbtn" id="importback" aria-label="Zurück">'+icon("chevron-left")+'</button><h1>Import korrigieren</h1><button class="iconbtn" id="subclose" aria-label="Zurück zu Programme">'+icon("close")+'</button></div><span class="sourcepill">'+esc(programSourceLabel(origin))+(importIssue&&importIssue.sourceName?' · '+esc(importIssue.sourceName):'')+'</span>';
@@ -3555,9 +3598,9 @@ function renderImportPreview(){
  p.weeks.forEach(function(week){h+='<div class="pvweekrow"><b>W'+week.n+'</b><span class="wklabel">'+esc(week.label||week.phase)+'</span>'+(week.rir?'<span class="wkrir">RIR '+esc(week.rir)+'</span>':'')+'</div>';});
  h+='</div></details>';
  if(prepared.duplicateId){var existing=S.programs[prepared.duplicateId];h+='<div class="importnotice warn"><strong>Bereits vorhanden</strong>„'+esc(existing.name)+'“ hat denselben Inhalt. Es wird nicht unbemerkt doppelt gespeichert.</div>';}
- else if(prepared.sameNameIds.length)h+='<div class="importnotice warn"><strong>Name bereits vorhanden</strong>Der Inhalt unterscheidet sich. Du kannst das neue Programm trotzdem unter demselben Namen speichern oder es vorher umbenennen.</div>';
+ else if(prepared.sameNameIds.length){var updateTargetId=importUpdateTargetId(prepared);h+='<div class="importnotice warn"><strong>Name bereits vorhanden</strong>Der Inhalt unterscheidet sich.'+(updateTargetId?' Mit „Aktualisieren“ übernimmst du die Änderungen in das vorhandene Programm – Fortschritt, Gewichte und Protokoll bleiben erhalten.':' Du kannst das neue Programm trotzdem unter demselben Namen speichern oder es vorher umbenennen.')+'</div>';}
  if(prepared.duplicateId)h+='<div class="importactions"><button class="smallbtn go" id="importexisting">'+(prepared.duplicateId===S.active?'Vorhandenes bearbeiten':'Vorhandenes aktivieren')+'</button><button class="smallbtn" id="importcopy">Als Kopie speichern</button></div>';
- else h+='<div class="importactions"><button class="smallbtn go" id="importactivate">Speichern &amp; aktivieren</button><button class="smallbtn" id="importedit">Bearbeiten</button></div>';
+ else{var canUpdate=importUpdateTargetId(prepared);h+='<div class="importactions">'+(canUpdate?'<button class="smallbtn go" id="importupdate">'+(canUpdate===S.active?'Laufendes Programm aktualisieren':'Vorhandenes aktualisieren')+'</button><button class="smallbtn" id="importactivate">Als neues Programm speichern</button>':'<button class="smallbtn go" id="importactivate">Speichern &amp; aktivieren</button>')+'<button class="smallbtn" id="importedit">Bearbeiten</button></div>';}
  document.getElementById("lib").innerHTML=h+'</div>';
 }
 function returnFromImportFlow(){var origin=(pendingProgramImport&&pendingProgramImport.origin)||(importIssue&&importIssue.origin)||"json";pendingProgramImport=null;importIssue=null;if(origin==="coach")renderCoach();else if(origin==="library"||origin==="link")renderLib();else renderImportEntry();}
@@ -3692,6 +3735,7 @@ document.getElementById("lib").addEventListener("click",function(e){
  if(b.id==="importactivate"){storeImportedProgram(true,false);return;}
  if(b.id==="importcopy"){storeImportedProgram(false,true);return;}
  if(b.id==="importexisting"){useExistingDuplicate();return;}
+ if(b.id==="importupdate"){importUpdateExisting();return;}
  if(b.id==="importedit"){if(pendingProgramImport)openProgramDraft(pendingProgramImport.external,"preview",pendingProgramImport.origin);return;}
  if(b.id==="coachbtn"){coachStart();return;}
  if(b.id==="coachback"){if(coachBusy)return;coachCaptureFreeInput();saveCoachPreferences();if(coachStep>0&&!coachProgram&&!coachErr){coachAdvance(-1);renderCoach();}else{coachSessionActive=false;renderLib();}return;}
