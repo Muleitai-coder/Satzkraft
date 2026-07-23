@@ -266,6 +266,7 @@
       "Single-Arm Cable Row"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kabelzug",
     "muster": "Horizontal ziehen · oberer Rücken",
     "technik": "Zieh den Griff einseitig zur unteren Rippe, ohne den Oberkörper mitzudrehen.",
@@ -326,6 +327,7 @@
       "Single-Arm Dumbbell Row"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kurzhantel, Bank",
     "muster": "Horizontal ziehen · oberer Rücken",
     "technik": "Stütz dich mit Hand und Knie auf der Bank ab und zieh die Kurzhantel zur Hüfte, ohne den Rumpf zu verdrehen.",
@@ -641,6 +643,7 @@
       "Cable Lateral Raises"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kabelzug",
     "muster": "Abduktion · seitliche Schulter",
     "technik": "Zieh den Griff gegen den konstanten Kabelzug seitlich bis auf Schulterhöhe, ohne mit dem Oberkörper zu pendeln.",
@@ -819,6 +822,7 @@
       "Konzentrationscurls"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kurzhantel, Bank",
     "muster": "Ellbogenbeugen · Bizeps",
     "technik": "Stütz den Ellbogen an der Innenseite des Oberschenkels ab und curl die Hantel langsam und ohne Schwung.",
@@ -1106,6 +1110,7 @@
       "Rear-Foot-Elevated Split Squat"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kurzhanteln, Bank",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Leg den hinteren Fuß auf der Bank ab und senke das hintere Knie senkrecht Richtung Boden.",
@@ -1121,6 +1126,7 @@
       "Walking Lunges"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kurzhanteln",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Mach einen großen Schritt nach vorn und senke das hintere Knie kontrolliert Richtung Boden, bevor du dich zurückdrückst.",
@@ -1136,6 +1142,7 @@
       "Step-Ups mit Gewicht"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kurzhanteln, Box oder Bank",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Drück dich vollständig über das obere Bein auf die Box, statt mit dem unteren Bein abzuspringen.",
@@ -1449,6 +1456,7 @@
       "Bogenschützen-Liegestütze"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Horizontal drücken unilateral · Brust",
     "technik": "Setz die Hände weit auseinander und senke dich seitlich über einen Arm ab, während der andere gestreckt bleibt.",
@@ -1792,6 +1800,7 @@
       "Ausfallschritte vorwärts"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Mach einen großen Schritt nach vorn, senke das hintere Knie Richtung Boden und drück dich kraftvoll zurück.",
@@ -1807,6 +1816,7 @@
       "Rückwärts-Ausfallschritte"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Setz einen großen Schritt nach hinten und senke das hintere Knie kontrolliert ab, bevor du dich über das vordere Bein aufrichtest.",
@@ -1822,6 +1832,7 @@
       "Pistols"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "optional Festhalten",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Streck ein Bein nach vorn und senke dich auf dem Standbein so tief ab, wie du die Kontrolle behältst.",
@@ -1882,6 +1893,7 @@
       "einbeiniges Beckenheben"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Hüftstrecken unilateral · Gesäß",
     "technik": "Strecke ein Bein nach vorn und drücke die Hüfte über das Standbein nach oben, ohne das Becken kippen zu lassen.",
@@ -1926,6 +1938,7 @@
       "einbeiniges Wadenheben"
     ],
     "typ": "kgz",
+    "einseitig": true,
     "equipment": "optional Erhöhung",
     "muster": "Plantarflexion unilateral · Waden",
     "technik": "Steh auf einem Bein, drück dich hoch auf den Fußballen und arbeite besonders langsam in der Absenkphase.",
@@ -1972,6 +1985,7 @@
       "einarmiger Swing"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kettlebell",
     "muster": "Hüftscharnier ballistisch · Gesäß/Beinbeuger",
     "technik": "Schwing die Kettlebell einarmig aus der Hüftstreckung und halte den Oberkörper dabei gerade, ohne ihn zu verdrehen.",
@@ -2001,6 +2015,7 @@
       "einbeiniges RDL mit Kettlebell"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kettlebell",
     "muster": "Hüftscharnier unilateral · Beinbeuger/Gesäß",
     "technik": "Kippe den Oberkörper über das Standbein nach vorn, während das freie Bein die Gegenbewegung macht und die Hüfte gerade bleibt.",
@@ -2045,6 +2060,7 @@
       "Racked Lunge"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kettlebell",
     "muster": "Kniedominant unilateral · Quadrizeps/Gesäß",
     "technik": "Halte die Kettlebell im Rack oder hängend und senke das hintere Knie kontrolliert Richtung Boden.",
@@ -2176,6 +2192,7 @@
       "Kettlebell-Rudern"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kettlebell",
     "muster": "Horizontal ziehen · oberer Rücken",
     "technik": "Beuge dich in der Schrittstellung vor und zieh die Kettlebell zur Hüfte, ohne den Rumpf zu verdrehen.",
@@ -2205,6 +2222,7 @@
       "Plank Row"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "2 Kettlebells oder Kurzhanteln",
     "muster": "Horizontal ziehen und Anti-Rotation · Rücken/Rumpf",
     "technik": "Ruder im Liegestütz abwechselnd eine Hantel zur Hüfte, ohne dass die Hüfte zur Seite kippt.",
@@ -2559,6 +2577,7 @@
       "Side Plank"
     ],
     "typ": "zeit",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Anti-Lateralflexion · seitlicher Rumpf",
     "technik": "Stütz dich auf dem Unterarm ab und halte die Hüfte hoch in einer geraden Linie.",
@@ -2574,6 +2593,7 @@
       "Copenhagen Side Plank"
     ],
     "typ": "zeit",
+    "einseitig": true,
     "equipment": "Bank",
     "muster": "Anti-Lateralflexion · Adduktoren/Rumpf",
     "technik": "Leg das obere Bein auf der Bank ab und halte den Körper im Seitstütz gerade, sodass die Oberschenkel-Innenseite trägt.",
@@ -2588,6 +2608,7 @@
       "Deadbug"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Anti-Extension · Rumpf",
     "technik": "Drück den unteren Rücken in den Boden und strecke Arm und gegenüberliegendes Bein langsam aus.",
@@ -2884,6 +2905,7 @@
       "WGS"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Ganzkörpermobilität",
     "technik": "Geh in den tiefen Ausfallschritt, setz die Hand innen auf und dreh den freien Arm weit nach oben auf.",

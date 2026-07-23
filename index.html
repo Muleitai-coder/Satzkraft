@@ -178,6 +178,7 @@ body.surface-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .platebtn{border:0;background:none;padding:3px 1px;margin:-3px -1px;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--muted);text-underline-offset:3px}
 .platebtn:hover,.platebtn:focus-visible{color:var(--acc)}
 .presctarget{display:inline-flex;align-items:baseline;gap:5px}
+.khnote{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;line-height:1.45}
 .targetcontext{font-size:10px;font-weight:750;color:var(--acc)}
 .targetcontext.sky{color:var(--core)}
 .targetcontext:empty{display:none}
@@ -1031,6 +1032,7 @@ function loadExerciseLibrary(){
 }
 function findExerciseLibraryEntry(name){var key=normalizeExerciseLibraryName(name);return key&&typeof EXERCISE_ALIAS_INDEX!=="undefined"&&EXERCISE_ALIAS_INDEX?EXERCISE_ALIAS_INDEX[key]||null:null;}
 function canonicalExerciseName(name){var entry=findExerciseLibraryEntry(name);return entry?entry.de:String(name==null?"":name).trim();}
+function exerciseUsesDumbbells(name){var entry=findExerciseLibraryEntry(name);return !!(entry&&/kurzhantel/i.test(String(entry.equipment||"")));}
 function exerciseLibraryNamesMatch(left,right){
  var leftEntry=findExerciseLibraryEntry(left),rightEntry=findExerciseLibraryEntry(right);
  if(leftEntry||rightEntry)return !!(leftEntry&&rightEntry&&leftEntry.de===rightEntry.de);
@@ -1333,7 +1335,7 @@ function plateCalculatorHtml(ex){
  h+=plateResultHtml(target,bar);
  return h+'</div>';
 }
-function showPlateCalculator(ex){if(!ex||!ex.w)return;showModal("Scheiben pro Seite",plateCalculatorHtml(ex),[{label:"Fertig",cls:"primary",action:null}]);}
+function showPlateCalculator(ex){if(!ex||!ex.w)return;showModal("Scheiben pro Seite (Langhantel)",plateCalculatorHtml(ex),[{label:"Fertig",cls:"primary",action:null}]);}
 function selectPlateBar(exid,value){var ex=findEx(exid),bar=Number(value);if(!ex||[10,15,20].indexOf(bar)<0)return;S.barw[exid]=bar;save();showPlateCalculator(ex);}
 var pendingExerciseNote="";
 function showExerciseNote(ex){
@@ -1679,8 +1681,9 @@ function exCardHtml(ex){
  if(S.notes[ex.id])h+='<button type="button" class="exnoteline" data-note="'+attr(ex.id)+'" aria-label="Notiz für '+attr(ex.name)+' bearbeiten">'+esc(S.notes[ex.id])+'</button>';
  var progressHint=progressContextHtml(ex,last,done,tw);
  h+='<div class="presc">';
- h+=rr?'<span class="presctarget"><b>'+(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'–'+rr[1]+' Wdh')+'</b>'+progressHint+'</span>':'<span class="presctarget"><b>'+esc(ex.target||"—")+'</b>'+progressHint+'</span>';
+ h+=rr?'<span class="presctarget"><b>'+(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'–'+rr[1]+' Wdh')+(ex.perSide?' je Seite':'')+'</b>'+progressHint+'</span>':'<span class="presctarget"><b>'+esc(ex.target||"—")+(ex.perSide?' je Seite':'')+'</b>'+progressHint+'</span>';
  var pauseLabel=restLabel(catRest(ex));h+='<span class="dot">·</span><span class="prescpause" aria-label="Pause '+attr(pauseLabel)+'" title="Pause '+attr(pauseLabel)+'">'+icon("timer")+' <b>'+pauseLabel+'</b></span></div>';
+ if(ex.w&&!ex.bw&&exerciseUsesDumbbells(displayName))h+='<div class="khnote">Kurzhantel-Übung: Trag das Gewicht einer Hantel ein.</div>';
  if(last){var v=performanceSummary(ex,last.sets);h+='<button class="last" data-hist="'+ex.id+'" aria-label="Verlauf für '+attr(ex.name)+' öffnen"><span class="l">'+icon("undo")+' Zuletzt (W'+last.week+'):</span><span class="v">'+esc(v)+'</span><span class="histhint">Verlauf <span aria-hidden="true">'+icon("chevron-right")+'</span></span></button>';}
  if(otherLast){var ov=performanceSummary(otherLast.exercise,otherLast.sets),od=otherLast.day,odl=od.wd?od.wd.slice(0,2):(od.title||od.key);h+='<div class="otherlast"><span class="l">Anderer Tag · '+esc(odl)+' (W'+otherLast.week+'):</span> <span class="v">'+esc(ov)+'</span></div>';}
  if(ex.w&&!ex.bw&&tw<=0&&!sets.some(function(s){return Number(s.weight)>0;}))h+='<div class="editnote calibrationhint" id="calib-'+attr(ex.id)+'"><button type="button" class="calibrationmore" data-calibration-guide="1">Startgewicht bestimmen</button></div>';
@@ -1694,7 +1697,7 @@ function exCardHtml(ex){
 var expandedPreviewRows={};
 function exRowHtml(ex,ei){
  var sets=getSets(ex),wk=PROG().weeks[S.week-1],rr=catReps(ex,wk.phase),tw=targetWeight(ex),done=isDone(ex),swap=currentExerciseSwap(ex),displayName=swap||ex.name;
- var summary=sets.length+' \u00d7 '+(rr?(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'\u2013'+rr[1]):esc(ex.target||'\u2014'));
+ var summary=sets.length+' \u00d7 '+(rr?(isTime(ex)?fmtSecondsRange(rr[0],rr[1]):rr[0]+'\u2013'+rr[1]):esc(ex.target||'\u2014'))+(ex.perSide?' je Seite':'');
  if(ex.w)summary+=' \u00b7 '+(tw>0?tw+' kg':(ex.bw?'K\u00f6rpergew.':'\u2014 kg'));
  summary+=' \u00b7 '+fmtTime(catRest(ex));
  return '<button class="exrowd '+catColor(ex)+'" id="card-'+attr(ex.id)+'" data-expand-prev="'+attr(ex.id)+'" aria-label="'+attr(displayName)+' \u00f6ffnen"><span class="rowbar"></span><span class="rowmain"><span class="rowcat">'+esc(catLabel(ex))+'</span><span class="rowname">'+esc(displayName)+(swap?' <small>(getauscht)</small>':'')+'</span><span class="rowpresc">'+summary+'</span></span><span class="rowidx'+(done?' done':'')+'">'+(done?icon("check"):('0'+(ei+1)).slice(-2))+'</span></button>';
@@ -2386,7 +2389,7 @@ var ANLEITUNG={
  categories:"Frei definierbare Trainingsgruppen (technisches Feld: categories). Sie liefern gemeinsame Standardwerte fuer aehnliche Uebungen. Schluessel (z.B. 'kraft') -> {label, color, rest (Pause in Sekunden), reps (OPTIONAL, [min,max] je phase)}. Eine Uebung kann diese Standardwerte mit eigenen sets und reps ueberschreiben.",
  weeks:"Eine Woche pro Eintrag: {n, phase (aus erlaubte_werte; 'deload' = leichtere Erholungswoche), label, rir (Text z.B. '2'), note, sets {kategorie-schluessel: anzahl saetze}}. Ueblicher Block: 2-3 Aufbauwochen + 1 Deload.",
  days:"Ein Trainingstag pro Eintrag: {key (eindeutig), weekday (echter Wochentag), title, exercises}. OPTIONAL warmup und cooldown als Liste aus {name, seconds} – die App fuehrt sie vor bzw. nach dem Training als eigenen Ablauf. Die App zeigt immer Mo-So und markiert Trainings- und erledigte Tage.",
- exercises:"Pro Uebung: name + category. OPTIONAL: sets (eigene Satzanzahl), reps:[min,max] (eigener Wiederholungs- oder Sekundenbereich), en, cue, video, garmin, proxy, target und progressionMode. Eigene sets/reps gelten in allen Wochen und ueberschreiben die Trainingsgruppe. Gewicht: weighted:true + increment + startWeight (+ bodyweight:true bei Zusatzgewicht). Zeit: unit:'seconds' und optional timerMode:'target' (stoppt am oberen Ziel automatisch) oder 'max' (laeuft bis zum manuellen Stopp)."
+ exercises:"Pro Uebung: name + category. OPTIONAL: sets (eigene Satzanzahl), reps:[min,max] (eigener Wiederholungs- oder Sekundenbereich), en, cue, video, garmin, proxy, target, progressionMode und perSide:true bei Uebungen, die je Seite ausgefuehrt werden (z. B. Ausfallschritte) – die App zeigt dann 'je Seite' hinter den Wiederholungen an. Eigene sets/reps gelten in allen Wochen und ueberschreiben die Trainingsgruppe. Gewicht: weighted:true + increment + startWeight (+ bodyweight:true bei Zusatzgewicht). Zeit: unit:'seconds' und optional timerMode:'target' (stoppt am oberen Ziel automatisch) oder 'max' (laeuft bis zum manuellen Stopp)."
 };
 // Vollstaendiges, valides Beispiel – zeigt alle Faelle korrekt (Gewicht, Zusatzgewicht, Zeit, reine Reps, Deload, settings).
 var BLANK_TEMPLATE={
@@ -2433,7 +2436,7 @@ function importTranslate(ext){
   settings:(ext.settings&&typeof ext.settings==="object"&&!Array.isArray(ext.settings))?ext.settings:undefined,
   categories:cats,
   weeks:ext.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label||w.phase,rir:String(w.rir==null?"":w.rir),note:w.note||"",sets:w.sets||{}};}),
-  days:ext.days.map(function(d){return{key:String(d.key),wd:d.weekday||d.key,title:d.title||"",wu:wucdSan(d.warmup),cd:wucdSan(d.cooldown),ex:d.exercises.map(function(e,i){var ex={id:String(d.key)+"_"+i,name:e.name,en:e.en||"",sub:e.cue||"",cat:e.category,target:e.target||"",q:e.video||(e.name+" Technik"),gname:(e.garmin!==undefined?e.garmin:null),proxy:e.proxy||null,w:!!e.weighted,inc:e.weighted?(e.increment||2.5):undefined,def:(e.startWeight!=null?e.startWeight:0),bw:!!e.bodyweight,unit:((e.unit==="seconds"||e.unit==="time")?"seconds":"reps"),sets:(e.sets!=null?e.sets:undefined),reps:(Array.isArray(e.reps)?e.reps:undefined),pmode:((typeof e.progressionMode==="string"&&VALID_PROGRESSION_MODES.indexOf(e.progressionMode)>=0)?e.progressionMode:undefined),tmode:((e.timerMode==="target"||e.timerMode==="max")?e.timerMode:undefined)};if(e.fromWeek!=null)ex.fromWeek=e.fromWeek;if(e.untilWeek!=null)ex.untilWeek=e.untilWeek;if(e.prevId)ex.prevId=e.prevId;return ex;})};})
+  days:ext.days.map(function(d){return{key:String(d.key),wd:d.weekday||d.key,title:d.title||"",wu:wucdSan(d.warmup),cd:wucdSan(d.cooldown),ex:d.exercises.map(function(e,i){var ex={id:String(d.key)+"_"+i,name:e.name,en:e.en||"",sub:e.cue||"",cat:e.category,target:e.target||"",q:e.video||(e.name+" Technik"),gname:(e.garmin!==undefined?e.garmin:null),proxy:e.proxy||null,w:!!e.weighted,inc:e.weighted?(e.increment||2.5):undefined,def:(e.startWeight!=null?e.startWeight:0),bw:!!e.bodyweight,unit:((e.unit==="seconds"||e.unit==="time")?"seconds":"reps"),sets:(e.sets!=null?e.sets:undefined),reps:(Array.isArray(e.reps)?e.reps:undefined),pmode:((typeof e.progressionMode==="string"&&VALID_PROGRESSION_MODES.indexOf(e.progressionMode)>=0)?e.progressionMode:undefined),tmode:((e.timerMode==="target"||e.timerMode==="max")?e.timerMode:undefined)};if(e.fromWeek!=null)ex.fromWeek=e.fromWeek;if(e.untilWeek!=null)ex.untilWeek=e.untilWeek;if(e.prevId)ex.prevId=e.prevId;if(e.perSide===true)ex.perSide=true;return ex;})};})
  };
 }
 // Öffentliche Modul-Namen (Aliasse auf die bestehende, erprobte Logik).
@@ -2447,7 +2450,7 @@ function exportTranslate(p){
   format:"trainings-block",version:2,name:p.name,categories:cats,
   art:p.art||undefined,bereich:p.bereich||undefined,
   weeks:p.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label,rir:w.rir,sets:w.sets,note:w.note};}),
-  days:p.days.map(function(d){var ids=Object.create(null);d.ex.forEach(function(e,index){ids[e.id]=d.key+"_"+index;});var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;}else if(e.unit==="seconds")o.unit="seconds";if(e.tmode)o.timerMode=e.tmode;if(e.sets!=null)o.sets=e.sets;if(Array.isArray(e.reps))o.reps=e.reps;if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.proxy)o.proxy=e.proxy;if(e.target)o.target=e.target;if(e.fromWeek!=null)o.fromWeek=e.fromWeek;if(e.untilWeek!=null)o.untilWeek=e.untilWeek;if(e.prevId&&ids[e.prevId])o.prevId=ids[e.prevId];return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
+  days:p.days.map(function(d){var ids=Object.create(null);d.ex.forEach(function(e,index){ids[e.id]=d.key+"_"+index;});var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;}else if(e.unit==="seconds")o.unit="seconds";if(e.tmode)o.timerMode=e.tmode;if(e.perSide)o.perSide=true;if(e.sets!=null)o.sets=e.sets;if(Array.isArray(e.reps))o.reps=e.reps;if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.proxy)o.proxy=e.proxy;if(e.target)o.target=e.target;if(e.fromWeek!=null)o.fromWeek=e.fromWeek;if(e.untilWeek!=null)o.untilWeek=e.untilWeek;if(e.prevId&&ids[e.prevId])o.prevId=ids[e.prevId];return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
  };
  if(p.description)out.description=p.description;
  if(p.settings)out.settings=p.settings;
@@ -2541,6 +2544,7 @@ function parseProgram(text){
    if(x.progressionMode!=null&&VALID_PROGRESSION_MODES.indexOf(x.progressionMode)<0)return{err:where+': unbekannter "progressionMode".'};
    if(x.timerMode!=null&&["target","max"].indexOf(x.timerMode)<0)return{err:where+': "timerMode" muss "target" oder "max" sein.'};
    if(x.timerMode!=null&&x.unit!=="seconds"&&x.unit!=="time")return{err:where+': "timerMode" benötigt "unit":"seconds".'};
+   if(x.perSide!=null&&typeof x.perSide!=="boolean")return{err:where+': "perSide" muss true oder false sein.'};
    if(x.fromWeek!=null&&!finiteNumber(x.fromWeek,1,ext.weeks.length,true))return{err:where+': "fromWeek" muss eine ganze Woche innerhalb des Blocks sein.'};
    if(x.untilWeek!=null&&!finiteNumber(x.untilWeek,1,ext.weeks.length,true))return{err:where+': "untilWeek" muss eine ganze Woche innerhalb des Blocks sein.'};
    if(x.fromWeek!=null&&x.untilWeek!=null&&x.fromWeek>x.untilWeek)return{err:where+': "fromWeek" darf nicht nach "untilWeek" liegen.'};
@@ -2639,7 +2643,7 @@ var PROGRAM_LIBRARY=[
 ];
 function programSourceLabel(origin){return origin==="coach"?"Satzkraft KI-Coach":origin==="library"?"Satzkraft-Programm":origin==="link"?"Geteilter Link":origin==="file"?"Datei":"Eingefügtes JSON";}
 function calibrationGuideHtml(){
- return'<p><b>So findest du dein Startgewicht (erste Einheit = Kalibrierung)</b></p><ol><li><b>Leicht anfangen:</b> Mach die Übung zuerst mit sehr leichtem Gewicht 8–10-mal sauber – an der Maschine die kleinste sinnvolle Stufe, mit der Langhantel die leere Stange, mit Kurzhanteln ein Paar, das sich mühelos anfühlt.</li><li><b>Herantasten:</b> Erhöhe das Gewicht in 2–3 kurzen Sätzen Schritt für Schritt (Maschine: 1–2 Stufen, Hanteln: 5–10 kg) und mach jeweils nur 3–5 Wiederholungen.</li><li><b>Arbeitsgewicht erkannt:</b> Dein Startgewicht ist das Gewicht, mit dem du die Ziel-Wiederholungen der Übung sauber schaffst und danach noch etwa 3 Wiederholungen übrig hättest. Genau das bedeutet die Anstrengungs-Angabe „RIR 3“ der ersten Wochen.</li><li><b>Eintragen – fertig:</b> Trag dieses Gewicht beim ersten Arbeitssatz ein. Satzkraft übernimmt es für die weiteren Sätze und steigert ab jetzt automatisch, sobald du das obere Wiederholungsziel erreichst.</li></ol><p><b>Im Zweifel leichter starten.</b> Ein zu leichtes Startgewicht holt die Progression in ein bis zwei Wochen von selbst auf – ein zu schweres kostet Technik und Motivation.</p>';
+ return'<p><b>So findest du dein Startgewicht (erste Einheit = Kalibrierung)</b></p><ol><li><b>Leicht anfangen:</b> Mach die Übung zuerst mit sehr leichtem Gewicht 8–10-mal sauber – an der Maschine die kleinste sinnvolle Stufe, mit der Langhantel die leere Stange, mit Kurzhanteln ein Paar, das sich mühelos anfühlt.</li><li><b>Herantasten:</b> Erhöhe das Gewicht in 2–3 kurzen Sätzen Schritt für Schritt (Maschine: 1–2 Stufen, Hanteln: 5–10 kg) und mach jeweils nur 3–5 Wiederholungen.</li><li><b>Arbeitsgewicht erkannt:</b> Dein Startgewicht ist das Gewicht, mit dem du die Ziel-Wiederholungen der Übung sauber schaffst und danach noch etwa 3 Wiederholungen übrig hättest. Genau das bedeutet die Anstrengungs-Angabe „RIR 3“ der ersten Wochen.</li><li><b>Eintragen – fertig:</b> Trag dieses Gewicht beim ersten Arbeitssatz ein. Satzkraft übernimmt es für die weiteren Sätze und steigert ab jetzt automatisch, sobald du das obere Wiederholungsziel erreichst.</li></ol><p><b>Im Zweifel leichter starten.</b> Ein zu leichtes Startgewicht holt die Progression in ein bis zwei Wochen von selbst auf – ein zu schweres kostet Technik und Motivation.</p><p><b>Was zählt als Gewicht?</b> Langhantel: das Gesamtgewicht inklusive Stange. Zwei Kurzhanteln: das Gewicht <b>einer</b> Hantel (nicht beide zusammen). Maschine: die Zahl am Steckgewicht. Zusatzgewicht (z. B. Dip-Gürtel): nur das Extra-Gewicht. Wichtig ist, dass du immer gleich einträgst.</p>';
 }
 function showCalibrationGuide(){showModal("Startgewicht finden",calibrationGuideHtml(),[{label:"Verstanden",cls:"primary",action:null}]);}
 function extractSingleJSONObject(text){
@@ -3106,7 +3110,7 @@ function editorExerciseLibraryWouldOverwrite(ex,entry){
  return fields.some(function(pair){return String(ex[pair[0]]||"").trim()&&String(ex[pair[0]]).trim()!==String(pair[1]||"").trim();});
 }
 function editorApplyExerciseLibraryEntry(ex,entry){
- ex.name=entry.de;ex.en=entry.en;ex.cue=entry.technik;ex.video=entry.video;ex.proxy=entry.ersatz;editorApplyExerciseLibraryType(ex,entry);return ex;
+ ex.name=entry.de;ex.en=entry.en;ex.cue=entry.technik;ex.video=entry.video;ex.proxy=entry.ersatz;if(entry.einseitig===true)ex.perSide=true;else delete ex.perSide;editorApplyExerciseLibraryType(ex,entry);return ex;
 }
 function editorChooseExerciseLibraryEntry(dayIndex,exerciseIndex,entry,confirmed){
  var day=editorDraft&&editorDraft.days[dayIndex],ex=day&&day.exercises[exerciseIndex];if(!ex||!entry)return false;
@@ -3139,7 +3143,7 @@ function editorTargetReps(ex){
 function editorExerciseMeta(ex,d){
  var c=d.categories[ex.category],parts=[c?c.label:ex.category],sets=editorDraftSets(d,ex,editorWeekIndex),reps=editorDraftReps(d,ex,editorWeekIndex);
  parts.push(sets+" Sätze");
- if(reps)parts.push(ex.unit==="seconds"?fmtSecondsRange(reps[0],reps[1]):reps[0]+(reps[0]===reps[1]?"":"–"+reps[1])+" Wdh");else if(ex.target)parts.push(ex.target);else parts.push(ex.unit==="seconds"?"Zeit":"Wiederholungen");
+ if(reps)parts.push((ex.unit==="seconds"?fmtSecondsRange(reps[0],reps[1]):reps[0]+(reps[0]===reps[1]?"":"–"+reps[1])+" Wdh")+(ex.perSide?" je Seite":""));else if(ex.target)parts.push(ex.target+(ex.perSide?" je Seite":""));else parts.push(ex.unit==="seconds"?"Zeit":"Wiederholungen");
  if(ex.weighted)parts.push("mit Gewicht");
  return parts.join(" · ");
 }
@@ -3186,6 +3190,7 @@ function renderEditorTraining(d,catKeys){
    h+=editorExerciseNameInput(ex,editorDayIndex,ei);
    h+='<label class="edfield">'+editorLabel("Trainingsgruppe","gruppe")+'<select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="category">';catKeys.forEach(function(key){h+=editorOption(key,d.categories[key].label,ex.category);});h+='</select><small>Steuert Standardwerte und Satzpause.</small></label>';
    h+='<label class="edfield wide">'+editorLabel("Übungstyp","typ")+'<select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="exerciseType">'+editorExerciseTypeOptions(ex)+'</select></label>';
+   h+='<div class="edcheckrow" style="grid-column:1/-1"><label class="edcheck"><input type="checkbox" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="perSide"'+(ex.perSide?' checked':'')+'> Je Seite ausführen (z. B. Ausfallschritte) – die App zeigt „je Seite“ an</label></div>';
    if(ex.unit==="seconds")h+='<label class="edfield wide">'+editorLabel("Timer-Modus","vorgabe")+'<select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="timerMode">'+editorOption("target","Zielzeit · stoppt am oberen Ziel automatisch",ex.timerMode||"target")+editorOption("max","Maximalzeit · läuft bis zu meinem Stopp",ex.timerMode||"target")+'</select><small>Zielzeit eignet sich für feste Vorgaben; Maximalzeit misst, wie lange du sauber durchhältst.</small></label>';
    var ownPrescription=ex.sets!=null||Array.isArray(ex.reps),effectiveSets=editorDraftSets(d,ex,editorWeekIndex),effectiveReps=editorDraftReps(d,ex,editorWeekIndex),unitLabel=ex.unit==="seconds"?'Sekunden':'Wiederholungen';
    h+='<div class="edprescription"><h3>Trainingsvorgabe</h3><div class="libnote">Sätze und '+unitLabel+' stehen später genau so in der Trainingsansicht.</div><div class="edcheckrow"><label class="edcheck"><input type="checkbox" data-ed-own="1" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'"'+(ownPrescription?' checked':'')+'> Eigene Vorgabe für diese Übung</label>'+editorInfoButton("vorgabe","Erklärung")+'</div>';
@@ -3300,7 +3305,7 @@ function updateEditorInput(t){
  if(t.dataset.edCat){var c=editorDraft.categories[t.dataset.edCat];if(!c)return false;if(t.dataset.edRep){if(!c.reps)c.reps={};if(!c.reps[t.dataset.edRep])c.reps[t.dataset.edRep]=[8,12];c.reps[t.dataset.edRep][+t.dataset.edRange]=value;}else c[t.dataset.edField]=value;return false;}
  if(t.dataset.edWeek!=null){var w=editorDraft.weeks[+t.dataset.edWeek];if(!w)return false;if(t.dataset.edSet)w.sets[t.dataset.edSet]=value;else if(t.dataset.edField==="phase"){var oldPhase=w.phase,defaults={aufbau:["Aufbau"],intensiv:["Intensiv","Intensivierung"],deload:["Deload","Erholungswoche"]};w.phase=value;if((defaults[oldPhase]||[]).indexOf(w.label)>=0)w.label=editorPhaseLabel(value);}else w[t.dataset.edField]=value;return false;}
  if(t.dataset.edWucd){var timedDay=editorDraft.days[+t.dataset.edDay],timedList=timedDay&&timedDay[t.dataset.edWucd],timedItem=timedList&&timedList[+t.dataset.edWucdIndex];if(!timedItem)return false;timedItem[t.dataset.edField]=t.dataset.edField==="seconds"?Math.max(15,Math.min(180,Math.round(Number(value)||15))):value;return false;}
- if(t.dataset.edDay!=null){var day=editorDraft.days[+t.dataset.edDay];if(!day)return false;if(t.dataset.edEx!=null){var ex=day.exercises[+t.dataset.edEx],field=t.dataset.edField;if(!ex)return false;if(field==="repMin"||field==="repMax"){if(!Array.isArray(ex.reps))ex.reps=editorDraftReps(editorDraft,ex,editorWeekIndex)||[8,12];ex.reps[field==="repMin"?0:1]=value;}else if(field==="exerciseType"){if(value==="custom")return false;if(value==="weight"||value==="added_weight"){ex.weighted=true;ex.unit="reps";delete ex.timerMode;ex.increment=ex.increment||2.5;if(ex.startWeight==null)ex.startWeight=0;if(value==="added_weight")ex.bodyweight=true;else delete ex.bodyweight;}else{delete ex.weighted;delete ex.bodyweight;delete ex.increment;delete ex.startWeight;ex.unit=value==="seconds"?"seconds":"reps";if(ex.unit==="seconds"&&!ex.timerMode)ex.timerMode="target";if(ex.unit!=="seconds")delete ex.timerMode;}return true;}else ex[field]=value;}else day[t.dataset.edField]=value;return false;}
+ if(t.dataset.edDay!=null){var day=editorDraft.days[+t.dataset.edDay];if(!day)return false;if(t.dataset.edEx!=null){var ex=day.exercises[+t.dataset.edEx],field=t.dataset.edField;if(!ex)return false;if(field==="repMin"||field==="repMax"){if(!Array.isArray(ex.reps))ex.reps=editorDraftReps(editorDraft,ex,editorWeekIndex)||[8,12];ex.reps[field==="repMin"?0:1]=value;}else if(field==="perSide"){if(value)ex.perSide=true;else delete ex.perSide;return true;}else if(field==="exerciseType"){if(value==="custom")return false;if(value==="weight"||value==="added_weight"){ex.weighted=true;ex.unit="reps";delete ex.timerMode;ex.increment=ex.increment||2.5;if(ex.startWeight==null)ex.startWeight=0;if(value==="added_weight")ex.bodyweight=true;else delete ex.bodyweight;}else{delete ex.weighted;delete ex.bodyweight;delete ex.increment;delete ex.startWeight;ex.unit=value==="seconds"?"seconds":"reps";if(ex.unit==="seconds"&&!ex.timerMode)ex.timerMode="target";if(ex.unit!=="seconds")delete ex.timerMode;}return true;}else ex[field]=value;}else day[t.dataset.edField]=value;return false;}
  return false;
 }
 function editorAddCategory(){var key=editorNextCategoryKey(editorDraft.categories);editorDraft.categories[key]={label:"Neue Trainingsgruppe",color:"slate",rest:90};editorDraft.weeks.forEach(function(w){w.sets[key]=3;});return Object.keys(editorDraft.categories).indexOf(key);}
@@ -3539,7 +3544,7 @@ function renderImportPreview(){
   day.ex.forEach(function(ex,i){
    var category=p.categories[ex.cat]||{},color=CAT_COLORS.indexOf(category.color)>=0?category.color:"slate";
    var setCount=ex.sets!=null?ex.sets:(w1.sets&&w1.sets[ex.cat]!=null?w1.sets[ex.cat]:3),rr=category.reps&&(category.reps[w1.phase]||category.reps.aufbau);
-   var summary=setCount+' \u00d7 '+(Array.isArray(rr)?(ex.unit==="seconds"?fmtSecondsRange(rr[0],rr[1]):rr[0]+'\u2013'+rr[1]):esc(ex.target||'\u2014'));
+   var summary=setCount+' \u00d7 '+(Array.isArray(rr)?(ex.unit==="seconds"?fmtSecondsRange(rr[0],rr[1]):rr[0]+'\u2013'+rr[1]):esc(ex.target||'\u2014'))+(ex.perSide?' je Seite':'');
    if(category.rest!=null)summary+=' \u00b7 '+fmtTime(category.rest);
    h+='<div class="pvrow '+color+'"><span class="rowbar"></span><span class="rowmain"><span class="rowcat">'+esc(category.label||ex.cat)+'</span><span class="rowname">'+esc(ex.name)+'</span><span class="rowpresc">'+summary+'</span></span><span class="rowidx">'+('0'+(i+1)).slice(-2)+'</span></div>';
   });
@@ -3748,6 +3753,8 @@ if("serviceWorker" in navigator){
 }
 
 renderView();renderBar();
+// Übungsbibliothek früh laden: liefert u. a. den Kurzhantel-Hinweis in der Trainingsansicht.
+loadExerciseLibrary().then(function(){renderView();});
 (function(){
  try{
   if(loadIssueText)return;

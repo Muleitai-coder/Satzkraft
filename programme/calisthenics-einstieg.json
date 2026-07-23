@@ -248,6 +248,7 @@
           "name": "Dead Bug",
           "en": "Dead Bug",
           "category": "core",
+          "perSide": true,
           "reps": [
             6,
             10
@@ -319,6 +320,7 @@
           "name": "Ausfallschritte rückwärts",
           "en": "Reverse Lunge",
           "category": "beine",
+          "perSide": true,
           "cue": "Vorderes Knie stabil halten und kontrolliert zurücktreten",
           "video": "Ausfallschritte rückwärts Technik",
           "proxy": "Split Squats mit Festhalten"
@@ -327,6 +329,7 @@
           "name": "Seitstütz",
           "en": "Side Plank",
           "category": "core",
+          "perSide": true,
           "cue": "Stütz dich auf dem Unterarm ab und halte die Hüfte hoch in einer geraden Linie.",
           "unit": "seconds",
           "timerMode": "target",
@@ -413,6 +416,7 @@
           "name": "Wadenheben einbeinig",
           "en": "Single-Leg Calf Raise",
           "category": "beine",
+          "perSide": true,
           "cue": "Voller Bewegungsweg und oben kurz halten",
           "video": "Wadenheben einbeinig Technik",
           "proxy": "Wadenheben beidbeinig"

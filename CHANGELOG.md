@@ -8,6 +8,11 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Hinzugefügt
 
+- Übungen, die je Seite ausgeführt werden (z. B. Ausfallschritte, Seitstütz), zeigen jetzt überall „je Seite“ hinter den Wiederholungen – im Training, in der Programmvorschau und im Editor. Die Übungsbibliothek kennzeichnet 22 einseitige Übungen automatisch; im Editor gibt es dafür das Häkchen „Je Seite ausführen“, und KI-Programme können das optionale Feld `perSide` nutzen.
+- Kurzhantel-Übungen zeigen im Training einen festen Hinweis: „Trag das Gewicht einer Hantel ein.“ Damit ist klar, dass bei zwei Kurzhanteln nicht beide zusammengezählt werden.
+- Die Startgewicht-Hilfe erklärt jetzt, was als Gewicht zählt: Langhantel gesamt inklusive Stange, Kurzhanteln je Hantel, Maschine laut Steckgewicht, Zusatzgewicht nur das Extra.
+- Der Scheibenrechner heißt jetzt „Scheiben pro Seite (Langhantel)“, damit „pro Seite“ nicht mit dem Kurzhantel-Thema verwechselt wird.
+
 - Programm-Editor: Im Tab „Details“ lassen sich jetzt der Untertitel (z. B. „Einsteiger“) und der Bereich (z. B. „Ganzkörper“) des Programms festlegen – bisher ging das nur über Import oder KI.
 - Programm-Editor: Die Anstrengungs-Auswahl (RIR) einer Woche bietet jetzt auch Bereiche wie „3-4“ oder „4-5“ an – dieselben Werte, die die mitgelieferten Vorlagen nutzen.
 - Programm-Editor: Unstimmige Zahlen werden sofort am Feld gemeldet (z. B. „Min. ist größer als Max.“, Pause außerhalb 15–600 Sekunden, Satzzahl außerhalb 1–10) statt erst als Fehlermeldung beim Speichern.
