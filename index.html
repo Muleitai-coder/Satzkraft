@@ -451,6 +451,7 @@ body.rest-lock{--rest-mode:1}
 .edcheckrow{display:flex;align-items:center;gap:8px;min-height:40px}
 .edcheckrow .edcheck{min-width:0;flex:1}
 .edcheckrow .infoterm{min-height:30px;color:var(--muted);font-size:10px;font-weight:550;line-height:1.3}
+.edfieldwarn{margin-top:4px;color:var(--danger);font-size:11px;line-height:1.45;font-weight:600}
 .edactions{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:10px}
 .edactions .spacer{flex:1}
 .edkey{font:11px var(--mono);color:var(--muted);font-weight:400}
@@ -3120,7 +3121,7 @@ function loadExerciseLibraryForEditor(){loadExerciseLibrary().then(function(){va
 function editorPhaseLabel(phase){return phase==="intensiv"?"Intensiv":phase==="deload"?"Erholungswoche":"Aufbau";}
 function editorPhaseHelp(phase){return phase==="intensiv"?"Schwerer trainieren, meist mit weniger Wiederholungen. Diese Woche eignet sich für erfahrene Trainierende.":phase==="deload"?"Bewusst leichter trainieren, damit sich der Körper erholt. Satzzahlen und Anstrengung sollten niedriger sein.":"Normal trainieren, Technik festigen und das Gewicht schrittweise steigern.";}
 function editorRirOptions(current){
- var values=[["4","Locker · etwa 4 Wiederholungen übrig"],["3","Kontrolliert · etwa 3 übrig"],["2","Fordernd · etwa 2 übrig"],["1","Schwer · etwa 1 übrig"],["0","Sehr schwer · keine übrig"]],h="",known=false,cur=String(current==null?"":current);
+ var values=[["4-5","Erholung · 4-5 Wiederholungen übrig"],["4","Locker · etwa 4 übrig"],["3-4","Locker · 3-4 übrig"],["3","Kontrolliert · etwa 3 übrig"],["2-3","Kontrolliert · 2-3 übrig"],["2","Fordernd · etwa 2 übrig"],["1-2","Fordernd · 1-2 übrig"],["1","Schwer · etwa 1 übrig"],["0","Sehr schwer · keine übrig"]],h="",known=false,cur=String(current==null?"":current);
  h+=editorOption("","Keine feste Vorgabe",cur);
  values.forEach(function(o){if(o[0]===cur)known=true;h+=editorOption(o[0],o[1],cur);});
  if(!known&&cur)h+=editorOption(cur,"Bisheriger Wert · RIR "+cur,cur);
@@ -3219,7 +3220,10 @@ function renderEditorWeeks(d,catKeys){
 function renderEditorDetails(d,catKeys){
  var h='<div class="edguide"><div><strong>Name und Trainingsgruppen</strong>Den Programmnamen kannst du nur noch hier ändern. Trainingsgruppen liefern gemeinsame Standardwerte für ähnliche Übungen.</div></div><div class="eddaysettings"><div class="edgrid">';
  h+=editorInput('Programmname',d.name,'data-ed-program="name"',{wide:true,max:LIMITS.maxNameLen});
- h+=editorInput('Beschreibung',d.description||'','data-ed-program="description"',{wide:true,area:true,max:200});h+='</div></div>';
+ h+=editorInput('Beschreibung',d.description||'','data-ed-program="description"',{wide:true,area:true,max:200});
+ h+='<label class="edfield">'+editorLabel("Untertitel")+'<input type="text" value="'+attr(d.art||'')+'" data-ed-program="art" maxlength="24"><small>Zum Beispiel „Einsteiger“ – steht unter dem Programmnamen.</small></label>';
+ h+='<label class="edfield">'+editorLabel("Bereich")+'<select data-ed-program="bereich"><option value=""'+(d.bereich?'':' selected')+'>Kein Bereich</option>';BEREICHE.forEach(function(b){h+=editorOption(b,b,d.bereich);});h+='</select><small>Einordnung für die Programm-Bibliothek.</small></label>';
+ h+='</div></div>';
  h+='<details class="edadvanced"'+editorSectionAttrs("groups")+'><summary><span class="edlabel"><button type="button" class="infoterm" data-info="gruppe" aria-label="Erklärung: Trainingsgruppen">Trainingsgruppen ('+catKeys.length+')</button></span></summary><div class="edbody"><div class="edcategoryhelp"><b>Was ist eine Trainingsgruppe?</b><br>Sie bündelt Standardwerte für ähnliche Übungen – zum Beispiel „Kraft“ mit längerer Satzpause und 5–7 Wiederholungen. Änderungen gelten für alle Übungen der Gruppe, außer eine Übung hat eine eigene Vorgabe.</div>';
  catKeys.forEach(function(key){var c=d.categories[key],hasReps=!!c.reps;h+='<details class="edcard"'+editorSectionAttrs("category-"+key)+'><summary>'+esc(c.label)+' <span class="edkey">'+esc(key)+'</span></summary><div class="edbody"><div class="edgrid">';
   h+=editorInput('Bezeichnung',c.label,'data-ed-cat="'+attr(key)+'" data-ed-field="label"',{max:30});
@@ -3248,12 +3252,49 @@ function renderProgramEditor(view,index,exercise){
  h+=editorView==="weeks"?renderEditorWeeks(d,catKeys):editorView==="details"?renderEditorDetails(d,catKeys):renderEditorTraining(d,catKeys);
  h+=editorSourceId?'<div class="edsticky"><button class="smallbtn go" id="edsavecopy">Als Kopie speichern</button>'+(editorSourceId!=="default"?'<button class="smallbtn" id="edreplace">Original ersetzen</button>':'')+'</div>':'<div class="edsticky"><button class="smallbtn" id="edsavenew">Nur speichern</button><button class="smallbtn go" id="edsavenewactive">Speichern &amp; aktivieren</button></div>';
  document.getElementById("lib").innerHTML=h+'</div>';
+ editorApplyAllFieldWarnings();
 }
 function showEditorHelp(){showModal("So funktioniert der Editor","<b>Training:</b> Hier baust du die Trainingstage. Tag oben auswählen, Übung mit ‚Bearbeiten‘ öffnen, Werte einstellen. Reihenfolge ändern: Punkt-Griff rechts halten und ziehen – oder ‚Nach oben/unten‘ in der geöffneten Übung. Einen Tag verschiebst du, indem du ihn in der Wochenleiste hältst und auf einen anderen Wochentag ziehst.<br><br><b>Wochen:</b> Jede Woche hat einen Schwerpunkt (Aufbau, Intensiv, Erholung) und eine Anstrengung (RIR). Die Satzzahlen der Trainingsgruppen brauchst du nur, wenn Wochen unterschiedlich viele Sätze haben sollen.<br><br><b>Details:</b> Name, Beschreibung und die Trainingsgruppen des Programms.<br><br><b>Überall gilt:</b> Gepunktet unterstrichene Begriffe erklären die jeweilige Einstellung. ‚Rückgängig‘ oben nimmt jeden Schritt zurück. Mit ‚Als Kopie speichern‘ bleiben Original und bisheriger Fortschritt unangetastet. „Original ersetzen“ übernimmt deine Änderungen in das laufende Programm – dein bisheriger Fortschritt bleibt erhalten.",[{label:"OK",cls:"primary",action:null}]);}
 function editorFieldValue(t){return t.type==="checkbox"?t.checked:(t.type==="number"?(t.value===""?"":Number(t.value)):t.value);}
+// Live-Hinweise: melden Werte, die parseProgram beim Speichern ablehnen würde, direkt am Feld.
+function editorFieldWarning(t){
+ if(!editorDraft||!t||!t.dataset)return"";
+ var d=editorDraft,f=t.dataset.edField;
+ function ganz(v,min,max){return typeof v==="number"&&isFinite(v)&&Math.floor(v)===v&&v>=min&&v<=max;}
+ if(t.dataset.edSet!=null&&t.dataset.edWeek!=null){var wk=d.weeks[+t.dataset.edWeek],sv=wk&&wk.sets?wk.sets[t.dataset.edSet]:null;if(sv==null||sv==="")return editorCategoryInUse(d,t.dataset.edSet)?"Diese Gruppe braucht hier eine Satzzahl.":"";return ganz(sv,1,LIMITS.maxSets)?"":"Ganze Zahl von 1 bis "+LIMITS.maxSets+".";}
+ if(t.dataset.edRep){var rc=d.categories[t.dataset.edCat],range=rc&&rc.reps&&rc.reps[t.dataset.edRep];if(!Array.isArray(range))return"";if(!ganz(range[0],1,100)||!ganz(range[1],1,100))return"Ganze Zahlen von 1 bis 100.";return range[0]>range[1]?"Min. ist größer als Max. – bitte Werte tauschen.":"";}
+ if(t.dataset.edCat&&f==="rest"){var rcat=d.categories[t.dataset.edCat];return rcat&&ganz(rcat.rest,15,600)?"":"Pause bitte zwischen 15 und 600 Sekunden.";}
+ if(t.dataset.edEx!=null&&t.dataset.edDay!=null){
+  var day=d.days[+t.dataset.edDay],ex=day&&day.exercises[+t.dataset.edEx];if(!ex)return"";
+  if(f==="sets")return ex.sets==null||ganz(ex.sets,1,LIMITS.maxSets)?"":"Ganze Zahl von 1 bis "+LIMITS.maxSets+".";
+  if(f==="repMin"||f==="repMax"){var r=ex.reps;if(!Array.isArray(r))return"";if(!ganz(r[0],1,10000)||!ganz(r[1],1,10000))return"Ganze Zahlen ab 1 eintragen.";return r[0]>r[1]?"Min. ist größer als Max. – bitte Werte tauschen.":"";}
+  if(f==="startWeight")return ex.startWeight==null||(ex.startWeight!==""&&typeof ex.startWeight==="number"&&isFinite(ex.startWeight)&&ex.startWeight>=0&&ex.startWeight<=2000)?"":"Wert zwischen 0 und 2000 kg.";
+  if(f==="increment")return ex.increment==null||(ex.increment!==""&&typeof ex.increment==="number"&&isFinite(ex.increment)&&ex.increment>=0.1&&ex.increment<=100)?"":"Steigerung: 0,1 bis 100 kg.";
+ }
+ return"";
+}
+function editorApplyFieldWarningOne(t){
+ var box=t&&t.closest?t.closest(".edfield"):null;if(!box)return;
+ var msg=editorFieldWarning(t),note=box.querySelector(".edfieldwarn");
+ if(msg){if(!note){note=document.createElement("div");note.className="edfieldwarn";box.appendChild(note);}note.textContent=msg;}
+ else if(note)note.parentNode.removeChild(note);
+}
+function editorRefreshFieldWarnings(t){
+ if(!t||!t.dataset)return;
+ editorApplyFieldWarningOne(t);
+ var sel=null;
+ if(t.dataset.edField==="repMin"||t.dataset.edField==="repMax")sel='input[data-ed-day="'+t.dataset.edDay+'"][data-ed-ex="'+t.dataset.edEx+'"][data-ed-field="'+(t.dataset.edField==="repMin"?"repMax":"repMin")+'"]';
+ else if(t.dataset.edRep)sel='input[data-ed-cat="'+t.dataset.edCat+'"][data-ed-rep="'+t.dataset.edRep+'"][data-ed-range="'+(t.dataset.edRange==="0"?"1":"0")+'"]';
+ if(sel){var partner=document.querySelector("#lib "+sel);if(partner)editorApplyFieldWarningOne(partner);}
+}
+function editorApplyAllFieldWarnings(){
+ var root=document.getElementById("lib");if(!root||!editorDraft)return;
+ var fields=root.querySelectorAll('.edfield input[type="number"]');
+ for(var i=0;i<fields.length;i++)editorApplyFieldWarningOne(fields[i]);
+}
 function updateEditorInput(t){
  if(!editorDraft)return false;var value=editorFieldValue(t);
- if(t.dataset.edProgram){editorDraft[t.dataset.edProgram]=value;return false;}
+ if(t.dataset.edProgram){var pf=t.dataset.edProgram;if((pf==="art"||pf==="bereich")&&(typeof value!=="string"||!value.trim()))delete editorDraft[pf];else editorDraft[pf]=value;return false;}
  if(t.dataset.edOwn){var ownDay=editorDraft.days[+t.dataset.edDay],ownEx=ownDay&&ownDay.exercises[+t.dataset.edEx];if(!ownEx)return false;if(value){ownEx.sets=editorDraftSets(editorDraft,ownEx,editorWeekIndex);ownEx.reps=editorDraftReps(editorDraft,ownEx,editorWeekIndex)||editorTargetReps(ownEx)||[8,12];}else{delete ownEx.sets;delete ownEx.reps;}return true;}
  if(t.dataset.edReps){var rc=editorDraft.categories[t.dataset.edReps];if(!rc)return false;rc.reps=t.checked?{aufbau:[8,12],intensiv:[6,10],deload:[10,10]}:null;return true;}
  if(t.dataset.edCat){var c=editorDraft.categories[t.dataset.edCat];if(!c)return false;if(t.dataset.edRep){if(!c.reps)c.reps={};if(!c.reps[t.dataset.edRep])c.reps[t.dataset.edRep]=[8,12];c.reps[t.dataset.edRep][+t.dataset.edRange]=value;}else c[t.dataset.edField]=value;return false;}
@@ -3690,7 +3731,7 @@ document.getElementById("lib").addEventListener("pointerup",function(e){if(edito
 document.getElementById("lib").addEventListener("pointercancel",function(e){if(editorDragState&&e.pointerId===editorDragState.pointerId)finishEditorDrag(e,true);});
 document.getElementById("lib").addEventListener("keydown",function(e){if(!e.target||e.key!=="Enter")return;if(e.target.id==="adjinp"){e.preventDefault();coachSendAdj();}else if(e.target.id==="freeinp"){e.preventDefault();var nb=document.getElementById("coachnext");if(nb)nb.click();}});
 document.getElementById("lib").addEventListener("change",function(e){var t=e.target;if(t.id==="libfile"&&t.files&&t.files[0]){var file=t.files[0];importSourceName=file.name||"Ausgewählte Datei";if(file.size>5000000){importIssue={error:explainProgramError("Die Datei ist größer als 5 MB."),sourceText:"",corrections:[],origin:"file",sourceName:importSourceName};renderImportError();return;}var r=new FileReader();r.onload=function(){beginProgramImport(String(r.result),"file",importSourceName);};r.onerror=function(){importIssue={error:explainProgramError("Die Datei konnte nicht gelesen werden."),sourceText:"",corrections:[],origin:"file",sourceName:importSourceName};renderImportError();};r.readAsText(file);return;}if(t.id==="backupfile"&&t.files&&t.files[0]){var br=new FileReader();br.onload=function(){importBackup(String(br.result));};br.readAsText(t.files[0]);return;}if(editorDraft&&(t.dataset.edProgram||t.dataset.edReps||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null||t.dataset.edWucd)){var rerender=updateEditorInput(t);if(t.dataset.edReps){renderProgramEditor("details");return;}if(t.dataset.edWeek!=null&&t.dataset.edField==="phase"){renderProgramEditor("weeks",+t.dataset.edWeek);return;}if(t.dataset.edDay!=null&&(rerender||t.dataset.edField==="weekday"||t.dataset.edField==="category"||t.dataset.edField==="exerciseType")){renderProgramEditor("days",+t.dataset.edDay,t.dataset.edEx==null?null:+t.dataset.edEx);}}});
-document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="libpaste"){importInputText=t.value;var clear=document.getElementById("importclear");if(clear)clear.hidden=!t.value;return;}if(t.id==="externalwish"){externalAiWish=t.value;var copy=document.getElementById("tplpromptcopy");if(copy)copy.disabled=!externalAiWish.trim();return;}if(t.id==="manualname"||t.id==="manualdescription"||t.id==="manualweeks"){syncManualCreatorForm();return;}if(editorDraft&&t.type!=="checkbox"&&t.tagName!=="SELECT"&&(t.dataset.edProgram||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null)){updateEditorInput(t);if(t.dataset.edField==="name"&&t.dataset.edEx!=null)renderExerciseLibraryAutocomplete(t);}});
+document.getElementById("lib").addEventListener("input",function(e){var t=e.target;if(t.id==="libpaste"){importInputText=t.value;var clear=document.getElementById("importclear");if(clear)clear.hidden=!t.value;return;}if(t.id==="externalwish"){externalAiWish=t.value;var copy=document.getElementById("tplpromptcopy");if(copy)copy.disabled=!externalAiWish.trim();return;}if(t.id==="manualname"||t.id==="manualdescription"||t.id==="manualweeks"){syncManualCreatorForm();return;}if(editorDraft&&t.type!=="checkbox"&&t.tagName!=="SELECT"&&(t.dataset.edProgram||t.dataset.edCat||t.dataset.edWeek!=null||t.dataset.edDay!=null)){updateEditorInput(t);editorRefreshFieldWarnings(t);if(t.dataset.edField==="name"&&t.dataset.edEx!=null)renderExerciseLibraryAutocomplete(t);}});
 window.addEventListener("beforeunload",function(e){if(!editorHasUnsavedChanges())return;e.preventDefault();e.returnValue="";});
 
 // ---------- PWA ----------

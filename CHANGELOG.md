@@ -4,6 +4,14 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [Unreleased]
+
+### Hinzugefügt
+
+- Programm-Editor: Im Tab „Details“ lassen sich jetzt der Untertitel (z. B. „Einsteiger“) und der Bereich (z. B. „Ganzkörper“) des Programms festlegen – bisher ging das nur über Import oder KI.
+- Programm-Editor: Die Anstrengungs-Auswahl (RIR) einer Woche bietet jetzt auch Bereiche wie „3-4“ oder „4-5“ an – dieselben Werte, die die mitgelieferten Vorlagen nutzen.
+- Programm-Editor: Unstimmige Zahlen werden sofort am Feld gemeldet (z. B. „Min. ist größer als Max.“, Pause außerhalb 15–600 Sekunden, Satzzahl außerhalb 1–10) statt erst als Fehlermeldung beim Speichern.
+
 ## [0.31.0] – 2026-07-22
 
 ### Geändert
