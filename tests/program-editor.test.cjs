@@ -190,7 +190,7 @@ test('offers target and maximum timer modes while creating time exercises', () =
   assert.match(html, /Timer-Modus/);
   assert.match(html, /Zielzeit · stoppt am oberen Ziel automatisch/);
   assert.match(html, /Maximalzeit · läuft bis zu meinem Stopp/);
-  assert.match(html, /if\(ex\.unit==="seconds"&&!ex\.timerMode\)ex\.timerMode="target"/);
+  assert.match(html, /if\(value==="seconds"\)\{ex\.unit="seconds";if\(!ex\.timerMode\)ex\.timerMode="target"/);
 });
 
 test('edits guided warm-up and cool-down blocks with undo and limits', () => {

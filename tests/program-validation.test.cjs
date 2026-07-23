@@ -267,3 +267,51 @@ test("loads the complete manual test program with all exercise scenarios", () =>
   assert.ok(exercises.some(ex => ex.pmode === "reps"));
   assert.ok(exercises.some(ex => ex.sets === 4 && ex.reps[0] === 6));
 });
+
+test("gewichtete Zeit-Übung (Carry) round-trippt mit unit:seconds", () => {
+  // Regression: Ein gewichteter Carry auf Zeit (timerMode + reps in Sekunden) darf
+  // beim Export nicht ohne "unit":"seconds" landen, sonst lehnt „Original ersetzen" ab.
+  const program = validProgram();
+  program.days[0].exercises.push({
+    name: "Suitcase Carry",
+    category: "frei",
+    weighted: true,
+    increment: 2,
+    startWeight: 20,
+    unit: "seconds",
+    timerMode: "target",
+    reps: [30, 45],
+    progressionMode: "weight"
+  });
+  const result = parse(program);
+  assert.equal(result.err, undefined);
+  const carry = result.prog.days[0].ex.find(ex => ex.name === "Suitcase Carry");
+  assert.equal(carry.unit, "seconds");
+  assert.equal(carry.tmode, "target");
+  // Simuliert Alt-/Fremddaten: intern nur tmode gesetzt, unit fälschlich "reps".
+  carry.unit = "reps";
+  const exported = context.exportTranslate(result.prog);
+  const exportedCarry = exported.days[0].exercises.find(ex => ex.name === "Suitcase Carry");
+  assert.equal(exportedCarry.unit, "seconds", "Export muss timerMode um unit:seconds ergänzen");
+  assert.equal(exportedCarry.timerMode, "target");
+  assert.equal(parse(exported).err, undefined, "der Export muss erneut gültig sein (Original ersetzen)");
+});
+
+test("Import repariert timerMode ohne unit statt abzulehnen", () => {
+  // Regression: KI-erzeugte Pläne setzen bei Carries oft timerMode ohne unit:seconds.
+  const program = validProgram();
+  program.days[0].exercises.push({
+    name: "Farmer Carry",
+    category: "frei",
+    weighted: true,
+    increment: 2,
+    startWeight: 20,
+    timerMode: "target",
+    reps: [30, 45]
+  });
+  const prepared = context.prepareProgramImport(JSON.stringify(program), "json", "KI-Plan");
+  assert.equal(prepared.error, undefined, "der Plan muss trotz fehlender unit importierbar sein");
+  const carry = prepared.program.days[0].ex.find(ex => ex.name === "Farmer Carry");
+  assert.equal(carry.unit, "seconds");
+  assert.equal(carry.tmode, "target");
+});
