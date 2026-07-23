@@ -184,6 +184,7 @@ test('marks coach imports internally, saves their answers and keeps source out o
     programWriteLocked: () => false,
     cloneJSON: value => JSON.parse(JSON.stringify(value)),
     genId: () => 'coach-plan',
+    genProgramCode: () => 'sk-coach1',
     newStore: () => ({}),
     flushSave() {},
     renderLib() {},

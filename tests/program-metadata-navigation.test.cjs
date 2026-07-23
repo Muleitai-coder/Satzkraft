@@ -66,6 +66,7 @@ function loadEditorStoreContext(sourceProgram) {
     setActive(id) { activations.push(id); context.S.active = id; return true; },
     flushSave() {},
     genId: () => 'generated',
+    genProgramCode: () => 'sk-generated',
     finishEditorSave(exitMode) { editorExits.push(exitMode); },
     saveCoachPreferences() {},
     editorHasPendingReplacements: () => false,
