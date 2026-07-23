@@ -6,6 +6,11 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+### Behoben
+
+- Gewichtete Übungen auf Zeit (z. B. Suitcase Carry) verloren beim Export ihre Zeit-Einheit, wodurch der anschließende Import oder das Update mit „timerMode benötigt unit:seconds" abgelehnt wurde. Solche Übungen überstehen jetzt Export und Reimport unverändert.
+- Beim „Laufenden Programm aktualisieren" führte „Weiter bearbeiten" nach einem Speicherfehler zurück in die Bibliothek statt in den Editor. Jetzt öffnet sich in diesem Fall der Editor mit dem angepassten Programm, sodass sich der beanstandete Punkt direkt korrigieren lässt.
+
 ### Hinzugefügt
 
 - Übungen, die je Seite ausgeführt werden (z. B. Ausfallschritte, Seitstütz), zeigen jetzt überall „je Seite“ hinter den Wiederholungen – im Training, in der Programmvorschau und im Editor. Die Übungsbibliothek kennzeichnet 22 einseitige Übungen automatisch; im Editor gibt es dafür das Häkchen „Je Seite ausführen“, und KI-Programme können das optionale Feld `perSide` nutzen.

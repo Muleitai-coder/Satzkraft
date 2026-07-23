@@ -2456,7 +2456,7 @@ function exportTranslate(p){
   art:p.art||undefined,bereich:p.bereich||undefined,
   code:p.code||undefined,revision:p.rev||undefined,
   weeks:p.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label,rir:w.rir,sets:w.sets,note:w.note};}),
-  days:p.days.map(function(d){var ids=Object.create(null);d.ex.forEach(function(e,index){ids[e.id]=d.key+"_"+index;});var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;}else if(e.unit==="seconds")o.unit="seconds";if(e.tmode)o.timerMode=e.tmode;if(e.perSide)o.perSide=true;if(e.sets!=null)o.sets=e.sets;if(Array.isArray(e.reps))o.reps=e.reps;if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.proxy)o.proxy=e.proxy;if(e.target)o.target=e.target;if(e.fromWeek!=null)o.fromWeek=e.fromWeek;if(e.untilWeek!=null)o.untilWeek=e.untilWeek;if(e.prevId&&ids[e.prevId])o.prevId=ids[e.prevId];return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
+  days:p.days.map(function(d){var ids=Object.create(null);d.ex.forEach(function(e,index){ids[e.id]=d.key+"_"+index;});var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;if(e.unit==="seconds")o.unit="seconds";}else if(e.unit==="seconds")o.unit="seconds";if(e.tmode)o.timerMode=e.tmode;if(e.perSide)o.perSide=true;if(e.sets!=null)o.sets=e.sets;if(Array.isArray(e.reps))o.reps=e.reps;if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.proxy)o.proxy=e.proxy;if(e.target)o.target=e.target;if(e.fromWeek!=null)o.fromWeek=e.fromWeek;if(e.untilWeek!=null)o.untilWeek=e.untilWeek;if(e.prevId&&ids[e.prevId])o.prevId=ids[e.prevId];return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
  };
  if(p.description)out.description=p.description;
  if(p.settings)out.settings=p.settings;
@@ -2785,8 +2785,11 @@ function importUpdateExisting(){
  pendingProgramImport=null;importIssue=null;
  editorSourceId=targetId;editorProgramSource=target.source==="coach"?"coach":null;editorUnsavedDraft=false;editorReturnView="library";
  editorDraft=draft;editorInitialJSON=JSON.stringify(draft);
+
  editorView="training";editorDayIndex=0;editorWeekIndex=0;editorExerciseIndex=null;editorUndoStack=[];editorUndoField=null;editorDragState=null;editorOpenSections={};editorPendingReplacementRefs={};editorRenameChoices={};
- renderLib();
+ // Bei einem Validierungsfehler den Editor öffnen, damit „Weiter bearbeiten" wirklich dort landet; sonst still ersetzen.
+ var checked=parseProgram(JSON.stringify(draft));
+ if(checked.err)renderProgramEditor();else renderLib();
  editorStoreProgram(true,"back",false);
 }
 function importProgram(text){beginProgramImport(text,"json","");}

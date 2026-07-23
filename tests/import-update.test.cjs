@@ -192,6 +192,29 @@ test("Popup: Duplikat und Update-Erkennung melden sich als Modal mit den richtig
   assert.match(html, /\{label:"Erst ansehen",action:null\}/);
 });
 
+/* ---------- Gewichtete Zeit-Übungen (z. B. Suitcase Carry) round-trippen ---------- */
+
+test("Export erhält unit:seconds auch bei gewichteten Zeit-Übungen (Round-Trip)", () => {
+  const prog = { format: "trainings-block", version: 2, name: "Carry Test",
+    categories: { core: { label: "Core", color: "sky", rest: 60 } },
+    weeks: [{ n: 1, phase: "aufbau", label: "A", rir: "3", note: "", sets: { core: 2 } }],
+    days: [{ key: "B", weekday: "Montag", title: "T", exercises: [
+      { name: "Suitcase Carry", category: "core", weighted: true, unit: "seconds", timerMode: "target", increment: 2, startWeight: 20, reps: [30, 45], perSide: true }
+    ] }] };
+  const p1 = vctx.parseProgram(JSON.stringify(prog));
+  assert.equal(p1.err, undefined);
+  const exported = JSON.parse(JSON.stringify(vctx.exportTranslate(p1.prog)));
+  const ex = exported.days[0].exercises[0];
+  assert.equal(ex.weighted, true);
+  assert.equal(ex.unit, "seconds", "unit:seconds darf beim Export nicht verlorengehen");
+  assert.equal(ex.timerMode, "target");
+  assert.equal(vctx.parseProgram(JSON.stringify(exported)).err, undefined, "Reimport der exportierten Übung muss gelingen");
+});
+
+test("Import-Update öffnet bei Validierungsfehler den Editor, sonst still die Bibliothek", () => {
+  assert.match(html, /var checked=parseProgram\(JSON\.stringify\(draft\)\);\s*\n?\s*if\(checked\.err\)renderProgramEditor\(\);else renderLib\(\);\s*\n?\s*editorStoreProgram\(true,"back",false\);/);
+});
+
 /* ---------- Export mit aktuellen Arbeitsgewichten ---------- */
 
 test("Export: Gewichtsübungen bekommen das aktuelle Arbeitsgewicht als Startgewicht, andere bleiben unberührt", () => {
