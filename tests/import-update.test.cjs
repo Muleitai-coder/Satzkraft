@@ -138,14 +138,48 @@ test("Zielwahl: Code-Treffer haben Vorrang vor Namens-Treffern", () => {
   assert.equal(ctx.importUpdateTargetId({ codeIds: [], sameNameIds: ["b"] }), "b");
 });
 
-test("Kennungs-Vergabe: neue Programme frisch, Ersetzen behält Code und zählt den Stand hoch", () => {
+test("Kennungs-Vergabe: Import übernimmt gültige freie Kennung, Editor-Kopie und Folgeblock frisch, Ersetzen behält Code", () => {
   assert.match(html, /function genProgramCode\(\)/);
-  assert.match(html, /p\.id=genId\(\);while\(S\.programs\[p\.id\]\)p\.id=genId\(\);p\.code=genProgramCode\(\);p\.rev=1;/, "Import vergibt frische Kennung");
+  assert.match(html, /var importedCode=\(typeof p\.code==="string"&&\/\^\[A-Za-z0-9_-\]\{4,24\}\$\/\.test\(p\.code\)\)\?p\.code:null/, "Import prüft importierte Kennung");
+  assert.match(html, /if\(codeFree\)\{p\.code=importedCode;/, "Import übernimmt freie Kennung");
+  assert.match(html, /\}else\{p\.code=genProgramCode\(\);p\.rev=1;\}/, "Import vergibt sonst frische Kennung");
   assert.match(html, /while\(S\.programs\[p\.id\]\)p\.id=genId\(\);p\.code=genProgramCode\(\);p\.rev=1;p\.createdAt/, "Editor-Kopie vergibt frische Kennung");
   assert.match(html, /next\.id=genId\(\);next\.code=genProgramCode\(\);next\.rev=1;/, "Folgeblock vergibt frische Kennung");
   const keepMatches = html.match(/p\.code=oldProg\.code\|\|p\.code;p\.rev=\(Number\(oldProg\.rev\)\|\|1\)\+1;/g) || [];
   assert.equal(keepMatches.length, 2, "beide Ersetzen-Wege behalten Code und erhöhen den Stand");
   assert.match(html, /ensureProgramCode\(p\);var out=exportTranslate\(p\)/, "Export stellt die Kennung sicher");
+});
+
+test("Import übernimmt eine gültige Kennung aus dem JSON und vergibt bei Kollision eine frische", () => {
+  const ictx = {
+    S: { programs: {}, store: {} },
+    programWriteLocked: () => false,
+    cloneJSON: v => JSON.parse(JSON.stringify(v)),
+    genId: () => "new-id",
+    genProgramCode: () => "sk-frisch99",
+    newStore: () => ({}),
+    setActive() {}, flushSave() {}, closeLib() {}, renderLib() {}, showModal() {}, saveCoachPreferences() {},
+    esc: v => String(v)
+  };
+  vm.createContext(ictx);
+  vm.runInContext(slice("function storeImportedProgram", "function useExistingDuplicate"), ictx);
+  // Freie Kennung wird übernommen, revision auch
+  ictx.pendingProgramImport = { origin: "json", program: { name: "P", code: "sk-eigen01", rev: 4, categories: {}, weeks: [], days: [] } };
+  ictx.storeImportedProgram(false, false);
+  assert.equal(ictx.S.programs["new-id"].code, "sk-eigen01");
+  assert.equal(ictx.S.programs["new-id"].rev, 4);
+  // Kollidierende Kennung -> frische
+  ictx.S.programs = { existing: { code: "sk-eigen01" } };
+  ictx.pendingProgramImport = { origin: "json", program: { name: "P2", code: "sk-eigen01", rev: 2, categories: {}, weeks: [], days: [] } };
+  ictx.storeImportedProgram(false, false);
+  assert.equal(ictx.S.programs["new-id"].code, "sk-frisch99");
+  assert.equal(ictx.S.programs["new-id"].rev, 1);
+  // Ohne Kennung -> frische, rev 1
+  ictx.S.programs = {};
+  ictx.pendingProgramImport = { origin: "json", program: { name: "P3", categories: {}, weeks: [], days: [] } };
+  ictx.storeImportedProgram(false, false);
+  assert.equal(ictx.S.programs["new-id"].code, "sk-frisch99");
+  assert.equal(ictx.S.programs["new-id"].rev, 1);
 });
 
 test("Popup: Duplikat und Update-Erkennung melden sich als Modal mit den richtigen Aktionen", () => {
@@ -194,7 +228,8 @@ test("Oberfläche: Update-Knopf, Klick-Handler und Hinweise sind verdrahtet", ()
   assert.match(html, /Laufendes Programm aktualisieren/);
   assert.match(html, /Vorhandenes aktualisieren/);
   assert.match(html, /b\.id==="importupdate"\)\{importUpdateExisting\(\);return;\}/);
-  assert.match(html, /Fortschritt, Gewichte und Protokoll bleiben erhalten/);
+  // Erkennungs-Hinweis läuft über das Popup (nicht mehr als doppelte Vorschau-Notiz):
+  assert.match(html, /Beim Aktualisieren bleiben Fortschritt, Gewichte und Protokoll erhalten/);
   // Update läuft über die geprüfte Editor-Ersetzen-Mechanik:
   assert.match(html, /function importUpdateExisting\(\)\{[\s\S]*?editorStoreProgram\(true,"back",false\);\n\}/);
 });

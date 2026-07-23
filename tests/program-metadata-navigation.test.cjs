@@ -105,7 +105,7 @@ test('stores timestamps while copies and replacements return to the list without
   assert.equal(copyRun.context.S.active, 'active', 'eine Editor-Kopie darf das aktive Programm nicht wechseln');
   assert.deepEqual(copyRun.activations, []);
   assert.deepEqual(copyRun.editorExits, ['back'], 'nach dem Speichern der Kopie muss die Programmübersicht folgen');
-  assert.match(copyRun.modals.at(-1).message, /aktives Programm bleibt unverändert/);
+  assert.ok(!copyRun.modals.some(modal => /gespeichert/.test(String(modal.title || ''))), 'kein überflüssiges Erfolgs-Popup nach dem Speichern');
 
   const replaceRun = loadEditorStoreContext(JSON.parse(JSON.stringify(source)));
   replaceRun.context.S.programs.active = active;
@@ -180,5 +180,5 @@ test('deleting from the program card keeps the program list open', () => {
   assert.equal(overlayOpen, true, 'Programme-Overlay darf beim Löschen nicht geschlossen werden');
   assert.deepEqual(deleted, ['plan']);
   assert.ok(listRendered >= 1, 'Programmliste muss nach dem Löschen sichtbar neu gerendert werden');
-  assert.equal(modals[1].title, 'Programm gelöscht');
+  assert.equal(modals.length, 1, 'nach dem Löschen erscheint kein überflüssiges Bestätigungs-Popup mehr');
 });
