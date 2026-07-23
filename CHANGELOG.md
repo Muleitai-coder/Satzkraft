@@ -4,6 +4,14 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [Unreleased]
+
+### Behoben
+
+- „Programm bearbeiten“ und „Original ersetzen“: Gewichtete Übungen auf Zeit (z. B. Suitcase Carry, Farmer Carry) blockierten das Speichern mit der Meldung „timerMode benötigt unit:seconds“. Solche Übungen werden jetzt beim Öffnen, Speichern und Importieren zuverlässig als Zeit-Übung behandelt, sodass sich das Programm wieder speichern und ersetzen lässt. Fehlt in einem KI-Plan die Zeiteinheit, wird sie beim Import automatisch ergänzt statt den Import abzulehnen.
+- Der Programm-Editor meldete „Änderungen noch nicht gespeichert“, obwohl nur eine Übung geöffnet und nichts geändert wurde. Das bloße Ansehen einer Übung gilt jetzt nicht mehr als Änderung.
+- iPhone mit Dynamic Island (z. B. iPhone 17 Pro): Im Fenster „Programm bearbeiten“ rutschte der obere Rand unter die Front­kamera-/Uhr-Anzeige. Der Editor hält jetzt auch auf schmalen Bildschirmen genügend Sicherheitsabstand zur Statusleiste ein.
+
 ## [0.32.0] – 2026-07-23
 
 ### Behoben
