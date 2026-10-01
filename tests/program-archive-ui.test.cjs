@@ -154,7 +154,6 @@ function libraryContext() {
     esc: value => String(value == null ? '' : value),
     attr: value => String(value == null ? '' : value),
     icon: name => `[${name}]`,
-    themeButtonHtml: () => '<button class="linkbtn themebtn" id="themebtn">Dunkelmodus</button>',
     backupReminderHtml: () => '',
     backupStatusText: () => 'Keine Sicherung',
     PROGRAM_LIBRARY: []
@@ -184,10 +183,8 @@ test('öffnet das Archiv separat und zeigt den Farbmodus nur in den Einstellunge
   assert.doesNotMatch(archive, /id="themebtn"/, 'das Archiv darf keinen Dunkelmodus-Knopf enthalten');
 
   const mainView = functionSource('renderView');
-  const libraryFooter = functionSource('libraryFooterHtml');
   assert.match(mainView, /id="settingsbtn"/, 'die Hauptseite braucht den Einstellungen-Zahnrad');
   assert.match(functionSource('showSettings'), /data-settheme/, 'die Einstellungen müssen den Farbmodus anbieten');
-  assert.doesNotMatch(libraryFooter, /themeButtonHtml\(\)|data-settheme/, 'die Programm-Fußzeile darf keinen Farbmodus enthalten');
 
   const libraryEvents = sourceBetween(
     'document.getElementById("lib").addEventListener("click"',

@@ -2,15 +2,75 @@
 
 In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentiert. Das Format orientiert sich an „Keep a Changelog“; die Versionsnummern folgen `MAJOR.MINOR.PATCH`.
 
-> Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus `BRIEFING-CODEX.md` rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
+> Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus dem heute unter `docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md` archivierten Briefing rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
-## [Unreleased]
+## [0.33.4] – 2026-10-01
 
 ### Behoben
 
-- „Programm bearbeiten“ und „Original ersetzen“: Gewichtete Übungen auf Zeit (z. B. Suitcase Carry, Farmer Carry) blockierten das Speichern mit der Meldung „timerMode benötigt unit:seconds“. Solche Übungen werden jetzt beim Öffnen, Speichern und Importieren zuverlässig als Zeit-Übung behandelt, sodass sich das Programm wieder speichern und ersetzen lässt. Fehlt in einem KI-Plan die Zeiteinheit, wird sie beim Import automatisch ergänzt statt den Import abzulehnen.
-- Der Programm-Editor meldete „Änderungen noch nicht gespeichert“, obwohl nur eine Übung geöffnet und nichts geändert wurde. Das bloße Ansehen einer Übung gilt jetzt nicht mehr als Änderung.
-- iPhone mit Dynamic Island (z. B. iPhone 17 Pro): Im Fenster „Programm bearbeiten“ rutschte der obere Rand unter die Front­kamera-/Uhr-Anzeige. Der Editor hält jetzt auch auf schmalen Bildschirmen genügend Sicherheitsabstand zur Statusleiste ein.
+- Zurück-Pfeil und Schließen-X bleiben im Programmeditor sowie in Unteransichten auch beim Scrollen sichtbar und halten auf iPhones dauerhaft Abstand zur Statusleiste beziehungsweise Dynamic Island.
+- „Programm bearbeiten“ und „Original ersetzen“: Gewichtete Übungen auf Zeit (z. B. Suitcase Carry, Farmer Carry) werden beim Öffnen, Speichern und Importieren zuverlässig als Zeitübung behandelt. Fehlt in einem kompatiblen KI-Plan die Zeiteinheit, wird sie ergänzt statt den Import abzulehnen.
+- Das bloße Öffnen einer Übung gilt nicht mehr als Änderung und löst keine falsche Warnung über ungespeicherte Änderungen aus.
+
+## [0.33.3] – 2026-08-11
+
+### Geändert
+
+- Manuelle Zeitwerte werden jetzt auch auf mobilen Tastaturen zuverlässig wie bei einem Timer von rechts nach links eingegeben: Der Cursor bleibt am Ende, neue oder eingefügte Ziffern schieben die vorhandenen Stellen nach links und die Rücktaste nimmt die letzte Stelle zurück.
+
+## [0.33.2] – 2026-08-11
+
+### Behoben
+
+- Zeitwerte lassen sich wieder ohne Stoppuhr vollständig eintippen. Die App formatiert und speichert den Wert erst beim Bestätigen beziehungsweise Verlassen des Feldes, statt bereits nach der ersten Ziffer das Feld zu füllen oder die Satzpause zu starten.
+
+## [0.33.1] – 2026-08-09
+
+### Geändert
+
+- Der erste Tipp auf `+` in einem leeren Folgesatz übernimmt die zuletzt eingetragenen Wiederholungen beziehungsweise das letzte Gewicht unverändert. Bei gewichteten Übungen werden beide Satzwerte gemeinsam ergänzt; erst weitere Tipps erhöhen den gewählten Wert.
+- Der Seitenzoom ist in der App deaktiviert. Satzfelder bleiben mit 16 px Schriftgröße zusätzlich gegen den automatischen iPhone-Fokuszoom abgesichert.
+
+## [0.33.0] – 2026-08-09
+
+### Behoben
+
+- Eine laufende Trainingszeit wird beim Wechsel in eine andere App oder in den Hintergrund nur noch gespeichert und nicht mehr automatisch pausiert.
+- Zusatzgewichtsübungen empfehlen bei bereits eingetragenen 0 kg keine unmögliche Reduktion oder widersprüchliche Verringerung mehr.
+- Der Schließen-Button im Warm-up und Cool-down sitzt auf Smartphones mit mehr Abstand zur Oberkante und berücksichtigt die Geräte-Safe-Area.
+- Importfehler nennen jetzt den sichtbaren Trainingstag und Übungsnamen statt interner Schlüssel und Positionsnummern. Timer-/Einheitenfehler lassen sich direkt an der betroffenen Übung im Editor prüfen und beheben; technische Details zeigen nur noch den konkreten JSON-Pfad und die Regel statt die Meldung zu wiederholen.
+- Importierte Texte und interne Kennungen werden auch in HTML-Attributen vollständig maskiert; zusätzliche Validierungen schützen Programmimporte vor ausführbarem Markup und ungültigen Selektoren.
+- „Übung entfernen – nur heute“ bleibt nach einem Neuladen erhalten, gilt ausschließlich im betroffenen Programm und verändert weder Editorentwürfe noch Folgeblöcke oder fremde Programme.
+- Satzfelder funktionieren auch mit den im Austauschformat erlaubten Trainingstag-Kennungen mit Bindestrich.
+- Die Backup-Wiederherstellung lehnt inkonsistente laufende Trainings, Protokoll-, Satz- und Übungsreferenzen ab. Zu große oder nicht lesbare Dateien werden vor dem Einlesen verständlich abgefangen.
+- Laufende KI-Coach-Anfragen werden beim Abbrechen wirklich beendet; veraltete Antworten und automatische Wiederholungen können die aktuelle Ansicht nicht mehr überschreiben. Der Server-Endpunkt verlangt nun ausdrücklich eine erlaubte Browser-Origin.
+- Auch nach mehreren Plananpassungen behält der KI-Coach das ursprüngliche Briefing mit Equipment, Ausschlüssen und Beschwerden vollständig bei. Überlange Verläufe und abgeschnittene oder strukturell ungültige Anthropic-Antworten werden nicht mehr still verarbeitet.
+- Hängende KI-Coach-Anfragen enden mit einer verständlichen Zeitüberschreitung. Lade-, Erfolgs- und Fehlerzustände werden für Screenreader angekündigt und erhalten nach dem Absenden einen sinnvollen Fokus.
+- Dialoge und Vollbildansichten blenden ihre Hintergrundoberflächen jetzt auch für assistive Technik aus. Auswahlzustände in Training, Editor, Einstellungen und KI-Coach werden programmatisch mitgeteilt, und der Fokus bleibt nach einer Auswahl am zugehörigen Bedienelement.
+- Die Übungssuche im Editor ist als Tastatur-bedienbare Vorschlagsliste ausgezeichnet. Schlägt das Laden der Bibliothek offline vorübergehend fehl, kann ein späterer Aufruf es erneut versuchen.
+- Carry- und Schlittenübungen aus der Übungsbibliothek werden im Editor jetzt wie fachlich vorgesehen mit Gewicht und Zeit angelegt; der einseitige Suitcase Carry erhält zusätzlich automatisch „je Seite“.
+- Bekannte Übungstausche werden nur noch angeboten und übernommen, wenn Gewicht, Wiederholungen oder Zeit sowie „je Seite“ zu den vorhandenen Satzfeldern passen. Freie eigene Varianten bleiben möglich.
+- Pallof Press, Bird Dog und einbeiniges Wadenheben verwenden in den mitgelieferten Programmen jetzt die zur Übungsbibliothek passenden Gewichts- und Seitenfelder.
+- Der KI-Coach lässt bei konkret gewählten Wochentagen nur eine zur Trainingshäufigkeit passende Anzahl zu und löst widersprüchliche Pflicht-/Ausschlusswünsche derselben Bewegung direkt bei der Auswahl auf.
+- Kopieraktionen melden Erfolg erst nach einer bestätigten Zwischenablage-Aktion und bieten bei fehlendem Zugriff einen robusten Fallback.
+- Der Service Worker fällt bei Zeitüberschreitung und Serverfehlern auf vorhandene Navigationsdaten zurück und räumt nur Satzkraft-eigene Caches auf.
+- Der Offline-Cache speichert nur noch die App-Shell und ihre freigegebenen statischen Dateien statt beliebiger gleich-originärer Antworten; die Startseite liegt nicht länger doppelt im Vorab-Cache.
+
+### Geändert
+
+- Wiederholungen, Zeit und Gewicht bleiben auch auf schmalen Smartphones in einer Satzzeile und folgen einem zentrierten Raster aus `SET`, `WDH`/`ZEIT · MIN` und `KG`. Zeitfelder kommen ohne `− / +` aus und enthalten ihre Play-Taste links im Feld. Wiederholungen sind durchgängig auf vier Ziffern, Zeitangaben auf `99:59` und Gewichtseingaben auf 2000 kg mit einer Dezimalstelle begrenzt; Stepper, Programmeditor und Backup-Import wenden dieselben Grenzen an.
+- Der zusätzliche Außenabstand zwischen Video/Notiz und Vorgabe entfällt; Verlauf und Satzüberschriften rücken auf 4 px zusammen. Die Karten bleiben dadurch kompakter, ohne Touchziele oder das einzeilige Satzraster zu verkleinern.
+- Netlify veröffentlicht nur noch ein aus einer Positivliste erzeugtes `dist/`-Paket; Repository-Dokumente, Testdaten und lokale Arbeitsdateien bleiben außerhalb des öffentlichen Verzeichnisses.
+- Das aktive Codex-Briefing wurde auf den verbindlichen Ist-Stand verdichtet. Die vollständige frühere Spezifikations- und Entscheidungshistorie bleibt unter `docs/historie/` erhalten.
+- Die Trainingszeit lässt sich nicht mehr versehentlich durch kurzes Antippen pausieren: „Pause“ muss zwei Sekunden gehalten werden und zeigt dabei einen Füllfortschritt; „Weiter“ bleibt ein normaler Tipp.
+- In der aktiven Programmkarte steht der Programmbereich immer als Chip rechts neben Tage und Wochen; das Teilen-Symbol ist typografisch an die Textaktionen angepasst. In Übungskarten stehen Menü und Einklapp-Pfeil gemeinsam in einer ruhigen Kopfleiste, während Trainingsgruppe und Übungsname enger zusammenrücken.
+- Smartphone-Bedienelemente und gewichtete Satzfelder sind auch bei 320 Pixel Breite ausreichend groß. Dialoge und Vollbildansichten erhalten Fokusführung, Tastaturbedienung und semantische Beschriftungen; Browser-Zoom bleibt möglich.
+- Horizontale Geräte-Safe-Areas werden nun auch im Querformat berücksichtigt. Kompakte Editor-Aktionen erreichen mindestens 44 Pixel, und Ruhetage bleiben ohne pauschale Transparenz lesbar.
+- Bei aktivierter Einstellung „Bewegung reduzieren“ entfallen auch die rein dekorativen Übergänge in Navigation, Karten und Editor.
+- Kontraste im hellen Farbschema, PWA-Metadaten und Sicherheitsheader wurden vereinheitlicht.
+- Der KI-Coach erklärt vor dem Absenden den vollständigen Weg über Netlify zu Anthropic. Strukturierte Angaben zu Beschwerden und ihrer Stärke werden nur nach einer eigenen Bestätigung für die aktuelle Coach-Sitzung gesendet und lassen sich vorher aus dem Auftrag entfernen.
+- Die Einstellungen erklären lokale Speicherung und KI-Datenfluss. Gespeicherte Coach-Antworten lassen sich getrennt löschen; für alle lokalen Satzkraft-Daten gibt es einen abgesicherten Löschweg mit optionalem vorherigem Trainings-Backup.
+- README und Briefing unterscheiden nun eindeutig zwischen lokal gespeicherten Trainingsdaten und bewusst gestarteten Coach-Anfragen. Der im privaten Bekanntenkreis geteilte Link erhält in diesem Stand kein Impressum; vor einer breiteren Veröffentlichung ist die Einordnung erneut zu prüfen.
 
 ## [0.32.0] – 2026-07-23
 

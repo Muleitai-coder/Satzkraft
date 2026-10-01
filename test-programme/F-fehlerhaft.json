@@ -1,0 +1,22 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Fehlerhaft Test",
+  "description": "Absichtlich fehlerhaft: der Wiederholungsbereich einer Übung ist verdreht (Min größer als Max). Die App muss den Import mit einer verständlichen Meldung ablehnen.",
+  "categories": {
+    "grund": { "label": "Grundübungen", "color": "amber", "rest": 150 }
+  },
+  "weeks": [
+    { "n": 1, "phase": "aufbau", "label": "Aufbau 1", "rir": "3", "note": "", "sets": { "grund": 3 } }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Ganzkörper A",
+      "exercises": [
+        { "name": "Goblet Squat", "category": "grund", "weighted": true, "increment": 2, "startWeight": 12, "sets": 3, "reps": [12, 8] }
+      ]
+    }
+  ]
+}

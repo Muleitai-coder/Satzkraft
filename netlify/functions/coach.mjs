@@ -56,19 +56,20 @@ const MAX_MESSAGES = 10;
 const MAX_MESSAGE_CHARS = 16_000;
 const MAX_TOTAL_MESSAGE_CHARS = 45_000;
 const REQUEST_TIMEOUT_MS = 45_000;
+const PROVIDER_MODEL = "claude-sonnet-4-6";
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store",
   "x-content-type-options": "nosniff"
 };
 
-function json(status, body) {
-  return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
+function json(status, body, headers = {}) {
+  return new Response(JSON.stringify(body), { status, headers: { ...JSON_HEADERS, ...headers } });
 }
 
 function sameOrigin(request) {
   const origin = request.headers.get("origin");
-  if (!origin) return true;
+  if (!origin) return false;
   try {
     const source = new URL(origin);
     const target = new URL(request.url);
@@ -87,9 +88,10 @@ function validConversation(messages) {
 }
 
 export default async (request) => {
-  if (request.method !== "POST") return json(405, { error: "Methode nicht erlaubt" });
+  if (request.method !== "POST") return json(405, { error: "Methode nicht erlaubt" }, { allow: "POST" });
   if (!sameOrigin(request)) return json(403, { error: "Anfrage nicht erlaubt" });
-  if (!(request.headers.get("content-type") || "").toLowerCase().startsWith("application/json")) {
+  const mediaType = (request.headers.get("content-type") || "").split(";", 1)[0].trim().toLowerCase();
+  if (mediaType !== "application/json") {
     return json(415, { error: "JSON erwartet" });
   }
 
@@ -111,8 +113,9 @@ export default async (request) => {
     return json(400, { error: "Ungültige JSON-Anfrage" });
   }
 
-  const sourceMessages = Array.isArray(payload.messages) ? payload.messages.slice(-MAX_MESSAGES) : [];
-  while (sourceMessages.length && sourceMessages[0] && sourceMessages[0].role === "assistant") sourceMessages.shift();
+  if (!Array.isArray(payload.messages)) return json(400, { error: "Ungültiger Gesprächsverlauf" });
+  if (payload.messages.length > MAX_MESSAGES) return json(413, { error: "Gesprächsverlauf ist zu lang" });
+  const sourceMessages = payload.messages.slice();
   let totalChars = 0;
   const messages = [];
   for (const message of sourceMessages) {
@@ -134,31 +137,50 @@ export default async (request) => {
   }
 
   const controller = new AbortController();
+  const clientSignal = request.signal;
+  const abortFromClient = () => controller.abort();
+  if (clientSignal && clientSignal.aborted) abortFromClient();
+  else if (clientSignal) clientSignal.addEventListener("abort", abortFromClient, { once: true });
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 3000, system: SYSTEM, messages }),
+      body: JSON.stringify({ model: PROVIDER_MODEL, max_tokens: 3000, system: SYSTEM, messages }),
       signal: controller.signal
     });
     const data = await res.json().catch(() => null);
+    const providerRequestId = (res.headers.get("request-id") || "").slice(0, 120);
     if (!res.ok) {
-      console.error("coach_provider_error", { status: res.status });
+      console.error("coach_provider_error", { status: res.status, requestId: providerRequestId || undefined });
+      if ([401, 402, 403, 404].includes(res.status)) return json(503, { error: "KI-Coach ist momentan nicht verfügbar" });
+      if ([429, 500, 502, 503, 504, 529].includes(res.status)) return json(503, { error: "KI-Dienst ist momentan ausgelastet. Bitte versuche es später erneut." });
       return json(502, { error: "KI-Coach konnte das Programm nicht erstellen" });
     }
-    const text = ((data && data.content) || []).map(c => c.type === "text" ? c.text : "").join("");
+    if (!data || data.type !== "message" || data.role !== "assistant" || !Array.isArray(data.content)) {
+      console.error("coach_provider_error", { status: res.status, requestId: providerRequestId || undefined, reason: "invalid_response" });
+      return json(502, { error: "KI-Coach hat keine verwertbare Antwort geliefert" });
+    }
+    if (data.stop_reason !== "end_turn") {
+      console.error("coach_provider_error", { status: res.status, requestId: providerRequestId || undefined, reason: "incomplete_response", stopReason: data.stop_reason || "missing" });
+      return json(502, { error: data.stop_reason === "max_tokens" ? "Die KI-Antwort war zu lang. Bitte versuche es erneut." : "KI-Coach hat keine vollständige Antwort geliefert" });
+    }
+    const text = data.content.map(c => c && c.type === "text" && typeof c.text === "string" ? c.text : "").join("");
     if (!text) {
       console.error("coach_provider_error: empty_response");
       return json(502, { error: "KI-Coach hat keine verwertbare Antwort geliefert" });
     }
     return json(200, { text });
   } catch (error) {
-    if (error && error.name === "AbortError") return json(504, { error: "KI-Anfrage hat zu lange gedauert. Bitte erneut versuchen." });
+    if (error && error.name === "AbortError") {
+      if (clientSignal && clientSignal.aborted) return json(499, { error: "Anfrage wurde abgebrochen" });
+      return json(504, { error: "KI-Anfrage hat zu lange gedauert. Bitte erneut versuchen." });
+    }
     console.error("coach_network_error", { name: error && error.name ? error.name : "unknown" });
     return json(502, { error: "KI-Coach ist momentan nicht erreichbar" });
   } finally {
     clearTimeout(timeout);
+    if (clientSignal) clientSignal.removeEventListener("abort", abortFromClient);
   }
 };
 

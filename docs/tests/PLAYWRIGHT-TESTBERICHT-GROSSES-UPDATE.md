@@ -1,5 +1,7 @@
 # Playwright-Testbericht · Großes Update
 
+> **Historischer Abnahmebericht:** Die folgenden Zahlen gelten ausschließlich für Satzkraft v0.26.0 am 18.07.2026 und sind kein Bericht über den aktuellen Repository-Stand.
+
 **Stand:** 18.07.2026
 
 **Branch:** `agent/grosses-update-releases-1-4`

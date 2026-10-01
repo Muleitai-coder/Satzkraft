@@ -82,6 +82,14 @@ test('covers the iPhone safe area below the editor actions', () => {
   assert.match(html, /\.edsticky,\.importactions\{[^}]*margin-bottom:-14px\}/);
 });
 
+test('keeps iPhone back and close controls below the top safe area while scrolling', () => {
+  assert.match(html, /\.libbox\{[^}]*padding:calc\(env\(safe-area-inset-top\) \+ 20px\)/);
+  assert.match(html, /\.ohdr\{[^}]*position:sticky;top:env\(safe-area-inset-top\)[^}]*z-index:6/);
+  assert.match(html, /\.editorbox,\.subviewbox\{[^}]*padding:calc\(env\(safe-area-inset-top\) \+ 14px\)/);
+  assert.match(html, /id="editorback" aria-label="Zurück"/);
+  assert.match(html, /id="libclose" aria-label="Schließen"/);
+});
+
 test('uses one clear rename path and compact program actions', () => {
   assert.doesNotMatch(html, /data-ren=/);
   assert.doesNotMatch(html, /libRenameId/);

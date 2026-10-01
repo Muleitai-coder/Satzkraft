@@ -95,3 +95,19 @@ test('moves rep advice from the completed-set card to the next week target', () 
   assert.match(guidance, /Empfehlung nach dieser Einheit/);
   assert.match(guidance, /Nächste Einheit: Wiederholungen leicht steigern/);
 });
+
+test('describes zero added weight without a contradictory reduction', () => {
+  const recommendation = {
+    action: 'hold',
+    mode: 'added_weight',
+    increment: 2.5,
+    nextWeight: 0,
+    message: 'Halten',
+    reason: 'Ohne Zusatzgewicht saubere Wiederholungen aufbauen oder eine leichtere Variante wählen.'
+  };
+  const context = contextFor({ done: true, recommendation });
+  const guidance = context.recHtml({ id: 'chinup', w: true, bw: true, mode: 'added_weight' });
+  assert.match(guidance, /ohne Zusatzgewicht trainieren/);
+  assert.match(guidance, /leichtere Variante/);
+  assert.doesNotMatch(guidance, /reduzieren|−2,5 kg/i);
+});

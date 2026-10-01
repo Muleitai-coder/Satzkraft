@@ -1,6 +1,8 @@
 # Satzkraft – Ausbauplan für Konten, Datenbank und Desktop-Editor
 
-Stand: Satzkraft v0.12.0. Die aktuelle App speichert Programme und Trainingsfortschritt lokal im Browser. Das bleibt zunächst als Gastmodus erhalten.
+> **Historischer Zukunftsentwurf:** Dieses Dokument entstand für Satzkraft v0.12.0. Konten, Datenbank und Desktop-Editor sind kein beschlossener Teil des aktuellen Produktstands.
+
+Stand der damaligen Planung: Satzkraft v0.12.0. Die App speicherte Programme und Trainingsfortschritt lokal im Browser; das sollte zunächst als Gastmodus erhalten bleiben.
 
 ## Empfohlene Zielarchitektur
 

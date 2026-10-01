@@ -51,6 +51,70 @@ function compactWorkoutState(exerciseCount = 1) {
   });
 }
 
+function weightedTimedWorkoutState() {
+  return reportState((state, program, store) => {
+    program.weeks = program.weeks.slice(0, 2);
+    program.days = [program.days[0]];
+    const category = program.days[0].ex[0].cat;
+    program.days[0].ex = [
+      {
+        id: 'carry',
+        name: 'Suitcase Carry',
+        en: 'Suitcase Carry',
+        cat: category,
+        w: true,
+        bw: false,
+        unit: 'seconds',
+        inc: 2.5,
+        def: 20,
+        reps: [30, 45],
+        tmode: 'target',
+        perSide: true,
+        sub: 'Aufrecht gehen und den Rumpf stabil halten.',
+      },
+    ];
+    for (const week of program.weeks) week.sets = { [category]: 2 };
+    store.tg = {};
+    store.barw = {};
+    store.notes = {};
+    store.logs = {};
+    store.history = [];
+    store.workout = null;
+    store.pendingReplacements = [];
+    store.week = 1;
+    store.day = program.days[0].key;
+    store.blockCelebrated = false;
+  });
+}
+
+function weightedRepWorkoutState() {
+  const state = weightedTimedWorkoutState();
+  const exercise = state.programs[state.active].days[0].ex[0];
+  exercise.id = 'press';
+  exercise.name = 'Beinpresse';
+  exercise.en = 'Leg Press';
+  exercise.unit = 'reps';
+  exercise.reps = [8, 12];
+  exercise.perSide = false;
+  delete exercise.tmode;
+  return state;
+}
+
+function weightedRepHistoryWorkoutState() {
+  const state = weightedRepWorkoutState();
+  const program = state.programs[state.active];
+  const store = state.store[state.active];
+  const dayKey = program.days[0].key;
+  store.week = 2;
+  store.logs[`1|${dayKey}|press`] = {
+    sets: [
+      { reps: '10', weight: '20' },
+      { reps: '10', weight: '20' },
+    ],
+  };
+  return state;
+}
+
 async function openWithState(page, state, options = {}) {
   const theme = options.theme || 'dark';
   await page.addInitScript(
@@ -64,6 +128,38 @@ async function openWithState(page, state, options = {}) {
           JSON.stringify({ snoozeUntil: Date.now() + 365 * 86400000 })
         );
       localStorage.setItem(appStateKey, JSON.stringify(seededState));
+    },
+    {
+      appStateKey: APP_STATE_KEY,
+      themeKey: THEME_KEY,
+      noticeKey: REDESIGN_NOTICE_KEY,
+      backupKey: BACKUP_META_KEY,
+      seededState: state,
+      seededTheme: theme,
+      showUpdateNotice: options.updateNotice === true,
+      showBackupReminder: options.backupReminder === true,
+    }
+  );
+  await page.goto('/index.html');
+  await expect(page.locator('#app .ptitle')).toBeVisible();
+}
+
+async function openWithPersistedState(page, state, options = {}) {
+  const theme = options.theme || 'dark';
+  await page.addInitScript(
+    ({ appStateKey, themeKey, noticeKey, backupKey, seededState, seededTheme, showUpdateNotice, showBackupReminder }) => {
+      const seedMarker = 'satzkraft-playwright-persisted-seed';
+      if (sessionStorage.getItem(seedMarker)) return;
+      localStorage.clear();
+      localStorage.setItem(themeKey, seededTheme);
+      if (!showUpdateNotice) localStorage.setItem(noticeKey, '1');
+      if (!showBackupReminder)
+        localStorage.setItem(
+          backupKey,
+          JSON.stringify({ snoozeUntil: Date.now() + 365 * 86400000 })
+        );
+      localStorage.setItem(appStateKey, JSON.stringify(seededState));
+      sessionStorage.setItem(seedMarker, '1');
     },
     {
       appStateKey: APP_STATE_KEY,
@@ -588,6 +684,347 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
     ).toEqual([]);
   });
 
+  test('VIS-24/P0: 320-px-Ansicht behält lesbare Satzfelder und ausreichend große Touch-Ziele', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await openWithState(page, compactWorkoutState(1));
+    await page.locator('[data-expand-prev]').click();
+
+    const documentWidth = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      content: Math.max(
+        document.documentElement.scrollWidth,
+        document.body.scrollWidth
+      ),
+    }));
+    expect(documentWidth.content).toBeLessThanOrEqual(
+      documentWidth.viewport + 1
+    );
+
+    const inputWidths = await page
+      .locator('#app .srow input.inp')
+      .evaluateAll((inputs) =>
+        inputs
+          .filter((input) => {
+            const rect = input.getBoundingClientRect();
+            const style = getComputedStyle(input);
+            return (
+              style.display !== 'none' &&
+              style.visibility !== 'hidden' &&
+              rect.width > 0 &&
+              rect.height > 0
+            );
+          })
+          .map((input) =>
+            Math.round(input.getBoundingClientRect().width * 100) / 100
+          )
+      );
+    expect(inputWidths.length).toBeGreaterThan(0);
+    expect(inputWidths.filter((width) => width < 42)).toEqual([]);
+
+    const touchTargets = await page.evaluate((targets) => {
+      return targets.flatMap(({ name, selector }) => {
+        const visible = [...document.querySelectorAll(selector)].filter(
+          (element) => {
+            const rect = element.getBoundingClientRect();
+            const style = getComputedStyle(element);
+            return (
+              style.display !== 'none' &&
+              style.visibility !== 'hidden' &&
+              rect.width > 0 &&
+              rect.height > 0
+            );
+          }
+        );
+        if (!visible.length) return [{ name, selector, missing: true }];
+        return visible.map((element, index) => ({
+          name,
+          selector,
+          index,
+          width:
+            Math.round(element.getBoundingClientRect().width * 100) / 100,
+          height:
+            Math.round(element.getBoundingClientRect().height * 100) / 100,
+        }));
+      });
+    }, [
+      { name: 'Programme', selector: '#libbtn' },
+      { name: 'Auswertung', selector: '#pdf' },
+      { name: 'Einstellungen', selector: '#settingsbtn' },
+      { name: 'Übungsverlauf', selector: '.exnamelink' },
+      { name: 'Video', selector: '.links a' },
+      { name: 'Notiz', selector: '.notebtn' },
+      { name: 'Übungsaktionen', selector: '.kebab' },
+      { name: 'Satzschritt', selector: '.stp' },
+    ]);
+    expect(touchTargets.filter((target) => target.missing)).toEqual([]);
+    expect(
+      touchTargets.filter(
+        (target) =>
+          !target.missing &&
+          (target.width < (target.selector === '.stp' ? 32 : 44) ||
+            target.height < 44)
+      )
+    ).toEqual([]);
+  });
+
+  test('VIS-24b/P0: gewichtete Zeitübung bleibt bei 320 px klar bedienbar', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await openWithState(page, weightedTimedWorkoutState());
+    await page.locator('[data-expand-prev]').click();
+
+    const row = page.locator('.srow.weighted.timed').first();
+    const header = page.locator('.setgridhead');
+    await expect(row).toBeVisible();
+    await expect(header.locator(':scope > span')).toHaveText([
+      'Set',
+      'Zeit · min',
+      'kg',
+    ]);
+    await expect(header.locator('button')).toHaveCount(0);
+    await expect(row.locator('.rowtimer[data-i="0"]')).toBeVisible();
+
+    await page.evaluate(() => {
+      document.querySelector('#rep-carry-0').value = '00:00';
+      document.querySelector('#wt-carry-0').value = '1000';
+    });
+
+    const measurements = await row.evaluate((element) => ({
+      rowWidth: element.getBoundingClientRect().width,
+      viewportWidth: document.documentElement.clientWidth,
+      overflow: element.scrollWidth - element.clientWidth,
+      timeWidth: element.querySelector('.settimevalue .inp').getBoundingClientRect().width,
+      controls: [...element.querySelectorAll('.setmetricgrid')].map(
+        (control) => ({
+          width: control.getBoundingClientRect().width,
+          buttons: [...control.querySelectorAll('button')].map((button) => ({
+            width: button.getBoundingClientRect().width,
+            height: button.getBoundingClientRect().height,
+          })),
+        })
+      ),
+    }));
+    expect(measurements.rowWidth).toBeLessThanOrEqual(
+      measurements.viewportWidth
+    );
+    expect(measurements.overflow).toBeLessThanOrEqual(1);
+    expect(measurements.timeWidth).toBeGreaterThanOrEqual(42);
+    expect(measurements.controls).toHaveLength(1);
+    expect(
+      measurements.controls.flatMap((control) => control.buttons).filter(
+        (button) => button.width < 32 || button.height < 44
+      )
+    ).toEqual([]);
+    const playSize = await row.locator('.rowtimer[data-i="0"]').evaluate((button) => ({
+      width: button.getBoundingClientRect().width,
+      height: button.getBoundingClientRect().height,
+    }));
+    expect(playSize.width).toBeGreaterThanOrEqual(32);
+    expect(playSize.height).toBeGreaterThanOrEqual(44);
+
+    await waitForFonts(page);
+    await expect(page.locator('#card-carry')).toHaveScreenshot(
+      'gewichtete-zeit-320.png'
+    );
+
+    await page.locator('#startw').click();
+    const timeInput = page.locator('#rep-carry-0');
+    await timeInput.click();
+    await page.keyboard.type('45');
+    await expect(timeInput).toHaveValue('00:45');
+    await page.keyboard.press('Backspace');
+    await expect(timeInput).toHaveValue('00:04');
+    await page.keyboard.type('5');
+    await expect(timeInput).toHaveValue('00:45');
+    await timeInput.evaluate((input) => {
+      input.value = '';
+      delete input.dataset.clockDigits;
+      delete input.dataset.timeDraft;
+    });
+    const stopwatch = page.locator('.rowtimer[data-i="0"]');
+    await expect(stopwatch).toBeEnabled();
+    await stopwatch.click();
+    await expect(stopwatch).toHaveClass(/running/);
+    await stopwatch.click();
+    await expect(timeInput).toHaveValue('00:01');
+    await expect(timeInput).toHaveAttribute('maxlength', '5');
+    await timeInput.evaluate((input) => {
+      input.value = '12:99';
+      input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    });
+    await expect(timeInput).toHaveValue('12:59');
+    await timeInput.evaluate((input) => {
+      input.value = '999999';
+      input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    });
+    await expect(timeInput).toHaveValue('99:59');
+  });
+
+  test('VIS-24c/P0: Wiederholungen und Gewicht bleiben bei 320 px in einer Zeile', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await openWithState(page, weightedRepWorkoutState());
+    await page.locator('[data-expand-prev]').click();
+
+    const row = page.locator('.srow.weighted:not(.timed)').first();
+    const header = page.locator('.setgridhead');
+    await expect(header.locator(':scope > span')).toHaveText([
+      'Set',
+      'Wdh',
+      'kg',
+    ]);
+    await page.evaluate(() => {
+      document.querySelector('#rep-press-0').value = '0000';
+      document.querySelector('#wt-press-0').value = '1000';
+    });
+
+    const layout = await row.evaluate((element) => {
+      const groups = [...element.querySelectorAll('.setmetricgrid')];
+      const boxes = groups.map((group) => group.getBoundingClientRect());
+      return {
+        overflow: element.scrollWidth - element.clientWidth,
+        groupCount: groups.length,
+        sameLine: boxes.every((box) => Math.abs(box.top - boxes[0].top) <= 1),
+        inputWidths: groups.map(
+          (group) => group.querySelector('.inp').getBoundingClientRect().width
+        ),
+      };
+    });
+    expect(layout.overflow).toBeLessThanOrEqual(1);
+    expect(layout.groupCount).toBe(2);
+    expect(layout.sameLine).toBe(true);
+    expect(layout.inputWidths.filter((width) => width < 42)).toEqual([]);
+
+    await page.setViewportSize({ width: 393, height: 852 });
+    const alignment = await page.evaluate(() => {
+      const header = document.querySelector('.setgridhead');
+      const row = document.querySelector('.srow.weighted:not(.timed)');
+      const headerCells = [...header.children];
+      const groups = [...row.querySelectorAll('.setmetricgrid')];
+      const center = (element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.left + rect.width / 2;
+      };
+      return {
+        set: Math.abs(center(headerCells[0]) - center(row.querySelector('.slbl'))),
+        reps: Math.abs(
+          center(headerCells[1].querySelector('span')) -
+            center(groups[0].querySelector('.inp'))
+        ),
+        weight: Math.abs(
+          center(headerCells[2].querySelector('span')) -
+            center(groups[1].querySelector('.inp'))
+        ),
+        prescriptionGap:
+          header.getBoundingClientRect().top -
+          document.querySelector('#card-press .presc').getBoundingClientRect().bottom,
+        rowGap:
+          row.getBoundingClientRect().top - header.getBoundingClientRect().bottom,
+      };
+    });
+    expect(alignment.set).toBeLessThanOrEqual(1);
+    expect(alignment.reps).toBeLessThanOrEqual(1);
+    expect(alignment.weight).toBeLessThanOrEqual(1);
+    expect(alignment.prescriptionGap).toBeGreaterThanOrEqual(3);
+    expect(alignment.prescriptionGap).toBeLessThanOrEqual(5);
+    expect(alignment.rowGap).toBeGreaterThanOrEqual(6);
+    expect(alignment.rowGap).toBeLessThanOrEqual(10);
+
+    await page.locator('#startw').click();
+    const repetitions = page.locator('#rep-press-0');
+    const weight = page.locator('#wt-press-0');
+    await expect(repetitions).toHaveAttribute('maxlength', '4');
+    await repetitions.evaluate((input) => {
+      input.value = '899999';
+      input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    });
+    await expect(repetitions).toHaveValue('8999');
+    await repetitions.fill('9999');
+    await row.locator('.setmetricgrid').first().locator('[data-d="1"]').click();
+    await expect(repetitions).toHaveValue('9999');
+    await weight.evaluate((input) => {
+      input.value = '99999';
+      input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    });
+    await expect(weight).toHaveValue('2000');
+    await row.locator('.setmetricgrid').nth(1).locator('[data-d="1"]').click();
+    await expect(weight).toHaveValue('2000');
+  });
+
+  test('VIS-24d/P1: Aktions-, Vorgabe- und Verlaufszeilen stehen kompakt zusammen', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await openWithState(page, weightedRepHistoryWorkoutState());
+    await page.locator('[data-expand-prev]').click();
+
+    const card = page.locator('#card-press');
+    await expect(card.locator('.last')).toBeVisible();
+    const gaps = await card.evaluate((element) => {
+      const links = element.querySelector('.links');
+      const prescription = element.querySelector('.presc');
+      const history = element.querySelector('.last');
+      const rows = element.querySelector('.srows');
+      return {
+        linksToPrescription:
+          prescription.getBoundingClientRect().top - links.getBoundingClientRect().bottom,
+        historyToHeaders:
+          rows.getBoundingClientRect().top - history.getBoundingClientRect().bottom,
+      };
+    });
+    expect(gaps.linksToPrescription).toBeGreaterThanOrEqual(0);
+    expect(gaps.linksToPrescription).toBeLessThanOrEqual(1);
+    expect(gaps.historyToHeaders).toBeGreaterThanOrEqual(3);
+    expect(gaps.historyToHeaders).toBeLessThanOrEqual(5);
+  });
+
+  test('VIS-25/P0: Escape trifft nie still eine Pflicht- oder Risikoentscheidung', async ({
+    page,
+  }) => {
+    await openWithState(page, compactWorkoutState(1));
+    await page.evaluate(() => {
+      window.__modalDecisions = [];
+      showModal('Verbindliche Auswahl', 'Triff eine bewusste Entscheidung.', [
+        {
+          label: 'Dauerhaft übernehmen',
+          cls: 'primary',
+          action: () => window.__modalDecisions.push('permanent'),
+        },
+        {
+          label: 'Nur dieses Training',
+          action: () => window.__modalDecisions.push('training'),
+        },
+      ]);
+    });
+
+    await expect(page.locator('#modal')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#modal')).toBeVisible();
+    expect(await page.evaluate(() => window.__modalDecisions)).toEqual([]);
+
+    await page.evaluate(() => {
+      hideModal();
+      showModal('Programm löschen?', 'Diese Aktion braucht eine Bestätigung.', [
+        {
+          label: 'Programm löschen',
+          cls: 'danger',
+          action: () => window.__modalDecisions.push('deleted'),
+        },
+        { label: 'Abbrechen', action: null },
+      ]);
+    });
+    await expect(
+      page.locator('#modal').getByRole('button', { name: 'Abbrechen' })
+    ).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#modal')).toBeHidden();
+    expect(await page.evaluate(() => window.__modalDecisions)).toEqual([]);
+  });
+
   test('VIS-19/P0: neuer Editor startet geschlossen und deckt den unteren iPhone-Rand ab', async ({
     page,
   }) => {
@@ -607,25 +1044,54 @@ test.describe('2 · UI/UX-Klarheit & Visual Regression', () => {
       'Speichern & aktivieren',
     ]);
 
-    const footerCoverage = await page.locator('#lib').evaluate((lib) => {
+    const editorCoverage = await page.locator('#lib').evaluate((lib) => {
       lib.scrollTop = lib.scrollHeight;
       const footer = lib.querySelector('.edsticky');
       const footerRect = footer.getBoundingClientRect();
       const style = getComputedStyle(footer);
-      const boxStyle = getComputedStyle(lib.querySelector('.libbox'));
+      const box = lib.querySelector('.libbox');
+      const boxStyle = getComputedStyle(box);
+      const header = lib.querySelector('.ohdr');
+      const headerRect = header.getBoundingClientRect();
+      const backRect = lib.querySelector('#editorback').getBoundingClientRect();
+      const closeRect = lib.querySelector('#libclose').getBoundingClientRect();
+      const libRect = lib.getBoundingClientRect();
       const restGap =
         parseFloat(boxStyle.paddingBottom) + parseFloat(style.bottom);
       return {
-        background: style.backgroundColor,
-        paddingBottom: parseFloat(style.paddingBottom),
-        footerBottom: footerRect.bottom,
-        scrollportBottom: lib.getBoundingClientRect().bottom - restGap,
+        footer: {
+          background: style.backgroundColor,
+          paddingBottom: parseFloat(style.paddingBottom),
+          bottom: footerRect.bottom,
+          scrollportBottom: libRect.bottom - restGap,
+        },
+        header: {
+          top: headerRect.top,
+          configuredTop: parseFloat(getComputedStyle(header).top) || 0,
+          backTop: backRect.top,
+          closeTop: closeRect.top,
+          closeBottom: closeRect.bottom,
+          scrollportTop: libRect.top,
+          scrollportBottom: libRect.bottom,
+        },
       };
     });
-    expect(footerCoverage.background).toBe('rgba(8, 9, 11, 0.92)');
-    expect(footerCoverage.paddingBottom).toBeGreaterThanOrEqual(12);
-    expect(footerCoverage.footerBottom).toBeGreaterThanOrEqual(
-      footerCoverage.scrollportBottom - 2
+    expect(editorCoverage.footer.background).toBe('rgba(8, 9, 11, 0.92)');
+    expect(editorCoverage.footer.paddingBottom).toBeGreaterThanOrEqual(12);
+    expect(editorCoverage.footer.bottom).toBeGreaterThanOrEqual(
+      editorCoverage.footer.scrollportBottom - 2
+    );
+    expect(editorCoverage.header.top).toBeGreaterThanOrEqual(
+      editorCoverage.header.scrollportTop + editorCoverage.header.configuredTop - 1
+    );
+    expect(editorCoverage.header.backTop).toBeGreaterThanOrEqual(
+      editorCoverage.header.scrollportTop + editorCoverage.header.configuredTop
+    );
+    expect(editorCoverage.header.closeTop).toBeGreaterThanOrEqual(
+      editorCoverage.header.scrollportTop + editorCoverage.header.configuredTop
+    );
+    expect(editorCoverage.header.closeBottom).toBeLessThanOrEqual(
+      editorCoverage.header.scrollportBottom
     );
   });
 
@@ -817,10 +1283,15 @@ test.describe('3 · Redundanz-Check', () => {
     await openProgramLibrary(page);
     const programs = page.locator('#lib .tplcard');
     await expect(programs).toHaveCount(4);
-    const programNames = await programs
-      .locator('.tplname')
-      .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
-    expect(new Set(programNames).size).toBe(4);
+    const programIdentities = await programs.evaluateAll((cards) =>
+      cards.map((card) =>
+        [
+          card.querySelector('.tplname')?.textContent.trim(),
+          card.querySelector('.tpllevel')?.textContent.trim(),
+        ].join(' · ')
+      )
+    );
+    expect(new Set(programIdentities).size).toBe(4);
   });
 
   test('RED-08/P0: Übungskarte zeigt nur zwei Hilfsaktionen plus Menü und keinen alten Ballast', async ({
@@ -1138,7 +1609,7 @@ test.describe('4 · Regression & Kernfunktion', () => {
   test('REG-02/P0: Training starten, Satz speichern und unterbrochen beenden', async ({
     page,
   }) => {
-    await openWithState(
+    await openWithPersistedState(
       page,
       reportState((state, program, store) => {
         store.week = 8;
@@ -1177,6 +1648,23 @@ test.describe('4 · Regression & Kernfunktion', () => {
     expect(stored.workout).toBeNull();
     expect(stored.sessions).toHaveLength(1);
     expect(stored.sessions[0].complete).toBe(false);
+
+    await page.reload();
+    await expect(page.locator('#app .ptitle')).toBeVisible();
+    await expect(page.locator('#startw')).toHaveText('Training fortsetzen');
+
+    const reloaded = await page.evaluate(() => ({
+      reps: window.S.logs['8|A|A_0'].sets[0].reps,
+      weight: window.S.logs['8|A|A_0'].sets[0].weight,
+      workout: window.S.workout,
+      sessions: window.S.history.filter(
+        (entry) => entry.week === 8 && entry.day === 'A'
+      ),
+    }));
+    expect(reloaded).toEqual(stored);
+    expect(reloaded.workout).toBeNull();
+    expect(reloaded.sessions).toHaveLength(1);
+    expect(reloaded.sessions[0].complete).toBe(false);
   });
 
   test('FUN-O1-04/P0: v0.22-Backup bleibt vollständig und Woche 8 trainierbar', async ({

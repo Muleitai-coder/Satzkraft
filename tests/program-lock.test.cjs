@@ -21,7 +21,7 @@ function loadItemContext(workout) {
   return context;
 }
 
-const activeProgram = { name: 'Aktiv', days: [{}, {}], weeks: [{}, {}, {}] };
+const activeProgram = { name: 'Aktiv', bereich: 'Hybrid', days: [{}, {}], weeks: [{}, {}, {}] };
 const otherProgram = { name: 'Anderes', days: [{}], weeks: [{}] };
 
 test('disables editing and activation while a training is running', () => {
@@ -42,6 +42,15 @@ test('keeps program actions enabled outside a training', () => {
 
   assert.doesNotMatch(active, / disabled/);
   assert.doesNotMatch(other, / disabled/);
+});
+
+test('shows the program area exactly once as the last metadata chip', () => {
+  const context = loadItemContext(null);
+  const active = context.programItemHtml('active', activeProgram);
+
+  assert.match(active, /2 Tage<\/span><span class="chip">3 Wochen<\/span><span class="chip">Hybrid<\/span>/);
+  assert.equal((active.match(/>Hybrid<\/span>/g) || []).length, 1);
+  assert.doesNotMatch(active, /class="progsub"/);
 });
 
 test('renders a clear read-only notice and disables all structural library actions', () => {

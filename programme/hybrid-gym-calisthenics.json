@@ -429,6 +429,10 @@
             8,
             12
           ],
+          "weighted": true,
+          "increment": 2.5,
+          "startWeight": 0,
+          "perSide": true,
           "cue": "Je Seite zählen und Rotation des Rumpfes verhindern",
           "video": "Pallof Press Technik",
           "proxy": "Dead Bug"

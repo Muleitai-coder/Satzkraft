@@ -66,17 +66,18 @@ test("perSide: true übersteht Import und Export, false wird beim Export weggela
 
 /* ---------- 2. Bibliothek + Editor-Übernahme ---------- */
 
-test("Bibliothek: 22 einseitige Übungen sind markiert, nur mit Wert true", () => {
+test("Bibliothek: 25 einseitige Übungen sind markiert, nur mit Wert true", () => {
   const marked = library.filter(e => "einseitig" in e);
-  assert.equal(marked.length, 22);
+  assert.equal(marked.length, 25);
   marked.forEach(e => assert.equal(e.einseitig, true, e.de));
   const names = new Set(marked.map(e => e.de));
-  ["Ausfallschritte", "Seitstütz", "Bulgarian Split Squats", "Kurzhantel-Rudern einarmig", "Dead Bug"].forEach(n =>
+  ["Ausfallschritte", "Seitstütz", "Suitcase Carry", "Bulgarian Split Squats", "Kurzhantel-Rudern einarmig", "Dead Bug", "Bird Dog", "Pallof Press"].forEach(n =>
     assert.ok(names.has(n), `${n} sollte als einseitig markiert sein`));
 });
 
 const ectx = { editorWeekIndex: 0, editorUndoStack: [], document: { getElementById: () => null } };
 vm.createContext(ectx);
+vm.runInContext(slice("function exerciseLibraryTypeSignature", "function workoutExerciseTypeSignature"), ectx);
 vm.runInContext(slice("function editorLibraryTypeSignature", "function editorExerciseLibraryWouldOverwrite"), ectx);
 vm.runInContext(slice("function editorApplyExerciseLibraryEntry", "function editorChooseExerciseLibraryEntry"), ectx);
 vm.runInContext(slice("function editorExerciseType(", "function editorExerciseTypeOptions"), ectx);
@@ -126,7 +127,23 @@ test("Vorlagen: einseitige Übungen der vier Programme tragen perSide und laden 
     assert.equal(vctx.parseProgram(raw).err, undefined, file);
     marked += (raw.match(/"perSide": true/g) || []).length;
   }
-  assert.equal(marked, 12);
+  assert.equal(marked, 14);
+});
+
+test("Vorlagen: Pallof Press, Bird Dog und einbeiniges Wadenheben verwenden die freigegebenen Satzfelder", () => {
+  const hybrid = JSON.parse(fs.readFileSync(new URL("programme/hybrid-gym-calisthenics.json", root), "utf8"));
+  const calisthenics = JSON.parse(fs.readFileSync(new URL("programme/calisthenics-einstieg.json", root), "utf8"));
+  const exercises = program => program.days.flatMap(day => day.exercises);
+  const pallof = exercises(hybrid).find(ex => ex.name === "Pallof Press");
+  const birdDog = exercises(calisthenics).find(ex => ex.name === "Bird Dog");
+  const calfRaise = exercises(calisthenics).find(ex => ex.name === "Wadenheben einbeinig");
+
+  assert.equal(pallof.weighted, true);
+  assert.equal(pallof.perSide, true);
+  assert.equal(birdDog.perSide, true);
+  assert.equal(calfRaise.weighted, true);
+  assert.equal(calfRaise.bodyweight, true);
+  assert.equal(calfRaise.perSide, true);
 });
 
 /* ---------- 4. Kurzhantel-Hinweis ---------- */

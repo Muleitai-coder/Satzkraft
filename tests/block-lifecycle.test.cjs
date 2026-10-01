@@ -236,6 +236,14 @@ test('derives the current training week from begun and completed units', () => {
   }), 3);
 });
 
+test('the active current-week wrapper includes today-only exercise removals', () => {
+  assert.match(
+    html,
+    /currentTrainingWeekFor\(PROG\(\),\{logs:S\.logs,history:S\.history,removedEx:S\.removedEx\}\)/,
+    'temporär entfernte Übungen müssen auch die aktive Wochenableitung beeinflussen'
+  );
+});
+
 test('creates incrementing follow-up names and never truncates the block suffix', () => {
   const context = appContext();
   assert.equal(context.followupBlockName('Kraftbasis', {
@@ -432,7 +440,7 @@ test('separates archived programs, exposes read-only actions and blocks stale ac
   context.document = { getElementById: id => id === 'lib' ? library : null };
   context.programWriteLocked = () => false;
   context.PROGRAM_LIBRARY = [];
-  context.themeButtonHtml = context.backupReminderHtml = context.icon = () => '';
+  context.backupReminderHtml = context.icon = () => '';
   context.backupStatusText = () => 'Keine Sicherung';
   context.esc = context.attr = value => String(value == null ? '' : value);
 

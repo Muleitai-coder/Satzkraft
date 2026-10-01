@@ -6,6 +6,9 @@ const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), '
 const sw = fs.readFileSync(new URL('../sw.js', `file://${__filename}`), 'utf8');
 const changelog = fs.readFileSync(new URL('../CHANGELOG.md', `file://${__filename}`), 'utf8');
 const briefing = fs.readFileSync(new URL('../BRIEFING-CODEX.md', `file://${__filename}`), 'utf8');
+const packageJson = JSON.parse(fs.readFileSync(new URL('../package.json', `file://${__filename}`), 'utf8'));
+const packageLock = JSON.parse(fs.readFileSync(new URL('../package-lock.json', `file://${__filename}`), 'utf8'));
+const manifest = JSON.parse(fs.readFileSync(new URL('../manifest.json', `file://${__filename}`), 'utf8'));
 
 test('shows one app version and uses it for the service-worker cache', () => {
   const match = html.match(/var APP_VERSION="([^"]+)"/);
@@ -28,4 +31,10 @@ test('shows one app version and uses it for the service-worker cache', () => {
   assert.ok(sw.includes(`satzkraft-v${version}`), 'Cache-Version stimmt nicht mit APP_VERSION überein');
   assert.ok(changelog.includes(`## [${version}]`), 'Aktuelle Version fehlt in CHANGELOG.md');
   assert.ok(briefing.includes(`v${version}`), 'Aktuelle Version fehlt in BRIEFING-CODEX.md');
+  assert.equal(packageJson.version, version, 'package.json ist nicht auf der App-Version');
+  assert.equal(packageLock.version, version, 'package-lock.json ist nicht auf der App-Version');
+  assert.equal(packageLock.packages[''].version, version, 'Lockfile-Wurzel ist nicht auf der App-Version');
+  assert.equal(manifest.name, 'Satzkraft');
+  assert.equal(manifest.short_name, 'Satzkraft');
+  assert.match(html, /apple-mobile-web-app-title" content="Satzkraft"/);
 });

@@ -59,6 +59,34 @@ test("reduces weight only after two sessions below target", () => {
   assert.equal(second.nextWeight, 77.5);
 });
 
+test("never recommends an impossible reduction below zero added weight", () => {
+  const addedWeight = { w: true, bw: true, inc: 2.5, cat: "strength" };
+  const noLoad = progression.calculateNextRecommendation({
+    exercise: addedWeight,
+    settings,
+    repRange: [8, 12],
+    currentWeight: 0,
+    currentSession: sets([7, 7, 7], 0),
+    lastSession: sets([7, 7, 7], 0)
+  });
+  assert.equal(noLoad.action, "hold");
+  assert.equal(noLoad.nextWeight, 0);
+  assert.match(noLoad.reason, /Ohne Zusatzgewicht/);
+  assert.doesNotMatch(noLoad.message, /Reduzieren|−2[,.]5|2[,.]5 kg/);
+
+  const partial = progression.calculateNextRecommendation({
+    exercise: addedWeight,
+    settings,
+    repRange: [8, 12],
+    currentWeight: 1,
+    currentSession: sets([7, 7, 7], 1),
+    lastSession: sets([7, 7, 7], 1)
+  });
+  assert.equal(partial.action, "decrease");
+  assert.equal(partial.nextWeight, 0);
+  assert.equal(partial.increment, 1, "angezeigt wird nur die tatsächlich mögliche Reduktion");
+});
+
 test("calculates deload once from the heavy base", () => {
   const deload = progression.calculateNextRecommendation({
     exercise: weighted,

@@ -80,6 +80,7 @@ function loadReportContext() {
     dClock: () => '12:00',
     lockSurfaceScroll() {},
     unlockSurfaceScroll() {},
+    updateSurfaceIsolation() {},
     document: {
       activeElement: { id: 'origin' },
       title: 'Satzkraft',

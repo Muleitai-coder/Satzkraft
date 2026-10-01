@@ -2,7 +2,7 @@
 
 > **Status: UMGESETZT mit v0.26.0.** Dieses Dokument bewahrt Spezifikation und Entscheidungsverlauf der Releases 1–4. Aktuelle Produktregeln stehen in `BRIEFING-CODEX.md`. Paket N bleibt ausgeklammert; Abschnitt 6 dokumentiert nur die Vorentscheidung.
 
-**Strategischer Rahmen:** Alle vier Pakete vertiefen die Differenzierungs-Achsen (Trainingsintelligenz, „Bring your own AI", lokal ohne Konto/Abo, deutsch & laientauglich). Die Nicht-Ziele aus Briefing Abschnitt 4 bleiben unangetastet. Der langfristige `docs/planung/AUSBAUPLAN.md` (Konten/Cloud/Desktop) ist von diesem Update unabhängig und bleibt unberührt.
+**Strategischer Rahmen:** Alle vier Pakete vertiefen die Differenzierungs-Achsen (Trainingsintelligenz, „Bring your own AI", lokal ohne Konto/Abo, deutsch & laientauglich). Maßgeblich waren die damaligen Nicht-Ziele aus Abschnitt 4 des [archivierten Briefings](../historie/BRIEFING-CODEX-BIS-v0.32.0.md). Der langfristige `docs/planung/AUSBAUPLAN.md` (Konten/Cloud/Desktop) ist von diesem Update unabhängig und bleibt unberührt.
 
 ---
 
@@ -18,7 +18,7 @@
 | 4 | M | Übungs-Bibliothek light | Greift in die neuen O-Mechanismen (Tauschvorschläge münden in „Ab jetzt ersetzen", DE/EN-Namen speisen Zeitachse und Langzeit-Matching). Recherche-Vorarbeit läuft parallel ab Schritt 2–3. |
 | – | N | KI-Coach 2.0 Blockbegleitung | **AUSGEKLAMMERT 17.07.:** Nicht Teil dieses Updates. Start erst nach Abschluss der Releases 1–4 und nach dem eigenen BYO-AI-Konzept-Termin (NF-1). Der Rahmen (Abschnitt 6) bleibt als Vorentscheidung dokumentiert. |
 
-Das Update umfasst damit verbindlich die **Releases 1–4**. Jedes Release einzeln mit eigenen Feedback-IDs und Abnahme nach Briefing Abschnitt 6/10.
+Das Update umfasste damit verbindlich die **Releases 1–4**. Jedes Release wurde einzeln mit eigenen Feedback-IDs und nach den damaligen Abschnitten 6/10 des archivierten Briefings abgenommen.
 
 ## 2. Abhängigkeiten zwischen den Paketen
 
@@ -490,7 +490,7 @@ Kuratierte, deutsche Übungsliste als Unterbau – **keine** Riesen-Datenbank. D
 
 ### Technische Eckpunkte
 - Struktur analog `WUCD_LIB`: kuratierte Liste als Daten – im Quellcode oder separate gecachte JSON (**MF-1**, Entscheidung nach Größe der Liste).
-- Muskel-/Bewegungsmuster bleibt internes Matching-Feld; ausdrücklich **keine** Muskelgruppen-Analytik im UI (Nicht-Ziel, Briefing Abschnitt 4).
+- Muskel-/Bewegungsmuster bleibt internes Matching-Feld; ausdrücklich **keine** Muskelgruppen-Analytik im UI (damaliges Nicht-Ziel, archiviertes Briefing Abschnitt 4).
 - Freie eigene Übungsnamen bleiben uneingeschränkt erlaubt – die Bibliothek ist Komfort, nie Pflicht.
 - Recherche-Arbeitspaket vor der Umsetzung: Übungsliste mit DE/EN-Namen und Aliassen als eigenes Review-Dokument, Abnahme durch den Produktverantwortlichen (analog L-E5). Umfangsrichtwert: **MF-2**; Quelle/QS der Technik-Hinweise: **MF-3**; Startzeitpunkt: **MF-4**.
 - **Neu (Verzahnung mit O):** Das Feld „passende Ersatzübung" speist die Vorschläge für „Nur heute tauschen" und „Ab jetzt ersetzen" (Regel 8); DE/EN-Namen und Aliasse speisen die Übungs-Zeitachse (O5) und das Langzeit-Matching.
@@ -572,8 +572,8 @@ Der Coach erstellt heute nur das Programm. Ausbaustufe: Mitten im Block kann der
 ## 7. Querschnitt (gilt für alle Pakete)
 
 - **Datenkompatibilität:** Austauschformat v2 und `DATA_SCHEMA_VERSION` 4 bleiben unverändert; neue Felder (`fromWeek`/`untilWeek`, Bibliotheks-Metadaten) nur optional und abwärtskompatibel; alte Programme/Backups laden unverändert.
-- **Guardrails (Briefing Abschnitt 2):** Ein-Datei-Architektur, ES5-Stil, `esc()`/`attr()`, Test-Anker, `js/progression.js` unangetastet.
-- **Jedes Paket einzeln:** eigene Feedback-IDs, eigener Release, Abnahme nach Briefing Abschnitt 6/10; O in zwei Releases (O-Fix, O-Kern, siehe GF-2).
+- **Damals geltende Guardrails (archiviertes Briefing Abschnitt 2):** Ein-Datei-Architektur, ES5-Stil, `esc()`/`attr()`, Test-Anker, `js/progression.js` unangetastet.
+- **Jedes Paket einzeln:** eigene Feedback-IDs, eigener Release, Abnahme nach den damaligen Abschnitten 6/10 des archivierten Briefings; O in zwei Releases (O-Fix, O-Kern, siehe GF-2).
 - **Manuelle Prüfbasis:** `TESTBACKUP-AUSWERTUNG.json` (Wochen 1–7 abgeschlossen, Woche 8 offen) für alle Zonen-Szenarien; `TESTPROGRAMM-ALLE-SZENARIEN.json` für Editor-Fälle.
 - **Vor jeder Feinspezifikation:** Abgleich mit dem dann aktuellen Codestand (I–K verändern Editor, Store und Trainingsansicht).
 
@@ -629,4 +629,4 @@ Erst wenn alle Punkte abgehakt sind, wird dieses Dokument als neuer Abschnitt (�
 3. [x] Paket N ausgeklammert (17.07.2026): kein Teil dieses Updates. NF-1-Detailkonzept (BYO-AI) als eigener Chat/Termin vor einem späteren N-Start.
 4. [x] Feinspezifikationen der Releases 1–4 erstellt und freigegeben (17.07.2026), jeweils abgeglichen mit v0.22.3; Anker sind Funktionsnamen (Zeilen bei der Umsetzung neu verifizieren).
 5. [x] Test- und Abnahmeplan je Release benannt (in den Feinspezifikationen: F6, L-F6, K-F8, M-F7).
-6. [x] Reihenfolge und Release-Schnitt im Briefing verankert (`BRIEFING-CODEX.md` Abschnitt 18, 17.07.2026).
+6. [x] Reihenfolge und Release-Schnitt im damaligen Briefing verankert (heute [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](../historie/BRIEFING-CODEX-BIS-v0.32.0.md), Abschnitt 18; 17.07.2026).

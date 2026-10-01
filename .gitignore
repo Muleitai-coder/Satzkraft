@@ -8,6 +8,8 @@
 
 # Lokale Abhängigkeiten und Protokolle
 node_modules/
+dist/
+.netlify/
 *.log
 qa/playwright/playwright-report/
 qa/playwright/test-results/

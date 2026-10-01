@@ -61,7 +61,8 @@ function noticeContext(overrides) {
     modalCalls: [],
     versionInfoCalls: 0,
     S: freshState(),
-    active: () => false
+    active: () => false,
+    localWriteBlocked: () => false
   };
   context.showModal = (title, msg, btns) => context.modalCalls.push({ title, msg, btns });
   context.showVersionInfo = () => { context.versionInfoCalls++; };

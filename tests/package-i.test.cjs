@@ -42,7 +42,7 @@ test('renders accessible plate and note actions and escapes stored notes', () =>
   assert.match(html, /aria-label="Verlauf für/);
 });
 
-test('shows the backup reminder after fourteen days or three new trainings', () => {
+test('shows the backup reminder after fourteen days or five new trainings', () => {
   const start = html.indexOf('function readBackupMeta');
   const end = html.indexOf('function workoutProgress', start);
   assert.ok(start >= 0 && end > start, 'Backup-Erinnerung wurde nicht gefunden');
@@ -106,6 +106,7 @@ test('requests persistent browser storage only once', async () => {
       getItem: key => storage.get(key) || null,
       setItem: (key, value) => storage.set(key, value)
     },
+    localWriteBlocked: () => false,
     navigator: { storage: { persist: async () => { calls++; return true; } } }
   };
   vm.createContext(context);
@@ -125,6 +126,56 @@ test('uses one hold-timer color and tappable explanation terms', () => {
   assert.match(html, /aria-label="Erklärung:/);
   assert.match(html, /id="manualcreate" aria-label=/);
   assert.match(html, /id="coachbtn" aria-label=/);
+});
+
+test('isolates open surfaces and exposes selected states to assistive technology', () => {
+  const start = html.indexOf('function updateSurfaceIsolation');
+  const end = html.indexOf('function openModalSurface', start);
+  assert.ok(start >= 0 && end > start, 'Oberflächen-Isolation wurde nicht gefunden');
+  const elements = Object.fromEntries(
+    ['app', 'bar', 'report', 'protocol', 'lib', 'modal', 'wucd'].map(id => [id, {
+      id,
+      inert: false,
+      style: { display: 'none' },
+      classList: { contains: name => id === 'lib' && name === 'open' }
+    }])
+  );
+  const context = { document: { getElementById: id => elements[id] } };
+  vm.createContext(context);
+  vm.runInContext(html.slice(start, end), context);
+
+  context.updateSurfaceIsolation();
+  assert.equal(elements.lib.inert, false);
+  assert.equal(elements.app.inert, true);
+  assert.equal(elements.bar.inert, true);
+  assert.equal(elements.modal.inert, true);
+
+  elements.modal.style.display = 'flex';
+  context.updateSurfaceIsolation();
+  assert.equal(elements.modal.inert, false);
+  assert.equal(elements.lib.inert, true);
+
+  assert.match(html, /aria-label="Farbmodus"/);
+  assert.match(html, /data-settheme="dark" aria-pressed=/);
+  assert.match(html, /data-day=[^>]+aria-pressed=/);
+  assert.match(html, /data-ed-daypick=[^>]+aria-pressed=/);
+  assert.match(html, /data-ed-weekpick=[^>]+aria-pressed=/);
+  assert.match(html, /data-optm=[^>]+aria-pressed=/);
+  assert.match(html, /role="combobox" aria-autocomplete="list" aria-expanded="false"/);
+  assert.match(html, /e\.key==="ArrowDown"&&options\.length/);
+  assert.match(html, /e\.key==="Escape"&&list/);
+  assert.doesNotMatch(html, /data-settrainingview|data-ed-planmode|data-manual-mode/);
+});
+
+test('accounts for landscape safe areas and keeps compact editor targets tappable', () => {
+  assert.match(html, /\.wrap\{[^}]*safe-area-inset-right[^}]*safe-area-inset-left/);
+  assert.match(html, /#bar\{[^}]*safe-area-inset-right[^}]*safe-area-inset-left/);
+  assert.match(html, /\.libbox\{[^}]*safe-area-inset-right[^}]*safe-area-inset-left/);
+  assert.match(html, /#modal\{[^}]*safe-area-inset-right[^}]*safe-area-inset-left/);
+  assert.match(html, /\.manualday\{min-height:44px/);
+  assert.match(html, /\.eddrag\{flex-basis:44px;height:44px/);
+  assert.doesNotMatch(html, /\.wday\.rest\{opacity:/);
+  assert.match(html, /@media\(prefers-reduced-motion:reduce\)\{[\s\S]*\.editorbox\.editing-exercise \.edexercise[\s\S]*transition:none/);
 });
 
 test('creates unique copy names without putting the date into the title', () => {

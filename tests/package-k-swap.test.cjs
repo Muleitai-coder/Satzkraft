@@ -162,6 +162,46 @@ test('stores a today-only swap in the exercise log and writeSets keeps its marke
   assert.equal(context.S.logs['1|A|bench'].swap, undefined, 'nach der ersten Satzeingabe darf kein Übungswechsel mehr begonnen werden');
 });
 
+test('offers and accepts only library swaps with matching set fields', () => {
+  const program = programFixture();
+  const exercise = program.days[0].ex[0];
+  const context = appContext();
+  context.setExerciseLibrary([
+    {
+      de: 'Kurzhantel-Bankdrücken', en: 'Dumbbell Bench Press', alias: [], typ: 'gewicht',
+      equipment: 'Kurzhanteln', muster: 'Horizontal drücken', technik: 'Kontrolliert.',
+      video: 'Dumbbell Bench Press Technik', ersatz: 'Liegestütze', bereich: 'gym'
+    },
+    {
+      de: 'Liegestütze', en: 'Push-Up', alias: [], typ: 'koerpergewicht',
+      equipment: 'keine', muster: 'Horizontal drücken', technik: 'Spannung halten.',
+      video: 'Push-Up Technik', ersatz: 'Kurzhantel-Bankdrücken', bereich: 'calisthenics'
+    },
+    {
+      de: 'Einarmiges Kurzhantel-Bankdrücken', en: 'One-Arm Dumbbell Bench Press', alias: [], typ: 'gewicht',
+      equipment: 'Kurzhantel', muster: 'Horizontal drücken', technik: 'Je Seite.',
+      video: 'One-Arm Dumbbell Bench Press Technik', ersatz: 'Kurzhantel-Bankdrücken', bereich: 'gym', einseitig: true
+    }
+  ]);
+  context.S = {
+    active: 'basis', programs: { basis: program }, week: 1, day: 'A',
+    logs: {}, workout: { running: true, pendingReplacements: [] }
+  };
+  context.PROG = () => program;
+  context.dayByKey = () => program.days[0];
+  context.setsForExercise = () => 1;
+  context.save = context.renderView = () => {};
+
+  assert.equal(context.exerciseSwapTypeCompatible(exercise, context.findExerciseLibraryEntry('Kurzhantel-Bankdrücken')), true);
+  assert.equal(context.exerciseSwapTypeCompatible(exercise, context.findExerciseLibraryEntry('Liegestütze')), false, 'Körpergewicht benötigt andere Satzfelder');
+  assert.equal(context.exerciseSwapTypeCompatible(exercise, context.findExerciseLibraryEntry('Einarmiges Kurzhantel-Bankdrücken')), false, '„je Seite“ darf nicht unbemerkt wechseln');
+  assert.deepEqual(Array.from(context.exerciseSwapSuggestions(exercise)), ['Kurzhantel-Bankdrücken']);
+  assert.match(context.exerciseSwapMatchesHtml(exercise, 'Kurzhantel'), /Kurzhantel-Bankdrücken/);
+  assert.doesNotMatch(context.exerciseSwapMatchesHtml(exercise, 'Liegestütze'), /data-swap-suggestion/);
+  assert.equal(context.swapExerciseForToday(exercise, 'Liegestütze'), false, 'auch der Schreibpfad muss inkompatible Bibliothekstreffer abweisen');
+  assert.equal(context.swapExerciseForToday(exercise, 'Eigene Kabelvariante'), true, 'freie Namen bleiben für passende eigene Varianten möglich');
+});
+
 test('uses the replacement first-set weight without changing the original exercise target', () => {
   const program = programFixture();
   const exercise = program.days[0].ex[0];
@@ -393,6 +433,22 @@ test('applies an accepted post-workout swap at the next open week without changi
   assert.equal(bodyweight.def, undefined);
   assert.equal(bodyweight.inc, undefined);
   assert.equal(bodyweight.gname, undefined);
+
+  context.setExerciseLibrary([{
+    de: 'Suitcase Carry', en: 'Suitcase Carry', alias: [], typ: 'zeit', weightedTime: true,
+    equipment: 'Kurzhantel', muster: 'Tragen', technik: 'Aufrecht gehen.',
+    video: 'Suitcase Carry Technik', ersatz: 'Farmer\'s Walk', bereich: 'functional', einseitig: true
+  }]);
+  const weightedCarry = context.applyPermanentReplacementMetadata({
+    name: 'Plank', w: false, bw: false, unit: 'seconds', pmode: 'seconds'
+  }, 'Suitcase Carry');
+  assert.equal(weightedCarry.w, true);
+  assert.equal(weightedCarry.bw, false);
+  assert.equal(weightedCarry.unit, 'seconds');
+  assert.equal(weightedCarry.pmode, 'seconds', 'gewichtete Zeit muss einen gültigen Progressionsmodus exportieren');
+  assert.equal(weightedCarry.tmode, 'target');
+  assert.equal(weightedCarry.perSide, true);
+  assert.equal(weightedCarry.def, undefined, 'das Startgewicht wird erst aus dem tatsächlich absolvierten Tausch übernommen');
 
   const unknown = context.applyPermanentReplacementMetadata({
     name: 'Bankdrücken', en: 'Falscher englischer Name', sub: 'Falscher Hinweis',

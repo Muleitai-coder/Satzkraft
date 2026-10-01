@@ -1,0 +1,31 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "Calisthenics Test",
+  "art": "Test",
+  "bereich": "Calisthenics",
+  "description": "Eigenständiges Testprogramm ohne Gewichte – für den normalen Import ohne Update-Erkennung.",
+  "categories": {
+    "push": { "label": "Drücken", "color": "orange", "rest": 120, "reps": { "aufbau": [5, 10], "intensiv": [4, 8], "deload": [6, 8] } },
+    "pull": { "label": "Ziehen", "color": "violet", "rest": 120, "reps": { "aufbau": [5, 10], "intensiv": [4, 8], "deload": [6, 8] } },
+    "core": { "label": "Core", "color": "sky", "rest": 60 }
+  },
+  "weeks": [
+    { "n": 1, "phase": "aufbau", "label": "Aufbau 1", "rir": "3", "note": "Saubere Technik vor mehr Wiederholungen.", "sets": { "push": 3, "pull": 3, "core": 2 } },
+    { "n": 2, "phase": "aufbau", "label": "Aufbau 2", "rir": "2-3", "note": "", "sets": { "push": 3, "pull": 3, "core": 2 } },
+    { "n": 3, "phase": "deload", "label": "Erholung", "rir": "4-5", "note": "Weniger Sätze, locker halten.", "sets": { "push": 2, "pull": 2, "core": 1 } }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Dienstag",
+      "title": "Oberkörper A",
+      "exercises": [
+        { "name": "Liegestütze", "category": "push", "target": "3 × möglichst viele" },
+        { "name": "Klimmzüge", "category": "pull", "target": "3 × möglichst viele" },
+        { "name": "Ausfallschritte", "category": "core", "reps": [8, 12], "perSide": true },
+        { "name": "Plank", "category": "core", "unit": "seconds", "timerMode": "max" }
+      ]
+    }
+  ]
+}

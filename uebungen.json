@@ -2295,6 +2295,8 @@
       "Single-Arm Farmer's Carry"
     ],
     "typ": "zeit",
+    "weightedTime": true,
+    "einseitig": true,
     "equipment": "Kettlebell oder Kurzhantel",
     "muster": "Tragen unilateral · seitlicher Rumpf/Griffkraft",
     "technik": "Trag das Gewicht einseitig neben dem Körper und bleib dabei so aufrecht, als würdest du zwei gleiche Gewichte tragen.",
@@ -2309,6 +2311,7 @@
       "Front Rack Carry"
     ],
     "typ": "zeit",
+    "weightedTime": true,
     "equipment": "1–2 Kettlebells",
     "muster": "Tragen · Rumpf/Schulter",
     "technik": "Trag die Kettlebell in der Rack-Position an der Brust und geh mit aufrechtem, festem Rumpf.",
@@ -2324,6 +2327,7 @@
       "Überkopftragen"
     ],
     "typ": "zeit",
+    "weightedTime": true,
     "equipment": "Kettlebell oder Kurzhantel",
     "muster": "Tragen überkopf · Schulter/Rumpf",
     "technik": "Halte das Gewicht mit gestrecktem Arm senkrecht über der Schulter und geh langsam und kontrolliert.",
@@ -2339,6 +2343,7 @@
       "Farmer Walk"
     ],
     "typ": "zeit",
+    "weightedTime": true,
     "equipment": "2 Kurzhanteln, Kettlebells oder Farmer-Griffe",
     "muster": "Tragen · Ganzkörper/Griffkraft",
     "technik": "Trag die Gewichte beidseitig mit aufrechter Haltung und mach zügige, kontrollierte Schritte.",
@@ -2354,6 +2359,7 @@
       "Prowler Push"
     ],
     "typ": "zeit",
+    "weightedTime": true,
     "equipment": "Gewichtsschlitten",
     "muster": "Schieben · Beine/Ganzkörper",
     "technik": "Lehn dich mit gestreckten Armen in den Schlitten und schieb ihn mit kraftvollen, flachen Schritten.",
@@ -2369,6 +2375,7 @@
       "Backward Sled Drag"
     ],
     "typ": "zeit",
+    "weightedTime": true,
     "equipment": "Gewichtsschlitten, Gurt oder Seil",
     "muster": "Ziehen · Beine/Rücken",
     "technik": "Lehn dich leicht gegen die Zugrichtung und zieh den Schlitten mit gleichmäßigen Schritten.",
@@ -2623,6 +2630,7 @@
       "Vierfüßler diagonal"
     ],
     "typ": "koerpergewicht",
+    "einseitig": true,
     "equipment": "keine",
     "muster": "Anti-Rotation · Rumpf/unterer Rücken",
     "technik": "Strecke im Vierfüßlerstand Arm und gegenüberliegendes Bein aus, ohne dass Becken oder Schultern kippen.",
@@ -2772,6 +2780,7 @@
       "Paloff Press"
     ],
     "typ": "gewicht",
+    "einseitig": true,
     "equipment": "Kabelzug oder Widerstandsband",
     "muster": "Anti-Rotation · Rumpf",
     "technik": "Drück den Griff auf Brusthöhe langsam von dir weg und verhindere dabei jede Drehung des Oberkörpers.",

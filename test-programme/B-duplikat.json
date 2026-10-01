@@ -1,0 +1,50 @@
+{
+  "format": "trainings-block",
+  "version": 2,
+  "name": "KH Ganzkörper Test",
+  "art": "Test",
+  "bereich": "Ganzkörper",
+  "description": "Testprogramm: enthält Kurzhantel-Übungen und mehrere Übungen 'je Seite'. Kennung und Stand sind gesetzt.",
+  "settings": {
+    "progressionSystem": "double_progression",
+    "deloadMultiplier": 0.6,
+    "requireAllSetsForIncrease": true,
+    "allowAutoDecrease": true,
+    "postDeloadReturnMultiplier": 0.925
+  },
+  "categories": {
+    "grund": { "label": "Grundübungen", "color": "amber", "rest": 180, "reps": { "aufbau": [6, 10], "intensiv": [5, 8], "deload": [8, 10] } },
+    "assistenz": { "label": "Assistenz", "color": "emerald", "rest": 90, "reps": { "aufbau": [8, 12], "intensiv": [6, 10], "deload": [10, 12] } },
+    "core": { "label": "Core", "color": "sky", "rest": 60 }
+  },
+  "weeks": [
+    { "n": 1, "phase": "aufbau", "label": "Aufbau 1", "rir": "3", "note": "Startgewichte finden, jeden Satz sauber beenden.", "sets": { "grund": 3, "assistenz": 2, "core": 2 } },
+    { "n": 2, "phase": "aufbau", "label": "Aufbau 2", "rir": "2-3", "note": "", "sets": { "grund": 3, "assistenz": 3, "core": 2 } },
+    { "n": 3, "phase": "intensiv", "label": "Intensiv", "rir": "1-2", "note": "", "sets": { "grund": 3, "assistenz": 3, "core": 2 } },
+    { "n": 4, "phase": "deload", "label": "Erholung", "rir": "4-5", "note": "Bewusst leichter, sauber halten.", "sets": { "grund": 2, "assistenz": 1, "core": 1 } }
+  ],
+  "days": [
+    {
+      "key": "A",
+      "weekday": "Montag",
+      "title": "Ganzkörper A",
+      "exercises": [
+        { "name": "Goblet Squat", "category": "grund", "weighted": true, "increment": 2, "startWeight": 12 },
+        { "name": "Kurzhantel-Bankdrücken", "category": "grund", "weighted": true, "increment": 2, "startWeight": 14 },
+        { "name": "Bulgarian Split Squats", "category": "assistenz", "weighted": true, "increment": 2, "startWeight": 10, "perSide": true },
+        { "name": "Plank", "category": "core", "unit": "seconds", "timerMode": "target", "reps": [20, 45] }
+      ]
+    },
+    {
+      "key": "B",
+      "weekday": "Donnerstag",
+      "title": "Ganzkörper B",
+      "exercises": [
+        { "name": "Rumänisches Kreuzheben (KH)", "category": "grund", "weighted": true, "increment": 2, "startWeight": 16 },
+        { "name": "Kurzhantel-Schulterdrücken", "category": "grund", "weighted": true, "increment": 1, "startWeight": 10 },
+        { "name": "Kurzhantel-Rudern einarmig", "category": "assistenz", "weighted": true, "increment": 2, "startWeight": 12, "perSide": true },
+        { "name": "Dead Bug", "category": "core", "reps": [6, 10], "perSide": true }
+      ]
+    }
+  ]
+}

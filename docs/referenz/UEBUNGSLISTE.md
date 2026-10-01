@@ -17,9 +17,9 @@ Jeder Bereich hat eine Tabelle mit diesen Spalten:
 - **Name (DE)**: Anzeigename in der App, zugleich Matching-Schlüssel für J4.
 - **Name (EN)**: englischer Name (für das vorhandene `en`-Feld).
 - **Aliasse**: gängige DE/EN-Schreibvarianten, mit `;` getrennt. Groß-/Kleinschreibung und Bindestrich-Varianten werden beim Matching ohnehin normalisiert (M-E3) – Aliasse decken nur echte Namensvarianten ab.
-- **Typ**: `Gewicht` (Gewicht × Wiederholungen), `KG` (Körpergewicht × Wiederholungen), `KG+Z` (Körpergewicht, optional mit Zusatzgewicht), `Zeit` (Sekunden, entspricht `unit:"seconds"`).
+- **Typ**: `Gewicht` (Gewicht × Wiederholungen), `KG` (Körpergewicht × Wiederholungen), `KG+Z` (Körpergewicht, optional mit Zusatzgewicht), `Zeit` (Sekunden, entspricht `unit:"seconds"`). Die sechs freigegebenen Carry-/Schlittenübungen tragen in `uebungen.json` zusätzlich `weightedTime:true`, damit der Editor Gewicht und Zeit gemeinsam anlegt. `einseitig:true` kennzeichnet Übungen, deren Wiederholungen oder Zeiten je Körperseite gelten.
 - **Equipment**: benötigte Ausstattung.
-- **Muster/Muskel (intern)**: Bewegungsmuster und Hauptmuskel – nur internes Matching-Feld für Tauschvorschläge, keine Muskelgruppen-Analytik im UI (Nicht-Ziel, Briefing Abschnitt 4).
+- **Muster/Muskel (intern)**: Bewegungsmuster und Hauptmuskel – nur internes Matching-Feld für Tauschvorschläge, keine Muskelgruppen-Analytik im UI (Nicht-Ziel, aktives Briefing Abschnitt 5).
 - **Technik-Hinweis**: genau 1 Satz, Du-Form, sportwissenschaftlich orientiert, keine medizinischen Aussagen (QS nach MF-3 durch den Produktverantwortlichen).
 - **Video-Suchbegriff**: für die Videosuche (z. B. YouTube); Schema in der Regel „englischer Name + Technik“, weil das deutsch- und englischsprachige Technikvideos zuverlässig findet.
 - **Ersatzübung**: passende Alternative, immer eine Übung **aus dieser Liste** (Hauptname); speist „Nur heute tauschen“ / „Ab jetzt ersetzen“ (Verzahnung mit Paket O, Regel 8). Bereichsübergreifende Ersatzübungen sind gewollt (z. B. Klimmzüge ↔ Latzug breit).
@@ -305,7 +305,7 @@ Abgleich mit der bestehenden Warm-up/Cool-down-Bibliothek (`WUCD_LIB` in `index.
 
 ## 12. Konsistenz mit den freigegebenen L-Programmen
 
-Alle 50 Übungsnamen der vier freigegebenen Programme (`programme/*.json`) sind in dieser Liste enthalten – als Hauptname oder als Alias (z. B. „Ausfallschritte mit Kurzhanteln“ → Ausfallschritte (KH), „Rudern an niedriger Stange“ → Rudern an der Stange, „Unterstützte Klimmzüge mit Fuß auf einer Bank“ → Unterstützte Klimmzüge (Fuß auf Bank), „Goblet Squat mit Kurzhantel“ → Goblet Squat). Damit greift das Langzeit-Matching (J4) für alle Bibliotheksprogramme ohne Lücke.
+Alle 49 eindeutigen Übungsnamen der vier freigegebenen Programme (`programme/*.json`; 67 Übungsplätze insgesamt) sind in dieser Liste enthalten – als Hauptname oder als Alias (z. B. „Ausfallschritte mit Kurzhanteln“ → Ausfallschritte (KH), „Rudern an niedriger Stange“ → Rudern an der Stange, „Unterstützte Klimmzüge mit Fuß auf einer Bank“ → Unterstützte Klimmzüge (Fuß auf Bank), „Goblet Squat mit Kurzhantel“ → Goblet Squat). Damit greift das Langzeit-Matching (J4) für alle Bibliotheksprogramme ohne Lücke.
 
 Reine Freitext-Proxys der Programme (z. B. „Pike Hold mit gebeugten Knien“, „Plank auf Knien“, „Fersen abwechselnd zum Boden tippen“, „Band Face Pulls“) bleiben bewusst Freitext – die Bibliothek ist Komfort, nie Pflicht, und Regressions-Varianten in Proxy-Feldern brauchen keinen eigenen Bibliothekseintrag.
 
@@ -326,6 +326,6 @@ Alle fünf Punkte wurden am 17.07.2026 vom Produktverantwortlichen entschieden:
 
 1. **Übungstyp „KG+Z“ (Körpergewicht + Zusatzgewicht):** **ENTSCHIEDEN 17.07.:** Der vierte Übungstyp wird übernommen (Erweiterung gegenüber M-E2, dort nur Gewicht/Körpergewicht/Zeit). Die 8 betroffenen Übungen (Klimmzug-Varianten, Dips, Ring-Dips, Hyperextensions, Glute-Ham-Raise, Wadenheben einbeinig, Russian Twists, Cossack Squats) bleiben wie typisiert.
 2. **WUCD-Abgrenzung:** **ENTSCHIEDEN 17.07.:** Nach Empfehlung der Architektur – die überschneidenden Einträge bleiben in **beiden** Bibliotheken (mit der Kennzeichnung aus Abschnitt 11); die 200er-Liste bleibt unverändert.
-3. **Carry-Übungen (Zeit + Gewicht):** **ENTSCHIEDEN 17.07.:** Bei Trage- und Schlitten-Übungen (Farmer's Walk, Suitcase/Racked/Overhead Carry, Sled Push/Pull) sollen **Gewicht und Zeit gemeinsam** erfassbar sein. Die Umsetzung (Datenmodell/UI, heute gibt es nur `unit:"seconds"` ohne Gewichtsfeld) wird in der M-Feinspezifikation ausgearbeitet.
+3. **Carry-Übungen (Zeit + Gewicht):** **ENTSCHIEDEN 17.07., UMGESETZT 08.08.2026:** Bei Trage- und Schlitten-Übungen (Farmer's Walk, Suitcase/Racked/Overhead Carry, Sled Push/Pull) werden **Gewicht und Zeit gemeinsam** erfasst. `weightedTime:true` verbindet die Bibliotheksauswahl mit dem vorhandenen Datenmodell `weighted:true` + `unit:"seconds"`. Die mobile Anordnung dieser kombinierten Satzzeile bleibt als eigener UX-Punkt offen (Briefing `FB-20260808-01`).
 4. **Technik-Hinweise und Video-Suchbegriffe:** **ENTSCHIEDEN 17.07.:** Die Qualitätssicherung nach MF-3 erfolgt später als eigener Schritt an anderer Stelle. Priorität dieses Dokuments ist eine saubere, vollständige Datenbasis (Namen, Aliasse, Typen, Ersatzübungen); die Status-Kopfzeile bleibt bis zu dieser späteren Freigabe bestehen.
 5. **Aliasse:** **ENTSCHIEDEN 17.07.:** Ergänzungen aus der Studio-Praxis werden später nachgetragen; die jetzige Beschränkung auf echte Namensvarianten bleibt.

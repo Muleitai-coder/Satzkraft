@@ -56,6 +56,7 @@ function libraryContext() {
     'canonicalExerciseName',
     'exerciseLibraryNamesMatch',
     'exerciseLibraryMatches',
+    'exerciseLibraryTypeSignature',
     'editorExerciseType',
     'editorLibraryTypeSignature',
     'editorApplyExerciseLibraryType',
@@ -74,6 +75,7 @@ test('loads the approved 200-entry exercise library with every required field', 
     assert.ok(requiredStrings.every(field => entry[field].trim()), `Eintrag ${index + 1}: leeres Pflichtfeld`);
     assert.ok(Array.isArray(entry.alias), `Eintrag ${index + 1}: alias`);
     assert.ok(types.has(entry.typ), `Eintrag ${index + 1}: typ`);
+    if ('weightedTime' in entry) assert.equal(entry.weightedTime, true, `Eintrag ${index + 1}: weightedTime`);
   }
   assert.deepEqual(
     Object.fromEntries([...new Set(library.map(entry => entry.bereich))].map(area => [
@@ -138,6 +140,21 @@ test('fills editor metadata and maps all four exercise types including added wei
   assert.equal(timed.weighted, undefined);
   assert.equal(timed.bodyweight, undefined);
   assert.equal(timed.startWeight, undefined);
+
+  const carry = {};
+  context.editorApplyExerciseLibraryEntry(carry, context.findExerciseLibraryEntry('Suitcase Carry'));
+  assert.equal(carry.unit, 'seconds');
+  assert.equal(carry.weighted, true);
+  assert.equal(carry.startWeight, 0);
+  assert.equal(carry.increment, 2.5);
+  assert.equal(carry.perSide, true);
+});
+
+test('marks exactly the approved carry and sled entries as weighted time exercises', () => {
+  assert.deepEqual(
+    library.filter(entry => entry.weightedTime === true).map(entry => entry.de),
+    ['Suitcase Carry', 'Racked Carry', 'Overhead Carry', "Farmer's Walk", 'Sled Push', 'Sled Pull']
+  );
 });
 
 test('wires lazy loading, autocomplete and the cached JSON asset', () => {
@@ -147,4 +164,32 @@ test('wires lazy loading, autocomplete and the cached JSON asset', () => {
   assert.match(html, /Vorhandene Angaben ersetzen\?/);
   const sw = fs.readFileSync(new URL('sw.js', root), 'utf8');
   assert.match(sw, /\.\/uebungen\.json/);
+});
+
+test('allows a later retry when the exercise library is temporarily unavailable', async () => {
+  let calls = 0;
+  const expected = [{ de: 'Testübung' }];
+  const context = {
+    EXERCISE_LIBRARY: null,
+    EXERCISE_LIBRARY_PROMISE: null,
+    fetch: async () => {
+      calls++;
+      if (calls === 1) throw new Error('offline');
+      return { ok: true, json: async () => expected };
+    },
+    setExerciseLibrary: list => {
+      context.EXERCISE_LIBRARY = list;
+      return list;
+    },
+    Promise,
+    Error
+  };
+  vm.createContext(context);
+  vm.runInContext(functionSource('loadExerciseLibrary'), context);
+
+  assert.equal((await context.loadExerciseLibrary()).length, 0);
+  assert.equal(context.EXERCISE_LIBRARY, null);
+  assert.equal(context.EXERCISE_LIBRARY_PROMISE, null);
+  assert.equal(JSON.stringify(await context.loadExerciseLibrary()), JSON.stringify(expected));
+  assert.equal(calls, 2);
 });

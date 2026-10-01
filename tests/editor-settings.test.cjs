@@ -21,6 +21,8 @@ function slice(from, to) {
 
 const ctx = {
   LIMITS: { maxDays: 7, maxWeeks: 16, maxExPerDay: 12, maxSets: 10, maxNameLen: 30, maxLabelLen: 16 },
+  SET_REP_MAX: 9999,
+  SET_TIME_MAX_SECONDS: 5999,
   editorWeekIndex: 0,
   editorUndoStack: [],
   document: { getElementById: () => null, querySelector: () => null }
@@ -92,7 +94,7 @@ test("RIR: Vorlagen-Werte sind jetzt ohne Umweg im Editor wählbar", () => {
 
 /* ---------- 3. Untertitel und Bereich im Details-Tab ---------- */
 
-test("Details-Tab rendert Untertitel- und Bereichs-Feld", () => {
+test("Details-Tab rendert Untertitel und Bereich", () => {
   assert.match(html, /data-ed-program="art"/);
   assert.match(html, /<select data-ed-program="bereich">/);
   assert.match(html, />Kein Bereich</);

@@ -145,7 +145,19 @@ test("preserves target and max timer modes only for time exercises", () => {
   assert.match(parse(target).err, /timerMode/);
   exercise.timerMode = "max";
   exercise.unit = "reps";
-  assert.match(parse(target).err, /benötigt.*seconds/);
+  exercise.name = "Suitcase Carry";
+  target.days[0].title = "Oberkörper B";
+  target.days[0].weekday = "Donnerstag";
+  const invalid = parse(target);
+  assert.match(invalid.err, /Trainingstag „Oberkörper B“ \(Donnerstag\), Übung „Suitcase Carry“/);
+  assert.doesNotMatch(invalid.err, /Tag A, Übung 1/);
+  assert.equal(invalid.path, "days[0].exercises[0].unit");
+
+  const prepared = context.prepareProgramImport(JSON.stringify(target), "json", "Timer-Plan");
+  assert.equal(prepared.error, undefined);
+  assert.equal(prepared.external.days[0].exercises[0].unit, "seconds");
+  assert.equal(prepared.external.days[0].exercises[0].timerMode, "max");
+  assert.ok(prepared.corrections.some(item => /Zeiteinheit/.test(item)));
 });
 
 test("rejects invalid phases, weekdays and negative sets", () => {
@@ -211,6 +223,9 @@ test("returns structured, actionable import errors without guessing missing fiel
   assert.equal(typeof prepared.error.area, "string");
   assert.match(prepared.error.remedy, /Trainingsgruppe|Vorlage/);
   assert.match(prepared.error.technical, /categories/);
+  assert.match(html, /id="importrepair">Im Editor beheben/);
+  assert.match(html, /<summary>JSON-Pfad &amp; Regel<\/summary>/);
+  assert.doesNotMatch(html, /Technische Details anzeigen/);
 });
 
 test("detects exact duplicates separately from same-name variants", () => {

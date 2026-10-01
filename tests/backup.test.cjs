@@ -87,6 +87,7 @@ function validBackup() {
         notes: { a1: 'Rack 4' },
         logs: { '1|A|a1': { sets: [{ reps: '10', weight: '20' }] } },
         history: [{ week: 1, day: 'A', start: 100, end: 200, dur: 100, complete: true }],
+        removedEx: {},
         workout: null,
         week: 1,
         day: 'A'
@@ -123,7 +124,20 @@ test('validates full backup structure and recorded values', () => {
 
   const invalidValue = validBackup();
   invalidValue.store.default.logs['1|A|a1'].sets[0].weight = '-20';
-  assert.match(context.validateBackupFile(invalidValue), /ungültige Wiederholungs- oder Gewichtswerte/);
+  assert.match(context.validateBackupFile(invalidValue), /ungültige Wiederholungs-, Zeit- oder Gewichtswerte/);
+
+  const invalidRepetitions = validBackup();
+  invalidRepetitions.store.default.logs['1|A|a1'].sets[0].reps = '10000';
+  assert.match(context.validateBackupFile(invalidRepetitions), /ungültige Wiederholungs-, Zeit- oder Gewichtswerte/);
+
+  const invalidDecimalRepetitions = validBackup();
+  invalidDecimalRepetitions.store.default.logs['1|A|a1'].sets[0].reps = '10.5';
+  assert.match(context.validateBackupFile(invalidDecimalRepetitions), /ungültige Wiederholungs-, Zeit- oder Gewichtswerte/);
+
+  const invalidTime = validBackup();
+  invalidTime.programs.default.days[0].ex[0].unit = 'seconds';
+  invalidTime.store.default.logs['1|A|a1'].sets[0].reps = '6000';
+  assert.match(context.validateBackupFile(invalidTime), /ungültige Wiederholungs-, Zeit- oder Gewichtswerte/);
 
   const invalidDay = validBackup();
   invalidDay.store.default.day = 'Z';
@@ -170,6 +184,58 @@ test('validates full backup structure and recorded values', () => {
   };
   assert.match(context.validateBackupFile(invalidWorkoutPendingSwap), /vorgemerkten Übungstausch/);
 
+  const validWorkout = validBackup();
+  validWorkout.store.default.workout = {
+    running: false,
+    startedAt: 100,
+    accrued: 20,
+    hardcapBase: 20,
+    firstStart: 80,
+    askedDone: false,
+    completedAt: 0,
+    week: 1,
+    day: 'A',
+    mode: 'continue',
+    segmentsBase: 1,
+    pendingReplacements: []
+  };
+  assert.equal(context.validateBackupFile(validWorkout), null);
+
+  const invalidWorkoutWeek = validBackup();
+  invalidWorkoutWeek.store.default.workout = {
+    ...validWorkout.store.default.workout,
+    week: 999
+  };
+  assert.match(context.validateBackupFile(invalidWorkoutWeek), /ungültige laufende Einheit/);
+
+  const invalidWorkoutDay = validBackup();
+  invalidWorkoutDay.store.default.workout = {
+    ...validWorkout.store.default.workout,
+    day: 'unbekannt'
+  };
+  assert.match(context.validateBackupFile(invalidWorkoutDay), /ungültige laufende Einheit/);
+
+  const historicalOrphans = validBackup();
+  historicalOrphans.store.default.tg['2|alte_uebung'] = '25';
+  historicalOrphans.store.default.barw.alte_uebung = 20;
+  historicalOrphans.store.default.notes.alte_uebung = 'Historische Notiz';
+  historicalOrphans.store.default.logs['2|ALT|alte_uebung'] = {
+    sets: [{ reps: '8', weight: '25' }]
+  };
+  historicalOrphans.store.default.history.push({
+    week: 2,
+    day: 'ALT',
+    start: 300,
+    end: 400,
+    dur: 100,
+    complete: false
+  });
+  assert.equal(
+    context.validateBackupFile(historicalOrphans),
+    null,
+    'app-eigene historische Daten gelöschter Tage oder gekürzter Wochen müssen sicher wiederherstellbar bleiben'
+  );
+
   const invalidSource = validBackup();
   invalidSource.programs.default.source = 'extern';
   assert.match(context.validateBackupFile(invalidSource), /ungültige Herkunft/);
@@ -197,6 +263,14 @@ test('validates full backup structure and recorded values', () => {
   unsafeId.active = '__proto__';
   unsafeId.store = JSON.parse('{"__proto__":{"tg":{},"logs":{},"history":[],"week":1,"day":"A"}}');
   assert.match(context.validateBackupFile(unsafeId), /ungültigen Programm-Schlüssel|aktuelle Programm/);
+
+  const inheritedActive = validBackup();
+  inheritedActive.active = 'toString';
+  assert.match(context.validateBackupFile(inheritedActive), /aktive Programm im Backup ist ungültig/);
+
+  const inheritedParent = validBackup();
+  inheritedParent.programs.default.parent = 'constructor';
+  assert.match(context.validateBackupFile(inheritedParent), /ungültigen Vorblock-Verweis/);
 });
 
 test('restore flow always creates a safety backup first', () => {
@@ -211,7 +285,10 @@ test('normalization keeps the exact program set from a non-empty backup', () => 
   const context = {
     DEFAULT_PROGRAM: { name: 'Standard' },
     DATA_SCHEMA_VERSION: 4,
+    LIMITS: { maxExPerDay: 12 },
     clone: value => JSON.parse(JSON.stringify(value)),
+    plainObject: value => !!value && typeof value === 'object' && !Array.isArray(value),
+    finiteNumber,
     newStore: program => ({ tg: {}, logs: {}, history: [], workout: null, week: 1, day: program.days[0].key }),
     alias: state => {
       const store = state.store[state.active];
@@ -225,12 +302,17 @@ test('normalization keeps the exact program set from a non-empty backup', () => 
   };
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
-  const program = { name: 'Nur Backup', categories: {}, weeks: [{}], days: [{ key: 'A', ex: [] }] };
+  const program = { name: 'Nur Backup', planMode: 'continuous', categories: {}, weeks: [{}], days: [{ key: 'A', ex: [] }] };
   const store = { tg: {}, logs: {}, history: [], workout: null, week: 1, day: 'A' };
   const normalized = context.normalize({ programs: { backup: program }, active: 'fehlt', store: { backup: store } });
   assert.deepEqual(Object.keys(normalized.programs), ['backup']);
   assert.equal(normalized.active, 'backup');
   assert.equal(normalized.programs.default, undefined);
+  assert.equal(normalized.programs.backup.planMode, undefined);
+
+  store.workout = { week: 1, day: 'A', mode: 'legacy' };
+  const normalizedWorkout = context.normalize({ programs: { backup: program }, active: 'backup', store: { backup: store } });
+  assert.equal(normalizedWorkout.store.backup.workout.mode, 'fresh');
 });
 
 test('restore blocks stale autosaves until the restored state reloads', () => {
@@ -259,6 +341,7 @@ test('restore blocks stale autosaves until the restored state reloads', () => {
     backupRestorePending: false,
     clone: value => JSON.parse(JSON.stringify(value)),
     downloadFullBackup: () => true,
+    localWriteBlocked: () => false,
     programWriteLocked: () => false,
     showProgramWriteLocked() {},
     showModal: (_title, _body, modalActions) => { actions = modalActions; },

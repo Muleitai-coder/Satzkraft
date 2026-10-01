@@ -1,12 +1,14 @@
 # Risikobasierter Playwright-Testplan · Großes Update Satzkraft
 
+> **Historischer Stand (18.07.2026, v0.26.0):** Dieses Dokument hält die damalige Abnahme fest und beschreibt nicht die aktuelle Oberfläche oder den aktuellen Testumfang. Für die heutige Auswahl gilt [`../TESTING.md`](../TESTING.md); aktuelle Tests stehen in `qa/playwright/`.
+
 **Prüfstand:** Branch `agent/grosses-update-releases-1-4`, App v0.26.0 plus aktuelle `Unreleased`-UX-Korrekturen
 
 **Updateumfang:** v0.23.0 O-Fix, v0.24.0 Programm-Bibliothek, v0.25.0 O-Kern, v0.26.0 Übungs-Bibliothek, Mehrtag-Anzeige und UX-Praxistest vom 18.07.2026
 
 **Testziel:** Datenintegrität, verständliche Kommunikation, klare UI, keine doppelten Wege und sicherer Regressionsschutz in Chromium und WebKit auf Desktop und Mobile
 
-## Aktualisierung 18.07.2026 · verbindlicher aktueller Stand
+## Aktualisierung 18.07.2026 · damals verbindlicher Stand
 
 Dieser Block ersetzt alle früheren Annahmen zum Protokoll-Footer, zum Übungstausch und zur letzten Satzpause. Die nachfolgenden Detailmatrizen und Codebeispiele sind entsprechend aktualisiert.
 
@@ -37,7 +39,7 @@ Zusätzlich bestanden 164 Unit- und Integrationstests. Damit ist der aktuelle lo
 
 Verbindliche fachliche Quellen:
 
-- `BRIEFING-CODEX.md`: Produktregelwerk, Releases 1–4, Mehrtag-Entscheidung und Feedbackblock vom 18.07.2026.
+- `docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`: damaliges Produktregelwerk mit Releases 1–4, Mehrtag-Entscheidung und Feedbackblock vom 18.07.2026.
 - `docs/planung/GROSSES-UPDATE-RELEASES-1-4.md`: freigegebene Feinspezifikationen und Abnahmekriterien.
 - `CHANGELOG.md`: aktueller `Unreleased`-Stand plus v0.23.0–v0.26.0.
 - `docs/tests/archiv/TESTBERICHT-RELEASES-1-4.md`: historischer Browserlauf und frühere Automatisierungslücken.

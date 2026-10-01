@@ -306,6 +306,9 @@ test('zeigt im Protokoll Original und Ersatz sowie vorhandene Notizen direkt inl
     bench: 'Sitzhöhe 4 · Schulterblätter fixieren'
   });
   const withoutNote = context.reportDetailedProtocol(program, logs, history, {});
+  const removedAfterEntry = context.reportDetailedProtocol(program, logs, history, {}, {
+    w1_A: ['bench']
+  });
 
   assert.match(withNote, /Bankdrücken[\s\S]*→[\s\S]*Brustpresse/);
   assert.match(withNote, /class="[^"]*rprotocolnote[^"]*"[\s\S]*Sitzhöhe 4 · Schulterblätter fixieren/);
@@ -313,6 +316,7 @@ test('zeigt im Protokoll Original und Ersatz sowie vorhandene Notizen direkt inl
   assert.doesNotMatch(withNote, /<summary[^>]*>[\s\S]*Notiz/i);
   assert.match(withNote, /Sitzhöhe 4 · Schulterblätter fixieren/);
   assert.doesNotMatch(withoutNote, /class="[^"]*rprotocolnote[^"]*"/i);
+  assert.match(removedAfterEntry, /Bankdrücken/, 'bereits eingetragene Arbeit bleibt Teil des Protokolls');
   assert.match(
     html,
     /reportDetailedProtocol\(\s*program\s*,\s*store\.logs\s*,\s*store\.history\s*,\s*store\.notes\s*\)/,
@@ -446,4 +450,37 @@ test('stellt Scroll-Anker auch nach zwei schnellen Kartenersetzungen wieder her'
   callbacks.forEach(callback => callback());
   assert.equal(root.style.overflowAnchor, 'auto');
   assert.equal(body.style.overflowAnchor, 'contain');
+});
+
+test('räumt das Clipboard-Fallback auch nach einer Browserausnahme auf', () => {
+  let removed = 0;
+  const textarea = {
+    style: {},
+    parentNode: null,
+    setAttribute() {},
+    select() {},
+    remove() {
+      removed++;
+      this.parentNode = null;
+    }
+  };
+  const body = {
+    appendChild(node) {
+      node.parentNode = body;
+    }
+  };
+  const context = {
+    document: {
+      body,
+      createElement: () => textarea,
+      execCommand() {
+        throw new Error('clipboard unavailable');
+      }
+    }
+  };
+  vm.createContext(context);
+  vm.runInContext(functionSource('copyTextFallback'), context);
+  assert.equal(context.copyTextFallback('Test'), false);
+  assert.equal(removed, 1);
+  assert.equal(textarea.parentNode, null);
 });

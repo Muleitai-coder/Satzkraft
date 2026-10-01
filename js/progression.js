@@ -75,7 +75,7 @@
   var mode=getExerciseProgressionMode(ex);
   var inc=(ex.inc!=null&&isFinite(ex.inc)&&ex.inc>0)?ex.inc:(DEFAULT_INCREMENT[mode]||DEFAULT_INCREMENT.weight);
   var current=p.currentSession,repRange=p.repRange,currentWeight=Number(p.currentWeight)||0;
-  function result(value){value.mode=mode;value.increment=inc;if(value.nextWeight===undefined)value.nextWeight=null;value.message=buildCoachMessage(value);return value;}
+  function result(value){value.mode=mode;if(value.increment==null)value.increment=inc;if(value.nextWeight===undefined)value.nextWeight=null;value.message=buildCoachMessage(value);return value;}
   if(!current||!current.length)return result({action:"none",reason:"Noch keine Werte eingetragen."});
   if(p.isDeload){
    if(mode==="none")return result({action:"none",reason:"Für diese Übung ist keine automatische Progression vorgesehen."});
@@ -95,7 +95,11 @@
   }
   if(bucket==="below"){
    var previousBelow=p.lastSession?(repBucket(p.lastSession,repRange,settings)==="below"):false;
-   if(previousBelow&&settings.allowAutoDecrease&&(mode==="weight"||mode==="added_weight"))return result({action:"decrease",nextWeight:Math.max(0,round(currentWeight-inc)),reason:"Zwei Einheiten in Folge unter dem unteren Wiederholungsbereich."});
+   if(previousBelow&&settings.allowAutoDecrease&&(mode==="weight"||mode==="added_weight")){
+    var reducedWeight=Math.max(0,round(currentWeight-inc)),actualDecrease=round(currentWeight-reducedWeight);
+    if(actualDecrease<=0)return result({action:"hold",nextWeight:currentWeight,reason:mode==="added_weight"?"Ohne Zusatzgewicht saubere Wiederholungen aufbauen oder eine leichtere Variante wählen.":"Mit der aktuellen Mindestlast saubere Wiederholungen aufbauen oder eine leichtere Variante wählen."});
+    return result({action:"decrease",nextWeight:reducedWeight,increment:actualDecrease,reason:"Zwei Einheiten in Folge unter dem unteren Wiederholungsbereich."});
+   }
    return result({action:"hold",nextWeight:(mode==="weight"||mode==="added_weight")?currentWeight:null,reason:"Unter dem Zielbereich – Gewicht halten und Wiederholungen aufbauen."});
   }
   return result({action:"hold",nextWeight:(mode==="weight"||mode==="added_weight")?currentWeight:null,reason:"Im Zielbereich, aber noch nicht oben – Gewicht halten, mehr Wiederholungen anstreben."});

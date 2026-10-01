@@ -416,6 +416,10 @@
           "name": "Wadenheben einbeinig",
           "en": "Single-Leg Calf Raise",
           "category": "beine",
+          "weighted": true,
+          "bodyweight": true,
+          "increment": 2.5,
+          "startWeight": 0,
           "perSide": true,
           "cue": "Voller Bewegungsweg und oben kurz halten",
           "video": "Wadenheben einbeinig Technik",
@@ -429,6 +433,7 @@
             6,
             10
           ],
+          "perSide": true,
           "cue": "Je Seite zählen und Becken ruhig halten",
           "video": "Bird Dog Technik",
           "proxy": "Nur ein Bein oder einen Arm ausstrecken"
