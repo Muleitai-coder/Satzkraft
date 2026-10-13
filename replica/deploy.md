@@ -21,7 +21,7 @@ Datum: 13.10.2026. Freigabe: „einmal komplett updaten“ als Antwort auf die k
 
 Vollständige Backups verwenden Schema 5 und enthalten persönliche Übungen sowie historische Erfassung. Schema-4-Backups bleiben importierbar, Programme bleiben v2. Vor der Aktualisierung ein vollständiges Backup herunterladen und alte Satzkraft-Fenster schließen. Nach dem Update den neuen Stand im Versionsdialog kontrollieren; neue Schema-5-Backups benötigen die aktualisierte App.
 
-Die früher verwendeten KI-Provider-Schlüssel werden nicht mehr vom Code verwendet. Die Hosting-Variable `ANTHROPIC_API_KEY` ist in Netlify weiterhin vorhanden; der Wert wurde nicht aufgedeckt. Ihre endgültige Löschung wurde beim Nutzer zur Bestätigung direkt vor der Aktion angefragt und noch nicht ausgeführt. Es werden keine neuen Schlüssel, Konten, Zahlungsdienste, OAuth-Anbieter, Maildienste oder Datenbanken eingerichtet.
+Die früher verwendeten KI-Provider-Schlüssel werden nicht mehr vom Code verwendet. Die Hosting-Variable `ANTHROPIC_API_KEY` wurde am 13.10.2026 nach der ausdrücklichen Antwort „ja bitte“ im Netlify-Löschdialog endgültig aus allen Deploy-Kontexten entfernt. Der Schlüsselwert wurde nicht aufgedeckt oder kopiert. Netlify zeigt „No environment variables set for this project“. Die App wurde danach neu geladen und zeigt weiterhin v0.34.0. Es werden keine neuen Schlüssel, Konten, Zahlungsdienste, OAuth-Anbieter, Maildienste oder Datenbanken eingerichtet.
 
 ## Bereitstellung
 

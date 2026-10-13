@@ -102,7 +102,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 - Netlify führt `npm run build` aus und veröffentlicht ausschließlich `dist/`.
 - `scripts/prepare-netlify.mjs` verwendet eine Positivliste der öffentlichen Dateien. Repository-Dokumente, Testdaten, Git-Inhalte, lokale Backups und Quellhilfen dürfen nicht im öffentlichen Verzeichnis landen.
-- Es werden keine Netlify Functions bereitgestellt; die frühere Coach-Funktion und ihre Konfiguration sind entfernt. Vorhandene Provider-Schlüssel werden im Code nicht mehr verwendet. Netlify bestätigt null aktive Produktionsfunktionen. Der nicht mehr verwendete `ANTHROPIC_API_KEY` ist noch in der Hosting-Verwaltung vorhanden; endgültige Löschung wartet auf die erforderliche Bestätigung direkt vor der Aktion.
+- Es werden keine Netlify Functions bereitgestellt; die frühere Coach-Funktion und ihre Konfiguration sind entfernt. Vorhandene Provider-Schlüssel werden im Code nicht mehr verwendet. Netlify bestätigt null aktive Produktionsfunktionen. Der nicht mehr verwendete `ANTHROPIC_API_KEY` wurde am 13.10.2026 nach ausdrücklicher Bestätigung des Nutzers aus allen Netlify-Kontexten gelöscht. Netlify zeigt keine Projektvariablen mehr; die Live-App lädt weiterhin als v0.34.0.
 - Bei manueller Bereitstellung zuerst `npm run build` ausführen und ausschließlich `dist/` hochladen. Niemals den Repository-Ordner als Publish-Verzeichnis verwenden.
 
 ## 4. Verbindlicher Oberflächen- und Funktionsstand
