@@ -126,12 +126,12 @@ test('uses a flat secondary program list and compact flexible actions', () => {
   assert.match(html, /\.progactions\{display:flex/);
   assert.match(html, /\.progtextaction\{[^}]*background:transparent/);
   assert.match(html, /html\[data-theme="light"\] \.progitem\.active/);
-  assert.match(html, /id="coachbtn"/);
+  assert.doesNotMatch(html, /id="coachbtn"/);
   assert.match(html, /id="importbtn"/);
   assert.match(html, /id="manualcreate"/);
   assert.match(html, /id="externalaibtn"/);
   assert.match(html, /Manuell erstellen/);
-  assert.match(html, /Satzkraft KI-Coach/);
+  assert.doesNotMatch(html, /Satzkraft KI-Coach/);
   assert.match(html, /Mit ChatGPT &amp; Co\./);
   assert.match(html, /Programm importieren/);
 });
@@ -147,7 +147,7 @@ test('uses a shared preview and a dedicated unsaved draft mode', () => {
   assert.match(html, /editorUnsavedDraft/);
   assert.match(html, /id="edsavenew"/);
   assert.match(html, /id="edsavenewactive"/);
-  assert.match(html, /Plan prüfen &amp; speichern/);
+  assert.doesNotMatch(html, /Plan prüfen &amp; speichern/);
   assert.match(html, /class="pvrow '\+color/);
   assert.match(html, /class="pvday"/);
 });

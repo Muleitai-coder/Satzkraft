@@ -12,7 +12,8 @@ const APP_KEYS = [
   'satzkraft-backup-meta-v1',
   'satzkraft-storage-persist-v1',
   'satzkraft-design-update-v1',
-  'satzkraft-coach-prefs'
+  'satzkraft-coach-prefs',
+  'satzkraft-coach-reset-v1'
 ];
 
 function privacyContext({ failGetKey = '', failRemoveKey = '' } = {}) {
@@ -84,7 +85,7 @@ function privacyContext({ failGetKey = '', failRemoveKey = '' } = {}) {
   };
 }
 
-test('löscht ausschließlich die acht lokalen Satzkraft-Datenschlüssel', () => {
+test('löscht ausschließlich die neun lokalen Satzkraft-Datenschlüssel', () => {
   const { context, storage, state } = privacyContext();
 
   assert.deepEqual(Array.from(context.localAppStorageKeys()), APP_KEYS);
@@ -95,7 +96,7 @@ test('löscht ausschließlich die acht lokalen Satzkraft-Datenschlüssel', () =>
   assert.equal(context.localDataDeletionPending, true);
   assert.equal(context.backupRestorePending, true);
   assert.equal(state().clearedTimer, 77);
-  assert.equal(state().cancelled, 1);
+  assert.equal(state().cancelled, 0);
   assert.equal(state().reloads, 0);
   state().reloadTask();
   assert.equal(state().reloads, 1);
@@ -157,7 +158,7 @@ test('schützt die Löschung vor Autosave und weiteren offenen Tabs', () => {
   assert.match(html, /function flushSave\(\)\{if\(backupRestorePending\|\|localWriteBlocked\(\)\)return/);
   assert.match(html, /addEventListener\("storage"[\s\S]*RESET_GENERATION_KEY[\s\S]*localDataDeletionPending=true/);
   assert.match(html, /\(event\.newValue\|\|""\)===localResetGeneration/);
-  assert.match(html, /beforeunload"[\s\S]*if\(localWriteBlocked\(\)\|\|!editorHasUnsavedChanges\(\)\)return/);
+  assert.match(html, /beforeunload"[\s\S]*if\(!localWindowHasDraft\(\)\|\|localWriterDraftSecured\)return/);
 });
 
 test('schreibt Hauptdaten und Backup-Metadaten nicht nach einem Reset während der Serialisierung', () => {
@@ -282,15 +283,15 @@ test('prüft einen bereits geöffneten Backup-Restore unmittelbar vor dem Schrei
 
 test('macht Datenfluss und sichere Löschwege in den Einstellungen sichtbar', () => {
   assert.match(html, /data-settings-privacy="1"/);
-  assert.match(html, /data-settings-clear-coach="1"/);
+  assert.doesNotMatch(html, /data-settings-clear-coach="1"/);
   assert.match(html, /data-settings-clear-all="1"/);
-  assert.match(html, /Programme, Satzwerte, Notizen, Verläufe und gespeicherte Coach-Antworten/);
-  assert.match(html, /über eine Netlify-Serverfunktion an Anthropic/);
+  assert.match(html, /Programme, Satzwerte, Notizen, Verläufe und Einstellungen/);
+  assert.match(html, /Satzkraft sendet keine Trainingswünsche oder Trainingsdaten an eine KI-API/);
   assert.match(html, /Bei „ChatGPT &amp; Co\.“ sowie beim Kopieren oder Teilen/);
   assert.match(html, /keine Werbe-, Tracking- oder Analysedienste/);
   assert.match(html, /Backup herunterladen/);
   assert.match(html, /Backup gespeichert\?/);
   assert.match(html, /Backup geprüft – Daten löschen/);
   assert.match(html, /Ohne Backup löschen/);
-  assert.match(html, /Backup sichert Programme und Trainingsdaten, aber nicht Coach-Antworten/);
+  assert.match(html, /Backup sichert Programme und Trainingsdaten, aber nicht den Farbmodus/);
 });

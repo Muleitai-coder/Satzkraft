@@ -55,7 +55,7 @@ test('shows the program area exactly once as the last metadata chip', () => {
 
 test('renders a clear read-only notice and disables all structural library actions', () => {
   assert.match(html, /Training läuft[^<]*<\/strong>Beende zuerst dein Training, um Programme zu ändern/);
-  assert.match(html, /id="coachbtn"[^>]*'\+lockedAttr/);
+  assert.doesNotMatch(html, /id="coachbtn"/);
   assert.match(html, /id="importbtn"[^>]*'\+lockedAttr/);
   assert.match(html, /id="manualcreate"[^>]*'\+lockedAttr/);
   assert.match(html, /id="externalaibtn"[^>]*'\+lockedAttr/);

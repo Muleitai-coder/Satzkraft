@@ -1,10 +1,12 @@
 # Satzkraft – Fachkonzept Übungsdatenbank und Übungsdetail
 
-> **Status: Arbeitsentwurf, noch nicht verbindlich und nicht zur Umsetzung freigegeben.**
+> **Status: überwiegend Arbeitsentwurf. D1–D8 der Entscheidungsvorlage und der isolierte Datenprototyp wurden am 11.10.2026 bestätigt. Keine Freigabe für produktive Migration oder neue Oberflächen.**
 >
 > Dieses Dokument dient der fachlichen Klärung vor einem späteren Coding-Briefing. Es beschreibt Produktentscheidungen, ein vorgeschlagenes Datenmodell, Bedienabläufe und Prüffälle. Verbindliche Regeln entstehen erst nach der gemeinsamen Abnahme und Übernahme in das aktive Produktbriefing beziehungsweise ein Umsetzungsbriefing.
 
-Stand: 09.08.2026
+Stand des ursprünglichen Entwurfs: 09.08.2026. Ergänzung zur Konzeptarbeit: 11.10.2026.
+
+Die [aktuelle Entscheidungsvorlage mit zwölf konkreten Referenzfällen](UEBUNGSDATENBANK-ENTSCHEIDUNGSVORLAGE.md) konkretisiert offene Regeln anhand des eigenen Codes. D1–D8 wurden mit „ja bitte“ fachlich bestätigt und in das aktive Briefing übernommen. Der [isolierte Datenprototyp](../prototyp/uebungsdatenbank/README.md) ist lokal erstellt. Andere Vorschläge dieses umfangreicheren Entwurfs bleiben unverbindlich. Die im Entwurf genannten Coach-Anwendungen sind nach der Entfernung des API-Coachs Zukunftsideen; sie begründen keine neue KI-Anbindung. Für den aktuellen Produktstand gilt weiterhin das [aktive Briefing](../../BRIEFING-CODEX.md).
 
 ## 1. Zielbild
 

@@ -48,6 +48,7 @@ function libraryContext() {
     Number
   };
   vm.createContext(context);
+  vm.runInContext(html.slice(html.indexOf("var EXERCISE_REFERENCES="), html.indexOf("function genProgramCode")), context);
   for (const name of [
     'normalizeExerciseLibraryName',
     'exerciseLibraryEntryNames',

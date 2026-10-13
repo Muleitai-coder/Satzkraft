@@ -1,6 +1,6 @@
 # Satzkraft
 
-Satzkraft ist eine deutschsprachige Krafttrainings-PWA ohne Konto. Programme und Trainingsdaten bleiben lokal im Browser; nur bewusst gestartete KI-Coach-Anfragen werden über eine Netlify-Funktion an Anthropic übermittelt. Lokal läuft die App ohne Kompilierung direkt aus `index.html`; für die Veröffentlichung wird eine feste Positivliste nach `dist/` kopiert.
+Satzkraft ist eine deutschsprachige Krafttrainings-PWA ohne Konto. Programme und Trainingsdaten bleiben lokal im Browser. Der frühere API-Coach ist entfernt; „ChatGPT & Co.“ erzeugt weiterhin lokal einen Text für eine vom Nutzer gewählte externe KI. Lokal läuft die App ohne Kompilierung über einen statischen Server aus `index.html`; für die Veröffentlichung wird eine feste Positivliste nach `dist/` kopiert.
 
 ## Projektstruktur
 
@@ -9,7 +9,6 @@ Satzkraft ist eine deutschsprachige Krafttrainings-PWA ohne Konto. Programme und
 | `index.html` | Oberfläche, Styles und App-Logik |
 | `js/progression.js` | getrennte Progressionslogik |
 | `programme/` | offizielle Startprogramme |
-| `netlify/functions/` | serverseitiger KI-Coach |
 | `tests/` | Node-Tests |
 | `qa/playwright/` | gezielte Browser- und Screenshot-Tests |
 | `scripts/prepare-netlify.mjs` | erzeugt das freigegebene Netlify-Paket in `dist/` |
@@ -26,7 +25,7 @@ npm install
 node qa/playwright/static-server.cjs
 ```
 
-Danach ist die statische App unter <http://127.0.0.1:4173> erreichbar. Dieser Startweg deckt die lokale PWA ab, aber nicht die Netlify-Funktion des KI-Coachs. Für den vollständigen Coach-Pfad ist eine Netlify-Laufzeit mit dem ausschließlich serverseitig gesetzten `ANTHROPIC_API_KEY` erforderlich.
+Danach ist die vollständige statische App unter <http://127.0.0.1:4173> erreichbar. Es sind keine KI-API-Schlüssel oder Serverfunktionen erforderlich.
 
 Normale Änderungen werden nur gezielt geprüft. Die verbindliche Auswahl und die bewusst nicht automatisch laufenden Kompletttests stehen in [`docs/TESTING.md`](docs/TESTING.md).
 
@@ -36,15 +35,18 @@ Normale Änderungen werden nur gezielt geprüft. Die verbindliche Auswahl und di
 npm run build
 ```
 
-Netlify führt diesen Schritt über `netlify.toml` selbst aus und veröffentlicht ausschließlich `dist/`. Die Serverfunktion bleibt separat unter `netlify/functions/`. Bei einem manuellen Upload ebenfalls nur den erzeugten Ordner `dist/` verwenden – niemals den gesamten Repository-Ordner.
+Netlify führt diesen Schritt über `netlify.toml` selbst aus und veröffentlicht ausschließlich `dist/`. Bei einem manuellen Upload ebenfalls nur den erzeugten Ordner `dist/` verwenden – niemals den gesamten Repository-Ordner.
 
-## Daten und KI-Coach
+## Daten und externe KI
 
-- Programme, Trainingswerte, Notizen, Protokolle und Coach-Antworten liegen im `localStorage` des verwendeten Browsers. Es gibt keine automatische Cloud-Synchronisierung.
-- Erst das bewusste Erstellen eines Coach-Programms übermittelt die angezeigten Antworten über Netlify an Anthropic. Andere lokale Programme und Trainingsprotokolle werden nicht angefügt.
-- „ChatGPT & Co.“ sowie Programm-Kopien und -Links werden nur lokal erzeugt; eine Weitergabe an einen externen Dienst erfolgt erst durch den Nutzer und unter dessen Datenschutzregeln.
-- Strukturierte Beschwerdeangaben werden nur nach einer eigenen Bestätigung für die aktuelle Coach-Sitzung gesendet und lassen sich vorher aus dem Auftrag entfernen.
-- Die App-Einstellungen erklären den Datenfluss und bieten getrennte Wege zum Löschen gespeicherter Coach-Antworten oder aller lokalen Satzkraft-Daten. Das vollständige Trainings-Backup enthält nicht den separaten Coach-Antwortschlüssel.
+- Programme, Trainingswerte, Notizen, Protokolle und Einstellungen liegen im `localStorage` des verwendeten Browsers. Es gibt keine automatische Cloud-Synchronisierung.
+- Ein aktualisiertes Fenster darf Trainingsdaten bearbeiten; weitere Fenster warten und laden vor der Übernahme den aktuellen Stand. Fremde Änderungen stoppen das Speichern und lassen sich vor dem Neuladen sichern.
+- Zehn geprüfte Bibliotheksübungen besitzen optionale Zuordnungen, die Editor, Import, Export und Backup erhalten. Alte Pläne und freie Übungen bleiben nutzbar; bestehende Trainingswerte werden nicht automatisch umgestellt.
+- Die Fensterkoordination benötigt Web Locks im Browser (HTTPS oder localhost). Ohne diese Möglichkeit bleibt die App gegen unsicheres Schreiben geschützt. Vor einem Update alte Satzkraft-Fenster schließen; die Schutzregel kann altes JavaScript nicht zur Zusammenarbeit zwingen.
+- Satzkraft enthält keinen eingebauten API-Coach und sendet keine Trainingswünsche oder Trainingsdaten an einen KI-Anbieter.
+- „ChatGPT & Co.“ sowie Programm-Kopien und -Links werden nur lokal erzeugt; eine Weitergabe an einen externen Dienst erfolgt erst durch den Nutzer und unter dessen Datenschutzregeln. Der Rückweg bleibt der geprüfte JSON-Import.
+- Alte Coach-Programme und kompatible Backups bleiben nutzbar. Die nicht mehr benötigten gespeicherten Coach-Antworten werden beim Start der aktualisierten App entfernt, sofern der Browser den Speicherzugriff erlaubt.
+- Die Einstellungen erklären lokale Speicherung und bieten eine abgesicherte Komplettlöschung. Backups enthalten Programme und Trainingsdaten, keinen Farbmodus.
 - Der aktuelle Link wird nur im privaten Bekanntenkreis geteilt. Ein Impressum ist nach aktueller Produktentscheidung kein Arbeitspunkt; vor einer breiteren öffentlichen oder kommerziellen Veröffentlichung muss die rechtliche Einordnung erneut geprüft werden.
 
 ## Dokumentation

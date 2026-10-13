@@ -62,6 +62,7 @@ test('records full backups across all programs', () => {
     showModal() {}
   };
   vm.createContext(context);
+  vm.runInContext(html.slice(html.indexOf('var EXERCISE_REFERENCES='), html.indexOf('function genProgramCode')), context);
   vm.runInContext(html.slice(start, end), context);
 
   assert.equal(context.totalCompletedTrainings(), 2);
@@ -110,6 +111,7 @@ test('validates full backup structure and recorded values', () => {
     parseProgram: () => ({ prog: {} })
   };
   vm.createContext(context);
+  vm.runInContext(html.slice(html.indexOf('var EXERCISE_REFERENCES='), html.indexOf('function genProgramCode')), context);
   vm.runInContext(html.slice(start, end), context);
 
   assert.equal(context.validateBackupFile(validBackup()), null);

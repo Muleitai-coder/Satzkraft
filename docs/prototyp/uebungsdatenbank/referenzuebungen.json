@@ -1,0 +1,518 @@
+{
+  "format": "satzkraft-exercise-prototype",
+  "version": 1,
+  "exercises": [
+    {
+      "id": "barbell_back_squat",
+      "origin": "built_in",
+      "name": {
+        "de": "Langhantel-Kniebeuge",
+        "en": "Barbell Back Squat"
+      },
+      "aliases": [
+        "Kniebeugen mit Langhantel",
+        "Back Squat",
+        "Squats"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "squat",
+      "targets": [
+        "quadriceps",
+        "glutes"
+      ],
+      "equipment": {
+        "required": [
+          "barbell",
+          "rack"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "external",
+        "loadEntry": "total",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "load"
+      },
+      "technique": {
+        "cue": "Beuge Hüfte und Knie gleichzeitig, halte die Brust aufrecht und geh so tief, wie du die Position sauber halten kannst."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "dumbbell_bench_press",
+      "origin": "built_in",
+      "name": {
+        "de": "Kurzhantel-Bankdrücken",
+        "en": "Dumbbell Bench Press"
+      },
+      "aliases": [
+        "KH-Bankdrücken",
+        "Bankdrücken mit Kurzhanteln"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "horizontal_push",
+      "targets": [
+        "chest"
+      ],
+      "equipment": {
+        "required": [
+          "dumbbell",
+          "flat_bench"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "external",
+        "loadEntry": "per_implement",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "load"
+      },
+      "technique": {
+        "cue": "Führe die Kurzhanteln in einem leichten Bogen über der Brust zusammen und halte die Schulterblätter dabei zurückgezogen."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "leg_press",
+      "origin": "built_in",
+      "name": {
+        "de": "Beinpresse",
+        "en": "Leg Press"
+      },
+      "aliases": [
+        "Leg Press Machine",
+        "45-Grad-Beinpresse"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "squat",
+      "targets": [
+        "quadriceps",
+        "glutes"
+      ],
+      "equipment": {
+        "required": [
+          "machine"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "external",
+        "loadEntry": "machine_display",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "load"
+      },
+      "technique": {
+        "cue": "Senke den Schlitten so weit ab, wie der untere Rücken am Polster bleibt, und drücke, ohne die Knie ganz durchzustrecken."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "pull_up_added_load",
+      "origin": "built_in",
+      "name": {
+        "de": "Klimmzüge",
+        "en": "Pull-Up"
+      },
+      "aliases": [
+        "Klimmzüge im Obergriff",
+        "Pull-Ups"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "vertical_pull",
+      "targets": [
+        "back"
+      ],
+      "equipment": {
+        "required": [
+          "pullup_bar"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "added",
+        "loadEntry": "total",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "load"
+      },
+      "technique": {
+        "cue": "Starte aus dem vollen Hang und zieh dich hoch, bis das Kinn über der Stange ist, ohne mit den Beinen Schwung zu holen."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "assisted_pull_up_machine",
+      "origin": "built_in",
+      "name": {
+        "de": "Klimmzug-Maschine",
+        "en": "Assisted Pull-Up Machine"
+      },
+      "aliases": [
+        "unterstützte Klimmzüge an der Maschine",
+        "Gravitron"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "vertical_pull",
+      "targets": [
+        "back"
+      ],
+      "equipment": {
+        "required": [
+          "machine"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "assistance",
+        "loadEntry": "machine_display",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "reduce_assistance",
+        "secondary": "reps"
+      },
+      "technique": {
+        "cue": "Wähle das Gegengewicht so, dass du den Zielbereich sauber schaffst, und zieh dich kontrolliert bis über die Griffe hoch."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "one_arm_dumbbell_row",
+      "origin": "built_in",
+      "name": {
+        "de": "Kurzhantel-Rudern einarmig",
+        "en": "One-Arm Dumbbell Row"
+      },
+      "aliases": [
+        "einarmiges Rudern",
+        "Single-Arm Dumbbell Row"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "horizontal_pull",
+      "targets": [
+        "back"
+      ],
+      "equipment": {
+        "required": [
+          "dumbbell",
+          "bench"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "external",
+        "loadEntry": "per_implement",
+        "laterality": "unilateral_each_side",
+        "counting": "per_side"
+      },
+      "progression": {
+        "primary": "load"
+      },
+      "technique": {
+        "cue": "Stütz dich mit Hand und Knie auf der Bank ab und zieh die Kurzhantel zur Hüfte, ohne den Rumpf zu verdrehen."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "plank",
+      "origin": "built_in",
+      "name": {
+        "de": "Plank",
+        "en": "Plank"
+      },
+      "aliases": [
+        "Unterarmstütz",
+        "Planke"
+      ],
+      "domain": "strength",
+      "role": "accessory",
+      "movement": "anti_extension",
+      "targets": [
+        "core"
+      ],
+      "equipment": {
+        "required": [
+          "none"
+        ],
+        "alternatives": [
+          [
+            "mat"
+          ]
+        ]
+      },
+      "tracking": {
+        "metric": "seconds",
+        "loadMode": "none",
+        "loadEntry": "not_applicable",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "duration"
+      },
+      "technique": {
+        "cue": "Bilde vom Kopf bis zu den Fersen eine feste Linie und spann Bauch und Gesäß aktiv an."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "suitcase_carry",
+      "origin": "built_in",
+      "name": {
+        "de": "Suitcase Carry",
+        "en": "Suitcase Carry"
+      },
+      "aliases": [
+        "einseitiges Koffertragen",
+        "Single-Arm Farmer's Carry"
+      ],
+      "domain": "strength",
+      "role": "accessory",
+      "movement": "carry",
+      "targets": [
+        "core",
+        "grip"
+      ],
+      "equipment": {
+        "required": [
+          "dumbbell"
+        ],
+        "alternatives": [
+          [
+            "kettlebell"
+          ]
+        ]
+      },
+      "tracking": {
+        "metric": "seconds",
+        "loadMode": "external",
+        "loadEntry": "per_implement",
+        "laterality": "unilateral_each_side",
+        "counting": "per_side"
+      },
+      "progression": {
+        "primary": "duration",
+        "secondary": "load"
+      },
+      "technique": {
+        "cue": "Trag das Gewicht einseitig neben dem Körper und bleib dabei so aufrecht, als würdest du zwei gleiche Gewichte tragen."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "burpee_push_up",
+      "origin": "built_in",
+      "name": {
+        "de": "Burpees",
+        "en": "Burpee"
+      },
+      "aliases": [
+        "Burpees mit Liegestütz"
+      ],
+      "domain": "strength",
+      "role": "compound",
+      "movement": "full_body",
+      "targets": [
+        "whole_body"
+      ],
+      "equipment": {
+        "required": [
+          "none"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "reps",
+        "loadMode": "none",
+        "loadEntry": "not_applicable",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "reps"
+      },
+      "technique": {
+        "cue": "Geh über die Liegestützposition auf den Boden, komm zügig wieder hoch und spring am Ende gestreckt ab."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "wall_handstand_hold",
+      "origin": "built_in",
+      "name": {
+        "de": "Handstand halten an der Wand",
+        "en": "Wall Handstand Hold"
+      },
+      "aliases": [
+        "Wandhandstand",
+        "Handstand Hold"
+      ],
+      "domain": "skill",
+      "role": "skill",
+      "movement": "overhead_support",
+      "targets": [
+        "shoulders"
+      ],
+      "equipment": {
+        "required": [
+          "wall"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "seconds",
+        "loadMode": "none",
+        "loadEntry": "not_applicable",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "variant"
+      },
+      "technique": {
+        "cue": "Drück dich aktiv aus den Schultern lang und halte Körperspannung von den Händen bis zu den Fußspitzen."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "couch_stretch",
+      "origin": "built_in",
+      "name": {
+        "de": "Couch Stretch",
+        "en": "Couch Stretch"
+      },
+      "aliases": [
+        "Hüftbeuger-Dehnung erhöht",
+        "Couch-Dehnung"
+      ],
+      "domain": "mobility",
+      "role": "mobility",
+      "movement": "hip_mobility",
+      "targets": [
+        "hip_region"
+      ],
+      "equipment": {
+        "required": [
+          "wall"
+        ],
+        "alternatives": [
+          [
+            "bench"
+          ]
+        ]
+      },
+      "tracking": {
+        "metric": "seconds",
+        "loadMode": "none",
+        "loadEntry": "not_applicable",
+        "laterality": "unilateral_each_side",
+        "counting": "per_side"
+      },
+      "progression": {
+        "primary": "none"
+      },
+      "technique": {
+        "cue": "Stell das hintere Schienbein an der Wand hoch und schieb die Hüfte sanft nach vorn, während der Oberkörper aufrecht bleibt."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    },
+    {
+      "id": "treadmill_duration",
+      "origin": "built_in",
+      "name": {
+        "de": "Laufband",
+        "en": "Treadmill Run"
+      },
+      "aliases": [
+        "Laufen auf dem Laufband",
+        "Treadmill"
+      ],
+      "domain": "cardio",
+      "role": "cardio",
+      "movement": "locomotion",
+      "targets": [
+        "whole_body"
+      ],
+      "equipment": {
+        "required": [
+          "treadmill"
+        ],
+        "alternatives": []
+      },
+      "tracking": {
+        "metric": "seconds",
+        "loadMode": "none",
+        "loadEntry": "not_applicable",
+        "laterality": "bilateral",
+        "counting": "total"
+      },
+      "progression": {
+        "primary": "none"
+      },
+      "technique": {
+        "cue": "Wähle Tempo und Steigung so, dass du das geplante Intervall gleichmäßig durchhalten kannst."
+      },
+      "substitutes": {
+        "status": "no_default_substitute",
+        "relations": []
+      }
+    }
+  ]
+}

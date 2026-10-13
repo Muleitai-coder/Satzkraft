@@ -28,7 +28,8 @@
     "technik": "Führe die Kurzhanteln in einem leichten Bogen über der Brust zusammen und halte die Schulterblätter dabei zurückgezogen.",
     "video": "Dumbbell Bench Press Technik",
     "ersatz": "Brustpresse-Maschine",
-    "bereich": "gym"
+    "bereich": "gym",
+    "id": "dumbbell_bench_press"
   },
   {
     "de": "Schrägbankdrücken Langhantel",
@@ -333,7 +334,8 @@
     "technik": "Stütz dich mit Hand und Knie auf der Bank ab und zieh die Kurzhantel zur Hüfte, ohne den Rumpf zu verdrehen.",
     "video": "One Arm Dumbbell Row Technik",
     "ersatz": "Rudern am Kabel",
-    "bereich": "gym"
+    "bereich": "gym",
+    "id": "one_arm_dumbbell_row"
   },
   {
     "de": "Brustgestütztes Kurzhantel-Rudern",
@@ -1023,7 +1025,8 @@
     "technik": "Beuge Hüfte und Knie gleichzeitig, halte die Brust aufrecht und geh so tief, wie du die Position sauber halten kannst.",
     "video": "Back Squat Technik",
     "ersatz": "Beinpresse",
-    "bereich": "gym"
+    "bereich": "gym",
+    "id": "barbell_back_squat"
   },
   {
     "de": "Frontkniebeuge",
@@ -1084,7 +1087,8 @@
     "technik": "Senke den Schlitten so weit ab, wie der untere Rücken am Polster bleibt, und drücke, ohne die Knie ganz durchzustrecken.",
     "video": "Leg Press Technik",
     "ersatz": "Goblet Squat",
-    "bereich": "gym"
+    "bereich": "gym",
+    "id": "leg_press"
   },
   {
     "de": "Hackenschmidt-Kniebeuge",
@@ -1520,7 +1524,8 @@
     "technik": "Drück dich aktiv aus den Schultern lang und halte Körperspannung von den Händen bis zu den Fußspitzen.",
     "video": "Wall Handstand Technik",
     "ersatz": "Erhöhte Pike Liegestütze",
-    "bereich": "calisthenics"
+    "bereich": "calisthenics",
+    "id": "wall_handstand_hold"
   },
   {
     "de": "Handstand-Liegestütze an der Wand",
@@ -1595,7 +1600,8 @@
     "technik": "Starte aus dem vollen Hang und zieh dich hoch, bis das Kinn über der Stange ist, ohne mit den Beinen Schwung zu holen.",
     "video": "Pull-Up Technik",
     "ersatz": "Latzug breit",
-    "bereich": "calisthenics"
+    "bereich": "calisthenics",
+    "id": "pull_up_added_load"
   },
   {
     "de": "Klimmzüge im Untergriff",
@@ -2302,7 +2308,8 @@
     "technik": "Trag das Gewicht einseitig neben dem Körper und bleib dabei so aufrecht, als würdest du zwei gleiche Gewichte tragen.",
     "video": "Suitcase Carry Technik",
     "ersatz": "Farmer's Walk",
-    "bereich": "kettlebell"
+    "bereich": "kettlebell",
+    "id": "suitcase_carry"
   },
   {
     "de": "Racked Carry",
@@ -2440,7 +2447,8 @@
     "technik": "Geh über die Liegestützposition auf den Boden, komm zügig wieder hoch und spring am Ende gestreckt ab.",
     "video": "Burpee Technik",
     "ersatz": "Mountain Climbers",
-    "bereich": "functional"
+    "bereich": "functional",
+    "id": "burpee_push_up"
   },
   {
     "de": "Mountain Climbers",
@@ -2574,7 +2582,8 @@
     "technik": "Bilde vom Kopf bis zu den Fersen eine feste Linie und spann Bauch und Gesäß aktiv an.",
     "video": "Plank Technik",
     "ersatz": "Dead Bug",
-    "bereich": "core"
+    "bereich": "core",
+    "id": "plank"
   },
   {
     "de": "Seitstütz",
@@ -2950,7 +2959,8 @@
     "technik": "Wähle Tempo und Steigung so, dass du das geplante Intervall gleichmäßig durchhalten kannst.",
     "video": "Laufband Lauftechnik",
     "ersatz": "Crosstrainer",
-    "bereich": "cardio"
+    "bereich": "cardio",
+    "id": "treadmill_duration"
   },
   {
     "de": "Rudergerät",

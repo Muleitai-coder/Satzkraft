@@ -142,7 +142,7 @@ test('reportDetailedProtocol uses the supplied logs and history for arbitrary pr
   assert.doesNotMatch(protocol, /999/);
 });
 
-test('previousBlockMetrics follows archived parents by exact exercise name and renders the last trend value', () => {
+test('previousBlockMetrics follows archived parents by exact exercise name and type and renders the last trend value', () => {
   const { context } = loadReportContext();
   const oldest = weightedProgram('Block 0', 'Kniebeuge', { archived: true });
   const previous = weightedProgram('Block 1', 'Kniebeuge', { archived: true, parent: 'oldest' });
@@ -157,12 +157,12 @@ test('previousBlockMetrics follows archived parents by exact exercise name and r
   context.S.active = 'current';
 
   const metrics = context.previousBlockMetrics('current');
-  assert.equal(metrics.Kniebeuge.latest, 82.5);
-  assert.equal(metrics.kniebeuge, undefined, 'Namensabgleich muss exakt bleiben');
+  assert.equal(metrics['Kniebeuge|weight'].latest, 82.5);
+  assert.equal(metrics['kniebeuge|weight'], undefined, 'Namensabgleich muss exakt bleiben');
 
   const currentMetric = context.buildReportData(current, context.S.store.current.logs, context.S.store.current.history)
     .exercises.find(metric => metric.name === 'Kniebeuge');
-  const card = context.reportExerciseCard(currentMetric, metrics.Kniebeuge);
+  const card = context.reportExerciseCard(currentMetric, metrics['Kniebeuge|weight']);
   assert.match(card, /Vorblock: 82,5 kg/);
 });
 
@@ -191,4 +191,30 @@ test('exportTranslate never exposes internal archive or parent-chain metadata', 
 
   assert.doesNotMatch(source, /\barchived\b/);
   assert.doesNotMatch(source, /\bparent\b/);
+});
+
+test('same-name parent metrics remain separated by weight, seconds and weighted seconds', () => {
+  const { context, report } = loadReportContext();
+  const parent = weightedProgram('Vorblock', 'Carry', { archived: true });
+  parent.days[0].ex.push(
+    { id: 'hold', name: 'Carry', w: true, unit: 'seconds', sets: 1 },
+    { id: 'plain', name: 'Carry', w: false, unit: 'seconds', sets: 1 }
+  );
+  const current = JSON.parse(JSON.stringify(parent));
+  current.archived = false; current.parent = 'parent';
+  const priorStore = reportStore(75, 2000);
+  priorStore.logs['1|A|hold'] = { sets: [{ reps: '60', weight: '20' }] };
+  priorStore.logs['1|A|plain'] = { sets: [{ reps: '30', weight: '' }] };
+  const currentStore = JSON.parse(JSON.stringify(priorStore));
+  currentStore.logs['1|A|hold'].sets[0] = { reps: '45', weight: '25' };
+  context.S = { active: 'current', programs: { parent, current }, store: { parent: priorStore, current: currentStore } };
+  const metrics = context.previousBlockMetrics('current');
+  assert.equal(metrics['Carry|weight'].latest, 82.5);
+  assert.equal(metrics['Carry|seconds'].latest, 30);
+  assert.equal(metrics['Carry|weighted_seconds'].latest, null);
+  assert.equal(metrics['Carry|weighted_seconds'].performances[0].sets[0].weight, 20);
+  context.buildReport('current');
+  assert.match(report.innerHTML, /Vorblock: 82,5 kg/);
+  assert.match(report.innerHTML, /Vorblock: 60 Sek · 20 kg/);
+  assert.match(report.innerHTML, /Vorblock: 30 Sek/);
 });

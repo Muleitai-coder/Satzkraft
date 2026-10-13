@@ -125,7 +125,7 @@ test('uses one hold-timer color and tappable explanation terms', () => {
   assert.doesNotMatch(html, /class="infobtn"/);
   assert.match(html, /aria-label="Erklärung:/);
   assert.match(html, /id="manualcreate" aria-label=/);
-  assert.match(html, /id="coachbtn" aria-label=/);
+  assert.match(html, /id="externalaibtn" aria-label=/);
 });
 
 test('isolates open surfaces and exposes selected states to assistive technology', () => {
@@ -160,7 +160,7 @@ test('isolates open surfaces and exposes selected states to assistive technology
   assert.match(html, /data-day=[^>]+aria-pressed=/);
   assert.match(html, /data-ed-daypick=[^>]+aria-pressed=/);
   assert.match(html, /data-ed-weekpick=[^>]+aria-pressed=/);
-  assert.match(html, /data-optm=[^>]+aria-pressed=/);
+  assert.doesNotMatch(html, /data-optm=/);
   assert.match(html, /role="combobox" aria-autocomplete="list" aria-expanded="false"/);
   assert.match(html, /e\.key==="ArrowDown"&&options\.length/);
   assert.match(html, /e\.key==="Escape"&&list/);

@@ -27,7 +27,7 @@ const context = {
   showModal() {},
   programWriteLocked: () => false,
   showProgramWriteLocked() {},
-  setActive(id) { context.S.active = id; }
+  setActive(id) { context.S.active = id; return true; }
 };
 vm.createContext(context);
 const bereichStart = html.indexOf("var BEREICHE=");

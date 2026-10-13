@@ -4,6 +4,29 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 > Hinweis zur Rückschau: v0.15.0 bis v0.16.0 wurden nachträglich aus dem heute unter `docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md` archivierten Briefing rekonstruiert. Für diese Zwischenstände existieren keine getrennten Git-Tags oder sicher belegten Veröffentlichungstage. Ab v0.17.0 wird jede Version zum Release-Zeitpunkt hier gepflegt.
 
+## [Unreleased]
+
+### Behoben
+
+- Zeitübungen mit Gewicht werden in Auswertung und Übungsverlauf als Zeit und Last angezeigt. Sekunden erzeugen kein geschätztes 1RM und zählen nicht zum Wiederholungsvolumen; das Protokoll erhält Minutenformat, kg und gegebenenfalls „je Seite“.
+- Gleichnamige Übungen bleiben nach Typ getrennt, auch im Vorblockvergleich. Für Zeit plus Gewicht werden keine eindimensionalen Bestwerte, Prozenttrends oder Abschluss-Highlights erfunden.
+- Aktualisierte App-Fenster überschreiben neuere Trainingswerte nicht mehr gegenseitig: Nur ein Fenster darf schreiben; weitere Fenster warten und laden vor einer bewussten Übernahme den aktuellen Stand.
+- Fremde Speicheränderungen stoppen verzögerte Saves und Hintergrundspeicherung. Ungespeicherte Werte und Editorentwürfe lassen sich in einer Sicherungsdatei erhalten; Backup-Wiederherstellung und Komplettlöschung verwenden dieselbe Schreibprüfung.
+- Fehlgeschlagene Speicherung beendet den Programmeditor nicht als erfolgreich gespeichert und zeigt keinen erfolgreichen Folgeblock-/Blockabschluss. Ohne sichere Fensterkoordination bleiben Schreibvorgänge blockiert.
+
+### Entfernt
+
+- Integrierter KI-Coach mit Frage-Wizard, API-Anbindung an Anthropic und Netlify-Serverfunktion. Die zugehörigen Einstiege in Programmen, Einstellungen und beim Blockabschluss entfallen.
+- Gespeicherte Antworten des früheren API-Coachs werden beim Start der aktualisierten App entfernt, sofern der Browserspeicher zugänglich ist. Bereits erstellte Programme, Fortschritt und alte Backups bleiben erhalten und kompatibel.
+
+### Geändert
+
+- Zehn geprüfte Bibliotheksübungen erhalten stabile optionale Zuordnungen. Auswahl, Editor, Programmimport/-export und vollständiges Backup erhalten diese Kennungen, während bisherige Programmpositions-IDs und Trainingswerte bestehen bleiben.
+- Unbekannte oder widersprüchliche Übungszuordnungen werden vor Import und Backup-Wiederherstellung erkannt. Im Editor lassen sie sich bewusst lösen oder neu auswählen; freie Namen und alte Pläne ohne Zuordnung bleiben nutzbar.
+- Bei einer freien Umbenennung lässt sich die bestehende Zuordnung bewusst behalten oder lösen; Übungstausch und Folgeblock übernehmen die passende Kennung. Alte Programme werden beim Start nicht automatisch umgestellt.
+- „ChatGPT & Co.“ bleibt als lokal erzeugter Text mit anschließendem geprüftem JSON-Import verfügbar. Datenschutzhinweise und Veröffentlichungskonfiguration beschreiben jetzt die statische App ohne eigene KI-Anfragen.
+- Tests des entfernten Wizards und API-Endpunkts werden durch Prüfungen auf vollständige Entfernung, sichere Altbestandsbereinigung und weiter nutzbare Programme ersetzt.
+
 ## [0.33.4] – 2026-10-01
 
 ### Behoben

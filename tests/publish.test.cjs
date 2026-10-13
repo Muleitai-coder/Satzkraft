@@ -47,9 +47,10 @@ test('creates a minimal Netlify publish directory without repository internals',
   }
 });
 
-test('publishes only dist and keeps server functions outside the public directory', () => {
+test('publishes only dist without the removed server function', () => {
   assert.equal(packageJson.scripts.build, 'node scripts/prepare-netlify.mjs');
   assert.match(netlifyConfig, /\[build\][\s\S]*command = "npm run build"[\s\S]*publish = "dist"/);
-  assert.match(netlifyConfig, /\[functions\][\s\S]*directory = "netlify\/functions"/);
+  assert.doesNotMatch(netlifyConfig, /\[functions\]/);
+  assert.equal(fs.existsSync(path.join(root, 'netlify/functions/coach.mjs')), false);
   assert.doesNotMatch(netlifyConfig, /publish = "\."/);
 });

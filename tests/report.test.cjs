@@ -156,3 +156,137 @@ test('renders a responsive and accessible report with local-data and print guida
   assert.match(html, /var program=S\.programs\[protocolProgramId\]\|\|PROG\(\);document\.title=\(program\.name\|\|"Satzkraft"\)\+" – Trainingsprotokoll"/);
   assert.match(html, /e\.key!=="Escape".*closeProtocol\(\);return;.*closeReport\(\)/s);
 });
+
+function weightedTimeData() {
+  const program = {
+    name: 'Zeit und Last', weeks: [{ n: 1, label: 'Aufbau' }, { n: 2, phase: 'deload', label: 'Deload' }],
+    days: [{ key: 'A', wd: 'Montag', ex: [
+      { id: 'carry', name: 'Suitcase Carry', w: true, unit: 'seconds', sets: 1, perSide: true }
+    ] }]
+  };
+  const logs = {
+    '1|A|carry': { sets: [{ reps: '60', weight: '20' }] },
+    '2|A|carry': { sets: [{ reps: '30', weight: '15' }] }
+  };
+  return { program, logs };
+}
+function renderingContext() {
+  const report = { innerHTML: '' }, protocol = { innerHTML: '' };
+  let modal = '';
+  const ctx = {
+    document: { getElementById: id => id === 'protocol' ? protocol : report },
+    S: { programs: {}, store: {} }, PROG: () => null,
+    dDate: () => '11.10.2026', dClock: () => '12:00', icon: () => '',
+    isTime: ex => ex.unit === 'seconds', round: value => Math.round(value * 2) / 2,
+    setsForExercise: ex => ex.sets || 1, currentExerciseSwap: () => '',
+    normalizeSwapName: value => String(value || '').trim(),
+    exerciseValidForWeek: (ex, w) => w >= (ex.fromWeek || 1) && w <= (ex.untilWeek || Infinity),
+    showModal: (title, body) => { modal = body; }
+  };
+  vm.createContext(ctx);
+  vm.runInContext(html.slice(html.indexOf('function fmtTime('), html.indexOf('function fmtSecondsRange(')), ctx);
+  vm.runInContext(html.slice(html.indexOf('function esc('), html.indexOf('function icon(')), ctx);
+  vm.runInContext(html.slice(start, html.indexOf('// ---------- Programm-Bibliothek', start)), ctx);
+  vm.runInContext(html.slice(html.indexOf('function exHistory('), html.indexOf('function removeLegacyCoachAnswers(')), ctx);
+  return { ctx, report, protocol, modal: () => modal };
+}
+
+test('weighted seconds retain both values without 1RM, repetition volume or a synthetic best', () => {
+  const { program, logs } = weightedTimeData();
+  const snapshot = JSON.stringify({ program, logs });
+  const data = context.buildReportData(program, logs, []);
+  const metric = data.exercises[0];
+  assert.equal(data.totalVolume, 0);
+  assert.equal(data.totalSets, 2);
+  assert.equal(metric.type, 'weighted_seconds');
+  assert.equal(metric.volume, 0);
+  assert.equal(metric.best, null); assert.equal(metric.delta, null); assert.equal(metric.latest, null);
+  assert.equal(metric.points.length, 0);
+  assert.deepEqual(Array.from(metric.performances, p => ({ week: p.week, reps: p.sets[0].reps, weight: p.sets[0].weight })), [
+    { week: 1, reps: 60, weight: 20 }, { week: 2, reps: 30, weight: 15 }
+  ], 'Deload-Satzwerte bleiben sichtbar, ohne daraus einen Trend zu berechnen');
+  assert.equal(context.topBlockImprovements(data).length, 0);
+  assert.equal(JSON.stringify({ program, logs }), snapshot);
+});
+
+test('same canonical name keeps weighted seconds, seconds, reps and classic weight in separate metrics', () => {
+  const { program, logs } = weightedTimeData();
+  program.days[0].ex.push(
+    { id: 'seconds', name: 'Suitcase Carry', unit: 'seconds' },
+    { id: 'reps', name: 'Suitcase Carry', unit: 'reps' },
+    { id: 'weight', name: 'Suitcase Carry', unit: 'reps', w: true }
+  );
+  logs['1|A|seconds'] = { sets: [{ reps: '60', weight: '' }] };
+  logs['1|A|reps'] = { sets: [{ reps: '8', weight: '' }] };
+  logs['1|A|weight'] = { sets: [{ reps: '8', weight: '20' }] };
+  const data = context.buildReportData(program, logs, []);
+  assert.equal(data.exercises.length, 4);
+  assert.equal(data.totalVolume, 160);
+  assert.equal(data.exercises.find(m => m.type === 'weight').best, 25.5);
+  assert.equal(data.exercises.find(m => m.type === 'seconds').best, 60);
+  assert.equal(data.exercises.find(m => m.type === 'reps').best, 8);
+});
+
+test('replacement work counts sets but cannot appear as performance of the original weighted hold', () => {
+  const { program, logs } = weightedTimeData();
+  logs['2|A|carry'].swap = 'Anderer Carry';
+  logs['2|A|carry'].sets[0] = { reps: '500', weight: '200' };
+  const data = context.buildReportData(program, logs, []);
+  assert.equal(data.totalSets, 2); assert.equal(data.totalVolume, 0);
+  assert.deepEqual(Array.from(data.exercises[0].performances, p => p.week), [1]);
+});
+
+test('weighted hold history and protocol show minutes, load and side without volume or 1RM', () => {
+  const { program, logs } = weightedTimeData();
+  const { ctx, modal } = renderingContext();
+  const exercise = program.days[0].ex[0];
+  ctx.S = { day: 'A', week: 1, logs }; ctx.PROG = () => program;
+  const rows = ctx.exHistory(exercise);
+  assert.equal(rows[0].parts[0], '1:00 min · 20 kg · je Seite');
+  assert.equal(rows[0].vol, 0); assert.equal(rows[0].e1, null);
+  ctx.showHistory(exercise);
+  assert.match(modal(), /Zeit · kg/); assert.match(modal(), /1:00 min · 20 kg · je Seite/);
+  assert.doesNotMatch(modal(), /1RM|Vol\.|Wdh×kg|1200|1\.200/);
+  const protocol = ctx.reportDetailedProtocol(program, logs, []);
+  assert.match(protocol, /1:00 min · 20 kg · je Seite/);
+  assert.match(protocol, /0:30 min · 15 kg · je Seite/);
+  assert.match(protocol, /class="vol">–/);
+  assert.doesNotMatch(protocol, /60×20|1200|1\.200/);
+  logs['1|A|carry'].swap = '<Ersatz & Carry>';
+  const swapped = ctx.reportDetailedProtocol(program, logs, []);
+  assert.match(swapped, /&lt;Ersatz &amp; Carry&gt;/); assert.match(swapped, /Getauscht/);
+  assert.match(swapped, /1:00 min · 20 kg · je Seite/);
+});
+
+test('missing weight stays missing and explicit zero is retained in all weighted-time output', () => {
+  const { ctx } = renderingContext();
+  const ex = { w: true };
+  assert.equal(ctx.reportTimedSetText(ex, { reps: '60', weight: '' }), '1:00 min · Gewicht fehlt');
+  assert.equal(ctx.reportTimedSetText(ex, { reps: '60', weight: null }), '1:00 min · Gewicht fehlt');
+  assert.equal(ctx.reportTimedSetText(ex, { reps: '60', weight: '-1' }), '1:00 min · Gewicht fehlt');
+  assert.equal(ctx.reportTimedSetText(ex, { reps: '60', weight: '0' }), '1:00 min · 0 kg');
+});
+
+test('active and archived reports, previous block and print sources retain typed time and load', () => {
+  const { program, logs } = weightedTimeData();
+  const { ctx, report, protocol } = renderingContext();
+  const previous = JSON.parse(JSON.stringify(program)); previous.archived = true;
+  program.parent = 'previous';
+  const previousLogs = { '1|A|carry': { sets: [{ reps: '60', weight: '20' }] } };
+  ctx.S = { active: 'current', programs: { current: program, previous }, store: {
+    current: { logs, history: [], notes: {} }, previous: { logs: previousLogs, history: [], notes: {} }
+  } };
+  ctx.PROG = () => program;
+  ctx.buildReport('current');
+  assert.match(report.innerHTML, /Zeit &amp; Gewicht/);
+  assert.match(report.innerHTML, /0:30 min · 15 kg · je Seite/);
+  assert.match(report.innerHTML, /Vorblock: 1:00 min · 20 kg · je Seite/);
+  assert.doesNotMatch(report.innerHTML, /rexbest|rexpill|rsparkbars|1\.200/);
+  assert.equal(ctx.previousBlockMetrics('current')['Suitcase Carry|weighted_seconds'].type, 'weighted_seconds');
+  ctx.buildReport('previous', 'archive');
+  assert.match(report.innerHTML, /1:00 min · 20 kg · je Seite/);
+  assert.doesNotMatch(report.innerHTML, /Vorblock:/);
+  ctx.buildProtocol('previous');
+  assert.match(protocol.innerHTML, /1:00 min · 20 kg · je Seite/);
+  assert.doesNotMatch(protocol.innerHTML, /60×20|1\.200/);
+});

@@ -1,8 +1,8 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
-- Stand: 01.10.2026
+- Stand: 12.10.2026
 - Veröffentlichter Stand: v0.33.4
-- Arbeitsstand: v0.33.4
+- Arbeitsstand: v0.33.4 + Unreleased (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -28,10 +28,11 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 - Programme, Trainingswerte, Protokolle und Einstellungen liegen ohne Konto im Browser.
 - Der zentrale App-Zustand verwendet weiterhin `localStorage` mit Schlüssel `cali-plan-v3` und `DATA_SCHEMA_VERSION` 4.
-- Nur beim bewusst gestarteten KI-Coach werden die beantworteten Coach-Fragen über die Netlify-Funktion an Anthropic übermittelt. Andere Programme und Trainingsprotokolle werden nicht automatisch angefügt.
-- Strukturierte Beschwerdeangaben verlangen vor dem Senden eine ausdrückliche Bestätigung für die aktuelle Coach-Sitzung.
-- Gespeicherte Coach-Antworten und alle Satzkraft-Daten können getrennt gelöscht werden. Die Komplettlöschung darf keine fremden Origin-Daten entfernen.
-- Das Backup enthält Programme und Trainingsdaten, nicht den separaten Coach-Antwortschlüssel oder den Farbmodus.
+- **Produktentscheidung 11.10.2026:** Der integrierte KI-Coach einschließlich Wizard, API-Aufrufen und Netlify-Serverfunktion wird entfernt. Eine spätere einfachere KI-Lösung benötigt einen eigenen Auftrag.
+- „ChatGPT & Co.“ bleibt als lokaler Prompt-/Exportweg mit geprüftem JSON-Import erhalten. Der Nutzer entscheidet selbst über die Weitergabe an eine externe KI; Satzkraft sendet keine Trainingsdaten an eine KI-API.
+- Bestehende Programme mit historischer Herkunft `source: "coach"` und alte Backups bleiben kompatibel. Gespeicherte Coach-Antworten werden beim Start der aktualisierten App entfernt, sofern der Speicherzugriff erlaubt ist; eine Löschgeneration blockiert dabei bereits offene ältere Coach-Sitzungen.
+- Alle lokalen Satzkraft-Daten können weiterhin abgesichert gelöscht werden. Die Komplettlöschung darf keine fremden Origin-Daten entfernen.
+- Das Backup enthält Programme und Trainingsdaten, keinen Farbmodus und keine historischen Coach-Antworten.
 
 ## 3. Architektur und technische Leitplanken
 
@@ -41,7 +42,6 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 |---|---|
 | `index.html` | App-Oberfläche, Styles und UI-Logik |
 | `js/progression.js` | isolierte Progressions- und Empfehlungslogik |
-| `netlify/functions/coach.mjs` | serverseitiger KI-Coach; API-Schlüssel bleibt serverseitig |
 | `sw.js` | Offline-Cache der statischen App-Ressourcen |
 | `programme/*.json` | mitgelieferte Programme |
 | `uebungen.json` | Übungsbibliothek und Austauschvorschläge |
@@ -60,11 +60,34 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 8. Änderungen nach `docs/TESTING.md` risikobasiert prüfen. Keine Prüfungen deaktivieren und keine fehlschlagenden Tests still entfernen.
 9. Vorhandene, unfertige Änderungen bewahren. Ohne ausdrücklichen Auftrag weder committen noch pushen.
 
+### Übungsdatenbank – bestätigter Prototypumfang
+
+- **Produktentscheidung 11.10.2026:** Mit „ja bitte“ wurden D1–D8 der [Entscheidungsvorlage](docs/planung/UEBUNGSDATENBANK-ENTSCHEIDUNGSVORLAGE.md) und der isolierte Datenprototyp bestätigt. Der [Prototyp](docs/prototyp/uebungsdatenbank/README.md) ist lokal erstellt; dies ist keine Freigabe für produktive Migration, persönliche Bibliothek oder neue Oberflächen.
+- Übungsidentität, Programmposition/Vorgabe und tatsächlich erfasste Leistung bleiben getrennt. Umbenennung und aktuelle Metadaten dürfen historische Log-Schlüssel oder Erfassungsregeln nicht überschreiben.
+- Lastbedeutung und Eingabekonvention unterscheiden: externes Gewicht, Zusatzgewicht und Unterstützung; Gesamtgewicht, pro Hantel und Geräteanzeige. Unterstützung darf nicht durch gewöhnliche Laststeigerung ausgeführt werden. Alte Lastwerte nicht umrechnen.
+- Für neue einseitige Vorgaben gilt ein Wert je Seite; keine erfundenen Links-/Rechtswerte. Fehlende historische Seiten-, Gewichts- oder Geräteinformation bleibt unbestätigt. Gerätevarianten nicht automatisch miteinander vergleichen.
+- Zeit und Gewicht gemeinsam anzeigen, ohne universellen Bestwert. Mobilität/Cardio erhalten keine Kraftrekorde. Der Prototyp berechnet keine neuen Kennzahlen und wendet keine Progression an; bestehende Report- und Progressionslogik bleibt unverändert.
+- Unbekannte oder widersprüchliche Übungen bewusst reparieren. Namen/Aliasse allein dürfen bei Mehrdeutigkeit keine Identität bestimmen. Ersatzbeziehungen sind gerichtet und ausdrücklich gepflegt; eine fehlende Standardalternative wird benannt.
+- Erster Umfang: Wiederholungen und Sekunden, zwölf Referenzfälle und kleine kontrollierte Metadatenlisten. Technik persönlicher Übungen ist optional. Distanz, Tempo, Muskelgewichtung und getrennte Seitenwerte bleiben zurückgestellt. Keine KI-Anbindung oder KI-Pflichtfelder.
+- Die Prototypdateien liegen ausschließlich unter `docs/prototyp/uebungsdatenbank/`; sie werden weder von der App noch vom Service Worker geladen oder veröffentlicht. `cali-plan-v3`, Schema 4 und `trainings-block` v2 bleiben unverändert. Unterstützung und verlustfreier Austausch mit älteren Apps benötigen vor produktiver Nutzung einen eigenen Vertrag.
+- **Arbeitsstand 12.10.2026:** Mit „weiter machen“ wurden die [Import-/Export-/Migrationsverträge](docs/planung/UEBUNGSDATENBANK-VERTRAEGE.md) vorbereitet. Sieben neue isolierte Prüfungen am bestehenden Reader belegen Metadatenverlust, unwirksame Fähigkeitsmarker und die Grenzen des heutigen Backups. Als nächstes Umsetzungspaket ist C1 für optionale kompatible Übungsreferenzen beschrieben; C2/C3 und produktive Migration bleiben nachgelagerte Schritte. Keine neue Austausch- oder Speicherversion und keine neue App-Funktion in dieser Vertragsvorbereitung.
+- **Umsetzungsauftrag 12.10.2026:** Das anschließende „ok weiter machen“ beauftragt C1. Zehn kompatible integrierte Übungen besitzen jetzt Bibliotheks-IDs; `exerciseId` bleibt optional und wird in Editor, v2-Import/-Export, Tausch/Folgeblock und Schema-4-Backup erhalten. Ein separater ID-Index und eine kleine synchron verfügbare Referenzliste prüfen bekannte Identität, Erfassung und Seitenregel, auch vor dem Bibliotheksabruf. Unbekannte/persönliche IDs und widersprüchliche Zusatzdefinitionen bleiben Fehlerfälle. Namen bleiben beim Import erhalten; Abweichungen werden gezeigt. Lösen einer Zuordnung und freie Umbenennung sind bewusste Editorentscheidungen. Kein automatisches Annotieren alter Programme/Logs, keine neue Berechnung oder Migration. [Abnahme](docs/tests/TESTBERICHT-UEBUNGSREFERENZEN.md): 88 unterschiedliche gezielte Node-Fälle und ein mobiler Browserfall bestanden; echte Geräteabnahme offen.
+
+### Lokale Daten bei mehreren Fenstern
+
+- Seit dem beauftragten Ausbau vom 11.10.2026 darf je lokalem Speicherbereich nur ein aktualisiertes Satzkraft-Fenster schreiben. Eine exklusive Web Lock bleibt während der Lebensdauer dieses Fensters erhalten; ein Hintergrundwechsel gibt sie nicht frei.
+- Zusätzliche Fenster zeigen eine geschützte Warteansicht. Sie können ihren geöffneten Stand sichern. Nach dem Schließen des schreibenden Fensters übernimmt „Aktuellen Stand laden“ mit frisch geladenen Daten; ein laufendes Training wird dabei weiterhin pausiert.
+- Fremde Speicheränderungen stoppen weitere Hauptdaten-Schreibvorgänge. Ungespeicherte Werte und Editorentwürfe bleiben bis zur Sicherung oder bewussten Verwerfung erhalten. Die Sicherungsdatei enthält ein normales Schema-4-Backup und bei Bedarf das optionale Feld `windowDraft` für die manuelle Wiederaufnahme von Editor-/Formulareingaben; es wird nicht automatisch zusammengeführt.
+- Backup-Wiederherstellung, Komplettlöschung, verzögerte Speicherung und Lebenszyklusereignisse prüfen dieselbe Schreibberechtigung. Speicherfehler dürfen keinen erfolgreichen Abschluss oder verworfenen Editorentwurf vortäuschen.
+- Ohne verfügbare Web Locks bleibt die App gegen Schreiben geschützt und bietet Sicherung sowie einen verständlichen Browserhinweis. Der reguläre Einstieg erfolgt über HTTPS oder einen lokalen Server auf localhost; kein unsicherer Ersatz durch einen Speicher-Heartbeat.
+- Alte App-Versionen kennen die Freigabe nicht. Vor der späteren Veröffentlichung alle alten Satzkraft-Fenster schließen beziehungsweise neu laden; der zusätzliche Standvergleich erkennt fremde Änderungen, garantiert aber keine atomare Zusammenarbeit mit altem JavaScript.
+- Gezielte Prüfungen ersetzen keine Geräteabnahme: echtes iPhone/PWA, Offlinebetrieb und Betriebssystem-Beendigung bleiben vor Veröffentlichung praktisch zu prüfen. Kein Release, Versionswechsel oder Upload ist Teil dieses lokalen Ausbaus.
+
 ### Veröffentlichung
 
 - Netlify führt `npm run build` aus und veröffentlicht ausschließlich `dist/`.
 - `scripts/prepare-netlify.mjs` verwendet eine Positivliste der öffentlichen Dateien. Repository-Dokumente, Testdaten, Git-Inhalte, lokale Backups und Quellhilfen dürfen nicht im öffentlichen Verzeichnis landen.
-- Netlify Functions bleiben über `[functions] directory = "netlify/functions"` außerhalb des öffentlichen Verzeichnisses angebunden.
+- Es werden keine Netlify Functions bereitgestellt; die frühere Coach-Funktion und ihre Konfiguration sind entfernt. Vorhandene Provider-Schlüssel werden im Code nicht mehr verwendet; ihre Entfernung aus der Hosting-Verwaltung gehört zur nächsten ausdrücklich beauftragten Veröffentlichung.
 - Bei manueller Bereitstellung zuerst `npm run build` ausführen und ausschließlich `dist/` hochladen. Niemals den Repository-Ordner als Publish-Verzeichnis verwenden.
 
 ## 4. Verbindlicher Oberflächen- und Funktionsstand
@@ -108,6 +131,8 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 - Auswertung zeigt Einheiten, Trainingszeit und bewegtes Gewicht sowie den Verlauf je Übung. Deload-Wochen verzerren gewichtete Trends nicht.
 - Gleiche kanonische Übungsnamen werden typgerecht zusammengeführt; getauschte Übungen bleiben vom Originaltrend getrennt.
+- Zeitübungen mit Gewicht bilden in der Auswertung einen eigenen Typ: Zeit und Last der zuletzt erfassten Ausführung gemeinsam anzeigen, einschließlich 0 kg beziehungsweise „Gewicht fehlt“. Sekunden dürfen weder in die 1RM-Schätzung noch in das kg-Wiederholungsvolumen eingehen. Verlauf und Protokoll zeigen beispielsweise „1:00 min · 20 kg · je Seite“.
+- Für Zeit plus Gewicht bleiben eindimensionale Bestwerte, Prozenttrends und Abschluss-Highlights aus, bis eine eigene fachliche Kennzahl beschlossen ist. Vorblockwerte werden nur bei gleichem kanonischen Namen und gleichem Typ gezeigt; tatsächliche Deload-Satzwerte bleiben im Protokoll und in der letzten Ausführung erhalten.
 - Das Trainingsprotokoll ist eine eigene Vollbildansicht und kann separat gedruckt werden.
 - Backup-Erinnerung erscheint nach fünf abgeschlossenen Trainings seit der letzten Sicherung oder bei einer über 14 Tage alten Sicherung mit neuem Training; „Später“ pausiert sieben Tage.
 - Offline-Betrieb, lokaler Datenbestand und Wiederherstellung aus kompatiblen Backups sind Kernfunktionen.
@@ -130,7 +155,7 @@ Langfristige Ideen stehen in `docs/planung/AUSBAUPLAN.md` und werden erst nach e
 | `FB-20260808-01` | umgesetzt, reale Geräteabnahme offen | Wiederholungen beziehungsweise Zeit und Gewicht bleiben auch auf ≤480 px in einer gemeinsamen Satzzeile. Automatisch bei 320 px in Chromium und WebKit geprüft; Bediengefühl auf einem echten Smartphone noch einmal praktisch bestätigen. |
 | `FB-20260808-02` | umgesetzt | Hintergrund- und Seitenwechsel speichern das laufende Training, pausieren es aber nicht. |
 | `FB-20260808-03` | umgesetzt | Bei 0 kg Zusatzgewicht erscheint keine unmögliche oder widersprüchliche Reduktion mehr. |
-| `FB-20260808-04` | umgesetzt | Netlify veröffentlicht über eine Positivliste ausschließlich den erzeugten Ordner `dist/`; Functions bleiben getrennt. |
+| `FB-20260808-04` | umgesetzt | Netlify veröffentlicht über eine Positivliste ausschließlich den erzeugten Ordner `dist/`; API-Coach und Functions sind im neuen Arbeitsstand entfernt. |
 | `FB-20260808-05` | umgesetzt | Das aktive Briefing wurde auf den aktuellen verbindlichen Stand verdichtet; die vollständige Historie bleibt archiviert erhalten. |
 
 ## 7. Noch offene Entscheidungen und Risiken
@@ -143,6 +168,6 @@ Langfristige Ideen stehen in `docs/planung/AUSBAUPLAN.md` und werden erst nach e
 
 - Vor Änderungen `git status`, dieses Briefing, `AGENTS.md` und die direkt betroffenen Dokumente lesen.
 - Erst den Fehler oder Ablauf reproduzieren, dann die kleinste belastbare Korrektur umsetzen.
-- Kritische Pfade umfassen Datenlöschung und -wiederherstellung, Import, Training, Progression, Programmtausch, Offline-Cache, Coach-Datenfluss und Netlify-Veröffentlichung.
+- Kritische Pfade umfassen Datenlöschung und -wiederherstellung, Import, Training, Progression, Programmtausch, Offline-Cache, externe KI-Importe und Netlify-Veröffentlichung.
 - Abschlussberichte unterscheiden zwischen automatisch getestet, visuell geprüft, manuell auf echter Hardware geprüft, nicht verifizierbar und offen.
 - Historische Feedback-IDs und Releases sind im archivierten Briefing und in `CHANGELOG.md` nachvollziehbar; sie müssen nicht erneut in diesem aktiven Dokument dupliziert werden.

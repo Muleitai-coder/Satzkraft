@@ -1,0 +1,36 @@
+feature,area,priority,original,clone,notes
+Wochenplan und aktiver Trainingsblock,Planung,must,active,yes,S01; F04; Fortschritt und Tage
+Vier Programmvorlagen und Standardprogramm,Programme,must,active,yes,S03; F01; vier JSON-Vorlagen plus eingebautes Standardprogramm
+Manuelle Programmerstellung,Programme,must,active,yes,S07; F02
+Programmeditor mit Training Wochen Details,Editor,must,active,yes,S08; F08; Sortierung Rückgängig und Feldvalidierung
+Historie bei Programmänderungen erhalten,Editor,must,active,yes,F08; Gültigkeit ab nächster offener Einheit
+JSON-Import mit Vorschau und Reparatur,Import,must,active,yes,S04-S06; F03; einzelne reparierbare Timerfälle
+Duplikate Kennungen Revisionen und Programmupdates,Import,must,active,yes,F03; code und revision schützen Programmzuordnung
+JSON-Datei Text und Link teilen,Export,should,active,yes,F03; persönliche Arbeitsgewichte in Datei/Text; Link ohne aktuelle Gewichte
+Lokale Satzwerterfassung Wiederholungen Gewicht Zeit,Training,must,active,yes,S02; F04-F05; Sekunden intern in reps
+Trainingszeit Pause Fortsetzen und Hintergrund,Training,must,active,yes,F04; Pause 2 s halten; Reload bewusst pausiert
+Automatische Satzpause und Satzfokus,Training,must,active,yes,F04; auch nach letztem Satz
+Zielzeit Maximalzeit und gewichtete Zeitübungen,Training,must,active,yes,F05; Erfassung vorhanden; Auswertung gesondert fehlerhaft
+Warm-up und Cool-down,Training,should,active,yes,S14; F05
+Übungstausch für heute oder dauerhaft,Training,must,active,yes,F06; typkompatible Bibliotheksvorschläge
+Übung nur heute entfernen und nach Reload erhalten,Training,must,active,yes,F06; programmbezogene Entfernung
+Abgeschlossene Einheiten bewusst korrigieren,Training,must,active,yes,F07; Sicherungsstand bei Abbrechen
+Typgerechte Progression Deload Wiedereinstieg,Empfehlungen,must,active,yes,F04; sensibler separater Progressionskern
+Übungsbibliothek mit Suche und Aliassen,Bibliothek,should,active,yes,200 Einträge; Editor und Tausch; keine eigene Bibliotheksseite
+Notizen Verlauf und Scheibenrechner,Training,should,active,yes,S16; gewichtete Zeit ohne Wiederholungsvolumen und 1RM
+Auswertung mit Einheiten Dauer und Trends,Auswertung,must,active,yes,O02 lokal behoben; Zeit und Gewicht getrennt von Wiederholungskennzahlen
+Druckbares vollständiges Trainingsprotokoll,Auswertung,must,active,yes,O02 lokal behoben; Minuten und Last erhalten; kein Wiederholungsvolumen für Zeit
+Archiv und Folgeblock,Programme,should,active,yes,S11; F10; Fortschritt und Vorblockbezug
+Backup Wiederherstellung und Erinnerung,Daten,must,active,yes,F11; defensiver Import und Sicherheitskopie
+Schutz vor konkurrierenden veralteten Fenstern,Daten,must,active,yes,O01 lokal behoben; exklusive Web Lock und Standvergleich; Geräte-/Rolloutabnahme offen
+Offline-PWA und Cache-Positivliste,Offline,must,active,yes,sw.js; gespeicherte App-Ressourcen; Coach benötigt Netz
+Integrierter API-Coach,Coach,should,non_goal,skip,Am 11.10.2026 entfernt; alte Programme und Backups bleiben nutzbar; spätere KI-Lösung separat planen
+ChatGPT und andere KI per lokalem Prompt,Coach,should,active,yes,S10; F12; Nutzer übermittelt selbst
+Theme Fokusführung und mobiles Design,Design,must,active,yes,Designsystem; O03 reale Geräteabnahme offen
+Öffentliche Dateien durch Build-Positivliste,Veröffentlichung,must,active,yes,13 Veröffentlichungsdateien; Dokumentation bleibt außerhalb dist
+Persönliche dauerhafte Übungsbibliothek,Bibliothek,could,draft,no,O04; Entwurf nicht freigegeben; freie Programmübungen bereits möglich
+Stabile Bibliotheks-IDs und erweitertes Erfassungsmodell,Bibliothek,could,active,partial,C1 lokal umgesetzt: zehn optionale Bibliotheks-IDs; Auswahl Editor Import Export Backup Tausch und Folgeblock erhalten Referenzen; erweitertes Erfassungsmodell C2/C3 offen
+Vollbild-Übungsdetail mit Verlauf und Wissen,Bibliothek,could,draft,no,O04; derzeit Verlaufdialog und Übungskarten
+Tausch zwischen unterschiedlichen Erfassungsarten,Training,could,draft,no,O04; aktueller bestätigter Ablauf verlangt kompatible Vorschläge
+Konten Cloud Zahlung und soziale Funktionen,Produkt,could,non_goal,skip,Aktive Nicht-Ziele; historischer Cloudplan ist keine Freigabe
+Muskelgruppen-Oberfläche und vollständige Cardio-Plattform,Produkt,could,non_goal,skip,Aktuelle Nicht-Ziele beziehungsweise späterer Entwurf

@@ -1249,13 +1249,21 @@ test.describe('3 · Redundanz-Check', () => {
   test('RED-06/P1: Erstellen-Kacheln führen direkt und ohne alten Zwischen-Hub', async ({
     page,
   }) => {
+    const errors = [];
+    const apiRequests = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('request', request => {
+      if (/netlify\/functions|api\.anthropic/.test(request.url())) apiRequests.push(request.url());
+    });
     await openWithState(page, reportState());
+    await page.evaluate(() => localStorage.setItem('satzkraft-coach-prefs', JSON.stringify({ answers: { limits: ['Schulter'] } })));
+    await page.reload();
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('satzkraft-coach-prefs'))).toBeNull();
     await openPrograms(page);
 
     const tiles = page.locator('#lib .createtile');
-    await expect(tiles).toHaveCount(4);
+    await expect(tiles).toHaveCount(3);
     await expect(tiles.locator('b')).toHaveText([
-      'KI-Coach',
       'Import',
       'Manuell',
       'ChatGPT & Co.',
@@ -1269,11 +1277,14 @@ test.describe('3 · Redundanz-Check', () => {
     await page.locator('#createhubback').click();
     await expect(page.locator('#lib h1')).toHaveText('Deine Bibliothek');
     await expect(page.locator('#lib .createchoice')).toHaveCount(0);
+    await expect(page.locator('#coachbtn')).toHaveCount(0);
 
     await page.locator('#externalaibtn').click();
     await expect(page.locator('#lib h1')).toHaveText('Mit ChatGPT & Co.');
     await page.locator('#subclose').click();
     await expect(page.locator('#lib h1')).toHaveText('Deine Bibliothek');
+    expect(errors).toEqual([]);
+    expect(apiRequests).toEqual([]);
   });
 
   test('RED-07/P1: Bibliotheken begrenzen und deduplizieren Auswahlmengen', async ({
@@ -1703,7 +1714,8 @@ test.describe('4 · Regression & Kernfunktion', () => {
     await openPrograms(page);
     await page.locator('#manualcreate').click();
     await page.locator('#createhubback').click();
-    await page.locator('#coachbtn').click();
+    await expect(page.locator('#coachbtn')).toHaveCount(0);
+    await page.locator('#externalaibtn').click();
     await page.locator('#subclose').click();
     await page.locator('#libclose').click();
     await page.locator('#pdf').click();
@@ -1747,4 +1759,227 @@ test.describe('4 · Regression & Kernfunktion', () => {
       )
     ).toBe('1');
   });
+});
+
+test('REG-27/P0: zwei Fenster schützen Satzwerte, Übernahme und ungesicherte Entwürfe', async ({ page, context }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const seeded = compactWorkoutState();
+  const exercise = seeded.programs[seeded.active].days[0].ex[0];
+  await openWithPersistedState(page, seeded);
+  await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
+  const second = await context.newPage();
+  second.on('pageerror', error => errors.push(error.message));
+  await second.setViewportSize({ width: 320, height: 720 });
+  await second.goto('/index.html');
+  await expect(second.locator('#windowNotice')).toBeVisible();
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('other');
+  await expect(second.locator('#windowNotice')).toContainText('in einem anderen Fenster');
+  expect(await second.locator('#app').evaluate(node => node.inert)).toBe(true);
+  await page.locator('#startw').click();
+  if (exercise.w) await page.locator(`#wt-${exercise.id}-0`).fill('20');
+  await page.locator(`#rep-${exercise.id}-0`).fill('10');
+  await page.locator(`#rep-${exercise.id}-0`).blur();
+  await expect.poll(() => page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem(KEY));
+    return saved.store[saved.active].logs[exerciseLogKey(PROG().days[0].ex[0])]?.sets[0].reps;
+  })).toBe('10');
+  const latest = await page.evaluate(() => localStorage.getItem(KEY));
+  expect(await second.evaluate(() => {
+    const ex = PROG().days[0].ex[0];
+    writeSets(ex, [{ reps: '999', weight: '999' }]);
+    document.dispatchEvent(new Event('visibilitychange'));
+    window.dispatchEvent(new PageTransitionEvent('pagehide'));
+    return persist();
+  })).toBe(false);
+  expect(await second.evaluate(() => localStorage.getItem(KEY))).toBe(latest);
+  // Übernahme gibt niemals die Freigabe eines laufenden anderen Fensters gewaltsam frei.
+  await second.locator('#windowReload').click();
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('other');
+  for (const theme of ['light', 'dark']) {
+    await second.evaluate(value => applyTheme(value, false), theme);
+    expect(await second.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await second.locator('#windowReload').focus();
+    await second.keyboard.press('Shift+Tab');
+    await expect(second.locator('#windowBackup')).toBeFocused();
+  }
+  await page.close();
+  await expect.poll(() => second.evaluate(async () => (await navigator.locks.query()).held.length)).toBe(0);
+  await second.locator('#windowReload').click();
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
+  await expect(second.locator('#windowNotice')).toBeHidden();
+  expect(await second.evaluate(() => S.workout.running)).toBe(false);
+  expect(await second.evaluate(() => getSets(PROG().days[0].ex[0])[0].reps)).toBe('10');
+  // Erhaltener Seitenkontext (BFCache) muss die Freigabe erneut erwerben und frisch laden.
+  await second.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide')));
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('suspended');
+  await second.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
+  // Eine alte, nicht kooperierende App-Version wird als Konflikt erkannt; kein stiller Merge.
+  const legacy = await context.newPage();
+  legacy.on('pageerror', error => errors.push(error.message));
+  await legacy.goto('/index.html');
+  await second.evaluate(() => { S.notes['unsaved-test'] = 'Ungesicherter Entwurf'; save(); clearTimeout(saveT); });
+  await legacy.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem(KEY));
+    state.store[state.active].notes['legacy-test'] = 'Fremder neuer Stand';
+    localStorage.setItem(KEY, JSON.stringify(state));
+  });
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('conflict');
+  await expect(second.locator('#windowNotice')).toContainText('ungespeicherten Änderungen');
+  expect(await second.evaluate(() => flushSave())).toBe(false);
+  expect(await second.evaluate(() => S.notes['unsaved-test'])).toBe('Ungesicherter Entwurf');
+  expect(await second.evaluate(() => JSON.parse(localStorage.getItem(KEY)).store[S.active].notes['legacy-test'])).toBe('Fremder neuer Stand');
+  const download = second.waitForEvent('download');
+  await second.locator('#windowBackup').click();
+  const rescued = await download;
+  expect(rescued.suggestedFilename()).toBe('satzkraft-fenster-backup.json');
+  const rescuedData = JSON.parse(fs.readFileSync(await rescued.path(), 'utf8'));
+  expect(rescuedData.store[seeded.active].notes['unsaved-test']).toBe('Ungesicherter Entwurf');
+  expect(rescuedData.windowDraft.format).toBe('satzkraft-fenster-entwurf');
+  await expect(second.locator('#windowFeedback')).toContainText('Prüfe die heruntergeladene Datei');
+  await second.locator('#windowReload').click();
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
+  expect(await second.evaluate(() => S.notes['legacy-test'])).toBe('Fremder neuer Stand');
+  expect(await second.evaluate(() => S.notes['unsaved-test'])).toBeUndefined();
+  await second.evaluate(() => { stopWorkout(true); hideModal(); openLib(); openProgramEditor(S.active); });
+  await second.locator('[data-ed-tab="details"]').click();
+  await second.locator('[data-ed-program="name"]').fill('Mein Entwurf');
+  await legacy.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem(KEY));
+    state.store[state.active].notes['legacy-test'] = 'Weiterer neuer Stand';
+    localStorage.setItem(KEY, JSON.stringify(state));
+  });
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('conflict');
+  expect(await second.evaluate(() => editorDraft.name)).toBe('Mein Entwurf');
+  const editorDownload = second.waitForEvent('download');
+  await second.locator('#windowBackup').click();
+  const editorRescue = JSON.parse(fs.readFileSync(await (await editorDownload).path(), 'utf8'));
+  expect(editorRescue.windowDraft.program.name).toBe('Mein Entwurf');
+  await second.locator('#windowReload').click();
+  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
+  expect(await second.evaluate(() => S.notes['legacy-test'])).toBe('Weiterer neuer Stand');
+  const unsupported = await context.newPage();
+  await unsupported.addInitScript(() => Object.defineProperty(navigator, 'locks', { value: undefined }));
+  await unsupported.goto('/index.html');
+  await expect.poll(() => unsupported.evaluate(() => localWriterState)).toBe('unsupported');
+  await expect(unsupported.locator('#windowNotice')).toContainText('aktuellen Browser');
+  expect(await unsupported.evaluate(() => flushSave())).toBe(false);
+  expect(errors).toEqual([]);
+});
+
+test('REG-29/P1: Übungszuordnung bleibt im Editor, v2-Export und Backup erhalten', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const state = compactWorkoutState(1);
+  const exercise = state.programs[state.active].days[0].ex[0];
+  Object.assign(exercise, { name: 'Langhantel-Kniebeuge', exerciseId: 'barbell_back_squat', w: true, bw: false, unit: 'reps', inc: 2.5, def: 60 });
+  delete exercise.perSide;
+  await openWithPersistedState(page, state);
+  await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
+  await expect.poll(() => page.evaluate(() => EXERCISE_LIBRARY !== null)).toBe(true);
+  const before = await page.evaluate(() => JSON.stringify(S.store));
+  await openFirstExerciseInEditor(page);
+  expect(await page.evaluate(() => editorDraft.days[0].exercises[0].exerciseId)).toBe('barbell_back_squat');
+  const release = page.locator('[data-ed-release-reference="0"]');
+  await release.click();
+  await page.getByRole('button', { name: 'Abbrechen', exact: true }).click();
+  expect(await page.evaluate(() => editorDraft.days[0].exercises[0].exerciseId)).toBe('barbell_back_squat');
+  for (const theme of ['dark', 'light']) {
+    await page.setViewportSize({ width: 320, height: 780 });
+    await page.evaluate(value => document.documentElement.dataset.theme = value, theme);
+    await expect(release).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const directory = path.resolve(__dirname, '../../replica/clone-screens');
+    fs.mkdirSync(directory, { recursive: true });
+    await page.screenshot({ path: path.join(directory, 'C1-editor-' + theme + '.png') });
+  }
+  await release.click();
+  await page.getByRole('button', { name: 'Zuordnung lösen', exact: true }).click();
+  expect(await page.evaluate(() => editorDraft.days[0].exercises[0].exerciseId)).toBeUndefined();
+  const name = page.locator('[data-ed-field="name"][data-ed-ex="0"]');
+  await name.fill('Langhantel-Knie');
+  await page.locator('[data-exercise-suggestion="Langhantel-Kniebeuge"]').click();
+  const acceptLibrary = page.getByRole('button', { name: 'Bibliothekswerte übernehmen', exact: true });
+  if (await acceptLibrary.isVisible()) await acceptLibrary.click();
+  expect(await page.evaluate(() => editorDraft.days[0].exercises[0].exerciseId)).toBe('barbell_back_squat');
+  await page.locator('#edsavecopy').click();
+  await expect(page.locator('#lib h1')).toHaveText('Deine Bibliothek');
+  expect(await page.evaluate(() => JSON.stringify(S.store).includes('exerciseId'))).toBe(false);
+  expect(await page.evaluate(value => JSON.stringify(S.store[S.active]) === JSON.stringify(JSON.parse(value)[S.active]), before)).toBe(true);
+  const copied = await page.evaluate(() => Object.values(S.programs).find(program => program.name.includes('(Kopie)')));
+  expect(copied.days[0].ex[0].exerciseId).toBe('barbell_back_squat');
+  expect(await page.evaluate(id => exportTranslate(S.programs[id]).days[0].exercises[0].exerciseId, copied.id)).toBe('barbell_back_squat');
+  expect(await page.evaluate(id => JSON.parse(backupJSON()).programs[id].days[0].ex[0].exerciseId, copied.id)).toBe('barbell_back_squat');
+  await page.reload();
+  await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
+  expect(await page.evaluate(id => S.programs[id].days[0].ex[0].exerciseId, copied.id)).toBe('barbell_back_squat');
+  await page.evaluate(id => { openLib(); const raw = exportTranslate(S.programs[id]); raw.days[0].exercises[0].exerciseId = 'unknown'; beginProgramImport(JSON.stringify(raw), 'json', 'Prüffall'); }, copied.id);
+  await page.locator('#importrepair').click();
+  expect(await page.evaluate(() => editorDraft.days[0].exercises[0].exerciseId)).toBe('unknown');
+  await page.locator('[data-ed-release-reference="0"]').click();
+  await page.getByRole('button', { name: 'Zuordnung lösen', exact: true }).click();
+  expect(await page.evaluate(() => parseProgram(JSON.stringify(editorDraft)).err)).toBeUndefined();
+  expect(errors).toEqual([]);
+});
+
+test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotokoll getrennt', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const state = weightedTimedWorkoutState();
+  const store = state.store[state.active];
+  store.logs = {
+    '1|A|carry': { sets: [{ reps: '60', weight: '20' }, { reps: '30', weight: '20' }] },
+    '2|A|carry': { sets: [{ reps: '45', weight: '22.5' }, { reps: '45', weight: '0' }] }
+  };
+  store.history = [{ week: 1, day: 'A', start: 1, end: 600001, dur: 600, complete: true }];
+  await openWithPersistedState(page, state);
+  await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
+  const before = await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }));
+  await page.locator('[data-expand-prev="carry"]').click();
+  await page.locator('[data-hist="carry"]').first().click();
+  await expect(page.locator('#modal .htbl')).toContainText('1:00 min · 20 kg · je Seite');
+  await expect(page.locator('#modal .htbl')).toContainText('0:45 min · 0 kg · je Seite');
+  await expect(page.locator('#modal')).not.toContainText('Geschätztes 1RM');
+  await expect(page.locator('#modal .htbl th')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Schließen', exact: true }).click();
+  await page.locator('#pdf').click();
+  await expect(page.locator('#report .rmetric').last()).toContainText('0 kg');
+  await expect(page.locator('#report .rexcard')).toHaveCount(1);
+  await expect(page.locator('#report .rexcard')).toContainText('Zeit & Gewicht');
+  await expect(page.locator('#report .rexcard')).toContainText('0:45 min · 22,5 kg · je Seite');
+  await expect(page.locator('#report .rexcard')).not.toContainText('Bestwert');
+  await expect(page.locator('#report .rsparkbars, #report .rexpill')).toHaveCount(0);
+  for (const theme of ['light', 'dark']) {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.evaluate(value => applyTheme(value, false), theme);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await expect(page.locator('#report .rexrecorded')).toContainText('0:45 min · 22,5 kg · je Seite');
+    await page.emulateMedia({ media: 'print' });
+    await expect(page.locator('#report .rexrecorded')).toBeVisible();
+    await expect(page.locator('#report .rexrecorded')).toHaveCSS('color', 'rgb(17, 17, 17)');
+    await page.emulateMedia({ media: 'screen' });
+  }
+  // Derselbe DOM-Inhalt ist Grundlage für den bestehenden Druck-/PDF-Weg.
+  await page.evaluate(() => { window.print = () => { window.__weightedPrintText = document.getElementById('report').innerText; }; });
+  await page.locator('#reprint').click();
+  expect(await page.evaluate(() => window.__weightedPrintText)).toContain('0:45 min · 22,5 kg · je Seite');
+  await page.locator('#repprotocol').click();
+  const row = page.locator('#protocol tbody tr').first();
+  await expect(row).toContainText('1:00 min · 20 kg · je Seite');
+  await expect(row.locator('.vol')).toHaveText('–');
+  await expect(page.locator('#protocol')).not.toContainText('60×20');
+  await page.evaluate(() => { window.print = () => { window.__weightedPrintText = document.getElementById('protocol').innerText; }; });
+  await page.locator('#protprint').click();
+  expect(await page.evaluate(() => window.__weightedPrintText)).toContain('1:00 min · 20 kg · je Seite');
+  for (const theme of ['light', 'dark']) {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.evaluate(value => applyTheme(value, false), theme);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await expect(page.locator('#protocol tbody tr').first()).toContainText('1:00 min · 20 kg · je Seite');
+  }
+  await page.locator('#protback').click();
+  await expect(page.locator('#report .rexcard')).toContainText('0:45 min · 22,5 kg · je Seite');
+  expect(await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }))).toBe(before);
+  expect(errors).toEqual([]);
 });
