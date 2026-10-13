@@ -1,7 +1,8 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
 - Stand: 13.10.2026
-- Zuletzt bestätigter veröffentlichter Stand: v0.33.4; Update v0.34.0 beauftragt, Live-Abnahme folgt
+- GitHub-Stand: v0.34.0 auf `main` hochgeladen
+- Zuletzt bestätigter Live-Stand: v0.33.4 laut bisheriger Dokumentation; Netlify-/Live-Abnahme v0.34.0 mangels Anmeldung/App-Link offen
 - Arbeitsstand: v0.34.0 (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.

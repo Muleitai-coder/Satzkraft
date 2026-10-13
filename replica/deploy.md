@@ -26,10 +26,12 @@ Die früher verwendeten KI-Provider-Schlüssel werden nicht mehr vom Code verwen
 ## Bereitstellung
 
 - Ziel: bestehendes Repository `https://github.com/Muleitai-coder/Satzkraft`, Branch `main`.
-- GitHub-Upload: ausstehend; wird nach dem tatsächlichen Ergebnis ergänzt.
+- GitHub-Upload: erfolgreich. App-Commit `61034513d58d17105cca2638d9eb80733c3ffe7e` auf `main`, einschließlich der vorherigen Commits `3a631a0` und `31397ba`. Lokaler Branch und `origin/main` sind synchron.
 - Hosting: bestehendes Netlify, Build `npm run build`, Publish-Verzeichnis ausschließlich `dist/`.
 - Netlify-Tab: Login erforderlich. Die bisherige App-Webadresse ist im zugänglichen Projektstand nicht vorhanden und wurde beim Nutzer angefragt.
-- Live-Version und HTTPS: noch nicht bestätigt. GitHub-Upload ist kein Nachweis eines abgeschlossenen Netlify-Deployments.
+- Live-Version und HTTPS: noch nicht bestätigt. GitHub meldet für den App-Commit weder Statusmeldungen noch Check-Runs; die Repository-Homepage ist leer. Ohne Netlify-Anmeldung beziehungsweise App-Link lässt sich daraus kein Live-Deployment ableiten. GitHub-Upload ist kein Nachweis eines abgeschlossenen Netlify-Deployments.
 - DNS: unverändert; keine neue Domain erforderlich.
 
 Nach dem Update auf dem Hauptgerät: Versionsstand, erster Trainingseintrag, Hintergrundwechsel, Offline-Neustart und Backup-Wiederherstellung anhand der Checkliste bestätigen. Es wurde kein automatischer Monitor eingerichtet.
+
+Für einen manuellen Upload ist außerdem `../satzkraft-v0.34.0.zip` neben dem Repository vorbereitet. Das ZIP enthält nur die 13 öffentlichen Build-Dateien, keine Tests, Dokumente, Functions, Zugangsdaten oder Trainingsbackups. Es wurde nicht ohne Hosting-Zugriff an einen anderen Dienst hochgeladen.
