@@ -1,5 +1,7 @@
 # Satzkraft
 
+Aktuelle App: [satzkraft.netlify.app](https://satzkraft.netlify.app/) · v0.34.0
+
 Satzkraft ist eine deutschsprachige Krafttrainings-PWA ohne Konto. Programme und Trainingsdaten bleiben lokal im Browser. Der frühere API-Coach ist entfernt; „ChatGPT & Co.“ erzeugt weiterhin lokal einen Text für eine vom Nutzer gewählte externe KI. Lokal läuft die App ohne Kompilierung über einen statischen Server aus `index.html`; für die Veröffentlichung wird eine feste Positivliste nach `dist/` kopiert.
 
 ## Projektstruktur

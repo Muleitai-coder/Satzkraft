@@ -2,7 +2,7 @@
 
 - Stand: 13.10.2026
 - GitHub-Stand: v0.34.0 auf `main` hochgeladen
-- Zuletzt bestätigter Live-Stand: v0.33.4 laut bisheriger Dokumentation; Netlify-/Live-Abnahme v0.34.0 mangels Anmeldung/App-Link offen
+- Bestätigter Live-Stand: v0.34.0 unter https://satzkraft.netlify.app/; Netlify-Produktionsdeploy von `main` und Live-Versionsdialog am 13.10.2026 geprüft
 - Arbeitsstand: v0.34.0 (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
@@ -102,7 +102,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 - Netlify führt `npm run build` aus und veröffentlicht ausschließlich `dist/`.
 - `scripts/prepare-netlify.mjs` verwendet eine Positivliste der öffentlichen Dateien. Repository-Dokumente, Testdaten, Git-Inhalte, lokale Backups und Quellhilfen dürfen nicht im öffentlichen Verzeichnis landen.
-- Es werden keine Netlify Functions bereitgestellt; die frühere Coach-Funktion und ihre Konfiguration sind entfernt. Vorhandene Provider-Schlüssel werden im Code nicht mehr verwendet; ihre Entfernung aus der Hosting-Verwaltung gehört zur nächsten ausdrücklich beauftragten Veröffentlichung.
+- Es werden keine Netlify Functions bereitgestellt; die frühere Coach-Funktion und ihre Konfiguration sind entfernt. Vorhandene Provider-Schlüssel werden im Code nicht mehr verwendet. Netlify bestätigt null aktive Produktionsfunktionen. Der nicht mehr verwendete `ANTHROPIC_API_KEY` ist noch in der Hosting-Verwaltung vorhanden; endgültige Löschung wartet auf die erforderliche Bestätigung direkt vor der Aktion.
 - Bei manueller Bereitstellung zuerst `npm run build` ausführen und ausschließlich `dist/` hochladen. Niemals den Repository-Ordner als Publish-Verzeichnis verwenden.
 
 ## 4. Verbindlicher Oberflächen- und Funktionsstand

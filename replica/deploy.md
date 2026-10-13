@@ -21,15 +21,19 @@ Datum: 13.10.2026. Freigabe: „einmal komplett updaten“ als Antwort auf die k
 
 Vollständige Backups verwenden Schema 5 und enthalten persönliche Übungen sowie historische Erfassung. Schema-4-Backups bleiben importierbar, Programme bleiben v2. Vor der Aktualisierung ein vollständiges Backup herunterladen und alte Satzkraft-Fenster schließen. Nach dem Update den neuen Stand im Versionsdialog kontrollieren; neue Schema-5-Backups benötigen die aktualisierte App.
 
-Die früher verwendeten KI-Provider-Schlüssel werden nicht mehr vom Code verwendet. Ihre Entfernung aus der Netlify-Verwaltung ist ohne angemeldeten Hosting-Zugriff noch nicht bestätigt. Es werden keine neuen Schlüssel, Konten, Zahlungsdienste, OAuth-Anbieter, Maildienste oder Datenbanken eingerichtet.
+Die früher verwendeten KI-Provider-Schlüssel werden nicht mehr vom Code verwendet. Die Hosting-Variable `ANTHROPIC_API_KEY` ist in Netlify weiterhin vorhanden; der Wert wurde nicht aufgedeckt. Ihre endgültige Löschung wurde beim Nutzer zur Bestätigung direkt vor der Aktion angefragt und noch nicht ausgeführt. Es werden keine neuen Schlüssel, Konten, Zahlungsdienste, OAuth-Anbieter, Maildienste oder Datenbanken eingerichtet.
 
 ## Bereitstellung
 
 - Ziel: bestehendes Repository `https://github.com/Muleitai-coder/Satzkraft`, Branch `main`.
 - GitHub-Upload: erfolgreich. App-Commit `61034513d58d17105cca2638d9eb80733c3ffe7e` auf `main`, einschließlich der vorherigen Commits `3a631a0` und `31397ba`. Lokaler Branch und `origin/main` sind synchron.
 - Hosting: bestehendes Netlify, Build `npm run build`, Publish-Verzeichnis ausschließlich `dist/`.
-- Netlify-Tab: Login erforderlich. Die bisherige App-Webadresse ist im zugänglichen Projektstand nicht vorhanden und wurde beim Nutzer angefragt.
-- Live-Version und HTTPS: noch nicht bestätigt. GitHub meldet für den App-Commit weder Statusmeldungen noch Check-Runs; die Repository-Homepage ist leer. Ohne Netlify-Anmeldung beziehungsweise App-Link lässt sich daraus kein Live-Deployment ableiten. GitHub-Upload ist kein Nachweis eines abgeschlossenen Netlify-Deployments.
+- Netlify-Zugriff: Nutzer hat den angemeldeten Projektzugang bereitgestellt. Bestehendes Projekt `satzkraft` mit GitHub-Verknüpfung zu `Muleitai-coder/Satzkraft`.
+- Live-Version und HTTPS: bestätigt am 13.10.2026. https://satzkraft.netlify.app/ zeigt im Seitentitel und Versionsdialog v0.34.0.
+- Netlify bestätigt den veröffentlichten Produktionsdeploy von `main` mit Commit `9d3ac99514ddfe75735c4083597f0d91a81c79c0`, veröffentlicht am 13.10.2026 um 22:07 Uhr (Europe/Berlin). [Deploynachweis](https://app.netlify.com/projects/satzkraft/deploys/6ace8f8b1e611a8e9f6b99e9).
+- Functions: Netlify zeigt „0 functions actively running in production“. Der frühere Coach ist nicht mehr bereitgestellt.
+- Live-Prüfung: Programme → persönliche Übungsbibliothek → Suche nach Kurzhantel-Bankdrücken → Detail mit Technik-/Verlaufsansicht → Versionsdialog. Ohne Eintragen persönlicher Testtrainingsdaten. [Screenshot des Live-Versionsdialogs](clone-screens/live-v0.34.0.jpg).
+- Ein manueller Upload oder erneuter Deploy war nicht nötig: Der vorhandene GitHub-Workflow hatte das Update bereits automatisch veröffentlicht. Keine Hosting-Verbindung, Sichtbarkeit oder Berechtigung geändert.
 - DNS: unverändert; keine neue Domain erforderlich.
 
 Nach dem Update auf dem Hauptgerät: Versionsstand, erster Trainingseintrag, Hintergrundwechsel, Offline-Neustart und Backup-Wiederherstellung anhand der Checkliste bestätigen. Es wurde kein automatischer Monitor eingerichtet.

@@ -18,4 +18,4 @@ Nächster erforderlicher Schritt: Rückmeldung zur echten Smartphone-/PWA-Abnahm
 
 ## Updateergebnis
 
-v0.34.0 ist auf GitHub/main hochgeladen. Version, Offline-Cache, Pakete und Versionshistorie sind synchron; fünf gezielte Versions-/Cacheprüfungen und der Build bestehen. Ein ZIP mit genau den 13 öffentlichen Dateien liegt neben dem Repository bereit. Die echte Netlify-Veröffentlichung und Live-Version bleiben mangels Hosting-Anmeldung/App-Link unbestätigt. [Bereitstellungsbericht](../replica/deploy.md).
+v0.34.0 ist auf GitHub/main hochgeladen. Version, Offline-Cache, Pakete und Versionshistorie sind synchron; fünf gezielte Versions-/Cacheprüfungen und der Build bestehen. Ein ZIP mit genau den 13 öffentlichen Dateien liegt neben dem Repository bereit. Die Netlify-Veröffentlichung ist bestätigt: https://satzkraft.netlify.app/ zeigt v0.34.0. Übungssuche, Detailansicht und Versionshistorie wurden auf der Live-Seite geprüft; Netlify meldet null aktive Functions. Die endgültige Löschung des unbenutzten Hosting-Schlüssels wartet auf die Bestätigung direkt vor der Aktion. [Bereitstellungsbericht](../replica/deploy.md).
