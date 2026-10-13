@@ -975,7 +975,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.33.4";
+var APP_VERSION="0.34.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=5;
 var THEME_KEY="training-theme-v1";
@@ -2068,6 +2068,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';openModalSurface(m);
 }
 var VERSION_HISTORY=[
+ {version:"v0.34.0",date:"13.10.2026",changes:["Persönliche Übungen erstellen, im Programmeditor auswählen, bearbeiten und archivieren; integrierte Übungen als eigene Variante speichern.","Neue Übungsdetails zeigen Technik, letzte Leistung und Verlauf aus aktiven und archivierten Trainingsblöcken.","Neue Satzprotokolle bewahren den damaligen Übungsnamen und die Erfassungsregeln. Vorhandene Werte bleiben ohne nachträglich geratene Angaben erhalten.","Vollständige Backups verwenden Schema 5 und sichern persönliche Definitionen sowie historische Erfassung; alte Schema-4-Backups bleiben importierbar.","Mehrere aktualisierte App-Fenster überschreiben Trainingswerte nicht mehr gegenseitig. Ungespeicherte Entwürfe lassen sich sichern.","Zeitübungen mit Gewicht zeigen Zeit und Last; Sekunden werden nicht mehr als Wiederholungen für 1RM oder Volumen gerechnet.","Zehn geprüfte Bibliotheksübungen behalten ihre Zuordnung in Editor, Import, Export und Backup.","Der eingebaute API-Coach ist entfernt. ChatGPT & Co. bleibt als lokal erzeugter Text mit anschließendem JSON-Import verfügbar."]},
  {version:"v0.33.4",date:"01.10.2026",changes:["Zurück-Pfeil und Schließen-X bleiben im Programmeditor und in Unteransichten auch beim Scrollen sichtbar und unterhalb der iPhone-Safe-Area.","Gewichtete Zeitübungen lassen sich im Editor zuverlässig speichern; fehlende Zeiteinheiten kompatibler Importe werden ergänzt.","Das bloße Öffnen einer Übung löst keine falsche Warnung über ungespeicherte Änderungen mehr aus."]},
  {version:"v0.33.3",date:"11.08.2026",changes:["Manuelle Zeitwerte werden wie bei einem Timer von rechts nach links eingegeben: Der Cursor bleibt am Ende, neue Ziffern schieben nach links und die Rücktaste nimmt die letzte Stelle zurück."]},
  {version:"v0.33.2",date:"11.08.2026",changes:["Zeitwerte lassen sich wieder vollständig ohne Stoppuhr eintippen. Erst beim Bestätigen oder Verlassen des Feldes wird der Wert formatiert, gespeichert und die Satzpause gestartet."]},

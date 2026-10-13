@@ -36,3 +36,7 @@ Der Standardport gehörte zu einem anderen Projekt; dessen Seite ist kein Prüfe
 - Kein vollständiger Node-Lauf, keine Browsermatrix und keine allgemeine visuelle Regression. Diese Läufe benötigen nach der Teststrategie einen ausdrücklichen Auftrag.
 - Keine Unterstützung/Gegengewicht, neue Progressionskennzahl, Cloud oder KI-API. `js/progression.js` bleibt unverändert.
 - App-Version und Service-Worker-Cache bleiben v0.33.4. Vor einem ausdrücklich beauftragten Release synchron erhöhen und die reale Geräteabnahme abschließen. Ein Git-Upload ist keine neu bestätigte Live-Abnahme.
+
+## Nachfolgender Updateauftrag
+
+„Einmal komplett updaten“ vom 13.10.2026 beauftragt anschließend Version v0.34.0 mit synchronem Offline-Cache und Upload des fertigen Stands nach GitHub/main. Die obigen Prüfergebnisse bleiben datierte Ergebnisse der Umsetzung; physische Geräteabnahme und vollständige Suite werden dadurch nicht nachträglich als bestanden ausgegeben. [Updatebericht](../../replica/deploy.md).

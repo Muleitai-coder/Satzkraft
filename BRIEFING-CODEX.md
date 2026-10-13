@@ -1,8 +1,8 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
 - Stand: 13.10.2026
-- Veröffentlichter Stand: v0.33.4
-- Arbeitsstand: v0.33.4 + Unreleased (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
+- Zuletzt bestätigter veröffentlichter Stand: v0.33.4; Update v0.34.0 beauftragt, Live-Abnahme folgt
+- Arbeitsstand: v0.34.0 (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -83,19 +83,21 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 - Vollständige Backups verwenden **Schema 5**; Schema 4 bleibt importierbar. Ein Schema-4-Dokument mit neuen persönlichen/historischen Pflichtinhalten wird abgelehnt. Alte Backup-Reader lehnen Schema 5 ab. Ältere bereits laufende JavaScript-Fenster werden dadurch nicht kooperativ: vor einem Rollout schließen/aktualisieren.
 - Programmformat bleibt v2, ausschließlich für die bisherigen fünf kompatiblen Erfassungsarten. Unterstützung/Gegengewicht bleibt zurückgestellt. Persönliche v2-Dateien sind selbstständig ausführbar; ältere Reader können Zusatzdefinitionen verlieren oder unbekannte IDs ablehnen. Sie sind kein vollständiges Bibliotheksbackup.
 - Übungen sind über Programme → „Übungen & persönliche Bibliothek“ erreichbar. Namenslinks im Training öffnen registrierte Übungsdetails mit Technik, letzter Leistung und Verlauf über aktive/archivierte Programme. Freie Übungen behalten ihren bisherigen Verlaufsdialog.
-- [Prüfbericht](docs/tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md): 71 unterschiedliche gezielte Node-Fälle und ein WebKit-Ablauf; [physische Geräteabnahme](docs/tests/SMARTPHONE-ABNAHME.md) weiterhin offen. App-Version/Cache bleiben bis zu einem eigenen Releaseauftrag unverändert.
+- [Prüfbericht](docs/tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md): 71 unterschiedliche gezielte Node-Fälle und ein WebKit-Ablauf; [physische Geräteabnahme](docs/tests/SMARTPHONE-ABNAHME.md) weiterhin offen. App-Version/Cache werden mit dem anschließenden Auftrag „einmal komplett updaten“ auf v0.34.0 synchron erhöht.
 
 ### Lokale Daten bei mehreren Fenstern
 
 - Seit dem beauftragten Ausbau vom 11.10.2026 darf je lokalem Speicherbereich nur ein aktualisiertes Satzkraft-Fenster schreiben. Eine exklusive Web Lock bleibt während der Lebensdauer dieses Fensters erhalten; ein Hintergrundwechsel gibt sie nicht frei.
 - Zusätzliche Fenster zeigen eine geschützte Warteansicht. Sie können ihren geöffneten Stand sichern. Nach dem Schließen des schreibenden Fensters übernimmt „Aktuellen Stand laden“ mit frisch geladenen Daten; ein laufendes Training wird dabei weiterhin pausiert.
-- Fremde Speicheränderungen stoppen weitere Hauptdaten-Schreibvorgänge. Ungespeicherte Werte und Editorentwürfe bleiben bis zur Sicherung oder bewussten Verwerfung erhalten. Die Sicherungsdatei enthält ein normales Schema-4-Backup und bei Bedarf das optionale Feld `windowDraft` für die manuelle Wiederaufnahme von Editor-/Formulareingaben; es wird nicht automatisch zusammengeführt.
+- Fremde Speicheränderungen stoppen weitere Hauptdaten-Schreibvorgänge. Ungespeicherte Werte und Editorentwürfe bleiben bis zur Sicherung oder bewussten Verwerfung erhalten. Die Sicherungsdatei enthält ein vollständiges Schema-5-Backup und bei Bedarf das optionale Feld `windowDraft` für die manuelle Wiederaufnahme von Editor-/Formulareingaben; es wird nicht automatisch zusammengeführt.
 - Backup-Wiederherstellung, Komplettlöschung, verzögerte Speicherung und Lebenszyklusereignisse prüfen dieselbe Schreibberechtigung. Speicherfehler dürfen keinen erfolgreichen Abschluss oder verworfenen Editorentwurf vortäuschen.
 - Ohne verfügbare Web Locks bleibt die App gegen Schreiben geschützt und bietet Sicherung sowie einen verständlichen Browserhinweis. Der reguläre Einstieg erfolgt über HTTPS oder einen lokalen Server auf localhost; kein unsicherer Ersatz durch einen Speicher-Heartbeat.
 - Alte App-Versionen kennen die Freigabe nicht. Vor der späteren Veröffentlichung alle alten Satzkraft-Fenster schließen beziehungsweise neu laden; der zusätzliche Standvergleich erkennt fremde Änderungen, garantiert aber keine atomare Zusammenarbeit mit altem JavaScript.
-- Gezielte Prüfungen ersetzen keine Geräteabnahme: echtes iPhone/PWA, Offlinebetrieb und Betriebssystem-Beendigung bleiben vor Veröffentlichung praktisch zu prüfen. Kein Release, Versionswechsel oder Upload ist Teil dieses lokalen Ausbaus.
+- Gezielte Prüfungen ersetzen keine Geräteabnahme: echtes iPhone/PWA, Offlinebetrieb und Betriebssystem-Beendigung bleiben vor Veröffentlichung praktisch zu prüfen. Der ursprüngliche lokale Ausbau enthielt keinen Release. Der nachfolgende Updateauftrag vom 13.10.2026 beauftragt die Aktualisierung und den Upload nach GitHub/main; reale Geräteabnahme bleibt offen.
 
 ### Veröffentlichung
+
+- **Updateauftrag 13.10.2026:** „Einmal komplett updaten“ nach der konkreten GitHub/main-Freigabefrage beauftragt den Upload des fertigen Stands nach `Muleitai-coder/Satzkraft`, Branch `main`, und die vollständige Aktualisierung des bisherigen privaten App-Links. Versionsstand v0.34.0; Schema 5 und v2-Programme wie oben. Keine GitHub-Releaseobjekte oder Tags erforderlich. Die physische Geräteabnahme wird nicht als bestanden ausgegeben.
 
 - Netlify führt `npm run build` aus und veröffentlicht ausschließlich `dist/`.
 - `scripts/prepare-netlify.mjs` verwendet eine Positivliste der öffentlichen Dateien. Repository-Dokumente, Testdaten, Git-Inhalte, lokale Backups und Quellhilfen dürfen nicht im öffentlichen Verzeichnis landen.

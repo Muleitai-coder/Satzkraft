@@ -6,6 +6,8 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.34.0] – 2026-10-13
+
 ### Hinzugefügt
 
 - Persönliche Übungsbibliothek mit Erstellen, Auswahl im Programmeditor, eigener Variante integrierter Übungen, Bearbeiten und Archivieren. Vollständige Backups erhalten Definitionen und Verlauf; persönliche Programmdateien enthalten die benötigten Definitionen.
