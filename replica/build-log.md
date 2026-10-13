@@ -11,3 +11,7 @@ Die Replica-Schritte werden auf das eigene bestehende Produkt angewendet. Kein n
 [Prüfbericht](../docs/tests/TESTBERICHT-UEBUNGSREFERENZEN.md): 88 unterschiedliche gezielte Node-Fälle und ein mobiler WebKit-Fall bestanden. [Helle](clone-screens/C1-editor-light.png) und [dunkle](clone-screens/C1-editor-dark.png) Editoraufnahme bei 320 px visuell geprüft. Keine neue Gesamtgeräteabnahme, kein Commit, Push oder Release.
 
 Die technische Übungsidentität ist teilweise umgesetzt; das erweiterte Erfassungsmodell bleibt offen. Als Nächstes C2 für historische Erfassung spezifizieren. C3 benötigt persönliche Definitionen und eine eigene Kompatibilitätsentscheidung.
+
+| 13.10.2026 | S02/S12/S13/S16 Historie und Auswertung | C2 umgesetzt | Unveränderlicher Kontext neuer Logs; Altbestand ohne Schätzung; getrennte Identitäten/Konventionen; vollständige historische Sätze |
+| 13.10.2026 | S18 Bibliothek und Details; S08 Auswahl | C3 kompatibler Umfang umgesetzt | Persönliche Definitionen; Erstellen/Bearbeiten/Archivieren; Varianten; letzte Leistung und blockübergreifender Verlauf; Schema-5-Backup mit v4-Import; Unterstützung offen |
+| 13.10.2026 | Mobile Abnahme | automatisiert bestanden; Gerät offen | 71 gezielte Node-Fälle; REG-30 mobile-webkit bei 390/320/1440 px; Hell/Dunkel; Reload und Backup-Restore; Offline-Bedienung; echte Offline-Neustart-/OS-Abnahme offen |

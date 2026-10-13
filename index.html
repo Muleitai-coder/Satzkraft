@@ -28,6 +28,7 @@
  --font:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
  --bodybg:radial-gradient(130% 90% at 50% -8%,#111418,#08090b 62%) fixed #0a0b0d;
+ --exercise-details-meta:.75em;--exercise-details-space:.5em;
  --bg:#0a0b0d;--panel:#121418;--panel2:#171a1f;--up:#1e2228;
  --hair:rgba(255,255,255,.09);--hair2:rgba(255,255,255,.16);
  --ink:#f3f3f1;--ink2:#c3c4c1;--muted:#87898e;--faint:#87898e;
@@ -321,6 +322,8 @@ body.rest-lock{--rest-mode:1}
 #wucd .wurow{display:flex;gap:10px;margin-top:8px}
 #wucdclose{position:absolute;top:max(16px,calc(env(safe-area-inset-top) + 12px));right:max(16px,calc(env(safe-area-inset-right) + 16px))}
 @media(max-width:480px){#wucdclose{top:max(28px,calc(env(safe-area-inset-top) + 12px))}}
+.exercisedetail .htbl td{overflow-wrap:anywhere}
+.exercisedetail .hwl{display:block;font-family:var(--mono);font-size:var(--exercise-details-meta);color:var(--muted);margin-top:var(--exercise-details-space)}
 .htbl{width:100%;border-collapse:collapse;margin-bottom:4px}
 .htbl th,.htbl td{border-bottom:1px solid var(--hair);padding:7px 6px;font-size:12px;text-align:left;color:var(--ink2);vertical-align:top}
 .htbl th{color:var(--muted);font-family:var(--mono);font-weight:600;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase}
@@ -974,7 +977,7 @@ var DEFAULT_PROGRAM={
 
 var APP_VERSION="0.33.4";
 var KEY="cali-plan-v3";
-var DATA_SCHEMA_VERSION=4;
+var DATA_SCHEMA_VERSION=5;
 var THEME_KEY="training-theme-v1";
 var BACKUP_META_KEY="satzkraft-backup-meta-v1";
 var PERSIST_REQUEST_KEY="satzkraft-storage-persist-v1";
@@ -1026,11 +1029,11 @@ var loadIssueRaw="",loadIssueText="",storageErrorShown=false;
 var S=load();
 function newStore(prog){return{tg:{},barw:{},notes:{},logs:{},history:[],workout:null,pendingReplacements:[],removedEx:{},week:1,day:prog.days[0].key,blockCelebrated:false};}
 function normalizeStoredRep(ex,value){if(value===""||value==null)return"";var number=Math.round(Number(value)),max=isTime(ex)?SET_TIME_MAX_SECONDS:SET_REP_MAX;return isFinite(number)&&number>=0?String(Math.min(number,max)):"";}
-function sanitizeStoredSetValues(program,logs){if(!program||!logs||typeof logs!=="object")return;var exercises={};(program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){exercises[day.key+"|"+ex.id]=ex;});});Object.keys(logs).forEach(function(key){var parts=key.split("|"),cell=logs[key],ex=parts.length===3?exercises[parts[1]+"|"+parts[2]]:null;if(!ex||!cell||!Array.isArray(cell.sets))return;cell.sets.forEach(function(set){if(!set||typeof set!=="object")return;set.reps=normalizeStoredRep(ex,set.reps);set.weight=sanDec(set.weight);});});}
+function sanitizeStoredSetValues(program,logs){if(!program||!logs||typeof logs!=="object")return;var exercises={};(program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){exercises[day.key+"|"+ex.id]=ex;});});Object.keys(logs).forEach(function(key){var parts=key.split("|"),cell=logs[key],ex=parts.length===3?exercises[parts[1]+"|"+parts[2]]:null;if(!ex||!cell||!Array.isArray(cell.sets))return;cell.sets.forEach(function(set){if(!set||typeof set!=="object")return;set.reps=normalizeStoredRep(typeof historicalExercise==="function"?historicalExercise(ex,cell):ex,set.reps);set.weight=sanDec(set.weight);});});}
 function initState(){
  var def=clone(DEFAULT_PROGRAM);
  var st=newStore(def);
- var s={schemaVersion:DATA_SCHEMA_VERSION,programs:{"default":def},active:"default",store:{"default":st}};
+ var s={schemaVersion:DATA_SCHEMA_VERSION,personalExercises:{},programs:{"default":def},active:"default",store:{"default":st}};
  alias(s);return s;
 }
 function alias(s){var st=s.store[s.active],program=s.programs[s.active];if(!st.barw||typeof st.barw!=="object"||Array.isArray(st.barw))st.barw={};if(!st.notes||typeof st.notes!=="object"||Array.isArray(st.notes))st.notes={};sanitizeStoredSetValues(program,st.logs);st.pendingReplacements=sanitizePendingReplacements(st.pendingReplacements,s.active,program);st.removedEx=sanitizeRemovedExercises(st.removedEx,program);s.tg=st.tg;s.barw=st.barw;s.notes=st.notes;s.logs=st.logs;s.history=st.history;s.workout=st.workout;s.pendingReplacements=st.pendingReplacements;s.removedEx=st.removedEx;s.week=st.week;s.day=st.day;s.blockCelebrated=st.blockCelebrated===true;}
@@ -1061,7 +1064,7 @@ function migrateProgram(p){
 }
 function normalizeSwapName(name){return typeof name==="string"?name.replace(/\s+/g," ").trim().slice(0,80):"";}
 var EXERCISE_LIBRARY=null,EXERCISE_LIBRARY_PROMISE=null,EXERCISE_ALIAS_INDEX=null,EXERCISE_ID_INDEX=null;
-function findExerciseLibraryEntryById(id){return typeof id==="string"&&EXERCISE_ID_INDEX?EXERCISE_ID_INDEX[id]||null:null;}
+function findExerciseLibraryEntryById(id){var builtin=typeof id==="string"&&EXERCISE_ID_INDEX?EXERCISE_ID_INDEX[id]:null,def=typeof S!=="undefined"&&S&&S.personalExercises&&S.personalExercises[id];return builtin||(def?personalExerciseEntry(def):null);}
 function normalizeExerciseLibraryName(value){
  return String(value==null?"":value).toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"").trim();
 }
@@ -1078,17 +1081,17 @@ function loadExerciseLibrary(){
  EXERCISE_LIBRARY_PROMISE=fetch("uebungen.json").then(function(response){if(!response.ok)throw new Error("exercise library");return response.json();}).then(setExerciseLibrary).catch(function(){EXERCISE_LIBRARY_PROMISE=null;return[];});
  return EXERCISE_LIBRARY_PROMISE;
 }
-function findExerciseLibraryEntry(name){var key=normalizeExerciseLibraryName(name);return key&&typeof EXERCISE_ALIAS_INDEX!=="undefined"&&EXERCISE_ALIAS_INDEX?EXERCISE_ALIAS_INDEX[key]||null:null;}
+function findExerciseLibraryEntry(name){var key=normalizeExerciseLibraryName(name),builtin=key&&typeof EXERCISE_ALIAS_INDEX!=="undefined"&&EXERCISE_ALIAS_INDEX?EXERCISE_ALIAS_INDEX[key]:null;if(builtin)return builtin;return personalExerciseEntries().filter(function(entry){return normalizeExerciseLibraryName(entry.de)===key;})[0]||null;}
 function canonicalExerciseName(name){var entry=findExerciseLibraryEntry(name);return entry?entry.de:String(name==null?"":name).trim();}
-function exerciseUsesDumbbells(name){var entry=findExerciseLibraryEntry(name);return !!(entry&&/kurzhantel/i.test(String(entry.equipment||"")));}
+function exerciseUsesDumbbells(name){var entry=findExerciseLibraryEntry(name);return !!(entry&&(entry.weightConvention==="per_dumbbell"||/kurzhantel/i.test(String(entry.equipment||""))));}
 function exerciseLibraryNamesMatch(left,right){
  var leftEntry=findExerciseLibraryEntry(left),rightEntry=findExerciseLibraryEntry(right);
  if(leftEntry||rightEntry)return !!(leftEntry&&rightEntry&&leftEntry.de===rightEntry.de);
  return String(left==null?"":left).trim()===String(right==null?"":right).trim();
 }
 function exerciseLibraryMatches(query,limit){
- var needle=normalizeExerciseLibraryName(query);if(needle.length<2||typeof EXERCISE_LIBRARY==="undefined"||!Array.isArray(EXERCISE_LIBRARY))return[];limit=Math.max(1,Number(limit)||6);
- return EXERCISE_LIBRARY.map(function(entry,index){var score=9;exerciseLibraryEntryNames(entry).forEach(function(name){var normalized=normalizeExerciseLibraryName(name),position=normalized.indexOf(needle);if(position===0)score=Math.min(score,0);else if(position>0)score=Math.min(score,1);});return{entry:entry,score:score,index:index};}).filter(function(item){return item.score<9;}).sort(function(a,b){return a.score-b.score||a.index-b.index;}).slice(0,limit).map(function(item){return item.entry;});
+ var needle=normalizeExerciseLibraryName(query);if(needle.length<2)return[];limit=Math.max(1,Number(limit)||6);
+ return personalExerciseEntries().concat(typeof EXERCISE_LIBRARY!=="undefined"&&Array.isArray(EXERCISE_LIBRARY)?EXERCISE_LIBRARY:[]).map(function(entry,index){var score=9;exerciseLibraryEntryNames(entry).forEach(function(name){var normalized=normalizeExerciseLibraryName(name),position=normalized.indexOf(needle);if(position===0)score=Math.min(score,0);else if(position>0)score=Math.min(score,1);});return{entry:entry,score:score,index:index};}).filter(function(item){return item.score<9;}).sort(function(a,b){return a.score-b.score||a.index-b.index;}).slice(0,limit).map(function(item){return item.entry;});
 }
 function exerciseEquipmentCompatible(reference,candidate){return normalizeExerciseLibraryName(reference&&reference.equipment)===normalizeExerciseLibraryName(candidate&&candidate.equipment);}
 function exerciseLibraryTypeSignature(entry){return entry&&entry.weightedTime===true?"weighted_seconds":entry&&entry.typ==="gewicht"?"weight":entry&&entry.typ==="kgz"?"added_weight":entry&&entry.typ==="zeit"?"seconds":"bodyweight";}
@@ -1113,6 +1116,9 @@ function sanitizeRemovedExercises(map,program){
 }
 function validProgramTimestamp(value){return typeof value==="number"&&isFinite(value)&&value>=0&&value<=Number.MAX_SAFE_INTEGER;}
 function normalize(v){
+ if(v.schemaVersion!=null&&(!Number.isInteger(v.schemaVersion)||v.schemaVersion>DATA_SCHEMA_VERSION||v.schemaVersion<1))throw new Error("Unbekannte Datenversion");
+ if(v.personalExercises===undefined)v.personalExercises={};
+ if(personalExerciseCatalogError(v.personalExercises))throw new Error("Persönliche Bibliothek beschädigt");
  if(!v.programs)v.programs={};
  var programIds=Object.keys(v.programs);
  if(!programIds.length){v.programs["default"]=clone(DEFAULT_PROGRAM);programIds=["default"];}
@@ -1157,13 +1163,14 @@ function normalize(v){
   st.workout.pendingReplacements=sanitizePendingReplacements(st.workout.pendingReplacements,v.active,p);
  }
  st.pendingReplacements=sanitizePendingReplacements(st.pendingReplacements,v.active,p);
+ Object.keys(v.store).forEach(function(pid){var logs=v.store[pid]&&v.store[pid].logs||{};Object.keys(logs).forEach(function(key){var cell=logs[key];if(cell&&(cell.performedExercise!==undefined&&performedExerciseError(cell.performedExercise)||cell.pendingPerformedExercise!==undefined&&performedExerciseError(cell.pendingPerformedExercise)))throw new Error("Historische Erfassung beschädigt");});});
  v.schemaVersion=DATA_SCHEMA_VERSION;alias(v);return v;
 }
 function syncStore(){S.store[S.active]={tg:S.tg,barw:S.barw,notes:S.notes,logs:S.logs,history:S.history,workout:S.workout,pendingReplacements:S.pendingReplacements,removedEx:S.removedEx,week:S.week,day:S.day,blockCelebrated:S.blockCelebrated===true};}
 function persist(){
  if(localWriteBlocked())return false;
  try{
-  var payload=JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,programs:S.programs,active:S.active,store:S.store});
+  var payload=JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,personalExercises:S.personalExercises||{},programs:S.programs,active:S.active,store:S.store});
   if(localWriteBlocked())return false;
   localStorage.setItem(KEY,payload);
   localStoredSnapshot=payload;localWriterDirty=false;localWriterDraftSecured=false;
@@ -1235,8 +1242,20 @@ function exerciseLogKey(ex,week,day){return(week||S.week)+"|"+(day||S.day)+"|"+e
 function currentExerciseCell(ex){return S.logs[exerciseLogKey(ex)]||null;}
 function currentExerciseSwap(ex){var cell=currentExerciseCell(ex),name=cell&&normalizeSwapName(cell.swap);return name||"";}
 function currentExerciseSwapWeight(ex){var cell=currentExerciseCell(ex),value=cell&&currentExerciseSwap(ex)&&normalizeSwapWeight(cell.swapWeight);return value===""||value==null?null:Number(value);}
-function getSets(ex){var n=setsForExercise(ex,S.week),cur=currentExerciseCell(ex)||{sets:[]},out=[];for(var i=0;i<n;i++)out.push(cur.sets[i]||{reps:"",weight:""});return out;}
-function writeSets(ex,sets){if(typeof localWriteBlocked==="function"&&localWriteBlocked())return false;var key=exerciseLogKey(ex),current=S.logs[key]||{},cell={sets:sets},swap=normalizeSwapName(current.swap),swapWeight=normalizeSwapWeight(current.swapWeight),swapDecision=normalizeSwapDecision(current.swapDecision);if(swap){cell.swap=swap;if(swapWeight)cell.swapWeight=swapWeight;if(swapDecision)cell.swapDecision=swapDecision;}S.logs[key]=cell;}
+function getSets(ex){var n=setsForExercise(ex,S.week),cur=currentExerciseCell(ex)||{sets:[]},out=[];for(var i=0;i<n;i++)out.push(cur.sets[i]?{reps:cur.sets[i].reps,weight:cur.sets[i].weight}:{reps:"",weight:""});return out;}
+function snapshotPerformedExercise(ex,cell){
+ var swap=normalizeSwapName(cell&&cell.swap),entry=swap?findExerciseLibraryEntry(swap):null;
+ var name=swap||ex.name,id=swap?(entry&&entry.id):ex.exerciseId,convention=swap?(entry&&entry.weightConvention):ex.weightConvention;
+ if(!convention&&id&&typeof EXERCISE_WEIGHT_CONVENTIONS!=="undefined")convention=EXERCISE_WEIGHT_CONVENTIONS[id];
+ var snapshot={version:1,name:String(name||"Übung").slice(0,80),unit:ex.unit==="seconds"?"seconds":"reps",weighted:!!ex.w,bodyweight:!!ex.bw,perSide:!!ex.perSide,weightConvention:convention||"unspecified"};
+ if(id)snapshot.exerciseId=id;
+ return snapshot;
+}
+function setsHaveEnteredValues(sets){return Array.isArray(sets)&&sets.some(function(set){return set&&(set.reps!==""&&set.reps!=null||set.weight!==""&&set.weight!=null);});}
+function writeSets(ex,sets){if(typeof localWriteBlocked==="function"&&localWriteBlocked())return false;var key=exerciseLogKey(ex),current=S.logs[key]||{},cell={sets:sets},swap=normalizeSwapName(current.swap),swapWeight=normalizeSwapWeight(current.swapWeight),swapDecision=normalizeSwapDecision(current.swapDecision);if(swap){cell.swap=swap;if(swapWeight)cell.swapWeight=swapWeight;if(swapDecision)cell.swapDecision=swapDecision;}if(current.performedExercise)cell.performedExercise=current.performedExercise;
+ else{var recording=current.pendingPerformedExercise||(!setsHaveEnteredValues(current.sets)?snapshotPerformedExercise(ex,current):null);
+ if(recording&&setsHaveEnteredValues(sets)){if(sets.some(function(set){return setComplete(ex,set);}))cell.performedExercise=recording;else cell.pendingPerformedExercise=recording;}}
+ S.logs[key]=cell;}
 function exerciseHasEnteredData(ex){return getSets(ex).some(function(set){return set&&(set.reps!==""&&set.reps!=null||set.weight!==""&&set.weight!=null);});}
 function removeWorkoutPendingReplacement(ex){if(!S.workout||!ex||!Array.isArray(S.workout.pendingReplacements))return;S.workout.pendingReplacements=S.workout.pendingReplacements.filter(function(item){return item.day!==S.day||item.exId!==ex.id;});}
 function swapExerciseForToday(ex,name){
@@ -1299,7 +1318,7 @@ function replacementStartWeight(store,dayKey,exId,name,maxWeek){
  return null;
 }
 function applyPermanentReplacementMetadata(ex,name){
- var entry=findExerciseLibraryEntry(name);ex.name=entry?entry.de:normalizeSwapName(name);delete ex.exerciseId;if(entry&&entry.id)ex.exerciseId=entry.id;delete ex.en;delete ex.sub;delete ex.q;delete ex.proxy;delete ex.gname;delete ex.perSide;
+ var entry=findExerciseLibraryEntry(name);ex.name=entry?entry.de:normalizeSwapName(name);delete ex.exerciseDefinition;delete ex.weightConvention;if(entry&&entry.definition)ex.exerciseDefinition=cloneJSON(entry.definition);if(entry&&entry.weightConvention)ex.weightConvention=entry.weightConvention;delete ex.exerciseId;if(entry&&entry.id)ex.exerciseId=entry.id;delete ex.en;delete ex.sub;delete ex.q;delete ex.proxy;delete ex.gname;delete ex.perSide;
  if(!entry)return ex;ex.en=entry.en||"";ex.sub=entry.technik||"";ex.q=entry.video||"";ex.proxy=entry.ersatz||null;if(entry.einseitig===true)ex.perSide=true;delete ex.tmode;var type=exerciseLibraryTypeSignature(entry);
  if(type==="weight"||type==="added_weight"||type==="weighted_seconds"){ex.w=true;ex.bw=type==="added_weight";ex.unit=type==="weighted_seconds"?"seconds":"reps";ex.pmode=type==="weighted_seconds"?"seconds":type;if(!(Number(ex.inc)>0))ex.inc=2.5;if(type==="weighted_seconds")ex.tmode="target";}
  else{ex.w=false;ex.bw=false;delete ex.inc;delete ex.def;if(type==="seconds"){ex.unit="seconds";ex.pmode="seconds";ex.tmode="target";}else{ex.unit="reps";ex.pmode="reps";}}
@@ -1625,10 +1644,10 @@ function exHistory(ex){
  for(var w=1,max=PROG().weeks.length;w<=max;w++){
   if(!exerciseValidForWeek(ex,w))continue;
   var c=S.logs[w+"|"+S.day+"|"+ex.id];if(!c||!c.sets||normalizeSwapName(c.swap))continue;
-  var need=setsForExercise(ex,w),parts=[],vol=0,has=false;
+  var performed=historicalExercise(ex,c),need=c.sets.length,parts=[],vol=0,has=false;
   var e1=0;
-  for(var i=0;i<need;i++){var s=c.sets[i];if(s&&s.reps!==""){has=true;if(isTime(ex)){parts.push(reportTimedSetText(ex,s));}else if(ex.w&&s.weight!==""&&Number(s.weight)>0){parts.push(s.reps+"×"+s.weight);vol+=Number(s.reps)*Number(s.weight);var est=Number(s.weight)*(1+Number(s.reps)/30);if(est>e1)e1=est;}else{parts.push(isTime(ex)?fmtSeconds(s.reps):(""+s.reps));}}}
-  if(has)rows.push({w:w,label:(PROG().weeks[w-1]||{}).label||"",parts:parts,vol:vol,e1:e1>0?round(e1):null});
+  for(var i=0;i<need;i++){var s=c.sets[i];if(s&&s.reps!==""){has=true;if(isTime(performed)){parts.push(reportTimedSetText(performed,s));}else if(performed.w&&s.weight!==""&&Number(s.weight)>0){parts.push(s.reps+"×"+s.weight);vol+=Number(s.reps)*Number(s.weight);var est=Number(s.weight)*(1+Number(s.reps)/30);if(est>e1)e1=est;}else{parts.push(isTime(performed)?fmtSeconds(s.reps):(""+s.reps));}}}
+  if(has)rows.push({name:performed.name,confirmed:!!c.performedExercise,w:w,label:(PROG().weeks[w-1]||{}).label||"",parts:parts,vol:vol,e1:e1>0?round(e1):null});
  }
  return rows;
 }
@@ -2275,7 +2294,7 @@ function beginWorkoutPauseHold(button,pointerId){
   if(shouldPause){if(navigator.vibrate)navigator.vibrate(40);pauseWorkout();}
  },WORKOUT_PAUSE_HOLD_MS);
 }
-function backupJSON(){syncStore();return JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,programs:S.programs,active:S.active,store:S.store},null,1);}
+function backupJSON(){syncStore();return JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,personalExercises:S.personalExercises||{},programs:S.programs,active:S.active,store:S.store},null,1);}
 function readBackupMeta(){
  try{var m=JSON.parse(localStorage.getItem(BACKUP_META_KEY)||"{}");return{lastAt:finiteNumber(m.lastAt,0,Number.MAX_SAFE_INTEGER,false)?m.lastAt:0,historyCount:finiteNumber(m.historyCount,0,1000000,true)?m.historyCount:0,remindedAt:finiteNumber(m.remindedAt,0,1000000,true)?m.remindedAt:0,trackingAt:finiteNumber(m.trackingAt,0,Number.MAX_SAFE_INTEGER,false)?m.trackingAt:0,snoozeUntil:finiteNumber(m.snoozeUntil,0,Number.MAX_SAFE_INTEGER,false)?m.snoozeUntil:0};}catch(e){return{lastAt:0,historyCount:0,remindedAt:0,trackingAt:0,snoozeUntil:0};}
 }
@@ -2394,6 +2413,23 @@ setInterval(function(){
 
 // ---------- Auswertung / PDF ----------
 function reportFinite(value){var number=Number(value);return isFinite(number)&&number>=0?number:null;}
+function historicalExercise(ex,cell){
+ var snapshot=cell&&(cell.performedExercise||cell.pendingPerformedExercise);if(!snapshot)return ex;
+ var result={};for(var key in ex)result[key]=ex[key];
+ result.name=snapshot.name;result.unit=snapshot.unit;result.w=snapshot.weighted;result.bw=snapshot.bodyweight;result.perSide=snapshot.perSide;result.weightConvention=snapshot.weightConvention;
+ if(snapshot.exerciseId)result.exerciseId=snapshot.exerciseId;else delete result.exerciseId;
+ return result;
+}
+function reportTrackingKey(ex,cell){
+ var type=ex.unit==="seconds"?(ex.w?"weighted_seconds":"seconds"):(ex.w?"weight":"reps");
+ if(!cell||!cell.performedExercise)return (typeof canonicalExerciseName==="function"?canonicalExerciseName(ex.name):String(ex.name))+"|"+type;
+ return "confirmed|"+(ex.exerciseId||ex.name)+"|"+type+"|"+!!ex.bw+"|"+!!ex.perSide+"|"+(ex.weightConvention||"unspecified");
+}
+function weightConventionText(value){return value==="per_dumbbell"?"pro Hantel":value==="device"?"Geräteanzeige":value==="total"?"Gesamtgewicht":"Gewichtskonvention offen";}
+function historicalSetText(ex,set){
+ if(ex.unit==="seconds")return reportTimedSetText(ex,set);
+ return String(set.reps)+(ex.w?" × "+(set.weight===""||set.weight==null?"Gewicht fehlt":String(set.weight)+" kg"):" Wdh")+(ex.perSide?" · je Seite":"")+(ex.w&&ex.weightConvention&&ex.weightConvention!=="unspecified"?" · "+weightConventionText(ex.weightConvention):"");
+}
 // Der Art-Untertitel entfällt, wenn der Programmname das Wort bereits enthält (verhindert Dopplungen wie „… Fortgeschritten Fortgeschritten“).
 function artSubtitleText(name,art){if(typeof art!=="string"||!art.trim())return"";art=art.trim();return String(name||"").toLowerCase().indexOf(art.toLowerCase())>=0?"":art;}
 function artSubtitleHtml(name,art){var sub=artSubtitleText(name,art);return sub?' <span class="pnsub2">'+esc(sub)+'</span>':"";}
@@ -2409,36 +2445,29 @@ function reportWeightedTimeSessionText(session){
 }
 function buildReportData(program,logs,history){
  program=program&&typeof program==="object"?program:{weeks:[],days:[]};logs=logs&&typeof logs==="object"?logs:{};history=Array.isArray(history)?history:[];
- var weeks=Array.isArray(program.weeks)?program.weeks:[],days=Array.isArray(program.days)?program.days:[],roundCount=weeks.length,validDays={},completeKeys={},totalDuration=0,totalSets=0,totalVolume=0,validForWeek=typeof exerciseValidForWeek==="function"?exerciseValidForWeek:function(ex,w){return w>=(ex.fromWeek==null?1:ex.fromWeek)&&w<=(ex.untilWeek==null?Infinity:ex.untilWeek);};
- days.forEach(function(day){if(day&&day.key!=null)validDays[String(day.key)]=day;});
- var sessions=history.filter(function(entry){return entry&&reportFinite(entry.start)!=null;}).map(function(entry){var copy={};for(var key in entry)copy[key]=entry[key];copy.dur=reportFinite(entry.dur)||0;copy.week=Math.round(reportFinite(entry.week)||0);copy.day=String(entry.day==null?"":entry.day);copy.complete=entry.complete===true;totalDuration+=copy.dur;if(copy.complete&&copy.week>=1&&copy.week<=Math.max(roundCount,1)&&validDays[copy.day])completeKeys[copy.week+"|"+copy.day]=true;return copy;}).sort(function(a,b){return Number(b.start)-Number(a.start);});
+ var weeks=program.weeks||[],days=program.days||[],roundCount=weeks.length,validDays={},completeKeys={},totalDuration=0,totalSets=0,totalVolume=0;
+ days.forEach(function(day){validDays[String(day.key)]=day;});
+ var sessions=history.filter(function(entry){return entry&&reportFinite(entry.start)!=null;}).map(function(entry){var copy={};for(var k in entry)copy[k]=entry[k];copy.dur=reportFinite(entry.dur)||0;copy.week=Math.round(reportFinite(entry.week)||0);copy.day=String(entry.day==null?"":entry.day);copy.complete=entry.complete===true;totalDuration+=copy.dur;if(copy.complete&&copy.week>=1&&copy.week<=Math.max(roundCount,1)&&validDays[copy.day])completeKeys[copy.week+"|"+copy.day]=true;return copy;}).sort(function(a,b){return Number(b.start)-Number(a.start);});
  var weekly=[];for(var week=1;week<=roundCount;week++){var done=0;days.forEach(function(day){if(completeKeys[week+"|"+day.key])done++;});weekly.push({week:week,completed:done,total:days.length,pct:days.length?Math.round(done/days.length*100):0});}
- // Gleiche Übung an mehreren Tagen wird zu einer Kennzahl zusammengefasst; jede Ausführung (Trainingstag mit Einträgen) ergibt einen Messpunkt.
- var exercises=[],merged=[],mergedByKey=Object.create(null),canonical=typeof canonicalExerciseName==="function"?canonicalExerciseName:function(name){return String(name||"");};
- days.forEach(function(day){(Array.isArray(day.ex)?day.ex:[]).forEach(function(ex){
-  var type=ex.unit==="seconds"?(ex.w?"weighted_seconds":"seconds"):(ex.w?"weight":"reps"),key=canonical(ex.name)+"|"+type,entry=mergedByKey[key];
-  if(!entry){entry={name:ex.name||"Unbenannte Übung",type:type,instances:[]};mergedByKey[key]=entry;merged.push(entry);}
-  entry.instances.push({day:day,ex:ex});
- });});
- merged.forEach(function(entry){
-  var points=[],performances=[],exerciseSets=0,exerciseVolume=0,firstEx=entry.instances[0].ex,firstDay=entry.instances[0].day,fromWeek=roundCount||1,untilWeek=1;
-  entry.instances.forEach(function(inst){var from=inst.ex.fromWeek==null?1:inst.ex.fromWeek,until=inst.ex.untilWeek==null?roundCount:Math.min(inst.ex.untilWeek,roundCount);if(from<fromWeek)fromWeek=from;if(until>untilWeek)untilWeek=until;});
-  for(var w=1;w<=roundCount;w++)entry.instances.forEach(function(inst){
-   var ex=inst.ex,day=inst.day;
-   if(!validForWeek(ex,w))return;
-   var cell=logs[w+"|"+day.key+"|"+ex.id],sets=cell&&Array.isArray(cell.sets)?cell.sets:[],swapped=!!(cell&&typeof cell.swap==="string"&&cell.swap.trim()),unitMetric=null,unitVolume=0,unitSets=0,timedSets=[];
-   sets.forEach(function(set){
-    if(!reportSetHasData(set))return;var reps=reportFinite(set.reps);totalSets++;
-    if(entry.type==="weighted_seconds"){if(!swapped)timedSets.push({reps:reps,weight:set.weight!==""&&set.weight!=null?reportFinite(set.weight):null});}
-    else if(ex.w){var weight=reportFinite(set.weight);if(weight!=null&&weight>0){var volume=reps*weight;totalVolume+=volume;if(!swapped){var estimate=reportEstimate1RM(weight,reps);unitVolume+=volume;exerciseVolume+=volume;if(estimate!=null&&(unitMetric==null||estimate>unitMetric))unitMetric=estimate;}}}
-    else if(!swapped&&(unitMetric==null||reps>unitMetric))unitMetric=reps;
-    if(!swapped){unitSets++;exerciseSets++;}
-   });
-   if(timedSets.length)performances.push({week:w,dayKey:day.key,dayLabel:day.wd||day.key,perSide:ex.perSide===true,sets:timedSets});
-   if(unitSets&&unitMetric!=null&&!(ex.w&&weeks[w-1]&&weeks[w-1].phase==="deload"))points.push({week:w,value:unitMetric,sets:unitSets,volume:unitVolume});
+ var groups=Object.create(null),exercises=[];
+ for(var w=1;w<=roundCount;w++)days.forEach(function(day){(day.ex||[]).forEach(function(position){
+  if(typeof exerciseValidForWeek==="function"?!exerciseValidForWeek(position,w):w<(position.fromWeek||1)||w>(position.untilWeek||Infinity))return;
+  var cell=logs[w+"|"+day.key+"|"+position.id];if(!cell||!Array.isArray(cell.sets))return;
+  var ex=historicalExercise(position,cell),swapped=!!(cell.swap&&cell.swap.trim()),type=ex.unit==="seconds"?(ex.w?"weighted_seconds":"seconds"):(ex.w?"weight":"reps"),key=reportTrackingKey(ex,cell),metric=groups[key],unitMetric=null,unitVolume=0,unitSets=0,timedSets=[];
+  cell.sets.forEach(function(set){
+   if(!reportSetHasData(set))return;var reps=reportFinite(set.reps);totalSets++;
+   if(type==="weighted_seconds"){if(!swapped)timedSets.push({reps:reps,weight:set.weight!==""&&set.weight!=null?reportFinite(set.weight):null});}
+   else if(ex.w){var weight=set.weight!==""&&set.weight!=null?reportFinite(set.weight):null;if(weight!=null&&weight>0){var volume=reps*weight;totalVolume+=volume;if(!swapped){unitVolume+=volume;var estimate=reportEstimate1RM(weight,reps);if(estimate!=null&&(unitMetric==null||estimate>unitMetric))unitMetric=estimate;}}}
+   else if(!swapped&&(unitMetric==null||reps>unitMetric))unitMetric=reps;
+   if(!swapped)unitSets++;
   });
-  if(exerciseSets){var first=points.length?points[0].value:null,latest=points.length?points[points.length-1].value:null,best=null,bestWeek=null;points.forEach(function(point){if(best==null||point.value>best){best=point.value;bestWeek=point.week;}});exercises.push({id:firstEx.id,name:entry.name,fromWeek:fromWeek,untilWeek:untilWeek,totalWeeks:roundCount,dayKey:firstDay.key,dayLabel:(firstDay.wd||firstDay.key)+(firstDay.title?" · "+firstDay.title:""),type:entry.type,totalSets:exerciseSets,volume:exerciseVolume,points:points,performances:performances,first:first,firstWeek:points.length?points[0].week:null,latest:latest,best:best,bestWeek:bestWeek,delta:first!=null&&latest!=null?latest-first:null,lastWeek:points.length?points[points.length-1].week:null});}
- });
+  if(!unitSets)return;
+  if(!metric){metric={id:position.id,name:ex.name||"Unbenannte Übung",trackingKey:key,confirmed:!!cell.performedExercise,fromWeek:position.fromWeek||1,untilWeek:position.untilWeek||roundCount,totalWeeks:roundCount,dayKey:day.key,dayLabel:(day.wd||day.key)+(day.title?" · "+day.title:""),type:type,totalSets:0,volume:0,points:[],performances:[],first:null,latest:null,best:null,bestWeek:null,delta:null,lastWeek:null,weightConvention:ex.weightConvention||"unspecified"};groups[key]=metric;exercises.push(metric);}
+  metric.totalSets+=unitSets;metric.volume+=unitVolume;metric.fromWeek=Math.min(metric.fromWeek,position.fromWeek||1);metric.untilWeek=Math.max(metric.untilWeek,position.untilWeek||roundCount);
+  if(timedSets.length)metric.performances.push({week:w,dayKey:day.key,dayLabel:day.wd||day.key,perSide:ex.perSide===true,weightConvention:ex.weightConvention,sets:timedSets});
+  if(unitMetric!=null&&!(ex.w&&weeks[w-1]&&weeks[w-1].phase==="deload"))metric.points.push({week:w,value:unitMetric,sets:unitSets,volume:unitVolume});
+ });});
+ exercises.forEach(function(metric){var points=metric.points;metric.first=points.length?points[0].value:null;metric.firstWeek=points.length?points[0].week:null;metric.latest=points.length?points[points.length-1].value:null;metric.lastWeek=points.length?points[points.length-1].week:null;points.forEach(function(point){if(metric.best==null||point.value>metric.best){metric.best=point.value;metric.bestWeek=point.week;}});metric.delta=metric.first!=null&&metric.latest!=null?metric.latest-metric.first:null;});
  var completedSessions=Object.keys(completeKeys).length,totalPlanned=weeks.length*days.length;
  return{sessions:sessions,completedSessions:completedSessions,totalPlanned:totalPlanned,completionPct:totalPlanned?Math.min(100,Math.round(completedSessions/totalPlanned*100)):0,totalDuration:totalDuration,totalSets:totalSets,totalVolume:totalVolume,weekly:weekly,exercises:exercises};
 }
@@ -2454,7 +2483,7 @@ function reportMetricUnit(type){return type==="weight"?"kg":(type==="seconds"?"S
 function reportMetricValue(type,value){if(value==null)return"–";return type==="seconds"?fmtSeconds(value):reportNumber(value)+" "+reportMetricUnit(type);}
 function reportMetricName(type){return type==="weight"?"Geschätztes 1RM":(type==="seconds"?"Beste Haltezeit":"Beste Wiederholungen");}
 function previousBlockMetrics(programId){
- var canonical=typeof canonicalExerciseName==="function"?canonicalExerciseName:function(name){return String(name||"");},out=Object.create(null),seen=Object.create(null),current=S.programs[programId];while(current&&current.parent&&!seen[current.parent]){seen[current.parent]=true;var parent=S.programs[current.parent],store=S.store[current.parent];if(!parent||!store)break;if(parent.archived===true){var duplicate=Object.create(null);buildReportData(parent,store.logs,store.history).exercises.forEach(function(metric){var name=canonical(metric.name)+"|"+metric.type;if(out[name])duplicate[name]=true;else out[name]=metric;});Object.keys(duplicate).forEach(function(name){delete out[name];});return out;}current=parent;}return out;
+ var canonical=typeof canonicalExerciseName==="function"?canonicalExerciseName:function(name){return String(name||"");},out=Object.create(null),seen=Object.create(null),current=S.programs[programId];while(current&&current.parent&&!seen[current.parent]){seen[current.parent]=true;var parent=S.programs[current.parent],store=S.store[current.parent];if(!parent||!store)break;if(parent.archived===true){var duplicate=Object.create(null);buildReportData(parent,store.logs,store.history).exercises.forEach(function(metric){var name=metric.trackingKey||canonical(metric.name)+"|"+metric.type;if(out[name])duplicate[name]=true;else out[name]=metric;});Object.keys(duplicate).forEach(function(name){delete out[name];});return out;}current=parent;}return out;
 }
 function reportSparkbars(metric,label){
  // Immer 12 Plätze: bei mehr Ausführungen die letzten 12, offene Plätze als Stummel.
@@ -2493,7 +2522,7 @@ function reportExerciseCard(metric,previousMetric){
 function reportDetailedProtocol(program,logs,history,notes){
  logs=logs&&typeof logs==="object"?logs:{};history=Array.isArray(history)?history:[];notes=notes&&typeof notes==="object"?notes:{};
  var out="",any=false,maxRound=(program.weeks||[]).length,forWeek=typeof dayExercisesFor==="function"?function(day,w){return dayExercisesFor(day,w,{});}:function(day,w){return(day.ex||[]).filter(function(ex){return w>=(ex.fromWeek==null?1:ex.fromWeek)&&w<=(ex.untilWeek==null?Infinity:ex.untilWeek);});};
- for(var w=1;w<=maxRound;w++){var week=program.weeks[w-1],weekHtml="";(program.days||[]).forEach(function(day){var rows="";forWeek(day,w).forEach(function(ex){var cell=logs[w+"|"+day.key+"|"+ex.id];if(!cell||!Array.isArray(cell.sets))return;var categorySets=week&&week.sets&&week.sets[ex.cat],need=ex.sets!=null?ex.sets:(categorySets!=null?categorySets:3),parts=[],volume=0,swap=typeof cell.swap==="string"?cell.swap.trim():"",note=typeof notes[ex.id]==="string"?notes[ex.id].trim():"";for(var i=0;i<need;i++){var set=cell.sets[i];if(!reportSetHasData(set))continue;var reps=reportFinite(set.reps),weight=reportFinite(set.weight);if(ex.unit==="seconds"){parts.push(reportTimedSetText(ex,set));}else if(ex.w&&weight!=null&&weight>0){parts.push(reportNumber(reps,1)+"×"+reportNumber(weight,1));volume+=reps*weight;}else parts.push(ex.unit==="seconds"?fmtSeconds(reps):reportNumber(reps,1));}if(parts.length){var exerciseName=swap?'<div class="rprotocolswap"><span>'+esc(ex.name)+'</span><span aria-hidden="true">→</span><b>'+esc(swap)+'</b><span class="rswapbadge">Getauscht</span></div>':esc(ex.name);if(note)exerciseName+='<div class="rprotocolnote"><span class="rprotocolnotelabel">Notiz:</span><span class="rprotocolnotebody">'+esc(note)+'</span></div>';rows+='<tr><td class="exn">'+exerciseName+'</td><td>'+esc(parts.join(" · "))+'</td><td class="vol">'+(ex.w&&ex.unit!=="seconds"&&volume>0?reportNumber(volume,0)+" kg":"–")+'</td></tr>';}});if(rows){var session=history.filter(function(entry){return entry.week===w&&entry.day===day.key;})[0],sessionText=session?" · "+dDate(session.start)+" · "+reportDuration(session.dur):"";weekHtml+='<div class="rd3">'+esc(day.wd||day.key)+(day.title?" – "+esc(day.title):"")+sessionText+'</div><table class="rtbl"><thead><tr><th>Übung</th><th>Sätze</th><th>Volumen</th></tr></thead><tbody>'+rows+'</tbody></table>';}});if(weekHtml){any=true;out+='<div class="rwk">Woche '+w+' · '+esc(week.label||"")+'</div>'+weekHtml;}}
+ for(var w=1;w<=maxRound;w++){var week=program.weeks[w-1],weekHtml="";(program.days||[]).forEach(function(day){var rows="";forWeek(day,w).forEach(function(ex){var cell=logs[w+"|"+day.key+"|"+ex.id];if(!cell||!Array.isArray(cell.sets))return;var original=ex;ex=historicalExercise(ex,cell);var categorySets=week&&week.sets&&week.sets[ex.cat],need=ex.sets!=null?ex.sets:(categorySets!=null?categorySets:3),parts=[],volume=0,swap=typeof cell.swap==="string"?cell.swap.trim():"",note=typeof notes[ex.id]==="string"?notes[ex.id].trim():"";for(var i=0;i<cell.sets.length;i++){var set=cell.sets[i];if(!reportSetHasData(set))continue;var reps=reportFinite(set.reps),weight=reportFinite(set.weight);if(ex.unit==="seconds"){parts.push(reportTimedSetText(ex,set));}else if(ex.w&&weight!=null&&weight>0){parts.push(reportNumber(reps,1)+"×"+reportNumber(weight,1));volume+=reps*weight;}else parts.push(ex.unit==="seconds"?fmtSeconds(reps):reportNumber(reps,1));}if(parts.length){var exerciseName=swap?'<div class="rprotocolswap"><span>'+esc(original.name)+'</span><span aria-hidden="true">→</span><b>'+esc(swap)+'</b><span class="rswapbadge">Getauscht</span></div>':esc(ex.name);exerciseName+='<div class="rprotocolnote">'+esc(cell.performedExercise?(ex.w?weightConventionText(ex.weightConvention):"Erfassung gespeichert"):"Älterer Eintrag · damalige Erfassung unbestätigt")+'</div>';if(note)exerciseName+='<div class="rprotocolnote"><span class="rprotocolnotelabel">Notiz:</span><span class="rprotocolnotebody">'+esc(note)+'</span></div>';rows+='<tr><td class="exn">'+exerciseName+'</td><td>'+esc(parts.join(" · "))+'</td><td class="vol">'+(ex.w&&ex.unit!=="seconds"&&volume>0?reportNumber(volume,0)+" kg":"–")+'</td></tr>';}});if(rows){var session=history.filter(function(entry){return entry.week===w&&entry.day===day.key;})[0],sessionText=session?" · "+dDate(session.start)+" · "+reportDuration(session.dur):"";weekHtml+='<div class="rd3">'+esc(day.wd||day.key)+(day.title?" – "+esc(day.title):"")+sessionText+'</div><table class="rtbl"><thead><tr><th>Übung</th><th>Sätze</th><th>Volumen</th></tr></thead><tbody>'+rows+'</tbody></table>';}});if(weekHtml){any=true;out+='<div class="rwk">Woche '+w+' · '+esc(week.label||"")+'</div>'+weekHtml;}}
  return any?out:'<div class="rempty"><strong>Noch kein Trainingsprotokoll</strong>Sobald du Satzwerte einträgst, erscheint hier die vollständige Übersicht.</div>';
 }
 function buildReport(programId,returnView){
@@ -2501,7 +2530,7 @@ function buildReport(programId,returnView){
  b+='<div class="reportintro"><p class="rstand">Stand '+dDate(now)+' · '+dClock(now)+' Uhr · Kennzahlen aus deinen eingetragenen Daten</p><span class="reportlocal">Nur lokal gespeichert</span></div>';
  b+='<section class="rsummary" aria-label="Zusammenfassung"><div class="rmetric"><span class="rlab">Einheiten</span><span class="rval">'+data.completedSessions+'<span class="rvalsuf"> / '+data.totalPlanned+'</span></span><span class="rsub">'+data.completionPct+' % des Trainingsblocks · gezählt wird jede vollständig beendete Einheit</span></div><div class="rmetric"><span class="rlab">Trainingszeit</span><span class="rval">'+reportDuration(data.totalDuration)+'</span><span class="rsub">dokumentiert, inkl. Fortsetzungen</span></div><div class="rmetric"><span class="rlab">Bewegtes Gewicht</span><span class="rval">'+reportNumber(data.totalVolume,0)+'<span class="rvalsuf"> kg</span></span><span class="rsub">Gewicht × Wiederholungen · ohne Zeitübungen</span></div></section>';
  b+='<div class="rsechead"><span>Fortschritt je Übung</span><span class="rsecmeta">Typgerechte Werte</span></div><section class="rsecplain">';
- if(data.exercises.length){var canonical=typeof canonicalExerciseName==="function"?canonicalExerciseName:function(name){return String(name||"");};b+='<div class="rexgrid">'+data.exercises.map(function(metric){return reportExerciseCard(metric,previous[canonical(metric.name)+"|"+metric.type]);}).join("")+'</div>';}else b+='<div class="rempty"><strong>Noch kein Übungsverlauf</strong>Trage im Training deine Sätze ein. Danach werden deine ersten Vergleichswerte automatisch aufgebaut.</div>';b+='</section>';
+ if(data.exercises.length){var canonical=typeof canonicalExerciseName==="function"?canonicalExerciseName:function(name){return String(name||"");};b+='<div class="rexgrid">'+data.exercises.map(function(metric){return reportExerciseCard(metric,previous[metric.trackingKey||canonical(metric.name)+"|"+metric.type]);}).join("")+'</div>';}else b+='<div class="rempty"><strong>Noch kein Übungsverlauf</strong>Trage im Training deine Sätze ein. Danach werden deine ersten Vergleichswerte automatisch aufgebaut.</div>';b+='</section>';
  b+='<button class="rprotocollink" id="repprotocol"><span><span class="rprotocollinktitle">Trainingsprotokoll</span><span class="rprotocollinksub">Alle Wochen, Sätze und Notizen als eigene Seite</span></span>'+icon("chevron-right")+'</button><p class="rfootnote"><b>Hinweis zum geschätzten 1RM:</b> Satzkraft verwendet die Epley-Formel als verständlichen Vergleichswert und begrenzt die Berechnung auf höchstens 30 Wiederholungen. Der Wert ist eine Schätzung, kein Maximaltest. Zeitübungen mit Gewicht zeigen Zeit und Last gemeinsam; für sie wird kein 1RM oder Wiederholungsvolumen berechnet. Körpergewichtsübungen ohne eingetragenes Zusatzgewicht werden nicht als bewegtes Trainingsgewicht berechnet. Deload-Wochen fließen nicht in den Übungstrend ein.</p></div>';
  document.getElementById("report").innerHTML=b;
 }
@@ -2621,6 +2650,35 @@ var BLANK_TEMPLATE={
 };
 function genId(){return "p"+Date.now().toString(36)+Math.floor(Math.random()*1000).toString(36);}
 // C1: nur geprüfte, im bestehenden v2-Vertrag unverändert ausführbare Referenzen.
+function personalExerciseError(def){
+ if(!plainObject(def)||typeof def.id!=="string"||!/^custom_[a-z0-9_]{3,70}$/.test(def.id)||typeof def.name!=="string"||!def.name.trim()||def.name.length>80)return "Persönliche Übung: Kennung oder Name ist ungültig.";
+ if(["weight","added_weight","bodyweight","seconds","weighted_seconds"].indexOf(def.type)<0||typeof def.perSide!=="boolean"||["unspecified","total","per_dumbbell","device"].indexOf(def.weightConvention)<0)return "Persönliche Übung: Erfassung oder Gewichtskonvention ist ungültig.";
+ if(["bodyweight","seconds"].indexOf(def.type)>=0&&def.weightConvention!=="unspecified")return "Eine Übung ohne Gewicht benötigt keine Gewichtskonvention.";
+ if(typeof def.technique!=="string"||def.technique.length>500||typeof def.equipment!=="string"||def.equipment.length>80||def.archived!==undefined&&typeof def.archived!=="boolean")return "Persönliche Übung: Technik oder Gerät ist ungültig.";
+ return null;
+}
+function personalExerciseTrackingKey(def){return def.type+"|"+def.perSide+"|"+def.weightConvention+"|"+def.equipment;}
+function personalExerciseEntry(def){return{id:def.id,de:def.name,en:"",alias:[],typ:def.type==="weight"?"gewicht":def.type==="added_weight"?"kgz":def.type==="seconds"||def.type==="weighted_seconds"?"zeit":"koerpergewicht",weightedTime:def.type==="weighted_seconds",einseitig:def.perSide,equipment:def.equipment,technik:def.technique,video:"",ersatz:"",weightConvention:def.weightConvention,definition:def};}
+function personalExerciseEntries(){var catalog=typeof S!=="undefined"&&S&&S.personalExercises||{};return Object.keys(catalog).filter(function(id){return catalog[id].archived!==true;}).map(function(id){return personalExerciseEntry(catalog[id]);});}
+function personalExerciseCatalogError(catalog){
+ if(!plainObject(catalog)||Object.keys(catalog).length>200)return "Die persönliche Bibliothek ist ungültig oder enthält mehr als 200 Übungen.";
+ var ids=Object.keys(catalog);for(var i=0;i<ids.length;i++){var def=catalog[ids[i]];if(personalExerciseError(def)||def.id!==ids[i])return "Die persönliche Bibliothek enthält eine ungültige Definition.";}
+ return null;
+}
+function preparePersonalProgram(program,preserveKnown){
+ var copy=cloneJSON(program),catalog=typeof S!=="undefined"&&S&&S.personalExercises||{},definitions=Object.create(null),remapped=Object.create(null);
+ (copy.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){if(!ex.exerciseDefinition)return;var def=cloneJSON(ex.exerciseDefinition),key=def.id+"|"+JSON.stringify(def),existing=catalog[def.id];
+  if(existing&&JSON.stringify(existing)!==JSON.stringify(def)&&!(preserveKnown&&personalExerciseTrackingKey(existing)===personalExerciseTrackingKey(def))){if(!remapped[key])remapped[key]=newPersonalExerciseId();def.id=remapped[key];ex.exerciseId=def.id;ex.exerciseDefinition=def;}
+  if(definitions[def.id]&&JSON.stringify(definitions[def.id])!==JSON.stringify(def))throw new Error("Dieselbe persönliche Kennung hat widersprüchliche Definitionen.");definitions[def.id]=def;
+ });});
+ var mergedCatalog={};Object.keys(catalog).forEach(function(id){mergedCatalog[id]=catalog[id];});Object.keys(definitions).forEach(function(id){mergedCatalog[id]=definitions[id];});
+ return{program:copy,definitions:definitions,remapped:Object.keys(remapped).length,error:personalExerciseCatalogError(mergedCatalog)};
+}
+function collectPersonalProgramDefinitions(program){
+ var catalog=typeof S!=="undefined"&&S&&(S.personalExercises||(S.personalExercises={}))||{};
+ (program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){var def=ex.exerciseDefinition;if(def&&!catalog[def.id])catalog[def.id]=cloneJSON(def);});});
+}
+function newPersonalExerciseId(){var catalog=typeof S!=="undefined"&&S&&S.personalExercises||{},id;do{id="custom_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);}while(catalog[id]);return id;}
 var EXERCISE_REFERENCES={
  barbell_back_squat:{name:"Langhantel-Kniebeuge",type:"weight",perSide:false},
  dumbbell_bench_press:{name:"Kurzhantel-Bankdrücken",type:"weight",perSide:false},
@@ -2633,12 +2691,23 @@ var EXERCISE_REFERENCES={
  wall_handstand_hold:{name:"Handstand halten an der Wand",type:"seconds",perSide:false},
  treadmill_duration:{name:"Laufband",type:"seconds",perSide:false}
 };
+var EXERCISE_WEIGHT_CONVENTIONS={barbell_back_squat:"total",dumbbell_bench_press:"per_dumbbell",leg_press:"device",pull_up_added_load:"total",one_arm_dumbbell_row:"per_dumbbell",suitcase_carry:"per_dumbbell"};
+function performedExerciseError(value){
+ if(!plainObject(value)||value.version!==1||typeof value.name!=="string"||!value.name.trim()||value.name.length>80||["reps","seconds"].indexOf(value.unit)<0)return "Die historische Übungserfassung ist ungültig.";
+ if(typeof value.weighted!=="boolean"||typeof value.bodyweight!=="boolean"||typeof value.perSide!=="boolean"||["unspecified","total","per_dumbbell","device"].indexOf(value.weightConvention)<0||value.bodyweight&&(!value.weighted||value.unit==="seconds"))return "Die historischen Gewichts- oder Seitenangaben sind ungültig.";
+ if(value.exerciseId!==undefined&&(typeof value.exerciseId!=="string"||!/^[a-z][a-z0-9_]{2,79}$/.test(value.exerciseId)))return "Die historische Übungskennung ist ungültig.";
+ return null;
+}
 function exerciseReferenceDefinition(id){return typeof id==="string"&&Object.prototype.hasOwnProperty.call(EXERCISE_REFERENCES,id)?EXERCISE_REFERENCES[id]:null;}
 function exerciseReferenceError(ex,internal){
- if(!ex||ex.exerciseId===undefined)return null;
- var id=ex.exerciseId,ref=exerciseReferenceDefinition(id);
+ if(!ex)return null;
+ if(ex.weightConvention!==undefined&&["unspecified","total","per_dumbbell","device"].indexOf(ex.weightConvention)<0)return "Die Gewichtskonvention ist ungültig.";
+ if(ex.exerciseId===undefined)return ex.exerciseDefinition!==undefined?"Der persönlichen Übungsdefinition fehlt ihre Kennung.":null;
+ var id=ex.exerciseId,def=ex.exerciseDefinition,ref=exerciseReferenceDefinition(id);
+ if(typeof id==="string"&&id.indexOf("custom_")===0){if(personalExerciseError(def)||def.id!==id)return "Der persönlichen Übung fehlt eine gültige eingebettete Definition.";ref={name:def.name,type:def.type,perSide:def.perSide};if((ex.weightConvention||"unspecified")!==def.weightConvention)return "Die Gewichtskonvention widerspricht der persönlichen Definition.";}
+ else if(def!==undefined)return "Integrierte Übungen dürfen keine persönliche Definition überschreiben.";
  if(typeof id!=="string"||! /^[a-z][a-z0-9_]{2,79}$/.test(id)||!ref)return"Die Übungszuordnung ist unbekannt. Wähle eine passende Bibliotheksübung oder löse die Zuordnung bewusst im Editor.";
- if(ex.tracking!==undefined||ex.exerciseDefinition!==undefined)return"Diese zusätzlichen Übungsdaten werden noch nicht unterstützt. Verwende die bisherigen Satzfelder und eine kompatible Übungszuordnung.";
+ if(ex.tracking!==undefined)return"Diese zusätzlichen Übungsdaten werden noch nicht unterstützt. Verwende die bisherigen Satzfelder und eine kompatible Übungszuordnung.";
  var weighted=internal?ex.w:ex.weighted,added=internal?ex.bw:ex.bodyweight,timer=internal?ex.tmode:ex.timerMode;
  if(weighted!==undefined&&typeof weighted!=="boolean"||added!==undefined&&typeof added!=="boolean"||ex.perSide!==undefined&&typeof ex.perSide!=="boolean")return"Die Übungszuordnung benötigt eindeutige Gewichts- und Seitenangaben.";
  var seconds=ex.unit==="seconds"||ex.unit==="time",type=seconds?(weighted===true?"weighted_seconds":"seconds"):(weighted===true?(added===true?"added_weight":"weight"):"bodyweight");
@@ -2661,7 +2730,7 @@ function importTranslate(ext){
   settings:(ext.settings&&typeof ext.settings==="object"&&!Array.isArray(ext.settings))?ext.settings:undefined,
   categories:cats,
   weeks:ext.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label||w.phase,rir:String(w.rir==null?"":w.rir),note:w.note||"",sets:w.sets||{}};}),
-  days:ext.days.map(function(d){return{key:String(d.key),wd:d.weekday||d.key,title:d.title||"",wu:wucdSan(d.warmup),cd:wucdSan(d.cooldown),ex:d.exercises.map(function(e,i){var ex={id:String(d.key)+"_"+i,name:e.name,en:e.en||"",sub:e.cue||"",cat:e.category,target:e.target||"",q:e.video||(e.name+" Technik"),gname:(e.garmin!==undefined?e.garmin:null),proxy:e.proxy||null,w:!!e.weighted,inc:e.weighted?(e.increment||2.5):undefined,def:(e.startWeight!=null?e.startWeight:0),bw:!!e.bodyweight,unit:((e.unit==="seconds"||e.unit==="time"||e.timerMode==="target"||e.timerMode==="max")?"seconds":"reps"),sets:(e.sets!=null?e.sets:undefined),reps:(Array.isArray(e.reps)?e.reps:undefined),pmode:((typeof e.progressionMode==="string"&&VALID_PROGRESSION_MODES.indexOf(e.progressionMode)>=0)?e.progressionMode:undefined),tmode:((e.timerMode==="target"||e.timerMode==="max")?e.timerMode:undefined)};if(e.fromWeek!=null)ex.fromWeek=e.fromWeek;if(e.untilWeek!=null)ex.untilWeek=e.untilWeek;if(e.prevId)ex.prevId=e.prevId;if(e.perSide===true)ex.perSide=true;if(e.exerciseId!==undefined)ex.exerciseId=e.exerciseId;return ex;})};})
+  days:ext.days.map(function(d){return{key:String(d.key),wd:d.weekday||d.key,title:d.title||"",wu:wucdSan(d.warmup),cd:wucdSan(d.cooldown),ex:d.exercises.map(function(e,i){var ex={id:String(d.key)+"_"+i,name:e.name,en:e.en||"",sub:e.cue||"",cat:e.category,target:e.target||"",q:e.video||(e.name+" Technik"),gname:(e.garmin!==undefined?e.garmin:null),proxy:e.proxy||null,w:!!e.weighted,inc:e.weighted?(e.increment||2.5):undefined,def:(e.startWeight!=null?e.startWeight:0),bw:!!e.bodyweight,unit:((e.unit==="seconds"||e.unit==="time"||e.timerMode==="target"||e.timerMode==="max")?"seconds":"reps"),sets:(e.sets!=null?e.sets:undefined),reps:(Array.isArray(e.reps)?e.reps:undefined),pmode:((typeof e.progressionMode==="string"&&VALID_PROGRESSION_MODES.indexOf(e.progressionMode)>=0)?e.progressionMode:undefined),tmode:((e.timerMode==="target"||e.timerMode==="max")?e.timerMode:undefined)};if(e.fromWeek!=null)ex.fromWeek=e.fromWeek;if(e.untilWeek!=null)ex.untilWeek=e.untilWeek;if(e.prevId)ex.prevId=e.prevId;if(e.perSide===true)ex.perSide=true;if(e.exerciseId!==undefined)ex.exerciseId=e.exerciseId;if(e.weightConvention!==undefined)ex.weightConvention=e.weightConvention;if(e.exerciseDefinition!==undefined)ex.exerciseDefinition=JSON.parse(JSON.stringify(e.exerciseDefinition));return ex;})};})
  };
 }
 // Öffentliche Modul-Namen (Aliasse auf die bestehende, erprobte Logik).
@@ -2676,7 +2745,7 @@ function exportTranslate(p){
   art:p.art||undefined,bereich:p.bereich||undefined,
   code:p.code||undefined,revision:p.rev||undefined,
   weeks:p.weeks.map(function(w){return{n:w.n,phase:w.phase,label:w.label,rir:w.rir,sets:w.sets,note:w.note};}),
-  days:p.days.map(function(d){var ids=Object.create(null);d.ex.forEach(function(e,index){ids[e.id]=d.key+"_"+index;});var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.exerciseId!==undefined)o.exerciseId=e.exerciseId;if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;var isSeconds=(e.unit==="seconds"||e.tmode==="target"||e.tmode==="max");if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;if(isSeconds)o.unit="seconds";}else if(isSeconds)o.unit="seconds";if(e.tmode)o.timerMode=e.tmode;if(e.perSide)o.perSide=true;if(e.sets!=null)o.sets=e.sets;if(Array.isArray(e.reps))o.reps=e.reps;if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.proxy)o.proxy=e.proxy;if(e.target)o.target=e.target;if(e.fromWeek!=null)o.fromWeek=e.fromWeek;if(e.untilWeek!=null)o.untilWeek=e.untilWeek;if(e.prevId&&ids[e.prevId])o.prevId=ids[e.prevId];return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
+  days:p.days.map(function(d){var ids=Object.create(null);d.ex.forEach(function(e,index){ids[e.id]=d.key+"_"+index;});var dd={key:d.key,weekday:d.wd,title:d.title,exercises:d.ex.map(function(e){var o={name:e.name,category:e.cat};if(e.exerciseId!==undefined)o.exerciseId=e.exerciseId;if(e.weightConvention!==undefined)o.weightConvention=e.weightConvention;if(e.exerciseDefinition!==undefined)o.exerciseDefinition=JSON.parse(JSON.stringify(e.exerciseDefinition));if(e.en)o.en=e.en;if(e.sub)o.cue=e.sub;var isSeconds=(e.unit==="seconds"||e.tmode==="target"||e.tmode==="max");if(e.w){o.weighted=true;o.increment=e.inc;o.startWeight=e.def;if(e.bw)o.bodyweight=true;if(isSeconds)o.unit="seconds";}else if(isSeconds)o.unit="seconds";if(e.tmode)o.timerMode=e.tmode;if(e.perSide)o.perSide=true;if(e.sets!=null)o.sets=e.sets;if(Array.isArray(e.reps))o.reps=e.reps;if(e.pmode)o.progressionMode=e.pmode;if(e.q)o.video=e.q;if(e.gname!==undefined&&e.gname!==null)o.garmin=e.gname;if(e.proxy)o.proxy=e.proxy;if(e.target)o.target=e.target;if(e.fromWeek!=null)o.fromWeek=e.fromWeek;if(e.untilWeek!=null)o.untilWeek=e.untilWeek;if(e.prevId&&ids[e.prevId])o.prevId=ids[e.prevId];return o;})};if(d.wu&&d.wu.length)dd.warmup=d.wu.map(function(w){return{name:w.name,seconds:w.sec};});if(d.cd&&d.cd.length)dd.cooldown=d.cd.map(function(w){return{name:w.name,seconds:w.sec};});return dd;})
  };
  if(p.description)out.description=p.description;
  if(p.settings)out.settings=p.settings;
@@ -2696,6 +2765,7 @@ function validTimedBlock(arr,label,dayKey){
  return null;
 }
 function parseProgram(text){
+ var personalDefinitions=Object.create(null);
  var ext;try{ext=JSON.parse(text);}catch(e){return{err:"Kein gültiges JSON: "+e.message};}
  if(!ext||ext.format!=="trainings-block")return{err:'Feld "format":"trainings-block" fehlt.'};
  if(ext.version!=null&&ext.version!==2)return{err:'Nicht unterstützte Programmversion „'+esc(ext.version)+'“. Erwartet wird Version 2.'};
@@ -2766,6 +2836,7 @@ function parseProgram(text){
    if(!plainObject(x))return exerciseError("Der Eintrag muss ein Objekt sein.");
    if(typeof x.name!=="string"||!x.name.trim()||x.name.length>80)return exerciseError('"name" fehlt oder ist länger als 80 Zeichen.',"name");
    var referenceError=exerciseReferenceError(x,false);if(referenceError)return exerciseError(referenceError,"exerciseId");
+   if(x.exerciseDefinition){var definitionKey=x.exerciseId,definitionJSON=JSON.stringify(x.exerciseDefinition);if(personalDefinitions[definitionKey]&&personalDefinitions[definitionKey]!==definitionJSON)return exerciseError("Diese persönliche Kennung hat mehrere unterschiedliche Definitionen.","exerciseId");personalDefinitions[definitionKey]=definitionJSON;}
    if(typeof x.category!=="string"||categoryKeys.indexOf(x.category)<0)return exerciseError('unbekannte "category" „'+esc(x.category)+'“.',"category");usedCategories[x.category]=1;
    if(x.unit!=null&&["reps","seconds","time"].indexOf(x.unit)<0)return exerciseError('"unit" muss "reps" oder "seconds" sein.',"unit");
    if(x.sets!=null&&!finiteNumber(x.sets,1,LIMITS.maxSets,true))return exerciseError('"sets" muss eine ganze Zahl zwischen 1 und '+LIMITS.maxSets+' sein.',"sets");
@@ -2839,7 +2910,8 @@ function validateBackupStore(st,id,program){
   if(cell.swap!=null&&(typeof cell.swap!=="string"||!cell.swap.trim()||cell.swap.length>80))return'Fortschritt von „'+esc(program.name||id)+'“ enthält einen ungültigen Übungstausch.';
   if(cell.swapWeight!=null&&(!cell.swap||cell.swapWeight===""||!validBackupNumber(cell.swapWeight,2000)))return'Fortschritt von „'+esc(program.name||id)+'“ enthält ein ungültiges Ersatzgewicht.';
   if(cell.swapDecision!=null&&(!cell.swap||["pending","training","permanent"].indexOf(cell.swapDecision)<0))return'Fortschritt von „'+esc(program.name||id)+'“ enthält einen ungültigen Tauschstatus.';
-  var loggedExercise=exerciseByDay[logParts[1]+"|"+logParts[2]],loggedRepMax=loggedExercise&&loggedExercise.unit==="seconds"?5999:9999;
+  if(cell.pendingPerformedExercise!==undefined&&performedExerciseError(cell.pendingPerformedExercise)||cell.performedExercise!==undefined&&performedExerciseError(cell.performedExercise))return 'Fortschritt von „'+esc(program.name||id)+'“ enthält eine ungültige historische Übungserfassung.';
+  var loggedExercise=exerciseByDay[logParts[1]+"|"+logParts[2]],loggedUnit=(cell.performedExercise||cell.pendingPerformedExercise)?(cell.performedExercise||cell.pendingPerformedExercise).unit:loggedExercise&&loggedExercise.unit,loggedRepMax=loggedUnit==="seconds"?5999:9999;
   for(var si=0;si<cell.sets.length;si++){var set=cell.sets[si];if(!plainObject(set)||!validBackupCount(set.reps,loggedRepMax)||!validBackupNumber(set.weight,2000))return'Fortschritt von „'+esc(program.name||id)+'“ enthält ungültige Wiederholungs-, Zeit- oder Gewichtswerte.';}
  }
  for(var hi=0;hi<st.history.length;hi++){
@@ -2857,6 +2929,10 @@ function validateBackupFile(raw){
  if(!plainObject(raw)||!plainObject(raw.programs)||!Object.keys(raw.programs).length||!plainObject(raw.store))return"Backup-Struktur ist unvollständig.";
  if(raw.schemaVersion!=null&&!finiteNumber(raw.schemaVersion,1,DATA_SCHEMA_VERSION,true))return"Das Backup stammt aus einer neueren oder unbekannten Datenversion.";
  if(typeof raw.active!=="string"||!Object.prototype.hasOwnProperty.call(raw.programs,raw.active)||!plainObject(raw.programs[raw.active])||raw.programs[raw.active].archived===true)return"Das aktive Programm im Backup ist ungültig.";
+ if(raw.personalExercises!==undefined&&personalExerciseCatalogError(raw.personalExercises))return personalExerciseCatalogError(raw.personalExercises);
+ var usesNewData=raw.personalExercises&&Object.keys(raw.personalExercises).length;
+ Object.keys(raw.store).forEach(function(pid){var logs=raw.store[pid]&&raw.store[pid].logs||{};Object.keys(logs).forEach(function(key){if(logs[key]&&(logs[key].performedExercise||logs[key].pendingPerformedExercise))usesNewData=true;});});
+ if(usesNewData&&raw.schemaVersion!==5)return "Historische Erfassung und persönliche Übungen benötigen Datenversion 5.";
  var ids=Object.keys(raw.programs);
  if(ids.length>50)return"Das Backup enthält ungewöhnlich viele Programme.";
  var storeIds=Object.keys(raw.store);for(var sk=0;sk<storeIds.length;sk++)if(ids.indexOf(storeIds[sk])<0)return'Das Backup enthält Fortschritt für ein unbekanntes Programm.';
@@ -2865,6 +2941,7 @@ function validateBackupFile(raw){
   if(!plainObject(program))return'Programm „'+esc(id)+'“ im Backup ist beschädigt.';
   if(program.archived!=null&&typeof program.archived!=="boolean")return'Programm „'+esc((program&&program.name)||id)+'“ enthält einen ungültigen Archivstatus.';
   try{(program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){if(!check&&exerciseReferenceError(ex,true))check=exerciseReferenceError(ex,true);});});}catch(e){return'Programm „'+esc(id)+'“ im Backup ist beschädigt.';}if(check)return'Programm „'+esc(program.name||id)+'“: '+check;
+  for(var di=0;di<(program.days||[]).length;di++)for(var ei=0;ei<(program.days[di].ex||[]).length;ei++){var px=program.days[di].ex[ei];if(px.exerciseDefinition){var savedDef=raw.personalExercises&&raw.personalExercises[px.exerciseId];if(!savedDef||personalExerciseTrackingKey(savedDef)!==personalExerciseTrackingKey(px.exerciseDefinition))return "Eine persönliche Programmübung fehlt in der Sicherung oder hat eine widersprüchliche Erfassung.";}}
   if(program.parent!=null&&(typeof program.parent!=="string"||program.parent===id||!Object.prototype.hasOwnProperty.call(raw.programs,program.parent)))return'Programm „'+esc((program&&program.name)||id)+'“ enthält einen ungültigen Vorblock-Verweis.';
   if((program.source!=null&&program.source!=="coach")||(program.origin!=null&&program.origin!=="satzkraft"))return'Programm „'+esc((program&&program.name)||id)+'“ enthält eine ungültige Herkunft.';
   if(program.createdAt!=null&&!finiteNumber(program.createdAt,0,Number.MAX_SAFE_INTEGER,false)||program.updatedAt!=null&&!finiteNumber(program.updatedAt,0,Number.MAX_SAFE_INTEGER,false)||program.createdAt!=null&&program.updatedAt!=null&&program.updatedAt<program.createdAt)return'Programm „'+esc((program&&program.name)||id)+'“ enthält einen ungültigen Datum-Zeitstempel.';
@@ -2977,7 +3054,10 @@ function prepareProgramImport(text,origin,sourceName){
  var cleaned=sanitizeProgramText(text);if(cleaned.error)return{error:explainProgramError(cleaned.error),sourceText:text,cleanedText:cleaned.text,corrections:cleaned.corrections,origin:origin||"json",sourceName:sourceName||""};
  if(cleaned.backup)return{backup:cleaned.raw,sourceText:text,cleanedText:cleaned.text,corrections:cleaned.corrections,origin:origin||"json",sourceName:sourceName||""};
  var checked=parseProgram(cleaned.text);if(checked.err)return{error:explainProgramError(checked.err,checked.path),repair:importEditorRepair(cleaned.raw,checked.err,checked.path),sourceText:text,cleanedText:cleaned.text,corrections:cleaned.corrections,origin:origin||"json",sourceName:sourceName||""};
- if(cleaned.raw&&Array.isArray(cleaned.raw.days))cleaned.raw.days.forEach(function(day){(day.exercises||[]).forEach(function(ex){var ref=exerciseReferenceDefinition(ex.exerciseId);if(ref&&ex.name!==ref.name)cleaned.corrections.push("Übungsname „"+ex.name+"“ weicht von der Zuordnung „"+ref.name+"“ ab; deine Angaben bleiben erhalten.");});});
+ if(cleaned.raw&&Array.isArray(cleaned.raw.days))cleaned.raw.days.forEach(function(day){(day.exercises||[]).forEach(function(ex){var ref=exerciseReferenceDefinition(ex.exerciseId)||(ex.exerciseDefinition?{name:ex.exerciseDefinition.name}:null);if(ref&&ex.name!==ref.name)cleaned.corrections.push("Übungsname „"+ex.name+"“ weicht von der Zuordnung „"+ref.name+"“ ab; deine Angaben bleiben erhalten.");});});
+ var personal=preparePersonalProgram(checked.prog);if(personal.error)return{error:explainProgramError(personal.error),sourceText:text,cleanedText:cleaned.text,corrections:cleaned.corrections,origin:origin||"json",sourceName:sourceName||""};checked.prog=personal.program;
+ if(Object.keys(personal.definitions).length)cleaned.corrections.push("Die eingebetteten persönlichen Übungen werden erst beim Speichern in deine Bibliothek übernommen.");
+ if(personal.remapped)cleaned.corrections.push("Bereits belegte persönliche Kennungen erhalten in dieser Importkopie neue Kennungen. Vorhandene Übungen und Satzwerte bleiben erhalten.");
  var external=exportTranslate(checked.prog);delete external._anleitung;var matches=findProgramMatches(checked.prog),warnings=[];
  if(matches.duplicateId)warnings.push("Dieses Programm ist bereits vollständig vorhanden.");
  else if(matches.codeIds.length)warnings.push("Dieses Programm gehört zu einem vorhandenen Programm (gleiche Kennung).");
@@ -3001,11 +3081,11 @@ function repairImportInEditor(){
 function storeImportedProgram(activate,allowDuplicate){if(typeof localWriteBlocked==="function"&&localWriteBlocked())return false;
  if(programWriteLocked()){showProgramWriteLocked();return null;}
  var prepared=pendingProgramImport;if(!prepared||!prepared.program)return null;if(prepared.duplicateId&&!allowDuplicate)return null;
- var p=cloneJSON(prepared.program),fromLibrary=prepared.origin==="library",savedAt=Date.now();p.id=genId();while(S.programs[p.id])p.id=genId();
+ var personal=preparePersonalProgram(prepared.program);if(personal.error){showModal("Programm nicht gespeichert",esc(personal.error),[{label:"OK",cls:"primary",action:null}]);return null;}var p=personal.program;var fromLibrary=prepared.origin==="library",savedAt=Date.now();p.id=genId();while(S.programs[p.id])p.id=genId();
  // Kennung aus dem JSON übernehmen, wenn gültig und noch frei; sonst frisch vergeben (erster Import ohne Kennung).
  var importedCode=(typeof p.code==="string"&&/^[A-Za-z0-9_-]{4,24}$/.test(p.code))?p.code:null,codeFree=importedCode&&!Object.keys(S.programs).some(function(pid){return S.programs[pid].code===importedCode;});
  if(codeFree){p.code=importedCode;p.rev=(typeof p.rev==="number"&&isFinite(p.rev)&&p.rev>=1)?Math.floor(p.rev):1;}else{p.code=genProgramCode();p.rev=1;}
- p.createdAt=savedAt;p.updatedAt=savedAt;if(fromLibrary)p.origin="satzkraft";S.programs[p.id]=p;S.store[p.id]=newStore(p);
+ p.createdAt=savedAt;p.updatedAt=savedAt;if(fromLibrary)p.origin="satzkraft";S.programs[p.id]=p;collectPersonalProgramDefinitions(p);S.store[p.id]=newStore(p);
  if(activate&&!setActive(p.id))return null;
  if(flushSave()===false)return null;
  pendingProgramImport=null;importIssue=null;
@@ -3203,8 +3283,8 @@ function editorBuildRefMap(draft){
  return map;
 }
 function editorHasPendingReplacements(){return Object.keys(editorPendingReplacementRefs||{}).length>0;}
-function editorExerciseTypeSignature(ex){return(!!(ex&&ex.w)?"1":"0")+"|"+(!!(ex&&ex.bw)?"1":"0")+"|"+(ex&&ex.unit==="seconds"?"seconds":"reps");}
-function editorExternalTypeSignature(ex){return(!!(ex&&ex.weighted)?"1":"0")+"|"+(!!(ex&&ex.bodyweight)?"1":"0")+"|"+(ex&&(ex.unit==="seconds"||ex.unit==="time")?"seconds":"reps");}
+function editorExerciseTypeSignature(ex){return(!!(ex&&ex.w)?"1":"0")+"|"+(!!(ex&&ex.bw)?"1":"0")+"|"+(ex&&ex.unit==="seconds"?"seconds":"reps")+"|"+!!(ex&&ex.perSide)+"|"+(ex&&ex.weightConvention||"unspecified");}
+function editorExternalTypeSignature(ex){return(!!(ex&&ex.weighted)?"1":"0")+"|"+(!!(ex&&ex.bodyweight)?"1":"0")+"|"+(ex&&(ex.unit==="seconds"||ex.unit==="time")?"seconds":"reps")+"|"+!!(ex&&ex.perSide)+"|"+(ex&&ex.weightConvention||"unspecified");}
 function exerciseHasStoredValues(store,exerciseId){
  var logs=store&&store.logs||{};for(var key in logs){if(key.split("|")[2]!==exerciseId)continue;var cell=logs[key];if(cell&&Array.isArray(cell.sets)&&cell.sets.some(function(set){return set&&(set.reps!==""&&set.reps!=null||set.weight!==""&&set.weight!=null);}))return true;}return false;
 }
@@ -3291,7 +3371,10 @@ function editorExerciseLibraryWouldOverwrite(ex,entry){
  return fields.some(function(pair){return String(ex[pair[0]]||"").trim()&&String(ex[pair[0]]).trim()!==String(pair[1]||"").trim();});
 }
 function editorApplyExerciseLibraryEntry(ex,entry){
- if(entry.id)ex.exerciseId=entry.id;else delete ex.exerciseId;ex.name=entry.de;ex._referenceName=entry.de;ex.en=entry.en;ex.cue=entry.technik;ex.video=entry.video;ex.proxy=entry.ersatz;if(entry.einseitig===true)ex.perSide=true;else delete ex.perSide;editorApplyExerciseLibraryType(ex,entry);return ex;
+ if(entry.id)ex.exerciseId=entry.id;else delete ex.exerciseId;
+ if(entry.definition)ex.exerciseDefinition=cloneJSON(entry.definition);else delete ex.exerciseDefinition;
+ if(entry.weightConvention)ex.weightConvention=entry.weightConvention;else if(entry.id&&EXERCISE_WEIGHT_CONVENTIONS[entry.id])ex.weightConvention=EXERCISE_WEIGHT_CONVENTIONS[entry.id];else delete ex.weightConvention;
+ ex.name=entry.de;ex._referenceName=entry.de;ex.en=entry.en;ex.cue=entry.technik;ex.video=entry.video;ex.proxy=entry.ersatz;if(entry.einseitig===true)ex.perSide=true;else delete ex.perSide;editorApplyExerciseLibraryType(ex,entry);return ex;
 }
 function editorChooseExerciseLibraryEntry(dayIndex,exerciseIndex,entry,confirmed){
  var day=editorDraft&&editorDraft.days[dayIndex],ex=day&&day.exercises[exerciseIndex];if(!ex||!entry)return false;
@@ -3300,19 +3383,19 @@ function editorChooseExerciseLibraryEntry(dayIndex,exerciseIndex,entry,confirmed
 }
 function renderExerciseLibraryAutocomplete(input){
  var dayIndex=+input.dataset.edDay,exerciseIndex=+input.dataset.edEx,box=document.getElementById("exerciseautocomplete-"+dayIndex+"-"+exerciseIndex);if(!box)return;
- box.innerHTML=exerciseLibraryMatches(input.value,6).map(function(entry,index){return'<button type="button" class="edautosuggestion" id="exerciseoption-'+dayIndex+'-'+exerciseIndex+'-'+index+'" role="option" aria-selected="false" data-exercise-suggestion="'+attr(entry.de)+'" data-ed-day="'+dayIndex+'" data-ed-ex="'+exerciseIndex+'"><span>'+esc(entry.de)+'</span><small>'+esc(entry.en)+'</small></button>';}).join("");input.setAttribute("aria-expanded",box.children.length?"true":"false");
+ box.innerHTML=exerciseLibraryMatches(input.value,6).map(function(entry,index){return'<button type="button" class="edautosuggestion" id="exerciseoption-'+dayIndex+'-'+exerciseIndex+'-'+index+'" role="option" aria-selected="false" data-exercise-suggestion="'+attr(entry.de)+'" data-exercise-suggestion-id="'+attr(entry.id||'')+'" data-ed-day="'+dayIndex+'" data-ed-ex="'+exerciseIndex+'"><span>'+esc(entry.de)+'</span><small>'+esc(entry.en)+'</small></button>';}).join("");input.setAttribute("aria-expanded",box.children.length?"true":"false");
 }
 function loadExerciseLibraryForEditor(){loadExerciseLibrary().then(function(){var input=document.activeElement;if(input&&input.dataset&&input.dataset.edField==="name"&&input.dataset.edEx!=null)renderExerciseLibraryAutocomplete(input);});}
 function editorReleaseReference(dayIndex,exerciseIndex,confirmed){
  var ex=editorDraft&&editorDraft.days[dayIndex]&&editorDraft.days[dayIndex].exercises[exerciseIndex];if(!ex||ex.exerciseId===undefined)return false;
  if(!confirmed){showModal("Übungszuordnung lösen?","Name, Satzfelder und Trainingswerte bleiben erhalten. Die Übung wird anschließend als freie Programmübung geführt.",[{label:"Zuordnung lösen",cls:"primary",action:function(){editorReleaseReference(dayIndex,exerciseIndex,true);}},{label:"Abbrechen",action:null}]);return false;}
- editorPushUndo("Übungszuordnung gelöst");delete ex.exerciseId;delete ex._referenceName;renderProgramEditor("days",dayIndex,exerciseIndex);return true;
+ editorPushUndo("Übungszuordnung gelöst");delete ex.exerciseId;delete ex.exerciseDefinition;delete ex._referenceName;renderProgramEditor("days",dayIndex,exerciseIndex);return true;
 }
 function editorConfirmReferenceNames(continuation){
  for(var di=0;di<editorDraft.days.length;di++)for(var ei=0;ei<editorDraft.days[di].exercises.length;ei++){
-  var ex=editorDraft.days[di].exercises[ei],ref=exerciseReferenceDefinition(ex.exerciseId);
+  var ex=editorDraft.days[di].exercises[ei],ref=exerciseReferenceDefinition(ex.exerciseId)||(ex.exerciseDefinition?{name:ex.exerciseDefinition.name}:null);
   if(!ref||ex._referenceName===ex.name)continue;
-  (function(item,definition){showModal("Übungszuordnung prüfen","Der neue Name „"+esc(item.name)+"“ gehört weiterhin zur Bibliotheksübung „"+esc(definition.name)+"“. Soll diese Zuordnung erhalten bleiben?",[{label:"Gleiche Übung, Zuordnung behalten",cls:"primary",action:function(){item._referenceName=item.name;if(item._ref)editorRenameChoices[item._ref]="same";continuation();}},{label:"Als freie Übung weiterführen",action:function(){editorPushUndo("Übungszuordnung gelöst");delete item.exerciseId;delete item._referenceName;continuation();}},{label:"Abbrechen",action:null}]);})(ex,ref);return false;
+  (function(item,definition){showModal("Übungszuordnung prüfen","Der neue Name „"+esc(item.name)+"“ gehört weiterhin zur Bibliotheksübung „"+esc(definition.name)+"“. Soll diese Zuordnung erhalten bleiben?",[{label:"Gleiche Übung, Zuordnung behalten",cls:"primary",action:function(){item._referenceName=item.name;if(item._ref)editorRenameChoices[item._ref]="same";continuation();}},{label:"Als freie Übung weiterführen",action:function(){editorPushUndo("Übungszuordnung gelöst");delete item.exerciseId;delete item.exerciseDefinition;delete item._referenceName;continuation();}},{label:"Abbrechen",action:null}]);})(ex,ref);return false;
  }
  return true;
 }
@@ -3383,7 +3466,8 @@ function renderEditorTraining(d,catKeys){
   h+='<div class="edexercise'+(isOpen?' open':'')+(pendingReplacement?' pendingreplacement':'')+'" data-ed-ex-card="'+ei+'"><div class="edexhead"><div class="edexmain"><div class="edexname"><span class="edordernum">'+(ei+1)+'</span> · <span class="edexlabel">'+esc(ex.name)+'</span>'+(pendingReplacement?'<span class="pendingreplacementbadge">Zu prüfen</span>':'')+'</div><div class="edexmeta"><span class="tag '+editorColor+'">'+esc(c.label||ex.category)+'</span><span class="edexparams">'+esc(editorExerciseMeta(ex,d).split(' · ').slice(1).join(' · '))+'</span></div></div><button class="edmini" data-ed-openex="'+ei+'">'+(isOpen?'Schließen':'Bearbeiten')+'</button>'+(isOpen?'':'<button class="eddrag" data-ed-drag-ex="'+ei+'" data-ed-day="'+editorDayIndex+'" aria-label="'+attr(ex.name)+' halten und verschieben" title="Halten und verschieben"></button>')+'</div>';
   if(isOpen){h+='<div class="edexedit"><div class="edgrid">';
    h+=editorExerciseNameInput(ex,editorDayIndex,ei);
-   if(ex.exerciseId!==undefined)h+='<div class="edfield wide"><small>'+esc(exerciseReferenceError(ex,false)||("Zuordnung: "+exerciseReferenceDefinition(ex.exerciseId).name))+'</small><button type="button" class="edmini" data-ed-release-reference="'+ei+'" data-ed-day="'+editorDayIndex+'">Übungszuordnung lösen</button></div>';
+   h+='<div class="edfield wide"><button type="button" class="progtextaction" data-editor-personal-new="1">Eigene Übung in der Bibliothek erstellen</button></div>';
+   if(ex.exerciseId!==undefined)h+='<div class="edfield wide"><small>'+esc(exerciseReferenceError(ex,false)||("Zuordnung: "+(exerciseReferenceDefinition(ex.exerciseId)||ex.exerciseDefinition).name))+'</small><button type="button" class="edmini" data-ed-release-reference="'+ei+'" data-ed-day="'+editorDayIndex+'">Übungszuordnung lösen</button></div>';
    h+='<label class="edfield">'+editorLabel("Trainingsgruppe","gruppe")+'<select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="category">';catKeys.forEach(function(key){h+=editorOption(key,d.categories[key].label,ex.category);});h+='</select><small>Steuert Standardwerte und Satzpause.</small></label>';
    h+='<label class="edfield wide">'+editorLabel("Übungstyp","typ")+'<select data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="exerciseType">'+editorExerciseTypeOptions(ex)+'</select></label>';
    h+='<div class="edcheckrow" style="grid-column:1/-1"><label class="edcheck"><input type="checkbox" data-ed-day="'+editorDayIndex+'" data-ed-ex="'+ei+'" data-ed-field="perSide"'+(ex.perSide?' checked':'')+'> Je Seite ausführen (z. B. Ausfallschritte) – die App zeigt „je Seite“ an</label></div>';
@@ -3606,12 +3690,12 @@ function editorStoreProgram(replaceOriginal,exitMode,activateNew){if(typeof loca
   }
  }
  var checked=parseProgram(JSON.stringify(editorDraft));if(checked.err){showModal("Programm noch nicht gespeichert",checked.err+"<br><br><span style=\"color:var(--muted)\">Deine Änderungen bleiben im Editor erhalten.</span>",[{label:"Weiter bearbeiten",action:null}]);return;}
- var p=checked.prog;
- if(!replaceOriginal){var wasNew=!editorSourceId,shouldActivate=wasNew?!!activateNew:false,savedAt=Date.now();if(editorSourceId)p.name=editorUniqueCopyName(p.name,S.programs);while(S.programs[p.id])p.id=genId();p.code=genProgramCode();p.rev=1;p.createdAt=savedAt;p.updatedAt=savedAt;S.programs[p.id]=p;S.store[p.id]=newStore(p);if(shouldActivate)setActive(p.id);if(flushSave()===false)return;if(wasNew){pendingProgramImport=null;importIssue=null;}editorUnsavedDraft=false;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);return;}
+ var personal=preparePersonalProgram(checked.prog,!!editorSourceId);if(personal.error){showModal("Programm nicht gespeichert",esc(personal.error),[{label:"Weiter bearbeiten",cls:"primary",action:null}]);return;}var p=personal.program;
+ if(!replaceOriginal){var wasNew=!editorSourceId,shouldActivate=wasNew?!!activateNew:false,savedAt=Date.now();if(editorSourceId)p.name=editorUniqueCopyName(p.name,S.programs);while(S.programs[p.id])p.id=genId();p.code=genProgramCode();p.rev=1;p.createdAt=savedAt;p.updatedAt=savedAt;S.programs[p.id]=p;collectPersonalProgramDefinitions(p);S.store[p.id]=newStore(p);if(shouldActivate)setActive(p.id);if(flushSave()===false)return;if(wasNew){pendingProgramImport=null;importIssue=null;}editorUnsavedDraft=false;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);return;}
  if((editorSourceId==="default"&&!pendingContext)||!S.programs[editorSourceId])return;
  var sourceId=editorSourceId,oldProg=S.programs[sourceId],oldStore=S.store[sourceId]||newStore(oldProg),sourceName=oldProg.name;if(oldProg.parent)p.parent=oldProg.parent;if(oldProg.source)p.source=oldProg.source;if(oldProg.origin)p.origin=oldProg.origin;
- var replaceActions=[{label:pendingContext?"Änderungen übernehmen":"Ersetzen & Fortschritt behalten",cls:"primary",action:function(){var timeline;try{timeline=typeof timelineProgramFromEdit==="function"?timelineProgramFromEdit(oldProg,p,editorDraft,oldStore):p;}catch(error){showModal("Änderung nicht gespeichert",esc(error.message||"Für diese Änderung fehlt eine passende offene Einheit."),[{label:"Weiter bearbeiten",cls:"primary",action:null}]);return;}p=timeline;p.id=sourceId;p.code=oldProg.code||p.code;p.rev=(Number(oldProg.rev)||1)+1;if(typeof oldProg.createdAt==="number"&&isFinite(oldProg.createdAt)&&oldProg.createdAt>=0)p.createdAt=oldProg.createdAt;else delete p.createdAt;p.updatedAt=Date.now();S.programs[sourceId]=p;var migrated=migrateReplaceStore(oldProg,oldStore,p,editorBuildRefMap(editorDraft));if(pendingContext)migrated.pendingReplacements=[];S.store[sourceId]=migrated;if(S.active===sourceId){alias(S);refreshPostWorkoutReplacements();}if(flushSave()===false)return;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}if(pendingContext)finishPendingReplacementFlow();}}];
- if(!pendingContext)replaceActions.push({label:"Ersetzen & Fortschritt zurücksetzen",cls:"danger",action:function(){p.id=sourceId;p.code=oldProg.code||p.code;p.rev=(Number(oldProg.rev)||1)+1;if(typeof oldProg.createdAt==="number"&&isFinite(oldProg.createdAt)&&oldProg.createdAt>=0)p.createdAt=oldProg.createdAt;else delete p.createdAt;p.updatedAt=Date.now();S.programs[sourceId]=p;S.store[sourceId]=newStore(p);if(S.active===sourceId){alias(S);refreshPostWorkoutReplacements();}if(flushSave()===false)return;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}}});
+ var replaceActions=[{label:pendingContext?"Änderungen übernehmen":"Ersetzen & Fortschritt behalten",cls:"primary",action:function(){var timeline;try{timeline=typeof timelineProgramFromEdit==="function"?timelineProgramFromEdit(oldProg,p,editorDraft,oldStore):p;}catch(error){showModal("Änderung nicht gespeichert",esc(error.message||"Für diese Änderung fehlt eine passende offene Einheit."),[{label:"Weiter bearbeiten",cls:"primary",action:null}]);return;}p=timeline;p.id=sourceId;p.code=oldProg.code||p.code;p.rev=(Number(oldProg.rev)||1)+1;if(typeof oldProg.createdAt==="number"&&isFinite(oldProg.createdAt)&&oldProg.createdAt>=0)p.createdAt=oldProg.createdAt;else delete p.createdAt;p.updatedAt=Date.now();S.programs[sourceId]=p;collectPersonalProgramDefinitions(p);var migrated=migrateReplaceStore(oldProg,oldStore,p,editorBuildRefMap(editorDraft));if(pendingContext)migrated.pendingReplacements=[];S.store[sourceId]=migrated;if(S.active===sourceId){alias(S);refreshPostWorkoutReplacements();}if(flushSave()===false)return;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}if(pendingContext)finishPendingReplacementFlow();}}];
+ if(!pendingContext)replaceActions.push({label:"Ersetzen & Fortschritt zurücksetzen",cls:"danger",action:function(){p.id=sourceId;p.code=oldProg.code||p.code;p.rev=(Number(oldProg.rev)||1)+1;if(typeof oldProg.createdAt==="number"&&isFinite(oldProg.createdAt)&&oldProg.createdAt>=0)p.createdAt=oldProg.createdAt;else delete p.createdAt;p.updatedAt=Date.now();S.programs[sourceId]=p;collectPersonalProgramDefinitions(p);S.store[sourceId]=newStore(p);if(S.active===sourceId){alias(S);refreshPostWorkoutReplacements();}if(flushSave()===false)return;editorInitialJSON=JSON.stringify(editorDraft);finishEditorSave(exitMode);if(S.active===sourceId){renderView();renderBar();}}});
  replaceActions.push({label:"Abbrechen",action:null});
  showModal(pendingContext?"Änderungen übernehmen?":"Original ersetzen?",pendingContext?"Die markierten Übungen werden als neue Programmeinstellung gespeichert. Dein bisheriger Fortschritt und das Protokoll des gerade beendeten Trainings bleiben erhalten.":"„"+esc(sourceName)+"“ wird durch deine bearbeitete Version ersetzt. Dein Fortschritt und vergangene Übungsstände bleiben erhalten; die Änderungen gelten ab der nächsten offenen Einheit.",replaceActions);
 }
@@ -3664,7 +3748,63 @@ function showShareModal(){
   {label:"Abbrechen",action:null}
  ]);
 }
+var exerciseLibraryView="",exerciseLibraryQuery="",personalFormSourceId=null,personalReturnView="library",personalDraft=null;
+function exerciseSubviewHeader(eyebrow,title,backId){return '<div class="hdr"><div class="ohdr"><button type="button" class="iconbtn" id="'+backId+'" aria-label="Zurück">'+icon("chevron-left")+'</button><div class="ohdrmain"></div><button type="button" class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="heroeyebrow">'+esc(eyebrow)+'</div><h1 class="ptitle">'+esc(title)+'</h1></div>';}
+function renderExerciseLibrary(query,loaded){
+ exerciseLibraryView="library";if(query!==undefined)exerciseLibraryQuery=String(query);var needle=normalizeExerciseLibraryName(exerciseLibraryQuery),all=personalExerciseEntries().concat(EXERCISE_LIBRARY||[]),matches=all.filter(function(entry){return !needle||exerciseLibraryEntryNames(entry).concat([entry.equipment||""]).some(function(name){return normalizeExerciseLibraryName(name).indexOf(needle)>=0;});}),locked=programWriteLocked();
+ var h='<div class="libbox">'+exerciseSubviewHeader("Übungen","Deine Übungen","exercisesback")+'<div class="edgrid"><label class="edfield wide"><span class="edlabel">Übungen suchen</span><input id="exercisessearch" data-personal-search="1" type="search" maxlength="80" value="'+attr(exerciseLibraryQuery)+'" placeholder="Name oder Gerät"></label></div><div class="librow"><button type="button" class="smallbtn go" id="personalnew"'+(locked?' disabled':'')+'>Eigene Übung erstellen</button></div><div class="libnote">Integrierte Übungen bleiben erhalten. Eigene Übungen werden lokal gespeichert und mit deinem vollständigen Backup gesichert.</div>';
+ if(EXERCISE_LIBRARY===null)h+='<div class="libnote" role="status">'+(loaded?'Die integrierten Übungen sind gerade nicht verfügbar. Lade die Ansicht erneut.':'Übungen werden geladen …')+'</div>';
+ if(!matches.length&&EXERCISE_LIBRARY!==null)h+='<div class="archiveempty"><b>Keine passende Übung.</b><br>Ändere die Suche oder erstelle eine eigene Übung.</div>';
+ h+='<div class="tpllist">';matches.slice(0,50).forEach(function(entry){var identity=entry.id||entry.de;h+='<div class="tplcard emerald"><span class="tplbar"></span><div class="tplmain"><div class="tplname">'+esc(entry.de)+'</div><div class="tplgoal">'+esc(entry.definition?'Persönlich · '+(entry.equipment||'eigene Übung'):entry.equipment||'Integriert')+'</div><div class="progactions"><button type="button" class="progtextaction" data-exercise-detail="'+attr(identity)+'">Details &amp; Verlauf</button></div></div></div>';});h+='</div>'+(matches.length>50?'<div class="libnote">'+matches.length+' Treffer · die ersten 50 werden angezeigt. Grenze die Suche ein.</div>':'')+'</div>';
+ document.getElementById("lib").innerHTML=h;
+ if(EXERCISE_LIBRARY===null&&!loaded)loadExerciseLibrary().then(function(){if(exerciseLibraryView==="library")renderExerciseLibrary(undefined,true);});
+}
+function openExerciseLibrary(){openLib();renderExerciseLibrary();focusSurface(document.getElementById("lib"),"#exercisessearch");}
+function exerciseDetailRows(entry){
+ var records=[];Object.keys(S.programs).forEach(function(pid){var program=S.programs[pid],store=S.store[pid]||{},logs=pid===S.active?S.logs:store.logs||{},positions=Object.create(null);(program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){positions[day.key+"|"+ex.id]=ex;});});
+ Object.keys(logs).forEach(function(key){var parts=key.split("|"),cell=logs[key],ex=positions[parts[1]+"|"+parts[2]];if(!ex||!cell||!Array.isArray(cell.sets))return;var performed=historicalExercise(ex,cell),snapshot=cell.performedExercise,swapped=normalizeSwapName(cell.swap),matches=snapshot?(entry.id?snapshot.exerciseId===entry.id:!snapshot.exerciseId&&snapshot.name===entry.de):((swapped||ex.name)===entry.de&&exerciseSwapTypeCompatible(ex,entry));if(!matches)return;var sets=cell.sets.filter(reportSetHasData);if(!sets.length)return;var session=(store.history||[]).filter(function(item){return item.week===+parts[0]&&item.day===parts[1];})[0];records.push({program:program.name,week:+parts[0],day:parts[1],start:session&&session.start||0,name:performed.name,confirmed:!!snapshot,convention:performed.weightConvention||"unspecified",parts:sets.map(function(set){return historicalSetText(performed,set);})});});
+ });return records.sort(function(a,b){return b.start-a.start||b.week-a.week;});
+}
+function renderExerciseDetail(identity,returnView){
+ var entry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry){showModal("Übung nicht gefunden","Diese Übung ist gerade nicht in der Bibliothek verfügbar.",[{label:"OK",cls:"primary",action:null}]);return;}
+ exerciseLibraryView="detail";personalReturnView=returnView||"library";var rows=exerciseDetailRows(entry),last=rows[0],h='<div class="libbox exercisedetail">'+exerciseSubviewHeader("Übung",entry.de,"exercisedetailback")+'<div class="libnote">'+esc(entry.definition?'Deine persönliche Übung':entry.equipment||'Integrierte Übung')+'</div>';
+ h+='<section class="eddaysettings"><h2 class="tplname">Letzte Leistung</h2><p>'+esc(last?last.parts.join(' / '):'Für diese Übung sind noch keine Satzwerte gespeichert.')+'</p>'+(last?'<div class="libnote">'+esc(last.program+' · Woche '+last.week+' · '+(last.confirmed?'Erfassung gespeichert':'Älterer Eintrag · Erfassung unbestätigt'))+'</div>':'')+'</section>';
+ h+='<details class="edadvanced"><summary>Technik &amp; Erfassung</summary><div class="edbody"><p>'+esc(entry.technik||'Noch keine Technikangabe hinterlegt.')+'</p><p>'+esc(exerciseLibraryTypeSignature(entry)==='weighted_seconds'?'Zeit und Gewicht gemeinsam':entry.typ==='zeit'?'Zeit in Minuten und Sekunden':entry.typ==='gewicht'?'Wiederholungen und Gewicht':entry.typ==='kgz'?'Wiederholungen und Zusatzgewicht':'Wiederholungen')+(entry.einseitig?' · je Seite':'')+'</p>'+(entry.weightConvention?'<p>'+esc(weightConventionText(entry.weightConvention))+'</p>':'')+'</div></details>';
+ h+='<details class="edadvanced" open><summary>Verlauf'+(rows.length?' ('+rows.length+')':'')+'</summary><div class="edbody">';if(rows.length){h+='<table class="htbl"><thead><tr><th>Training</th><th>Sätze</th></tr></thead><tbody>';rows.slice(0,30).forEach(function(row){h+='<tr><td>'+esc(row.program)+'<span class="hwl">W'+row.week+' · '+esc(row.day)+'</span></td><td>'+esc(row.parts.join(' / '))+'<span class="hwl">'+esc(row.confirmed?'Erfassung gespeichert':'Älterer Eintrag · Erfassung unbestätigt')+'</span></td></tr>';});h+='</tbody></table>'+(rows.length>30?'<p>Die letzten 30 Ausführungen. Alle Satzwerte bleiben im Backup erhalten.</p>':'');}else h+='<p>Der Verlauf erscheint nach deinem ersten eingetragenen Satz.</p>';h+='</div></details><div class="librow">';
+ if(!programWriteLocked()){if(entry.definition)h+='<button type="button" class="smallbtn" data-personal-edit="'+attr(entry.id)+'">Übungsdaten bearbeiten</button><button type="button" class="progtextaction" data-personal-archive="'+attr(entry.id)+'">Archivieren</button>';else h+='<button type="button" class="smallbtn" data-personal-duplicate="'+attr(entry.id||entry.de)+'">Als eigene Variante speichern</button>';}h+='</div></div>';document.getElementById("lib").innerHTML=h;focusSurface(document.getElementById("lib"),"#exercisedetailback");
+}
+function openWorkoutExerciseDetail(ex){
+ var cell=currentExerciseCell(ex),snapshot=cell&&cell.performedExercise,swap=currentExerciseSwap(ex),identity=swap?(snapshot&&snapshot.exerciseId||swap):ex.exerciseId||ex.name;
+ var entry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry){showHistory(ex);return;}
+ openLib();renderExerciseDetail(identity,"training");
+}
+function openPersonalExerciseForm(identity,returnView,duplicate){
+ if(localWriteBlocked()||programWriteLocked()){showProgramWriteLocked();return;}personalReturnView=returnView||"library";var entry=identity&&(findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity)),definition=entry&&entry.definition;personalFormSourceId=definition&&!duplicate?definition.id:null;
+ personalDraft=definition?cloneJSON(definition):{id:newPersonalExerciseId(),name:entry?entry.de:'',type:entry?exerciseLibraryTypeSignature(entry):'weight',perSide:!!(entry&&entry.einseitig),weightConvention:entry&&(entry.weightConvention||EXERCISE_WEIGHT_CONVENTIONS[entry.id])||'unspecified',technique:entry&&entry.technik||'',equipment:entry&&entry.equipment||''};
+ if(duplicate){personalDraft.id=newPersonalExerciseId();personalDraft.name=(personalDraft.name+' (eigene Variante)').slice(0,80);}renderPersonalExerciseForm();
+}
+function renderPersonalExerciseForm(){
+ exerciseLibraryView="personal-form";var d=personalDraft,h='<div class="libbox">'+exerciseSubviewHeader("Persönliche Übung",personalFormSourceId?'Übung bearbeiten':'Eigene Übung erstellen',"personalback")+'<div class="edgrid">';
+ function input(label,field,max){return '<label class="edfield wide"><span class="edlabel">'+label+'</span><input id="personal-'+field+'" data-personal-field="'+field+'" maxlength="'+max+'" value="'+attr(d[field])+'" required></label>';}
+ h+=input('Name','name',80)+'<label class="edfield wide"><span class="edlabel">Erfassung</span><select id="personal-type" data-personal-field="type">';[['weight','Wiederholungen und Gewicht'],['added_weight','Wiederholungen und Zusatzgewicht'],['bodyweight','Nur Wiederholungen'],['seconds','Nur Zeit'],['weighted_seconds','Zeit und Gewicht']].forEach(function(option){h+=editorOption(option[0],option[1],d.type);});h+='</select></label><label class="edfield wide"><span class="edlabel">Gewicht bedeutet</span><select id="personal-weightConvention" data-personal-field="weightConvention">';[['unspecified','Noch nicht festgelegt'],['total','Gesamtgewicht'],['per_dumbbell','Gewicht pro Hantel'],['device','Anzeige an diesem Gerät']].forEach(function(option){h+=editorOption(option[0],option[1],d.weightConvention);});h+='</select></label>'+input('Gerät oder Variante (optional)','equipment',80)+'<label class="edfield wide"><span class="edlabel">Technik (optional)</span><textarea id="personal-technique" data-personal-field="technique" maxlength="500">'+esc(d.technique)+'</textarea></label><label class="edfield wide"><span><input id="personal-perSide" data-personal-field="perSide" type="checkbox"'+(d.perSide?' checked':'')+'> Angaben gelten je Seite</span></label></div><div class="libnote">Bei einer anderen Erfassung, Gewichtskonvention oder Gerätevariante wird eine neue Übung angelegt. Frühere Satzwerte behalten ihre ursprünglichen Angaben. Unterstützung durch Gegengewicht gehört noch nicht zu diesen Erfassungsarten.</div><div class="librow"><button type="button" class="smallbtn go" id="personalsave">Übung speichern</button><button type="button" class="progtextaction" id="personalcancel">Abbrechen</button></div></div>';
+ document.getElementById("lib").innerHTML=h;focusSurface(document.getElementById("lib"),"#personal-name");
+}
+function syncPersonalExerciseForm(){if(!personalDraft)return;['name','type','weightConvention','equipment','technique','perSide'].forEach(function(field){var input=document.getElementById('personal-'+field);if(input)personalDraft[field]=field==='perSide'?input.checked:input.value;});}
+function returnFromPersonalExerciseForm(){personalDraft=null;personalFormSourceId=null;if(personalReturnView==='editor'){exerciseLibraryView='';renderProgramEditor();}else renderExerciseLibrary();}
+function storePersonalExercise(def,sourceId){
+ if(localWriteBlocked()||programWriteLocked())return {error:"Beende zuerst dein Training oder lade den aktuellen Stand."};var next=cloneJSON(def);next.name=next.name.trim();next.equipment=next.equipment.trim();next.technique=next.technique.trim();if(['bodyweight','seconds'].indexOf(next.type)>=0)next.weightConvention='unspecified';var error=personalExerciseError(next);if(error)return{error:error};
+ var previous=S.personalExercises||{},old=sourceId&&previous[sourceId];if(old&&personalExerciseTrackingKey(old)!==personalExerciseTrackingKey(next))next.id=newPersonalExerciseId();
+ if(!old&&previous[next.id])return{error:"Diese Übungskennung ist bereits vergeben."};var updated=cloneJSON(previous);updated[next.id]=next;var catalogError=personalExerciseCatalogError(updated);if(catalogError)return{error:catalogError};S.personalExercises=updated;
+ if(flushSave()===false){S.personalExercises=previous;return{error:"Die Übung konnte nicht gespeichert werden. Dein Entwurf bleibt erhalten."};}return{definition:next,newVariant:!!old&&old.id!==next.id};
+}
+function savePersonalExerciseForm(){syncPersonalExerciseForm();var result=storePersonalExercise(personalDraft,personalFormSourceId);if(result.error){showModal("Übung nicht gespeichert",esc(result.error),[{label:"Weiter bearbeiten",cls:"primary",action:null}]);return;}var returnView=personalReturnView;personalDraft=null;personalFormSourceId=null;if(returnView==='editor'){exerciseLibraryView='';renderProgramEditor();}else renderExerciseDetail(result.definition.id,'library');}
+function archivePersonalExercise(id,confirmed){
+ var def=S.personalExercises&&S.personalExercises[id];if(!def||localWriteBlocked()||programWriteLocked())return false;
+ if(!confirmed){showModal("Übung archivieren?","Die Übung verschwindet aus deiner Auswahl. Programme, Definition und sämtliche bisherigen Satzwerte bleiben erhalten.",[{label:"Archivieren",cls:"primary",action:function(){archivePersonalExercise(id,true);}},{label:"Abbrechen",action:null}]);return false;}
+ var old=def.archived;def.archived=true;if(flushSave()===false){if(old===undefined)delete def.archived;else def.archived=old;return false;}renderExerciseLibrary();return true;
+}
 function renderLib(){
+ exerciseLibraryView="";
  var locked=programWriteLocked(),lockedAttr=locked?' disabled title="Training läuft – zuerst beenden"':'',archiveIds=Object.keys(S.programs).filter(function(id){return S.programs[id].archived===true;}),h='<div class="libbox"><div class="hdr"><div class="topright"><span class="brand">Satzkraft</span><button class="linkbtn" id="archivebtn">Archiv'+(archiveIds.length?' ('+archiveIds.length+')':'')+'</button><button class="iconbtn" id="libclose" aria-label="Schließen">'+icon("close")+'</button></div><div class="heroeyebrow">Programme</div><h1 class="ptitle">Deine Bibliothek</h1></div>';
  if(locked)h+='<div class="importnotice warn"><strong>Training läuft</strong>Beende zuerst dein Training, um Programme zu ändern, ein anderes zu aktivieren, den Fortschritt zurückzusetzen oder ein Backup wiederherzustellen.</div>';
  var activeProgram=S.programs[S.active];if(activeProgram)h+=programItemHtml(S.active,activeProgram);
@@ -3675,6 +3815,7 @@ function renderLib(){
  h+='<button class="createtile" id="manualcreate" aria-label="Programm manuell erstellen"'+lockedAttr+'><span class="ticon">'+icon("edit")+'</span><b>Manuell</b><small>Selbst zusammenstellen</small></button>';
  h+='<button class="createtile" id="externalaibtn" aria-label="Programm mit ChatGPT oder einer anderen KI erstellen"'+lockedAttr+'><span class="ticon">'+icon("external")+'</span><b>ChatGPT &amp; Co.</b><small>Mit externer KI erstellen</small></button>';
  h+='</div>';
+ h+='<div class="librow"><button type="button" class="smallbtn" id="exercisesbtn">Übungen &amp; persönliche Bibliothek</button></div>';
  h+='<div class="libsec">Vorlagen · '+PROGRAM_LIBRARY.length+'</div><div class="tpllist">';
  PROGRAM_LIBRARY.forEach(function(item,index){h+='<div class="tplcard '+(item.farbe||'sky')+'"><span class="tplbar"></span><div class="tplmain"><div class="tpltop"><span class="tpllevel">'+esc(item.level)+'</span><span class="tplmeta">'+item.days+' Tage · '+esc(item.duration)+'</span></div><div class="tplname">'+esc(item.name)+'</div><div class="tplgoal">'+esc(item.goal)+'</div><div class="tpldesc">'+esc(item.description)+'</div><div class="progactions"><button class="progtextaction" data-library-index="'+index+'"'+lockedAttr+'>Laden</button><button class="progtextaction" data-library-edit="'+index+'"'+lockedAttr+'>Bearbeiten</button><button type="button" class="iconbtn sharebtn" data-library-share="'+index+'" aria-label="Vorlage '+attr(item.name)+' teilen" title="Teilen">'+icon("share")+'</button></div></div></div>';});
  h+='</div>';
@@ -3800,8 +3941,9 @@ var surfaceScrollY=0;
 function lockSurfaceScroll(){if(document.body.classList.contains("surface-locked"))return false;surfaceScrollY=window.scrollY||document.documentElement.scrollTop||0;document.body.style.top="-"+surfaceScrollY+"px";document.body.classList.add("surface-locked");return true;}
 function unlockSurfaceScroll(){if(!document.body.classList.contains("surface-locked"))return;var y=surfaceScrollY;document.body.classList.remove("surface-locked");document.body.style.top="";window.scrollTo(0,y);}
 function openLib(){libReturnFocus=document.activeElement;renderLib();lockSurfaceScroll();var lib=document.getElementById("lib");lib.classList.add("open");updateSurfaceIsolation();focusSurface(lib,"#libclose");}
-function closeLib(force){if(!force&&editorHasUnsavedChanges()){confirmEditorExit("close");return;}resetProgramEditorState();pendingProgramImport=null;importIssue=null;document.getElementById("lib").classList.remove("open");updateSurfaceIsolation();unlockSurfaceScroll();if(libReturnFocus&&document.contains(libReturnFocus))libReturnFocus.focus();libReturnFocus=null;}
+function closeLib(force){if(!force&&personalDraft){showModal("Eigene Übung noch nicht gespeichert","Dein Entwurf ist noch offen.",[{label:"Weiter bearbeiten",cls:"primary",action:null},{label:"Entwurf verwerfen",action:function(){personalDraft=null;personalFormSourceId=null;closeLib();}}]);return;}exerciseLibraryView="";if(!force&&editorHasUnsavedChanges()){confirmEditorExit("close");return;}resetProgramEditorState();pendingProgramImport=null;importIssue=null;document.getElementById("lib").classList.remove("open");updateSurfaceIsolation();unlockSurfaceScroll();if(libReturnFocus&&document.contains(libReturnFocus))libReturnFocus.focus();libReturnFocus=null;}
 
+document.getElementById("lib").addEventListener("input",function(event){var input=event.target;if(input.dataset.personalField){syncPersonalExerciseForm();return;}if(input.dataset.personalSearch){var position=input.selectionStart,query=input.value;renderExerciseLibrary(query);var replacement=document.getElementById("exercisessearch");replacement.focus();try{replacement.setSelectionRange(position,position);}catch(error){}}});
 // ---------- Events ----------
 var app=document.getElementById("app");
 app.addEventListener("beforeinput",function(e){var t=e.target;if(t&&t.id&&t.id.indexOf("rep-")===0)onTimeBeforeInput(e,t);});
@@ -3835,7 +3977,7 @@ app.addEventListener("click",function(e){
  if(b.dataset.note){var noteEx=findEx(b.dataset.note);if(noteEx)showExerciseNote(noteEx);return;}
  if(b.dataset.swapEx){var swapEx=findEx(b.dataset.swapEx);if(swapEx)showExerciseSwap(swapEx);return;}
  if(b.dataset.timeline){var timelineEx=findEx(b.dataset.timeline);if(timelineEx)showExerciseTimeline(timelineEx);return;}
- if(b.dataset.hist){var hex=findEx(b.dataset.hist);if(hex)showHistory(hex);return;}
+ if(b.dataset.hist){var hex=findEx(b.dataset.hist);if(hex)openWorkoutExerciseDetail(hex);return;}
  if(b.id==="pausew"){e.preventDefault();return;}
  if(b.id==="resumew"){resumeWorkout();return;}
  if(b.id==="stopw"){confirmStop();return;}
@@ -3877,8 +4019,19 @@ window.addEventListener("keydown",function(e){
 });
 document.getElementById("lib").addEventListener("click",function(e){
  var b=e.target.closest("button");if(!b)return;
+ if(b.id==="exercisesbtn"){renderExerciseLibrary();focusSurface(document.getElementById("lib"),"#exercisessearch");return;}
+ if(b.id==="exercisesback"){exerciseLibraryView="";renderLib();focusSurface(document.getElementById("lib"),"#exercisesbtn");return;}
+ if(b.dataset.exerciseDetail){renderExerciseDetail(b.dataset.exerciseDetail,"library");return;}
+ if(b.id==="exercisedetailback"){if(personalReturnView==="training"){exerciseLibraryView="";closeLib(true);}else renderExerciseLibrary();return;}
+ if(b.id==="personalnew"){openPersonalExerciseForm(null,"library",false);return;}
+ if(b.dataset.editorPersonalNew){syncEditorForm();openPersonalExerciseForm(null,"editor",false);return;}
+ if(b.dataset.personalEdit){openPersonalExerciseForm(b.dataset.personalEdit,"library",false);return;}
+ if(b.dataset.personalDuplicate){openPersonalExerciseForm(b.dataset.personalDuplicate,"library",true);return;}
+ if(b.dataset.personalArchive){archivePersonalExercise(b.dataset.personalArchive,false);return;}
+ if(b.id==="personalsave"){savePersonalExerciseForm();return;}
+ if(b.id==="personalback"||b.id==="personalcancel"){showModal("Entwurf verwerfen?","Die noch nicht gespeicherte persönliche Übung wird verworfen.",[{label:"Weiter bearbeiten",cls:"primary",action:null},{label:"Entwurf verwerfen",action:returnFromPersonalExerciseForm}]);return;}
  if(b.dataset.versionInfo){showVersionInfo();return;}
- if(b.dataset.exerciseSuggestion){editorChooseExerciseLibraryEntry(+b.dataset.edDay,+b.dataset.edEx,findExerciseLibraryEntry(b.dataset.exerciseSuggestion),false);return;}
+ if(b.dataset.exerciseSuggestion){editorChooseExerciseLibraryEntry(+b.dataset.edDay,+b.dataset.edEx,(findExerciseLibraryEntryById(b.dataset.exerciseSuggestionId)||findExerciseLibraryEntry(b.dataset.exerciseSuggestion)),false);return;}
  if(b.dataset.info){e.preventDefault();var info=EDITOR_INFO[b.dataset.info];if(info)showModal(info.t,esc(info.m),[{label:"OK",cls:"primary",action:null}]);return;}
  if(b.id==="libclose"||b.id==="libresume"){closeLib();return;}
  if(b.id==="archivebtn"){renderArchive();return;}
@@ -3970,7 +4123,7 @@ window.addEventListener("beforeunload",function(e){if(!localWindowHasDraft()||lo
 
 // ---------- Ein schreibbares Fenster je lokalem Speicherbereich ----------
 function localWindowHasDraft(){
- return localWriterDirty||storageErrorShown||(typeof editorHasUnsavedChanges==="function"&&editorHasUnsavedChanges())||!!document.querySelector('[data-time-draft="1"]');
+ return localWriterDirty||storageErrorShown||!!(typeof personalDraft!=="undefined"&&personalDraft)||(typeof editorHasUnsavedChanges==="function"&&editorHasUnsavedChanges())||!!document.querySelector('[data-time-draft="1"]');
 }
 function renderLocalWindowNotice(){
  var notice=document.getElementById("windowNotice");if(!notice)return;
@@ -4017,7 +4170,7 @@ function requestLocalWriter(discardDraft){
      localDataDeletionPending=false;backupRestorePending=false;
      S=load();localWriterDirty=false;localWriterDraftSecured=false;storageErrorShown=false;localWriterState="owner";
      // Niemals den früher geladenen Stand oder Live-Timer des zweiten Fensters übernehmen.
-     resetRestState();clearRestFocus();resetProgramEditorState();pendingProgramImport=null;importIssue=null;
+     resetRestState();clearRestFocus();resetProgramEditorState();personalDraft=null;personalFormSourceId=null;exerciseLibraryView="";pendingProgramImport=null;importIssue=null;
      ["lib","report","protocol","wucd"].forEach(function(id){document.getElementById(id).classList.remove("open");});
      document.getElementById("modal").style.display="none";unlockSurfaceScroll();
      renderView();renderBar();renderLocalWindowNotice();
@@ -4042,7 +4195,7 @@ document.getElementById("windowNotice").addEventListener("click",function(event)
    var backup=JSON.parse(backupJSON());
    if(localWindowHasDraft()){
     var fields=Array.prototype.map.call(document.querySelectorAll('#app input, #lib input, #lib textarea, #lib select'),function(field){return{id:field.id,value:field.value,checked:field.checked,dataset:Object.assign({},field.dataset)};});
-    backup.windowDraft={format:"satzkraft-fenster-entwurf",version:1,program:editorDraft,fields:fields};
+    backup.windowDraft={format:"satzkraft-fenster-entwurf",version:1,program:editorDraft,personalExercise:typeof personalDraft!=="undefined"?personalDraft:null,fields:fields};
    }
    ok=downloadText("satzkraft-fenster-backup.json",JSON.stringify(backup,null,2));
   }catch(e){ok=false;}

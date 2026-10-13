@@ -11,7 +11,7 @@ function finiteNumber(value, min, max, integer) {
 
 function loadRealBackupValidator() {
   const context = {
-    DATA_SCHEMA_VERSION: 4,
+    DATA_SCHEMA_VERSION: 5,
     CAT_COLORS: ['amber', 'emerald', 'violet', 'sky', 'orange', 'rose', 'slate'],
     LIMITS: { maxDays: 7, maxWeeks: 16, maxExPerDay: 12, maxSets: 10, maxNameLen: 30, maxLabelLen: 16 },
     WD_MAP: { montag: 0, dienstag: 1, mittwoch: 2, donnerstag: 3, freitag: 4, samstag: 5, sonntag: 6 },
@@ -102,7 +102,7 @@ test('validates full backup structure and recorded values', () => {
   const end = html.indexOf('function confirmBackupRestore', start);
   assert.ok(start >= 0 && end > start, 'Backup-Validierung wurde nicht gefunden');
   const context = {
-    DATA_SCHEMA_VERSION: 4,
+    DATA_SCHEMA_VERSION: 5,
     LIMITS: { maxSets: 10, maxWeeks: 16 },
     plainObject: value => !!value && typeof value === 'object' && !Array.isArray(value),
     finiteNumber,
@@ -286,7 +286,7 @@ test('normalization keeps the exact program set from a non-empty backup', () => 
   assert.ok(start >= 0 && end > start, 'Normalisierung wurde nicht gefunden');
   const context = {
     DEFAULT_PROGRAM: { name: 'Standard' },
-    DATA_SCHEMA_VERSION: 4,
+    DATA_SCHEMA_VERSION: 5,
     LIMITS: { maxExPerDay: 12 },
     clone: value => JSON.parse(JSON.stringify(value)),
     plainObject: value => !!value && typeof value === 'object' && !Array.isArray(value),
@@ -303,6 +303,7 @@ test('normalization keeps the exact program set from a non-empty backup', () => 
     }
   };
   vm.createContext(context);
+  vm.runInContext(html.slice(html.indexOf('function personalExerciseError('), html.indexOf('var EXERCISE_REFERENCES=')), context);
   vm.runInContext(html.slice(start, end), context);
   const program = { name: 'Nur Backup', planMode: 'continuous', categories: {}, weeks: [{}], days: [{ key: 'A', ex: [] }] };
   const store = { tg: {}, logs: {}, history: [], workout: null, week: 1, day: 'A' };
@@ -337,7 +338,7 @@ test('restore blocks stale autosaves until the restored state reloads', () => {
   let stored;
   let cleared = false;
   const restoreContext = {
-    DATA_SCHEMA_VERSION: 4,
+    DATA_SCHEMA_VERSION: 5,
     KEY: 'state',
     saveT: 123,
     backupRestorePending: false,
@@ -360,7 +361,7 @@ test('restore blocks stale autosaves until the restored state reloads', () => {
   assert.equal(cleared, true);
   assert.equal(restoreContext.saveT, null);
   assert.equal(restoreContext.backupRestorePending, true);
-  assert.equal(stored.schemaVersion, 4);
+  assert.equal(stored.schemaVersion, 5);
   assert.deepEqual(Object.keys(stored.programs), ['only']);
 });
 

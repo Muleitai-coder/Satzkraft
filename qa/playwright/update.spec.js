@@ -1938,11 +1938,11 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
   const before = await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }));
   await page.locator('[data-expand-prev="carry"]').click();
   await page.locator('[data-hist="carry"]').first().click();
-  await expect(page.locator('#modal .htbl')).toContainText('1:00 min · 20 kg · je Seite');
-  await expect(page.locator('#modal .htbl')).toContainText('0:45 min · 0 kg · je Seite');
-  await expect(page.locator('#modal')).not.toContainText('Geschätztes 1RM');
+  await expect(page.locator('#lib .htbl')).toContainText('1:00 min · 20 kg · je Seite');
+  await expect(page.locator('#lib .htbl')).toContainText('0:45 min · 0 kg · je Seite');
+  await expect(page.locator('#lib')).not.toContainText('Geschätztes 1RM');
   await expect(page.locator('#modal .htbl th')).toHaveCount(2);
-  await page.getByRole('button', { name: 'Schließen', exact: true }).click();
+  await page.locator('#exercisedetailback').click();
   await page.locator('#pdf').click();
   await expect(page.locator('#report .rmetric').last()).toContainText('0 kg');
   await expect(page.locator('#report .rexcard')).toHaveCount(1);
@@ -1982,4 +1982,62 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
   await expect(page.locator('#report .rexcard')).toContainText('0:45 min · 22,5 kg · je Seite');
   expect(await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }))).toBe(before);
   expect(errors).toEqual([]);
+});
+
+test.describe('C2/C3 gezielte mobile Abnahme', () => {
+ test.use({serviceWorkers:'allow'});
+test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile Detailansicht', async ({ page }) => {
+ test.setTimeout(60000);
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await openWithPersistedState(page,compactWorkoutState(1));
+ await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+ await openPrograms(page);await page.locator('#exercisesbtn').click();await page.locator('#personalnew').click();
+ await page.locator('#personal-name').fill('Meine Testbank');
+ await page.locator('#personal-weightConvention').selectOption('per_dumbbell');
+ await page.locator('#personal-equipment').fill('Testhanteln');
+ await page.locator('#personal-technique').fill('Ruhig absenken.');
+ await page.locator('#personalsave').click();await expect(page.locator('#lib h1')).toHaveText('Meine Testbank');
+ const personalId=await page.evaluate(()=>Object.keys(S.personalExercises)[0]);expect(personalId).toMatch(/^custom_/);
+ for(const theme of ['dark','light']){
+  await page.setViewportSize({width:320,height:780});await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
+  await expect(page.locator('#lib')).toContainText('Für diese Übung sind noch keine Satzwerte');
+  expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);
+  const directory=path.resolve(__dirname,'../../replica/clone-screens');fs.mkdirSync(directory,{recursive:true});await page.screenshot({path:path.join(directory,'C3-detail-empty-'+theme+'.png')});
+ }
+ await page.locator('#exercisedetailback').click();await page.locator('#exercisesback').click();
+ await page.locator('.progitem.active [data-edit]').click();await page.locator('[data-ed-openex="0"]').click();
+ const name=page.locator('[data-ed-field="name"][data-ed-ex="0"]');await name.fill('Meine Test');
+ await page.locator('[data-exercise-suggestion-id="'+personalId+'"]').click();
+ const accept=page.getByRole('button',{name:'Bibliothekswerte übernehmen',exact:true});if(await accept.isVisible())await accept.click();
+ expect(await page.evaluate(()=>editorDraft.days[0].exercises[0].exerciseDefinition.name)).toBe('Meine Testbank');
+ await page.locator('#edsavecopy').click();await page.locator('.programothers summary').click();await page.locator('[data-sel]').last().click();
+ await page.locator('#startw').click();await page.locator('[data-set-kind="rep"]').first().fill('10');await page.locator('[data-set-kind="wt"]').first().fill('20');await page.locator('[data-set-kind="wt"]').first().blur();
+ await expect.poll(()=>page.evaluate(()=>Object.values(S.logs)[0]?.performedExercise?.name)).toBe('Meine Testbank');
+ expect(await page.evaluate(()=>Object.values(S.logs)[0].performedExercise.weightConvention)).toBe('per_dumbbell');
+ // Background events and a reload must preserve the completed set and pause the live workout safely.
+ await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await page.reload();
+ await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+ expect(await page.evaluate(()=>Object.values(S.logs)[0].sets[0].weight)).toBe('20');expect(await page.evaluate(()=>S.workout.running)).toBe(false);
+ if(await page.locator('[data-expand-done]').first().isVisible())await page.locator('[data-expand-done]').first().click();
+ await page.locator('#app .exnamelink').first().click();await expect(page.locator('#lib')).toContainText('10 × 20 kg · pro Hantel');
+ for(const theme of ['dark','light']){await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);const directory=path.resolve(__dirname,'../../replica/clone-screens');await page.screenshot({path:path.join(directory,'C3-detail-filled-'+theme+'.png')});}
+ const backup=await page.evaluate(()=>backupJSON());const saved=JSON.parse(backup);expect(saved.schemaVersion).toBe(5);expect(saved.personalExercises[personalId].name).toBe('Meine Testbank');expect(await page.evaluate(raw=>validateBackupFile(raw),saved)).toBeNull();
+ await page.locator('#exercisedetailback').click();
+ await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
+ await page.context().setOffline(true);
+ if(await page.locator('[data-expand-done]').first().isVisible())await page.locator('[data-expand-done]').first().click();await page.locator('#app .exnamelink').first().click();
+ await expect(page.locator('#lib')).toContainText('10 × 20 kg · pro Hantel');await page.locator('#exercisedetailback').click();
+ expect(await page.evaluate(()=>Object.values(S.logs)[0].performedExercise.name)).toBe('Meine Testbank');
+ await page.context().setOffline(false);
+ await page.evaluate(()=>stopWorkout(true));
+ await page.evaluate(text=>importBackup(text),backup);
+ const download=page.waitForEvent('download'),navigation=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Sichern & wiederherstellen',exact:true}).click();await download;await navigation;await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+ await expect.poll(()=>page.evaluate(()=>S.workout&&S.workout.running)).toBe(false);
+ expect(await page.evaluate(()=>Object.keys(S.personalExercises).length)).toBe(1);
+ expect(await page.evaluate(()=>Object.values(S.logs)[0].performedExercise.name)).toBe('Meine Testbank');
+ await page.setViewportSize({width:1440,height:900});await openPrograms(page);await page.locator('#exercisesbtn').click();await page.locator('[data-exercise-detail="'+personalId+'"]').click();
+ expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:path.resolve(__dirname,'../../replica/clone-screens/C3-detail-desktop.png')});
+ await page.locator('#libclose').focus();await page.keyboard.press('Enter');await expect(page.locator('#lib')).not.toHaveClass(/open/);expect(errors).toEqual([]);
+});
 });

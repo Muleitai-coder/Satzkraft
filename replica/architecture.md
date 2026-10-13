@@ -182,3 +182,9 @@ Zehn geprüfte Übungen erhalten Bibliotheks-IDs. Ein synchroner Referenzvertrag
 Die ursprüngliche Bestandsaufnahme umfasst Code-/Dokumentanalyse und zwei isolierte Reproduktionen mit synthetischen Daten. Die anschließende Entfernung der API-Anbindung ist ein gesonderter Umsetzungsauftrag. Sie ist keine neue vollständige Produktabnahme. Physische Smartphone-Prüfung, die externe KI-Runde mit echtem Anbieter und aktuelle Produktionsbereitstellung sind nicht neu verifiziert.
 
 Die vorhandene Teststrategie verlangt für Dokumentation nur Diff- und Pfadprüfung. Für die spätere Veröffentlichung müssen App-Version und Service-Worker-Cache synchron erhöht werden. Die Entfernung des API-Coachs steht bereits unter Unreleased und als Produktentscheidung im Briefing. Der Auftrag wurde mit „dann weiter machen“ auf Paket A und mit dem anschließenden „weiter machen“ auf Paket B erweitert. Entsprechend dem höher priorisierten aktiven Briefing erfolgt ohne ausdrücklichen Git-Auftrag kein Commit oder Push.
+
+## Aktueller Ausbau vom 13.10.2026
+
+C2 und die kompatible persönliche Bibliothek aus C3 sind durch den neuen Auftrag umgesetzt. Historische Rohwerte werden nicht migriert oder geraten; neue Logs erhalten einen Erfassungssnapshot, der Report, Protokoll und Details steuert. Persönliche Übungen und Definitionen werden vollständig mit Schema-5-Backups transportiert. V2 bleibt auf die vorhandene ausführbare Erfassung beschränkt; Unterstützung/Gegengewicht bleibt offen.
+
+Übungsbibliothek und Vollbilddetails sind vorhanden, einschließlich Auswahl im Editor, Erstellen, Varianten und Archivieren. Die früheren Tabellen dieses Dokuments erklären die ursprüngliche Reihenfolge; der aktuelle maßgebliche Fortschritt steht im [Briefing](../BRIEFING-CODEX.md) und im [Prüfbericht](../docs/tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md). Nächster erforderlicher Schritt ist die reale Smartphone-/PWA-Abnahme. Ein öffentliches Release ist nicht beauftragt.

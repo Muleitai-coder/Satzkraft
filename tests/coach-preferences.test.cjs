@@ -87,7 +87,7 @@ test('legacy coach programs complete a block without calling the removed coach',
 });
 test('parses all inline scripts and keeps schema and format compatibility', () => {
   for (const script of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)) new vm.Script(script[1]);
-  assert.match(html, /DATA_SCHEMA_VERSION=4/);
+  assert.match(html, /DATA_SCHEMA_VERSION=5/);
   assert.match(html, /var KEY="cali-plan-v3"/);
   assert.match(html, /program\.source!=="coach"/);
   assert.match(html, /if\(oldProg\.source\)p\.source=oldProg\.source/);

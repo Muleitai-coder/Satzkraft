@@ -10,7 +10,7 @@ JSON-Datei Text und Link teilen,Export,should,active,yes,F03; persönliche Arbei
 Lokale Satzwerterfassung Wiederholungen Gewicht Zeit,Training,must,active,yes,S02; F04-F05; Sekunden intern in reps
 Trainingszeit Pause Fortsetzen und Hintergrund,Training,must,active,yes,F04; Pause 2 s halten; Reload bewusst pausiert
 Automatische Satzpause und Satzfokus,Training,must,active,yes,F04; auch nach letztem Satz
-Zielzeit Maximalzeit und gewichtete Zeitübungen,Training,must,active,yes,F05; Erfassung vorhanden; Auswertung gesondert fehlerhaft
+Zielzeit Maximalzeit und gewichtete Zeitübungen,Training,must,active,yes,F05; Erfassung vorhanden; Auswertung Zeit und Gewicht typgerecht
 Warm-up und Cool-down,Training,should,active,yes,S14; F05
 Übungstausch für heute oder dauerhaft,Training,must,active,yes,F06; typkompatible Bibliotheksvorschläge
 Übung nur heute entfernen und nach Reload erhalten,Training,must,active,yes,F06; programmbezogene Entfernung
@@ -23,14 +23,14 @@ Druckbares vollständiges Trainingsprotokoll,Auswertung,must,active,yes,O02 loka
 Archiv und Folgeblock,Programme,should,active,yes,S11; F10; Fortschritt und Vorblockbezug
 Backup Wiederherstellung und Erinnerung,Daten,must,active,yes,F11; defensiver Import und Sicherheitskopie
 Schutz vor konkurrierenden veralteten Fenstern,Daten,must,active,yes,O01 lokal behoben; exklusive Web Lock und Standvergleich; Geräte-/Rolloutabnahme offen
-Offline-PWA und Cache-Positivliste,Offline,must,active,yes,sw.js; gespeicherte App-Ressourcen; Coach benötigt Netz
+Offline-PWA und Cache-Positivliste,Offline,must,active,yes,sw.js; gespeicherte App-Ressourcen; API-Coach entfernt; echte Offline-Neustartabnahme offen
 Integrierter API-Coach,Coach,should,non_goal,skip,Am 11.10.2026 entfernt; alte Programme und Backups bleiben nutzbar; spätere KI-Lösung separat planen
 ChatGPT und andere KI per lokalem Prompt,Coach,should,active,yes,S10; F12; Nutzer übermittelt selbst
 Theme Fokusführung und mobiles Design,Design,must,active,yes,Designsystem; O03 reale Geräteabnahme offen
 Öffentliche Dateien durch Build-Positivliste,Veröffentlichung,must,active,yes,13 Veröffentlichungsdateien; Dokumentation bleibt außerhalb dist
-Persönliche dauerhafte Übungsbibliothek,Bibliothek,could,draft,no,O04; Entwurf nicht freigegeben; freie Programmübungen bereits möglich
-Stabile Bibliotheks-IDs und erweitertes Erfassungsmodell,Bibliothek,could,active,partial,C1 lokal umgesetzt: zehn optionale Bibliotheks-IDs; Auswahl Editor Import Export Backup Tausch und Folgeblock erhalten Referenzen; erweitertes Erfassungsmodell C2/C3 offen
-Vollbild-Übungsdetail mit Verlauf und Wissen,Bibliothek,could,draft,no,O04; derzeit Verlaufdialog und Übungskarten
+Persönliche dauerhafte Übungsbibliothek,Bibliothek,could,active,yes,C3 beauftragt 13.10.; lokale Definitionen; Auswahl und Archivieren; Schema-5-Backup; portable v2-Definitionen
+Stabile Bibliotheks-IDs und erweitertes Erfassungsmodell,Bibliothek,could,active,partial,C1 lokal umgesetzt: zehn optionale Bibliotheks-IDs; Auswahl Editor Import Export Backup Tausch und Folgeblock erhalten Referenzen; historische Erfassung C2 und kompatible persönliche Definitionen C3 umgesetzt; Unterstützung weiterhin offen
+Vollbild-Übungsdetail mit Verlauf und Wissen,Bibliothek,could,active,yes,S18; Technik und letzte Leistung; aktive und archivierte Blöcke; Legacy klar gekennzeichnet
 Tausch zwischen unterschiedlichen Erfassungsarten,Training,could,draft,no,O04; aktueller bestätigter Ablauf verlangt kompatible Vorschläge
 Konten Cloud Zahlung und soziale Funktionen,Produkt,could,non_goal,skip,Aktive Nicht-Ziele; historischer Cloudplan ist keine Freigabe
 Muskelgruppen-Oberfläche und vollständige Cardio-Plattform,Produkt,could,non_goal,skip,Aktuelle Nicht-Ziele beziehungsweise späterer Entwurf

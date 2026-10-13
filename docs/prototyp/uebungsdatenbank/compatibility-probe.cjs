@@ -31,6 +31,7 @@ function legacyContext(current = false) {
     saved.sections.forEach(source => vm.runInContext(source, context));
     return context;
   }
+  context.DATA_SCHEMA_VERSION = Number(html.match(/var DATA_SCHEMA_VERSION=(\d+)/)[1]);
   vm.runInContext(section('var BEREICHE=', 'var DEFAULT_PROGRAM='), context);
   vm.runInContext(section('function genId()', 'function setActive('), context);
   vm.runInContext(section('function validBackupNumber(', 'function confirmBackupRestore('), context);

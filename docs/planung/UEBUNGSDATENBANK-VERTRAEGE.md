@@ -1,6 +1,6 @@
 # Übungsdatenbank – Verträge für Import, Export und Migration
 
-Stand: 12.10.2026. **C1 mit „ok weiter machen“ beauftragt und lokal umgesetzt. C2/C3 bleiben nachgelagerte Pakete. Keine produktive Datenmigration und keine neue Austausch-/Speicherversion eingeführt.**
+Historischer Vertragsstand: 12.10.2026. **C1 mit „ok weiter machen“ beauftragt und lokal umgesetzt. C2/C3 bleiben nachgelagerte Pakete. Keine produktive Datenmigration und keine neue Austausch-/Speicherversion eingeführt.**
 
 Grundlage sind D1–D8 der bestätigten [Entscheidungsvorlage](UEBUNGSDATENBANK-ENTSCHEIDUNGSVORLAGE.md), der [Datenprototyp](../prototyp/uebungsdatenbank/README.md) und die tatsächlichen Import-/Backupfunktionen in [index.html](../../index.html). „Weiter machen“ beauftragt diesen nächsten Vorbereitungsschritt. Die folgenden Pakete begrenzen die spätere Umsetzung; nicht beauftragte Funktionen bleiben zurückgestellt.
 
@@ -151,3 +151,9 @@ Gezielt zu prüfende Dateien bei späterer Umsetzung: Import/Validierung, Übung
 Dieser Auftrag hat Verträge und Grenzen vorbereitet und sieben isolierte Kompatibilitätsfälle am bestehenden Code geprüft. Der ursprüngliche Datenprototyp mit seinen 18 Tests wurde nicht verändert und nicht erneut getestet. App, Bibliothek, Programmvorlagen, Service Worker, Versionen und Build bleiben im bisherigen Arbeitsstand. Keine privaten Daten gelesen, keine Veröffentlichung und kein Git-Upload.
 
 C1 ist anschließend lokal umgesetzt und nach A01–A10 gezielt geprüft: [Ergebnisbericht](../tests/TESTBERICHT-UEBUNGSREFERENZEN.md). Nächster Schritt: C2 spezifizieren und C3 einschließlich der nötigen Versionsentscheidung separat freigeben. Die echte Smartphone-/PWA-Abnahme bleibt parallel offen. Der vorherige Kompatibilitätsnachweis verwendet jetzt einen gesicherten Ausschnitt des eigenen Readers vor C1, damit der dokumentierte alte Rundweg trotz neuer Implementierung weiterhin prüfbar bleibt.
+
+## Fortschreibung nach erweitertem Auftrag vom 13.10.2026
+
+Der neue Auftrag beauftragt C2 sowie persönliche Bibliothek und Detailansicht. Die frühere Begrenzung „keine Schema-5-Implementierung in diesem Auftrag“ bezog sich auf die Vertragsvorbereitung/C1 und wird durch den neuen Umfang abgelöst. Schema 5 ist für vollständige neue Backups implementiert; Schema-4-Import und v2-Programme bleiben erhalten. Unterstützung und nicht abwärtskompatible neue Erfassungsarten sind weiterhin nicht beauftragt und bleiben offen.
+
+Konkrete produktive Felder: `personalExercises` an der Zustandswurzel; optionale `exerciseDefinition`/`weightConvention` an Programmpositionen; `pendingPerformedExercise` bei neuer Teileingabe und `performedExercise` beim ersten vollständigen Satz. Schnappschüsse werden nicht an bestehenden Legacy-Werten ergänzt. Korrigierte neue Logs behalten ihre Erfassung. Historische Mengen werden nicht abgeschnitten oder umgerechnet. Definition, Programm und historische Erfassung sind gemeinsam sicherbar. [Aktuelle Regeln](../../BRIEFING-CODEX.md) und [gezielte Abnahme](../tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md).

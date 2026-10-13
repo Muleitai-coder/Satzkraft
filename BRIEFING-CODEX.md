@@ -1,8 +1,8 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
-- Stand: 12.10.2026
+- Stand: 13.10.2026
 - Veröffentlichter Stand: v0.33.4
-- Arbeitsstand: v0.33.4 + Unreleased (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen)
+- Arbeitsstand: v0.33.4 + Unreleased (API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -27,7 +27,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 ### Daten und KI
 
 - Programme, Trainingswerte, Protokolle und Einstellungen liegen ohne Konto im Browser.
-- Der zentrale App-Zustand verwendet weiterhin `localStorage` mit Schlüssel `cali-plan-v3` und `DATA_SCHEMA_VERSION` 4.
+- Der zentrale App-Zustand verwendet weiterhin `localStorage` mit Schlüssel `cali-plan-v3` und `DATA_SCHEMA_VERSION` 5. Schema-4-Backups bleiben importierbar; neue Backups erhalten vollständige persönliche Definitionen und historische Erfassung.
 - **Produktentscheidung 11.10.2026:** Der integrierte KI-Coach einschließlich Wizard, API-Aufrufen und Netlify-Serverfunktion wird entfernt. Eine spätere einfachere KI-Lösung benötigt einen eigenen Auftrag.
 - „ChatGPT & Co.“ bleibt als lokaler Prompt-/Exportweg mit geprüftem JSON-Import erhalten. Der Nutzer entscheidet selbst über die Weitergabe an eine externe KI; Satzkraft sendet keine Trainingsdaten an eine KI-API.
 - Bestehende Programme mit historischer Herkunft `source: "coach"` und alte Backups bleiben kompatibel. Gespeicherte Coach-Antworten werden beim Start der aktualisierten App entfernt, sofern der Speicherzugriff erlaubt ist; eine Löschgeneration blockiert dabei bereits offene ältere Coach-Sitzungen.
@@ -53,12 +53,12 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 1. Die kompakte Ein-Datei-App bleibt bestehen. Kein Framework und keine Runtime-Abhängigkeiten einführen. Der Build ist nur ein abhängigkeitenfreies Kopieren der freigegebenen Veröffentlichungsdateien nach `dist/`.
 2. Nutzertexte sind deutsch, in Du-Form, kurz und verständlich.
 3. Dynamische HTML-Ausgaben über `esc()` beziehungsweise `attr()` absichern. Nutzereingaben und Importdaten validieren.
-4. Datenkompatibilität erhalten: `cali-plan-v3`, Schema 4 und Austauschformat `trainings-block` Version 2 nicht brechen. Neue Felder bleiben optional und abwärtskompatibel.
+4. Datenkompatibilität erhalten: `cali-plan-v3`, Import alter Schema-4-Backups und Austauschformat `trainings-block` Version 2 nicht brechen. Neue Programmfelder bleiben optional und innerhalb der bisherigen Satzsemantik ausführbar; neue vollständige Backups verwenden bewusst Schema 5.
 5. `js/progression.js` ist fachlich sensibel. Nur bei bestätigten Rechen- oder Produktfehlern ändern und die Grenzfälle direkt testen; keine stilistischen Umbauten.
 6. Von Tests verwendete String-Anker und Funktionsreihenfolgen in `index.html` nur ändern, wenn die betroffenen Tests bewusst mit angepasst werden.
 7. Nutzerrelevante Änderungen unter `Unreleased` in `CHANGELOG.md` dokumentieren. Beim Release `APP_VERSION` und Service-Worker-Cache synchron erhöhen.
 8. Änderungen nach `docs/TESTING.md` risikobasiert prüfen. Keine Prüfungen deaktivieren und keine fehlschlagenden Tests still entfernen.
-9. Vorhandene, unfertige Änderungen bewahren. Ohne ausdrücklichen Auftrag weder committen noch pushen.
+9. Vorhandene, unfertige Änderungen bewahren. Der Auftrag vom 13.10.2026 umfasst die Prüfung und Sicherung des vorhandenen Änderungsstands; für diesen Auftrag gilt der Abschlussablauf aus `AGENTS.md`. Keine allgemeine Veröffentlichung daraus ableiten.
 
 ### Übungsdatenbank – bestätigter Prototypumfang
 
@@ -72,6 +72,18 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 - Die Prototypdateien liegen ausschließlich unter `docs/prototyp/uebungsdatenbank/`; sie werden weder von der App noch vom Service Worker geladen oder veröffentlicht. `cali-plan-v3`, Schema 4 und `trainings-block` v2 bleiben unverändert. Unterstützung und verlustfreier Austausch mit älteren Apps benötigen vor produktiver Nutzung einen eigenen Vertrag.
 - **Arbeitsstand 12.10.2026:** Mit „weiter machen“ wurden die [Import-/Export-/Migrationsverträge](docs/planung/UEBUNGSDATENBANK-VERTRAEGE.md) vorbereitet. Sieben neue isolierte Prüfungen am bestehenden Reader belegen Metadatenverlust, unwirksame Fähigkeitsmarker und die Grenzen des heutigen Backups. Als nächstes Umsetzungspaket ist C1 für optionale kompatible Übungsreferenzen beschrieben; C2/C3 und produktive Migration bleiben nachgelagerte Schritte. Keine neue Austausch- oder Speicherversion und keine neue App-Funktion in dieser Vertragsvorbereitung.
 - **Umsetzungsauftrag 12.10.2026:** Das anschließende „ok weiter machen“ beauftragt C1. Zehn kompatible integrierte Übungen besitzen jetzt Bibliotheks-IDs; `exerciseId` bleibt optional und wird in Editor, v2-Import/-Export, Tausch/Folgeblock und Schema-4-Backup erhalten. Ein separater ID-Index und eine kleine synchron verfügbare Referenzliste prüfen bekannte Identität, Erfassung und Seitenregel, auch vor dem Bibliotheksabruf. Unbekannte/persönliche IDs und widersprüchliche Zusatzdefinitionen bleiben Fehlerfälle. Namen bleiben beim Import erhalten; Abweichungen werden gezeigt. Lösen einer Zuordnung und freie Umbenennung sind bewusste Editorentscheidungen. Kein automatisches Annotieren alter Programme/Logs, keine neue Berechnung oder Migration. [Abnahme](docs/tests/TESTBERICHT-UEBUNGSREFERENZEN.md): 88 unterschiedliche gezielte Node-Fälle und ein mobiler Browserfall bestanden; echte Geräteabnahme offen.
+
+### Ausbauauftrag vom 13.10.2026 – Historie, persönliche Übungen und Details
+
+- „Alle 5 Punkte durcharbeiten“ beauftragt Sicherung, mobile Prüfung, historische Erfassung, persönliche Bibliothek und Detailansicht. Bibliothek und Details sind getrennte Pakete; die physische Geräteabnahme benötigt weiterhin eine tatsächliche Rückmeldung.
+- Neue Logs erhalten beim ersten vollständigen Satz einen unveränderlichen `performedExercise`-Snapshot; Teileingaben behalten vorher `pendingPerformedExercise`. Name, optionale Identität, Einheit, Gewicht/Zusatzgewicht, Seitenregel und Gewichtskonvention bleiben bei Korrekturen erhalten. Keine nachträglichen Snapshots für Logs mit alten Werten.
+- Gewichtskonventionen sind `unspecified`, `total`, `per_dumbbell` und `device`. Nur neue ausdrückliche Vorgaben beziehungsweise zehn geprüfte Referenzen bestätigen sie. Rohwerte werden nicht umgerechnet. Andere Seitigkeit/Gewichtskonvention erzeugt im Programmeditor eine neue Position; bestätigte Historie und Altbestand erhalten getrennte Auswertungsvergleiche.
+- Persönliche Definitionen: `custom_...`-ID, Name, bestehender Erfassungstyp, Seitenregel, Gewichtskonvention, Gerät/Variante und optionale Technik. Höchstens 200 Definitionen; Name/Gerät höchstens 80 Zeichen, Technik 500 Zeichen. Andere Erfassung, Lastkonvention oder Gerät/Variante erhält eine neue ID. Archivieren bewahrt Definition und Verlauf; integrierte Übungen nur duplizieren.
+- `personalExercises` wird gemeinsam mit Programmen und Stores gespeichert und gesichert. Programmpositionen transportieren ihre `exerciseDefinition` und `weightConvention`. Widersprüchliche persönliche Importkennungen erhalten nach angekündigter Vorschau neue IDs in der Kopie; vorhandene Definitionen werden nicht überschrieben.
+- Vollständige Backups verwenden **Schema 5**; Schema 4 bleibt importierbar. Ein Schema-4-Dokument mit neuen persönlichen/historischen Pflichtinhalten wird abgelehnt. Alte Backup-Reader lehnen Schema 5 ab. Ältere bereits laufende JavaScript-Fenster werden dadurch nicht kooperativ: vor einem Rollout schließen/aktualisieren.
+- Programmformat bleibt v2, ausschließlich für die bisherigen fünf kompatiblen Erfassungsarten. Unterstützung/Gegengewicht bleibt zurückgestellt. Persönliche v2-Dateien sind selbstständig ausführbar; ältere Reader können Zusatzdefinitionen verlieren oder unbekannte IDs ablehnen. Sie sind kein vollständiges Bibliotheksbackup.
+- Übungen sind über Programme → „Übungen & persönliche Bibliothek“ erreichbar. Namenslinks im Training öffnen registrierte Übungsdetails mit Technik, letzter Leistung und Verlauf über aktive/archivierte Programme. Freie Übungen behalten ihren bisherigen Verlaufsdialog.
+- [Prüfbericht](docs/tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md): 71 unterschiedliche gezielte Node-Fälle und ein WebKit-Ablauf; [physische Geräteabnahme](docs/tests/SMARTPHONE-ABNAHME.md) weiterhin offen. App-Version/Cache bleiben bis zu einem eigenen Releaseauftrag unverändert.
 
 ### Lokale Daten bei mehreren Fenstern
 

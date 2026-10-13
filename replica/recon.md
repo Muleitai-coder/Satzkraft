@@ -50,8 +50,8 @@ Vorhanden sind Programme mit Kategorien und Wochenphasen, lokales Mehrprogramm-M
 | S09 | Ehemaliger API-Coach | Entfernt am 11.10.2026; ID bleibt für historische Verweise reserviert | Alte Programme bleiben kompatibel; gespeicherte Antworten werden bereinigt |
 | S10 | ChatGPT & Co., `renderExternalAiCreate()` | Wunsch, lokal erzeugte Vorlage, Rückweg zum Import | Wunsch fehlt, Kopieren erfolgreich/fehlgeschlagen |
 | S11 | Archiv, `renderArchive()` | Archivierte Programme, Auswertung und Wiederaufnahme | Leer, gefüllt, Änderungen während Training gesperrt |
-| S12 | Auswertung, `openReport()` | Einheiten, Dauer, bewegtes Gewicht, Übungskarten, Vorblock, Drucken | Ohne Verlauf, mit Verlauf, aktiver/archivierter Block; Zeit+Gewicht fehlerhaft |
-| S13 | Protokoll, `openProtocol()` | Wochen, Sätze, Notizen und Druckansicht | Leer, gefüllt, getauschte Übung; Zeit+Gewicht fehlerhaft |
+| S12 | Auswertung, `openReport()` | Einheiten, Dauer, bewegtes Gewicht, Übungskarten, Vorblock, Drucken | Ohne Verlauf, mit Verlauf, aktiver/archivierter Block; Zeit+Gewicht korrigiert |
+| S13 | Protokoll, `openProtocol()` | Wochen, Sätze, Notizen und Druckansicht | Leer, gefüllt, getauschte Übung; Zeit+Gewicht korrigiert |
 | S14 | Warm-up/Cool-down, `startWucd()` | Geführte zeitbasierte Abfolge | Laufend, nächster Schritt, Ende/Abbruch |
 | S15 | Einstellungen, `showSettings()` | Hell/dunkel, Backup, Datenfluss, Coach-/Komplettlöschung | Bestätigung, Sicherheitskopie, Speicher-/Löschfehler |
 | S16 | Übungsverlauf, `showHistory()` | Wochen/Sätze, Verlauf, ggf. geschätztes 1RM | Leer/gefüllt; Zeit plus Gewicht ohne 1RM/Volumen |
@@ -137,3 +137,9 @@ Die Matrix enthält 35 Positionen: 22 `must`, sieben `should`, sechs `could`. Da
 Der vorhandene Produktumfang ist insgesamt L: 16 aktive fachliche Oberflächen, 12 Hauptabläufe, acht zentrale Datenstrukturen. Die schwierigsten Teile sind verlustfreie Planänderungen mit Historie, lokale Persistenz/Offline über Lebenszyklus und Fenster hinweg sowie typgerechte Progression/Auswertung. Der nächste Schritt ist ein kleines, abgegrenztes Paket; Aufwand und Abnahmekriterien stehen in [architecture.md](architecture.md).
 
 Konten, Cloud-Synchronisierung, Zahlung, soziale Funktionen, medizinische Diagnostik, Muskelgruppen-Oberfläche und Framework-Umbau bleiben außerhalb des aktuellen Umfangs. Eigene Assets und eigener Code können weiterverwendet werden; die auf Fremdprodukte bezogenen Clean-Room-Schritte sind hier nicht einschlägig.
+
+## Fortschreibung vom 13.10.2026
+
+C2 für historische Erfassung und der kompatible Teil C3 für persönliche Übungen sind beauftragt und umgesetzt. Neue Vollbildansicht **S18 – Übungsbibliothek und Details**: Suche, Erstellen, persönliche Variante, Technik, letzte Leistung, blockübergreifender Verlauf und Archivieren. Zustände: Laden, leere Suche/Leistung, gefüllt, Bibliotheksabruf fehlgeschlagen, gesperrte Bearbeitung bei laufendem Training, ungültiger Entwurf und Speicherfehler.
+
+Persönliche Definitionen liegen im lokalen `personalExercises`-Katalog und selbstständig innerhalb der Programmposition. `performedExercise` bindet neue Logs an die damalige Erfassung. Backup-Schema 5 erhält diese Daten; alte Schema-4-Backups bleiben importierbar. V2-Programmdateien bleiben für die bisherigen Erfassungsarten erhalten. Unterstützung und neue Kennzahlen bleiben offen. [Abnahme und Grenzen](../docs/tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md).

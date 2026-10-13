@@ -37,7 +37,7 @@ function fixture(shared, options = {}) {
   const element = { classList: { remove() {} }, style: {} };
   const body = {};
   const context = {
-    KEY: 'cali-plan-v3', DATA_SCHEMA_VERSION: 4,
+    KEY: 'cali-plan-v3', DATA_SCHEMA_VERSION: 5,
     RESET_GENERATION_KEY: 'satzkraft-reset-v1', localResetGeneration: '', localDataDeletionPending: false,
     THEME_KEY: 'training-theme-v1', BACKUP_META_KEY: 'satzkraft-backup-meta-v1',
     PERSIST_REQUEST_KEY: 'satzkraft-storage-persist-v1', REDESIGN_NOTICE_KEY: 'satzkraft-design-update-v1',
@@ -163,6 +163,6 @@ test('unsupported or rejected coordination fails closed without fallback writes'
 
 test('all inline scripts parse; schema and exchange format stay compatible', () => {
   for (const script of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)) new vm.Script(script[1]);
-  assert.match(html, /DATA_SCHEMA_VERSION=4/); assert.match(html, /var KEY="cali-plan-v3"/);
+  assert.match(html, /DATA_SCHEMA_VERSION=5/); assert.match(html, /var KEY="cali-plan-v3"/);
   assert.match(html, /version:2/);
 });

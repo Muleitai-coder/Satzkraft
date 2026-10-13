@@ -6,6 +6,13 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+### Hinzugefügt
+
+- Persönliche Übungsbibliothek mit Erstellen, Auswahl im Programmeditor, eigener Variante integrierter Übungen, Bearbeiten und Archivieren. Vollständige Backups erhalten Definitionen und Verlauf; persönliche Programmdateien enthalten die benötigten Definitionen.
+- Vollbild-Übungsdetails mit Technik, letzter Leistung und Verlauf über aktive sowie archivierte Trainingsblöcke.
+- Neue Satzprotokolle bewahren den damaligen Übungsnamen und die Erfassungsregeln. Alte Einträge bleiben unbestätigt statt nachträglich geratene Angaben zu erhalten.
+- Backup-Schema 5 für vollständige historische Erfassung und persönliche Definitionen; Import vorhandener Schema-4-Backups bleibt erhalten. Unterschiedliche Identitäten, Seiten- und Gewichtskonventionen werden getrennt ausgewertet.
+
 ### Behoben
 
 - Zeitübungen mit Gewicht werden in Auswertung und Übungsverlauf als Zeit und Last angezeigt. Sekunden erzeugen kein geschätztes 1RM und zählen nicht zum Wiederholungsvolumen; das Protokoll erhält Minutenformat, kg und gegebenenfalls „je Seite“.
