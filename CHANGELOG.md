@@ -10,6 +10,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Geändert
 
+- Der Geräteassistent wird passend zur App-Version geladen, damit nach einem Update keine alte Eingabemaske aus dem Offline-Cache angezeigt wird.
 - Im iPhone-Gerätetest lässt sich die installierte iOS-Version direkt auswählen. „Andere Version / Beta“ öffnet eine genaue freie Eingabe; vorhandene Versionsangaben bleiben erhalten.
 
 ## [0.35.0] – 2026-10-21

@@ -28,6 +28,8 @@ test('shows one app version and uses it for the service-worker cache', () => {
   assert.doesNotMatch(html, /<h1>Programme<\/h1>[^\n]*<span class="appversion"/);
   assert.match(html, /Entwickelt von Christian Woyack/);
   assert.match(html, /document\.title="Satzkraft · v"\+APP_VERSION/);
+  assert.ok(html.includes(`js/device-test.js?v=${version}`), 'Gerätetest-Skript muss zur App-Version passen');
+  assert.ok(sw.includes(`js/device-test.js?v=${version}`), 'Offline-Cache muss das aktuelle Gerätetest-Skript vorhalten');
   assert.ok(sw.includes(`satzkraft-v${version}`), 'Cache-Version stimmt nicht mit APP_VERSION überein');
   assert.ok(changelog.includes(`## [${version}]`), 'Aktuelle Version fehlt in CHANGELOG.md');
   assert.ok(briefing.includes(`v${version}`), 'Aktuelle Version fehlt in BRIEFING-CODEX.md');

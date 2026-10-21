@@ -74,7 +74,7 @@
    guard();var storage=false,probe=PREFIX+"probe";
    try{localStorage.setItem(probe,boot);storage=localStorage.getItem(probe)===boot;localStorage.removeItem(probe);}catch(e){}
    var controlled=!!(navigator.serviceWorker&&navigator.serviceWorker.controller),cacheReady=false,missing=[];
-   var files=["index.html","js/progression.js","js/device-test.js","manifest.json","icon-192.png","icon-512.png","uebungen.json","fonts/hanken-grotesk-latin.woff2","fonts/jetbrains-mono-latin.woff2","programme/gym-ganzkoerper-beginner.json","programme/gym-ganzkoerper-fortgeschritten.json","programme/calisthenics-einstieg.json","programme/hybrid-gym-calisthenics.json"];
+   var files=["index.html","js/progression.js","js/device-test.js?v="+APP_VERSION,"manifest.json","icon-192.png","icon-512.png","uebungen.json","fonts/hanken-grotesk-latin.woff2","fonts/jetbrains-mono-latin.woff2","programme/gym-ganzkoerper-beginner.json","programme/gym-ganzkoerper-fortgeschritten.json","programme/calisthenics-einstieg.json","programme/hybrid-gym-calisthenics.json"];
    if("caches" in window){var names=await caches.keys(),name="satzkraft-v"+APP_VERSION;if(names.indexOf(name)>=0){var cache=await caches.open(name);for(var i=0;i<files.length;i++){if(!await cache.match(new URL(files[i],location.href).href))missing.push(files[i]);}cacheReady=missing.length===0;}}
    guard();checks={at:Date.now(),storage:storage,controlled:controlled,cache:cacheReady,isolated:isTest()&&KEY===PREFIX+"cali-plan-v3",onlineHint:navigator.onLine,standalone:!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches),viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},missing:missing};
    var data=read(),run=current(data);if(run){run.environment=checks;write(data);}notice="";
