@@ -1,5 +1,7 @@
 # Satzkraft – Abnahme auf dem eigenen Smartphone
 
+> Ab v0.35.0 steht für die gezielte Offline-Abnahme der [geführte iPhone-Testbereich](IPHONE-OFFLINE-TESTSYSTEM.md) in Einstellungen → Admin & Tests zur Verfügung. Diese freie Checkliste bleibt ergänzend; physische Ergebnisse sind weiterhin offen.
+
 Stand: 13.10.2026. **Vorbereitet, auf einem physischen Gerät noch nicht durchgeführt.** Der automatisierte WebKit-Fall und die Node-Prüfungen stehen im [Prüfbericht](TESTBERICHT-PERSOENLICHE-UEBUNGEN.md). Dieses Blatt ersetzt diese Prüfungen nicht und wird erst nach einer tatsächlichen Rückmeldung als bestanden markiert.
 
 ## Vorbereitung

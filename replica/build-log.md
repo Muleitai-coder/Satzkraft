@@ -15,3 +15,7 @@ Die technische Übungsidentität ist teilweise umgesetzt; das erweiterte Erfassu
 | 13.10.2026 | S02/S12/S13/S16 Historie und Auswertung | C2 umgesetzt | Unveränderlicher Kontext neuer Logs; Altbestand ohne Schätzung; getrennte Identitäten/Konventionen; vollständige historische Sätze |
 | 13.10.2026 | S18 Bibliothek und Details; S08 Auswahl | C3 kompatibler Umfang umgesetzt | Persönliche Definitionen; Erstellen/Bearbeiten/Archivieren; Varianten; letzte Leistung und blockübergreifender Verlauf; Schema-5-Backup mit v4-Import; Unterstützung offen |
 | 13.10.2026 | Mobile Abnahme | automatisiert bestanden; Gerät offen | 71 gezielte Node-Fälle; REG-30 mobile-webkit bei 390/320/1440 px; Hell/Dunkel; Reload und Backup-Restore; Offline-Bedienung; echte Offline-Neustart-/OS-Abnahme offen |
+
+## 21.10.2026 – iPhone-Offline-Testsystem
+
+S15 Einstellungen erweitert um lokale Admin-Werkzeuge. Zehn geführte physische Prüfschritte; getrenntes synthetisches Training; persistenter Teststart; Cache-Bereitschaft und Wiederlade-Prüfpunkte; Geräteberichte mit begrenztem Import/Export. Kein Benutzerkonto oder Server-Admin. Reale iPhone-Abnahme weiterhin offen. [Anleitung](../docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).

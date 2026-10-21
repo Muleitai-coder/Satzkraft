@@ -97,6 +97,7 @@ test('asset requests read only the current cache and keep revalidation alive', a
 });
 
 test('precache contains one shell copy and ignores unrelated same-origin requests', () => {
+  assert.match(source, /"\.\/js\/device-test\.js"/, 'Gerätetest muss offline im aktuellen Cache liegen');
   assert.doesNotMatch(source, /var ASSETS = \["\.\/",/, 'Root und index.html würden dieselbe App-Shell doppelt vorhalten');
   const harness = serviceWorkerContext();
   let responded = false;

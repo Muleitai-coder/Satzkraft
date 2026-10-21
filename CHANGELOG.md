@@ -6,6 +6,15 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.35.0] – 2026-10-21
+
+### Hinzugefügt
+
+- Einstellungen → Admin & Tests: geführte Offline-Abnahme mit zehn Schritten auf physischen iPhones; iPhone 17 Pro vorausgewählt, iOS-Version und Safari/Home-Bildschirm-App je Lauf dokumentiert.
+- Getrennter Testbereich mit synthetischem Training, eigenem Speicher und eigener Fenstersperre. Der Testmodus übersteht App-Neustarts; echte Trainingsdaten bleiben getrennt. Testbackups sind gegen Verwechslung beim Wiederherstellen markiert.
+- Bereitschaftscheck für lokale Speicherung, Offline-Steuerung und Cache; Wiederlade-Prüfpunkte vergleichen Satzwerte und pausiertes Training. Physische Schritte werden bewusst vom Nutzer bestätigt.
+- Lokale Geräteübersicht mit Einzelbefunden, JSON-Export und begrenztem Import von Berichten weiterer iPhones. Keine automatische Geräteabnahme oder Übertragung.
+
 ## [0.34.0] – 2026-10-13
 
 ### Hinzugefügt

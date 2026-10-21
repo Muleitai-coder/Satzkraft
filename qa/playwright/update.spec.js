@@ -2041,3 +2041,84 @@ test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile D
  await page.locator('#libclose').focus();await page.keyboard.press('Enter');await expect(page.locator('#lib')).not.toHaveClass(/open/);expect(errors).toEqual([]);
 });
 });
+
+test.describe('Gezielter Offline-Gerätetest-Assistent',()=>{
+ test.use({serviceWorkers:'allow'});
+ test('REG-31/P0: isolierter Testbereich, Offline-Neustart, Berichte und Rückkehr',async({page,context})=>{
+  test.setTimeout(60000);
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await openWithPersistedState(page,compactWorkoutState(2));
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+  const original=await page.evaluate(()=>{flushSave();localStorage.setItem('satzkraft-coach-prefs','{"synthetic":"preserve"}');return localStorage.getItem(KEY);});
+  await page.locator('#settingsbtn').click();await page.locator('[data-settings-device-test]').click();
+  await expect(page.locator('#dt-model')).toHaveValue('iPhone 17 Pro');
+  await page.locator('#dt-ios').fill('Automatisierter Browsertest');
+  const navigation=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await navigation;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+  await expect(page.locator('#modal')).toContainText('TESTDATEN');
+  expect(await page.evaluate(()=>KEY)).toBe('satzkraft-device-test-v1:cali-plan-v3');
+  expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);
+  expect(await page.evaluate(()=>localStorage.getItem('satzkraft-coach-prefs'))).toBe('{"synthetic":"preserve"}');
+  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
+  await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller)).toBe(true);
+  await page.locator('[data-dt="preflight"]').click();await expect(page.locator('#modal')).toContainText('Alle 13 Startressourcen in v0.35.0: bereit');
+  await page.locator('[data-dt="pass"]').click();await expect(page.locator('#dt-step')).toHaveValue('1');
+  await expect(page.locator('#modaltitle')).toBeInViewport();
+  await page.getByRole('button',{name:'Im Testtraining weiter',exact:true}).click();await page.locator('#startw').click();
+  await page.locator('#rep-qa_weight-0').fill('10');await page.locator('#wt-qa_weight-0').fill('20');await page.locator('#wt-qa_weight-0').blur();
+  await page.locator('[data-dt="open"]').click();await page.locator('#dt-step').selectOption('4');
+  await page.locator('[data-dt="checkpoint"]').click();
+  await context.setOffline(true);
+  const reload=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="reload"]').click();await reload;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+  await expect(page.locator('#modal')).toContainText('gespeicherte Satzwerte gleich und Training pausiert');
+  expect(await page.evaluate(()=>S.logs['1|A|qa_weight'].sets[0])).toMatchObject({reps:'10',weight:'20'});
+  expect(await page.evaluate(()=>S.workout.running)).toBe(false);
+  expect(await page.evaluate(()=>JSON.parse(backupJSON()).deviceTestData)).toBe(true);
+  expect(await page.evaluate(()=>validateBackupFile(JSON.parse(backupJSON())))).toBeNull();
+  expect(await page.evaluate(()=>validateBackupFile({schemaVersion:5}))).toContain('gekennzeichnete Testbackups');
+  await page.locator('[data-dt="fail"]').click();await expect(page.locator('#dt-notice')).toContainText('Bitte Fehler');
+  await page.locator('#dt-note').fill('Nur automatisierter Browserlauf, keine physische iPhone-Abnahme.');await page.locator('[data-dt="skip"]').click();
+  for(const [width,theme] of [[320,'light'],[440,'dark'],[1440,'dark']]){
+   await page.setViewportSize({width,height:900});await page.evaluate(t=>applyTheme(t,true),theme);
+   expect(await page.evaluate(()=>document.querySelector('#modal .mbox').scrollWidth<=innerWidth)).toBe(true);
+   await page.screenshot({path:path.resolve(__dirname,'../../replica/clone-screens/device-test-'+width+'-'+theme+'.png')});
+  }
+  await page.locator('.dt-section').filter({has:page.locator('summary', {hasText:'Geräteübersicht und Berichte'})}).first().locator('summary').first().click();
+  const download=page.waitForEvent('download');await page.locator('[data-dt="export"]').click();const file=await download;
+  const exported=JSON.parse(fs.readFileSync(await file.path(),'utf8'));expect(exported.format).toBe('satzkraft-geraetetest');expect(JSON.stringify(exported)).not.toContain('personalExercises');
+  // A second test window must wait instead of replacing synthetic progress.
+  const other=await context.newPage();await other.goto('/index.html');await expect(other.locator('#windowNotice')).toContainText('anderen Fenster');await other.close();
+  expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);
+  // Test-backup restore retains the active test run and never targets the real store.
+  const testBackup=await page.evaluate(()=>backupJSON());await page.getByRole('button',{name:'Im Testtraining weiter',exact:true}).click();
+  await page.evaluate(()=>stopWorkout(true));await page.evaluate(text=>importBackup(text),testBackup);
+  const safety=page.waitForEvent('download'),restored=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Sichern & wiederherstellen',exact:true}).click();await safety;await restored;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#modal')).toContainText('TESTDATEN');
+  expect(await page.evaluate(()=>S.logs['1|A|qa_weight'].sets[0].weight)).toBe('20');
+  await page.locator('.dt-section').filter({has:page.locator('summary',{hasText:'Geräteübersicht und Berichte'})}).first().locator('summary').first().click();
+  exported.runs[0].id='synthetic-other-phone';exported.runs[0].model='iPhone SE (synthetischer Bericht)';exported.runs[0].programs={private:'discard'};
+  await page.locator('#dt-import').setInputFiles({name:'geraetebericht.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
+  await expect(page.locator('#dt-notice')).toContainText('Geräteberichte übernommen');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs[1].programs)).toBeUndefined();
+  // Starting a fresh run while already in the sandbox must not flush old data over its seed.
+  await context.setOffline(false);
+  await page.locator('.dt-section').filter({has:page.locator('summary',{hasText:'Neuen Gerätetest beginnen'})}).first().locator('summary').first().click();
+  await page.locator('#dt-ios').fill('Automatisierter Browsertest 2');
+  // A failed report write must roll the previous sandbox state back.
+  await page.evaluate(()=>{const originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='satzkraft-device-test-reports-v1'){Storage.prototype.setItem=originalSet;throw new DOMException('synthetic quota','QuotaExceededError');}return originalSet.call(this,key,value);};});
+  await page.locator('[data-dt="start"]').click();await expect(page.locator('#dt-notice')).toContainText('synthetic quota');
+  expect(await page.evaluate(()=>Object.values(S.logs)[0].sets[0].weight)).toBe('20');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem(KEY)).store.default.logs['1|A|qa_weight'].sets[0].weight)).toBe('20');
+  await page.locator('.dt-section').filter({has:page.locator('summary',{hasText:'Neuen Gerätetest beginnen'})}).first().locator('summary').first().click();
+  await page.locator('#dt-ios').fill('Automatisierter Browsertest 2');const fresh=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await fresh;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+  await expect(page.locator('#modal')).toContainText('TESTDATEN');expect(await page.evaluate(()=>Object.keys(S.logs))).toEqual([]);
+  const back=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Zurück zum echten Training',exact:true}).click();await back;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');expect(await page.evaluate(()=>KEY)).toBe('cali-plan-v3');
+  expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);
+  expect(await page.evaluate(()=>localStorage.getItem('satzkraft-device-test-mode-v1'))).toBeNull();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs.length)).toBe(3);
+  expect(await page.evaluate(()=>validateBackupFile({deviceTestData:true}))).toContain('nur im Gerätetest-Bereich');expect(errors).toEqual([]);
+ });
+});

@@ -27,10 +27,11 @@ Offline-PWA und Cache-Positivliste,Offline,must,active,yes,sw.js; gespeicherte A
 Integrierter API-Coach,Coach,should,non_goal,skip,Am 11.10.2026 entfernt; alte Programme und Backups bleiben nutzbar; spätere KI-Lösung separat planen
 ChatGPT und andere KI per lokalem Prompt,Coach,should,active,yes,S10; F12; Nutzer übermittelt selbst
 Theme Fokusführung und mobiles Design,Design,must,active,yes,Designsystem; O03 reale Geräteabnahme offen
-Öffentliche Dateien durch Build-Positivliste,Veröffentlichung,must,active,yes,13 Veröffentlichungsdateien; Dokumentation bleibt außerhalb dist
+Öffentliche Dateien durch Build-Positivliste,Veröffentlichung,must,active,yes,14 Veröffentlichungsdateien; Dokumentation bleibt außerhalb dist
 Persönliche dauerhafte Übungsbibliothek,Bibliothek,could,active,yes,C3 beauftragt 13.10.; lokale Definitionen; Auswahl und Archivieren; Schema-5-Backup; portable v2-Definitionen
 Stabile Bibliotheks-IDs und erweitertes Erfassungsmodell,Bibliothek,could,active,partial,C1 lokal umgesetzt: zehn optionale Bibliotheks-IDs; Auswahl Editor Import Export Backup Tausch und Folgeblock erhalten Referenzen; historische Erfassung C2 und kompatible persönliche Definitionen C3 umgesetzt; Unterstützung weiterhin offen
 Vollbild-Übungsdetail mit Verlauf und Wissen,Bibliothek,could,active,yes,S18; Technik und letzte Leistung; aktive und archivierte Blöcke; Legacy klar gekennzeichnet
 Tausch zwischen unterschiedlichen Erfassungsarten,Training,could,draft,no,O04; aktueller bestätigter Ablauf verlangt kompatible Vorschläge
 Konten Cloud Zahlung und soziale Funktionen,Produkt,could,non_goal,skip,Aktive Nicht-Ziele; historischer Cloudplan ist keine Freigabe
 Muskelgruppen-Oberfläche und vollständige Cardio-Plattform,Produkt,could,non_goal,skip,Aktuelle Nicht-Ziele beziehungsweise späterer Entwurf
+Geführte physische iPhone-Offline-Abnahme,Diagnose,should,active,yes,Getrennter Testspeicher; zehn Schritte; Geräteberichte lokal; reale Hardwareabnahme weiterhin offen

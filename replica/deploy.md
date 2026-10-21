@@ -39,3 +39,10 @@ Die früher verwendeten KI-Provider-Schlüssel werden nicht mehr vom Code verwen
 Nach dem Update auf dem Hauptgerät: Versionsstand, erster Trainingseintrag, Hintergrundwechsel, Offline-Neustart und Backup-Wiederherstellung anhand der Checkliste bestätigen. Es wurde kein automatischer Monitor eingerichtet.
 
 Für einen manuellen Upload ist außerdem `../satzkraft-v0.34.0.zip` neben dem Repository vorbereitet. Das ZIP enthält nur die 13 öffentlichen Build-Dateien, keine Tests, Dokumente, Functions, Zugangsdaten oder Trainingsbackups. Es wurde nicht ohne Hosting-Zugriff an einen anderen Dienst hochgeladen.
+
+
+## 21.10.2026 – v0.35.0 Geräteassistent
+
+Gezielte Vorbereitung bestanden: 34 unterschiedliche Node-Fälle und ein REG-31-Browserlauf in mobile-chromium. Tatsächlicher Offline-Reload über Service Worker, getrennter Testzustand, pausiertes Training, Testbackup-Restore, zweites Testfenster, Berichtimport/-export, Speicherfehler-Rücknahme und Rückkehr zu unveränderten echten Test-Fixturedaten geprüft. Screenshots bei 320/440/1440 px in hell/dunkel gesichtet. Kein physisches iPhone als getestet markiert; keine große Suite/Browsermatrix. App/Cache/Pakete v0.35.0; Build genau 14 öffentliche Dateien. Der neue Geräteassistent wird ebenfalls offline vorgehalten.
+
+GitHub-Upload und Live-Verifikation des neuen Stands werden nach der Bereitstellung ergänzt. [Bedienungsanleitung](../docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).

@@ -15,9 +15,11 @@
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/jetbrains-mono-latin.woff2) format('woff2')}
 </style>
 <script>
+var DEVICE_TEST_MODE=false;
+try{DEVICE_TEST_MODE=localStorage.getItem("satzkraft-device-test-mode-v1")==="1";}catch(e){}
 (function(){
  try{
-  var saved=localStorage.getItem("training-theme-v1");
+  var saved=localStorage.getItem((DEVICE_TEST_MODE?"satzkraft-device-test-v1:":"")+"training-theme-v1");
   document.documentElement.dataset.theme=saved||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");
  }catch(e){document.documentElement.dataset.theme="dark";}
 })();
@@ -899,6 +901,16 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 #windowNotice:not([hidden]){position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));background:var(--scrim);overflow-y:auto}
 .windowcard{width:100%;max-width:420px;margin:auto;padding:24px;border:1px solid var(--hair2);border-radius:20px;background:var(--panel);color:var(--ink);box-shadow:0 16px 48px var(--scrim)}
 .windowcard h2{font-size:22px;line-height:1.25;margin:0 0 12px}.windowcard p{font-size:15px;line-height:1.5;color:var(--ink2);margin:0 0 16px}.windowactions{display:grid;gap:10px}.windowactions button{min-height:44px;width:100%;white-space:normal}
+/* Lokale Geräteprüfung: bestehende Schrift-/Farbtokens und 44-px-Touchziele. */
+:root{--dt-space:12px;--dt-radius:12px;--dt-touch:44px}
+#deviceTestBar{max-width:560px;margin:auto;padding:env(safe-area-inset-top) var(--dt-space) 0}
+#deviceTestBar button{min-height:var(--dt-touch);color:var(--acc);border-color:var(--accl);width:100%}
+.dt-warning{color:var(--orange);overflow-wrap:anywhere}.dt-copy{line-height:1.6;color:var(--ink2)}
+.dt-field{display:grid;gap:6px;margin:var(--dt-space) 0;color:var(--ink2);font-size:13px}
+.dt-field input,.dt-field select,.dt-field textarea{width:100%;min-width:0;min-height:var(--dt-touch);padding:10px;border:1px solid var(--hair2);border-radius:var(--dt-radius);background:var(--panel2);color:var(--ink);font-size:16px;box-sizing:border-box}
+.dt-field textarea{resize:vertical}.dt-section{border-top:1px solid var(--hair2);margin-top:var(--dt-space);padding-top:var(--dt-space);overflow-wrap:anywhere}
+.dt-section summary{min-height:var(--dt-touch);cursor:pointer;color:var(--ink);font-weight:700}
+.dt-section li{margin-bottom:8px}.dt-actions{display:grid;gap:8px}
 </style>
 </head>
 <body>
@@ -911,6 +923,7 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle" tabindex="-1"></div>
 <div id="wucd" role="dialog" aria-modal="true" aria-label="Trainings-Timer" tabindex="-1"></div>
 <script src="js/progression.js"></script>
+<script src="js/device-test.js"></script>
 <script>
 var CAT_COLORS=["amber","emerald","violet","sky","orange","rose","slate"];
 var LIMITS={maxDays:7,maxWeeks:16,maxExPerDay:12,maxSets:10,maxNameLen:30,maxLabelLen:16};
@@ -975,7 +988,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.34.0";
+var APP_VERSION="0.35.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=5;
 var THEME_KEY="training-theme-v1";
@@ -983,6 +996,11 @@ var BACKUP_META_KEY="satzkraft-backup-meta-v1";
 var PERSIST_REQUEST_KEY="satzkraft-storage-persist-v1";
 var REDESIGN_NOTICE_KEY="satzkraft-design-update-v1";
 var RESET_GENERATION_KEY="satzkraft-reset-v1";
+if(DEVICE_TEST_MODE){
+ KEY="satzkraft-device-test-v1:"+KEY;THEME_KEY="satzkraft-device-test-v1:"+THEME_KEY;
+ BACKUP_META_KEY="satzkraft-device-test-v1:"+BACKUP_META_KEY;PERSIST_REQUEST_KEY="satzkraft-device-test-v1:"+PERSIST_REQUEST_KEY;
+ REDESIGN_NOTICE_KEY="satzkraft-device-test-v1:"+REDESIGN_NOTICE_KEY;RESET_GENERATION_KEY="satzkraft-device-test-v1:"+RESET_GENERATION_KEY;
+}
 var localResetGeneration="";
 var localDataDeletionPending=false;
 var localWriterState="pending",localWriterRelease=null,localWriterRequest=0,localStoredSnapshot=null,localWriterDirty=false,localWriterDraftSecured=false;
@@ -1041,7 +1059,7 @@ function load(){
  var r="";
  try{localStoredSnapshot=localStorage.getItem(KEY);r=localStoredSnapshot||"";if(r){var v=JSON.parse(r);return normalize(v);}}catch(e){loadIssueRaw=r;loadIssueText="Die gespeicherten Trainingsdaten konnten nicht gelesen werden.";}
  var r2="";
- try{r2=localStorage.getItem("cali-plan-v2")||"";if(r2){var o=JSON.parse(r2);var s=initState();var st=s.store["default"];st.tg=o.tg||{};st.logs=o.logs||{};st.history=Array.isArray(o.history)?o.history:[];st.workout=o.workout||null;st.week=o.week||1;st.day=o.day||"A";s.schemaVersion=DATA_SCHEMA_VERSION;alias(s);return s;}}catch(e){if(!loadIssueRaw)loadIssueRaw=r2;if(!loadIssueText)loadIssueText="Alte Trainingsdaten konnten nicht wiederhergestellt werden.";}
+ try{r2=(typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE)?"":localStorage.getItem("cali-plan-v2")||"";if(r2){var o=JSON.parse(r2);var s=initState();var st=s.store["default"];st.tg=o.tg||{};st.logs=o.logs||{};st.history=Array.isArray(o.history)?o.history:[];st.workout=o.workout||null;st.week=o.week||1;st.day=o.day||"A";s.schemaVersion=DATA_SCHEMA_VERSION;alias(s);return s;}}catch(e){if(!loadIssueRaw)loadIssueRaw=r2;if(!loadIssueText)loadIssueText="Alte Trainingsdaten konnten nicht wiederhergestellt werden.";}
  return initState();
 }
 function migrateProgram(p){
@@ -1170,7 +1188,7 @@ function syncStore(){S.store[S.active]={tg:S.tg,barw:S.barw,notes:S.notes,logs:S
 function persist(){
  if(localWriteBlocked())return false;
  try{
-  var payload=JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,personalExercises:S.personalExercises||{},programs:S.programs,active:S.active,store:S.store});
+  var payload=JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,deviceTestData:typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE?true:undefined,personalExercises:S.personalExercises||{},programs:S.programs,active:S.active,store:S.store});
   if(localWriteBlocked())return false;
   localStorage.setItem(KEY,payload);
   localStoredSnapshot=payload;localWriterDirty=false;localWriterDraftSecured=false;
@@ -1675,6 +1693,7 @@ function showHistory(ex){
 }
 // Altbestand des entfernten API-Coachs: nur Antworten entfernen, Programme erhalten.
 function removeLegacyCoachAnswers(){
+ if(typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE)return true;
  if(localWriteBlocked())return false;
  try{
   if(localStorage.getItem("satzkraft-coach-prefs")!=null){
@@ -1684,7 +1703,7 @@ function removeLegacyCoachAnswers(){
   return true;
  }catch(e){return false;}
 }
-function localAppStorageKeys(){return[KEY,"cali-plan-v2",THEME_KEY,"satzkraft-training-view-v1",BACKUP_META_KEY,PERSIST_REQUEST_KEY,REDESIGN_NOTICE_KEY,"satzkraft-coach-prefs","satzkraft-coach-reset-v1"];}
+function localAppStorageKeys(){if(typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE)return[KEY,THEME_KEY,BACKUP_META_KEY,PERSIST_REQUEST_KEY,REDESIGN_NOTICE_KEY];return[KEY,"cali-plan-v2",THEME_KEY,"satzkraft-training-view-v1",BACKUP_META_KEY,PERSIST_REQUEST_KEY,REDESIGN_NOTICE_KEY,"satzkraft-coach-prefs","satzkraft-coach-reset-v1","satzkraft-device-test-mode-v1","satzkraft-device-test-reports-v1","satzkraft-device-test-v1:cali-plan-v3","satzkraft-device-test-v1:training-theme-v1","satzkraft-device-test-v1:satzkraft-backup-meta-v1","satzkraft-device-test-v1:satzkraft-storage-persist-v1","satzkraft-device-test-v1:satzkraft-design-update-v1","satzkraft-device-test-v1:satzkraft-reset-v1"];}
 function clearLocalAppData(){
  if(typeof localWriteBlocked==="function"&&localWriteBlocked())return false;
  var keys=localAppStorageKeys(),previous={},previousGeneration="",nextGeneration=Date.now()+"-"+Math.random().toString(36).slice(2),snapshotComplete=false,mutationStarted=false,savePaused=false;
@@ -1721,6 +1740,7 @@ function showSettings(){
  modalActions=[null];
  var light=currentTheme()==="light";
  var h='<div class="mbox"><div class="mtitle" id="modaltitle">Einstellungen</div>';
+ if(DEVICE_TEST_MODE)h+='<p class="dt-warning"><b>TESTBEREICH</b> · Backups und Löschaktionen betreffen hier nur Testdaten.</p>';
  h+='<div class="setlabel">Farbmodus</div>';
  h+='<div class="setseg" role="group" aria-label="Farbmodus"><button class="setopt'+(light?'':' sel')+'" data-settheme="dark" aria-pressed="'+(!light)+'">Dunkel</button><button class="setopt'+(light?' sel':'')+'" data-settheme="light" aria-pressed="'+light+'">Hell</button></div>';
  h+='<div class="setlabel" style="margin-top:16px">Datensicherung</div>';
@@ -1729,6 +1749,7 @@ function showSettings(){
  h+='<div class="setlabel" style="margin-top:16px">Datenschutz &amp; Daten</div>';
  h+='<div class="setbackupstatus">Trainingsdaten bleiben lokal. Programme für eine externe KI werden nur als Text erzeugt; du entscheidest selbst über die Weitergabe.</div>';
  h+='<div class="setactions"><button type="button" class="setbackupbtn" data-settings-privacy="1">Datenfluss verständlich erklärt</button><button type="button" class="setbackupbtn danger" data-settings-clear-all="1">Alle lokalen App-Daten löschen</button></div>';
+ h+='<div class="setlabel" style="margin-top:16px">Admin &amp; Tests</div><button type="button" class="setbackupbtn" data-settings-device-test="1">iPhone-Offline-Test öffnen</button>';
  h+='<div class="mbtns" style="margin-top:16px"><button class="mbtn primary" data-mi="0">Fertig</button></div></div>';
  var m=document.getElementById("modal");m.innerHTML=h;openModalSurface(m);
 }
@@ -2058,7 +2079,7 @@ function surfaceFocusables(root){if(!root)return[];return Array.prototype.slice.
 function focusSurface(root,preferred){setTimeout(function(){if(!root||!document.contains(root))return;var target=preferred&&root.querySelector(preferred),items=surfaceFocusables(root);(target||items[0]||root).focus();},0);}
 function trapSurfaceFocus(e,root){var items=surfaceFocusables(root);if(!items.length){e.preventDefault();root.focus();return;}var first=items[0],last=items[items.length-1],active=document.activeElement,activeIndex=items.indexOf(active);if(e.shiftKey&&(active===root||active===first||activeIndex<0)){e.preventDefault();last.focus();}else if(!e.shiftKey&&(active===root||active===last||activeIndex<0)){e.preventDefault();first.focus();}}
 function modalDismissButton(){var buttons=document.querySelectorAll("#modal [data-mi]"),preferred=/^(Abbrechen|Schließen|Verwerfen|Weiter trainieren|Weiter bearbeiten|Später|Alles klar|Fertig|OK)$/;for(var i=buttons.length-1;i>=0;i--)if(preferred.test(buttons[i].textContent.trim()))return buttons[i];for(var j=buttons.length-1;j>=0;j--){var index=+buttons[j].dataset.mi;if(modalActions[index]==null)return buttons[j];}return null;}
-function updateSurfaceIsolation(){var modal=document.getElementById("modal"),protocol=document.getElementById("protocol"),report=document.getElementById("report"),lib=document.getElementById("lib"),wucd=document.getElementById("wucd"),open=function(el){return!!(el&&el.classList&&el.classList.contains("open"));},notice=document.getElementById("windowNotice"),top=notice&&!notice.hidden?notice:modal&&modal.style&&modal.style.display==="flex"?modal:open(protocol)?protocol:open(report)?report:open(lib)?lib:open(wucd)?wucd:null;[document.getElementById("app"),document.getElementById("bar"),report,protocol,lib,modal,wucd].forEach(function(el){if(el)el.inert=!!top&&el!==top;});}
+function updateSurfaceIsolation(){var modal=document.getElementById("modal"),protocol=document.getElementById("protocol"),report=document.getElementById("report"),lib=document.getElementById("lib"),wucd=document.getElementById("wucd"),open=function(el){return!!(el&&el.classList&&el.classList.contains("open"));},notice=document.getElementById("windowNotice"),top=notice&&!notice.hidden?notice:modal&&modal.style&&modal.style.display==="flex"?modal:open(protocol)?protocol:open(report)?report:open(lib)?lib:open(wucd)?wucd:null;[document.getElementById("app"),document.getElementById("bar"),document.getElementById("deviceTestBar"),report,protocol,lib,modal,wucd].forEach(function(el){if(el)el.inert=!!top&&el!==top;});}
 function openModalSurface(m){if(m.style.display!=="flex")modalReturnFocus=document.activeElement;m.style.display="flex";updateSurfaceIsolation();lockModalSurface();setTimeout(function(){if(!document.contains(m))return;var dismiss=modalDismissButton();(dismiss||m).focus();},0);}
 function lockModalSurface(){modalScrollLocked=lockSurfaceScroll()||modalScrollLocked;}
 function showModal(title,msg,btns){
@@ -2068,6 +2089,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';openModalSurface(m);
 }
 var VERSION_HISTORY=[
+ {version:"v0.35.0",date:"21.10.2026",changes:["Admin-Werkzeuge führen physisch durch zehn iPhone-Offline-Prüfschritte; iPhone 17 Pro ist vorausgewählt.","Getrennter Testbereich mit synthetischem Training schützt echte Trainingsdaten. Prüfstände bleiben nach Neuladen und App-Schließen erhalten.","Bereitschaftscheck, Wiederlade-Prüfpunkte und lokale Geräteberichte für Safari und Home-Bildschirm-App; Ergebnisse anderer Geräte lassen sich vergleichen."]},
  {version:"v0.34.0",date:"13.10.2026",changes:["Persönliche Übungen erstellen, im Programmeditor auswählen, bearbeiten und archivieren; integrierte Übungen als eigene Variante speichern.","Neue Übungsdetails zeigen Technik, letzte Leistung und Verlauf aus aktiven und archivierten Trainingsblöcken.","Neue Satzprotokolle bewahren den damaligen Übungsnamen und die Erfassungsregeln. Vorhandene Werte bleiben ohne nachträglich geratene Angaben erhalten.","Vollständige Backups verwenden Schema 5 und sichern persönliche Definitionen sowie historische Erfassung; alte Schema-4-Backups bleiben importierbar.","Mehrere aktualisierte App-Fenster überschreiben Trainingswerte nicht mehr gegenseitig. Ungespeicherte Entwürfe lassen sich sichern.","Zeitübungen mit Gewicht zeigen Zeit und Last; Sekunden werden nicht mehr als Wiederholungen für 1RM oder Volumen gerechnet.","Zehn geprüfte Bibliotheksübungen behalten ihre Zuordnung in Editor, Import, Export und Backup.","Der eingebaute API-Coach ist entfernt. ChatGPT & Co. bleibt als lokal erzeugter Text mit anschließendem JSON-Import verfügbar."]},
  {version:"v0.33.4",date:"01.10.2026",changes:["Zurück-Pfeil und Schließen-X bleiben im Programmeditor und in Unteransichten auch beim Scrollen sichtbar und unterhalb der iPhone-Safe-Area.","Gewichtete Zeitübungen lassen sich im Editor zuverlässig speichern; fehlende Zeiteinheiten kompatibler Importe werden ergänzt.","Das bloße Öffnen einer Übung löst keine falsche Warnung über ungespeicherte Änderungen mehr aus."]},
  {version:"v0.33.3",date:"11.08.2026",changes:["Manuelle Zeitwerte werden wie bei einem Timer von rechts nach links eingegeben: Der Cursor bleibt am Ende, neue Ziffern schieben nach links und die Rücktaste nimmt die letzte Stelle zurück."]},
@@ -2108,7 +2130,7 @@ function showVersionInfo(){
  showModal("Versionshistorie","<span class=\"developercredit\">Entwickelt von Christian Woyack</span><div class=\"versionintro\"><b>Aktuelle stabile Version: v"+esc(APP_VERSION)+"</b><br>Vollständige Historie aller dokumentierten Veröffentlichungen.</div>"+versionHistoryHtml(),[{label:"Schließen",cls:"primary",action:null}]);
 }
 function hideModal(){var m=document.getElementById("modal"),returnFocus=modalReturnFocus;m.style.display="none";m.innerHTML="";modalActions=[];modalReturnFocus=null;updateSurfaceIsolation();if(modalScrollLocked){modalScrollLocked=false;unlockSurfaceScroll();}if(returnFocus&&document.contains(returnFocus))returnFocus.focus();}
-document.getElementById("modal").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.settheme){var selectedTheme=b.dataset.settheme;applyTheme(selectedTheme,true);showSettings();focusSurface(document.getElementById("modal"),'[data-settheme="'+selectedTheme+'"]');return;}if(b.dataset.settingsBackup){var settingsBackupOk=downloadFullBackup("satzkraft-backup");if(document.getElementById("lib").classList.contains("open"))renderLib();else renderView();if(settingsBackupOk)showSettings();else showModal("Backup fehlgeschlagen","Die Sicherungsdatei konnte nicht heruntergeladen werden.",[{label:"OK",cls:"primary",action:null}]);return;}if(b.dataset.settingsPrivacy){showPrivacyInfo();return;}if(b.dataset.settingsClearAll){confirmClearAllLocalData();return;}if(b.dataset.reorder){reorderMove(b.dataset.reorder);return;}if(b.dataset.plateBar){selectPlateBar(b.dataset.plateEx,b.dataset.plateBar);return;}if(b.dataset.swapSuggestion){var swapInput=document.getElementById("swapname");pendingExerciseSwapName=b.dataset.swapSuggestion;if(swapInput){swapInput.value=pendingExerciseSwapName;renderExerciseSwapMatches(swapInput);swapInput.focus();}return;}if(b.dataset.mi==null)return;var note=document.getElementById("exerciseNoteInput"),swap=document.getElementById("swapname");if(note)pendingExerciseNote=note.value;if(swap)pendingExerciseSwapName=swap.value;var i=+b.dataset.mi,act=modalActions[i];hideModal();if(typeof act==="function")act();});
+document.getElementById("modal").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.settheme){var selectedTheme=b.dataset.settheme;applyTheme(selectedTheme,true);showSettings();focusSurface(document.getElementById("modal"),'[data-settheme="'+selectedTheme+'"]');return;}if(b.dataset.settingsBackup){var settingsBackupOk=downloadFullBackup("satzkraft-backup");if(document.getElementById("lib").classList.contains("open"))renderLib();else renderView();if(settingsBackupOk)showSettings();else showModal("Backup fehlgeschlagen","Die Sicherungsdatei konnte nicht heruntergeladen werden.",[{label:"OK",cls:"primary",action:null}]);return;}if(b.dataset.settingsDeviceTest){SatzkraftDeviceTest.show();return;}if(b.dataset.settingsPrivacy){showPrivacyInfo();return;}if(b.dataset.settingsClearAll){confirmClearAllLocalData();return;}if(b.dataset.reorder){reorderMove(b.dataset.reorder);return;}if(b.dataset.plateBar){selectPlateBar(b.dataset.plateEx,b.dataset.plateBar);return;}if(b.dataset.swapSuggestion){var swapInput=document.getElementById("swapname");pendingExerciseSwapName=b.dataset.swapSuggestion;if(swapInput){swapInput.value=pendingExerciseSwapName;renderExerciseSwapMatches(swapInput);swapInput.focus();}return;}if(b.dataset.mi==null)return;var note=document.getElementById("exerciseNoteInput"),swap=document.getElementById("swapname");if(note)pendingExerciseNote=note.value;if(swap)pendingExerciseSwapName=swap.value;var i=+b.dataset.mi,act=modalActions[i];hideModal();if(typeof act==="function")act();});
 var reorderDrag=null;
 function reorderDragReset(){
  if(!reorderDrag)return;
@@ -2295,7 +2317,7 @@ function beginWorkoutPauseHold(button,pointerId){
   if(shouldPause){if(navigator.vibrate)navigator.vibrate(40);pauseWorkout();}
  },WORKOUT_PAUSE_HOLD_MS);
 }
-function backupJSON(){syncStore();return JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,personalExercises:S.personalExercises||{},programs:S.programs,active:S.active,store:S.store},null,1);}
+function backupJSON(){syncStore();return JSON.stringify({schemaVersion:DATA_SCHEMA_VERSION,deviceTestData:typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE?true:undefined,personalExercises:S.personalExercises||{},programs:S.programs,active:S.active,store:S.store},null,1);}
 function readBackupMeta(){
  try{var m=JSON.parse(localStorage.getItem(BACKUP_META_KEY)||"{}");return{lastAt:finiteNumber(m.lastAt,0,Number.MAX_SAFE_INTEGER,false)?m.lastAt:0,historyCount:finiteNumber(m.historyCount,0,1000000,true)?m.historyCount:0,remindedAt:finiteNumber(m.remindedAt,0,1000000,true)?m.remindedAt:0,trackingAt:finiteNumber(m.trackingAt,0,Number.MAX_SAFE_INTEGER,false)?m.trackingAt:0,snoozeUntil:finiteNumber(m.snoozeUntil,0,Number.MAX_SAFE_INTEGER,false)?m.snoozeUntil:0};}catch(e){return{lastAt:0,historyCount:0,remindedAt:0,trackingAt:0,snoozeUntil:0};}
 }
@@ -2927,6 +2949,8 @@ function validateBackupStore(st,id,program){
  return null;
 }
 function validateBackupFile(raw){
+ if(raw&&raw.deviceTestData===true&&!(typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE))return"Testbackups können nur im Gerätetest-Bereich wiederhergestellt werden.";
+ if(typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE&&!(raw&&raw.deviceTestData===true))return"Im Gerätetest bitte ausschließlich gekennzeichnete Testbackups verwenden.";
  if(!plainObject(raw)||!plainObject(raw.programs)||!Object.keys(raw.programs).length||!plainObject(raw.store))return"Backup-Struktur ist unvollständig.";
  if(raw.schemaVersion!=null&&!finiteNumber(raw.schemaVersion,1,DATA_SCHEMA_VERSION,true))return"Das Backup stammt aus einer neueren oder unbekannten Datenversion.";
  if(typeof raw.active!=="string"||!Object.prototype.hasOwnProperty.call(raw.programs,raw.active)||!plainObject(raw.programs[raw.active])||raw.programs[raw.active].archived===true)return"Das aktive Programm im Backup ist ungültig.";
@@ -4160,7 +4184,7 @@ function requestLocalWriter(discardDraft){
   var previous=localWriterCompletion;
   localWriterCompletion=Promise.resolve(previous).then(function(){
   if(request!==localWriterRequest)return;
-  return navigator.locks.request("satzkraft-local-writer-v1",{mode:"exclusive",ifAvailable:true},function(lock){
+  return navigator.locks.request(typeof DEVICE_TEST_MODE!=="undefined"&&DEVICE_TEST_MODE?"satzkraft-device-test-writer-v1":"satzkraft-local-writer-v1",{mode:"exclusive",ifAvailable:true},function(lock){
    if(request!==localWriterRequest)return;
    if(!lock){blockLocalWriter("other");return;}
    return new Promise(function(release){
@@ -4230,7 +4254,7 @@ if("serviceWorker" in navigator){
 
 var localWriterInitialized=false,resumedPendingWorkoutSwaps=false;
 function initializeWritableApp(){
-try{localStorage.removeItem("satzkraft-training-view-v1");}catch(e){}
+try{if(!DEVICE_TEST_MODE)localStorage.removeItem("satzkraft-training-view-v1");}catch(e){}
 removeLegacyCoachAnswers();
 renderView();renderBar();
 // Übungsbibliothek früh laden: liefert u. a. den Kurzhantel-Hinweis in der Trainingsansicht.
@@ -4256,7 +4280,8 @@ if(loadIssueText){
  },0);
 }
 
-if(!maybeShowRedesignNotice())maybeShowBackupReminder();
+if(DEVICE_TEST_MODE)setTimeout(function(){SatzkraftDeviceTest.resume();},0);
+else if(!maybeShowRedesignNotice())maybeShowBackupReminder();
 }
 // ---------- Einmaliger Hinweis auf das Design-Update ----------
 function hasExistingTrainingData(state){
