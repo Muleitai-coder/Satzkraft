@@ -29,3 +29,7 @@ v0.35.0 ist mit App-Commit `51021e8` auf GitHub/main hochgeladen und live unter 
 ## Bisheriges Updateergebnis v0.34.0
 
 v0.34.0 ist auf GitHub/main hochgeladen. Version, Offline-Cache, Pakete und Versionshistorie sind synchron; fünf gezielte Versions-/Cacheprüfungen und der Build bestehen. Ein ZIP mit genau den 13 öffentlichen Dateien liegt neben dem Repository bereit. Die Netlify-Veröffentlichung ist bestätigt: https://satzkraft.netlify.app/ zeigt v0.34.0. Übungssuche, Detailansicht und Versionshistorie wurden auf der Live-Seite geprüft; Netlify meldet null aktive Functions. Die unbenutzte Netlify-Variable `ANTHROPIC_API_KEY` wurde nach Bestätigung gelöscht; die leere Variablenliste und die weiterhin erreichbare App v0.34.0 sind geprüft. [Bereitstellungsbericht](../replica/deploy.md).
+
+## Ergänzung v0.35.1 – iOS-Auswahl
+
+Die installierte Version ist direkt auswählbar; andere Versionen und Betas bleiben frei eingebbar. Vorhandene Angaben werden beim nächsten Lauf korrekt vorbelegt. 16 gezielte Node-Fälle (Geräteassistent, Version, Cache) und REG-32 in mobile-webkit bestanden; Build mit 14 öffentlichen Dateien. Kein großer Testlauf. Upload nach main (`60181bd`, `e2659d5`) und Live-Ansicht v0.35.1 bestätigt; [Nachweis](../replica/clone-screens/live-ios-auswahl-v0.35.1.jpg).
