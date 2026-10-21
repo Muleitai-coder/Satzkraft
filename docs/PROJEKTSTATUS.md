@@ -22,6 +22,8 @@ Einstellungen → Admin & Tests führt jetzt durch zehn Offline-Prüfschritte mi
 
 Gezielt geprüft: 34 unterschiedliche Node-Fälle aus Geräteassistent, Speicherkoordination, Backup, Altbereinigung, Version und Service Worker. REG-31 im Projekt mobile-chromium besteht: tatsächlicher Offline-Reload über Service Worker, Testwerte/pausiertes Training, getrennte Speicher, zweiter Test-Tab, markiertes Backup mit Wiederherstellung, Berichtimport/-export, Rücknahme eines fehlgeschlagenen Teststarts und Rückkehr zum echten Zustand. Darstellung bei 320/440/1440 px und hell/dunkel gesichtet. Build: 14 öffentliche Dateien. Keine vollständige Suite oder Browsermatrix.
 
+v0.35.0 ist mit App-Commit `51021e8` auf GitHub/main hochgeladen und live unter https://satzkraft.netlify.app/ bestätigt. Einstellungen → Admin & Tests → iPhone-Offline-Test öffnen zeigt das vorausgewählte iPhone 17 Pro; es wurde dort kein physischer Testlauf angelegt. [Live-Nachweis](../replica/clone-screens/live-device-test-v0.35.0.jpg).
+
 **Physische iPhone-Abnahme weiterhin offen.** Der automatisierte Browserlauf ist ausdrücklich kein bestandener iPhone-Test. Als Nächstes den Assistenten auf deinem iPhone 17 Pro zuerst in Safari, anschließend in der installierten App durchführen.
 
 ## Bisheriges Updateergebnis v0.34.0
