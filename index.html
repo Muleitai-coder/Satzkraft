@@ -988,7 +988,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.35.0";
+var APP_VERSION="0.35.1";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=5;
 var THEME_KEY="training-theme-v1";
@@ -2089,6 +2089,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';openModalSurface(m);
 }
 var VERSION_HISTORY=[
+ {version:"v0.35.1",date:"21.10.2026",changes:["Die installierte iOS-Version lässt sich im Gerätetest direkt aus einer Liste auswählen. Für weitere Versionen und Betas bleibt eine genaue freie Eingabe möglich."]},
  {version:"v0.35.0",date:"21.10.2026",changes:["Admin-Werkzeuge führen physisch durch zehn iPhone-Offline-Prüfschritte; iPhone 17 Pro ist vorausgewählt.","Getrennter Testbereich mit synthetischem Training schützt echte Trainingsdaten. Prüfstände bleiben nach Neuladen und App-Schließen erhalten.","Bereitschaftscheck, Wiederlade-Prüfpunkte und lokale Geräteberichte für Safari und Home-Bildschirm-App; Ergebnisse anderer Geräte lassen sich vergleichen."]},
  {version:"v0.34.0",date:"13.10.2026",changes:["Persönliche Übungen erstellen, im Programmeditor auswählen, bearbeiten und archivieren; integrierte Übungen als eigene Variante speichern.","Neue Übungsdetails zeigen Technik, letzte Leistung und Verlauf aus aktiven und archivierten Trainingsblöcken.","Neue Satzprotokolle bewahren den damaligen Übungsnamen und die Erfassungsregeln. Vorhandene Werte bleiben ohne nachträglich geratene Angaben erhalten.","Vollständige Backups verwenden Schema 5 und sichern persönliche Definitionen sowie historische Erfassung; alte Schema-4-Backups bleiben importierbar.","Mehrere aktualisierte App-Fenster überschreiben Trainingswerte nicht mehr gegenseitig. Ungespeicherte Entwürfe lassen sich sichern.","Zeitübungen mit Gewicht zeigen Zeit und Last; Sekunden werden nicht mehr als Wiederholungen für 1RM oder Volumen gerechnet.","Zehn geprüfte Bibliotheksübungen behalten ihre Zuordnung in Editor, Import, Export und Backup.","Der eingebaute API-Coach ist entfernt. ChatGPT & Co. bleibt als lokal erzeugter Text mit anschließendem JSON-Import verfügbar."]},
  {version:"v0.33.4",date:"01.10.2026",changes:["Zurück-Pfeil und Schließen-X bleiben im Programmeditor und in Unteransichten auch beim Scrollen sichtbar und unterhalb der iPhone-Safe-Area.","Gewichtete Zeitübungen lassen sich im Editor zuverlässig speichern; fehlende Zeiteinheiten kompatibler Importe werden ergänzt.","Das bloße Öffnen einer Übung löst keine falsche Warnung über ungespeicherte Änderungen mehr aus."]},

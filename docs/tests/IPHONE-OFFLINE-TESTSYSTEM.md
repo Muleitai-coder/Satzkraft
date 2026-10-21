@@ -5,7 +5,7 @@ Stand: 21.10.2026 · ab Satzkraft v0.35.0 · Testprotokoll 1
 ## Auf dem eigenen iPhone beginnen
 
 1. Satzkraft zunächst mit Internet öffnen. Zahnrad → **Admin & Tests → iPhone-Offline-Test öffnen**.
-2. **iPhone 17 Pro** ist vorausgewählt. Deine tatsächlich installierte iOS-Version eintragen (Einstellungen → Allgemein → Info). Als Öffnungsart Safari oder Home-Bildschirm-App wählen.
+2. **iPhone 17 Pro** ist vorausgewählt. Deine tatsächlich installierte iOS-Version auswählen (ab v0.35.1); für fehlende Versionen oder Betas „Andere Version / Beta“ wählen und genau eintragen (Einstellungen → Allgemein → Info). Als Öffnungsart Safari oder Home-Bildschirm-App wählen.
 3. **Testbereich starten**. Die App lädt mit einem deutlich sichtbaren TESTDATEN-Hinweis neu. Deine echten Programme und Trainingswerte bleiben im bisherigen Speicher.
 4. **Bereitschaft prüfen**. Alle vier Punkte müssen bereit sein. Fehlt die Offline-Steuerung, einmal online neu laden. Bei unvollständigem Cache zunächst online bleiben.
 5. Den zehn Schritten folgen. Zum Training **Im Testtraining weiter** wählen; zurück über **TESTDATEN · Testleitung öffnen** oberhalb der Startseite oder das Zahnrad.
@@ -72,3 +72,5 @@ Berichte liegen unter `satzkraft-device-test-reports-v1` außerhalb des Training
 ## Prüfstand der Umsetzung
 
 Die reale Abnahme auf dem iPhone 17 Pro und allen weiteren physischen Geräten bleibt offen. Details zur gezielten Softwareprüfung stehen im aktuellen Projektstatus. Bestehende manuelle Checklisten bleiben als ergänzende freie Tests erhalten.
+
+Versionsliste ab v0.35.1: Manuell gepflegte Auswahl, zuletzt am 21.10.2026 mit [Apples iOS-26-Updateübersicht](https://support.apple.com/en-us/123075) und [Apple-Veröffentlichungen](https://support.apple.com/en-us/100100) abgeglichen. Keine automatische Online-Abfrage während des Offline-Tests; neue oder weitere Zwischenversionen über die freie Eingabe erfassen.

@@ -3,7 +3,7 @@
 - Stand: 21.10.2026
 - GitHub-Stand: v0.35.0 auf `main` hochgeladen (App-Commit `51021e8`)
 - Bestätigter Live-Stand: v0.35.0 unter https://satzkraft.netlify.app/; Seitentitel und neuer Admin-Testassistent am 21.10.2026 nach automatischer Veröffentlichung geprüft
-- Arbeitsstand: v0.35.0 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
+- Arbeitsstand: v0.35.1 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -195,3 +195,5 @@ Der beauftragte Gerätetest ist ab v0.35.0 unter Einstellungen → Admin & Tests
 Der persistente lokale Startschalter wird vor dem Zustandsladen gelesen. Testdaten nutzen ausschließlich `satzkraft-device-test-v1:` und eine eigene Web Lock; kein v2-Fallback, keine echte Coach-Bereinigung. Die normalen Trainingsfunktionen werden mit einem synthetischen Drei-Übungen-Plan genutzt. Rückkehr lädt die bestehenden echten Daten. Neue Testläufe ersetzen nur Testzustand. Testbackups tragen `deviceTestData: true`; gegenseitige Verwechslung mit echten Backups wird beim Import blockiert. Die Daten-Schemaversion bleibt 5.
 
 Geräteberichte liegen separat, enthalten keine Trainingslogs, sind nicht Teil des Trainingsbackups und bleiben auf maximal 20 Läufe begrenzt. JSON-Fremdberichte werden streng gefiltert und als Eigenberichte markiert. Kein Cloud-Abgleich. Cache-Bereitschaft und Prüfpunktvergleich sind technische Teilnachweise; Flugmodus, Displaysperre, vollständiges OS-Schließen und reales Modell bleiben manuell. Keine physische Abnahme aus Browserautomatisierung ableiten. Öffnungsarten Safari und Home-Bildschirm-App getrennt abnehmen. Der öffentliche Build umfasst jetzt 14 Dateien; 13 Offline-Startressourcen ohne die SW-Datei selbst.
+
+Ab v0.35.1 enthält die Gerätevorbereitung eine iOS-Auswahlliste mit leerer Pflichtauswahl; keine installierte Version wird geraten. Andere Versionen und Betas bleiben als genaue Freitextangabe möglich. Berichtformat und vorhandene Versionsangaben bleiben unverändert. Die Liste ist eine manuell gepflegte Eingabehilfe, keine Modell-Kompatibilitätsprüfung.

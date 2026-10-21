@@ -4,6 +4,13 @@
  var MODE_KEY="satzkraft-device-test-mode-v1", REPORT_KEY="satzkraft-device-test-reports-v1";
  var PREFIX="satzkraft-device-test-v1:", PROTOCOL=1, MAX_RUNS=20;
  var MODELS=["iPhone 17 Pro","iPhone 17","iPhone 17 Pro Max","iPhone 16","iPhone 16 Pro","iPhone 15","iPhone 15 Pro","iPhone 13 mini","iPhone SE (2. Generation)","iPhone SE (3. Generation)","Anderes iPhone"];
+ // Manuell gepflegte Auswahl, Apple-Updateübersichten geprüft am 21.10.2026.
+ // Keine automatische Erkennung oder Behauptung der Gerätekompatibilität.
+ var IOS_GROUPS=[
+  {label:"iOS 27",versions:["27.0.1","27.0"]},
+  {label:"iOS 26",versions:["26.7.1","26.7","26.6.2","26.6.1","26.6","26.5.2","26.5.1","26.5","26.4.2","26.4.1","26.4","26.3.1","26.3","26.2.1","26.2","26.1","26.0.1","26.0"]},
+  {label:"Ältere iOS-Versionen",versions:["18.0","17.0","16.0","15.0"]}
+ ];
  var STEPS=[
   {id:"prepare",title:"Online vorbereiten",text:"Bleibe zunächst online. Führe den Bereitschaftscheck aus. Erst wenn alle vier Punkte bereit sind: Testleitung schließen, Training starten. Die drei Übungen enthalten ausschließlich Testdaten.",ready:true},
   {id:"offline",title:"Ohne Verbindung eingeben",text:"Schalte den Flugmodus ein und WLAN in den iPhone-Einstellungen ausdrücklich aus. Schließe die Testleitung. Trage bei Test · Gewicht im ersten Satz 10 Wiederholungen und 20 kg ein. Tippe außerhalb des Feldes. Öffne danach wieder die Testleitung. Erwartet: Eingaben bleiben erhalten und kein Bedienelement hängt."},
@@ -28,6 +35,9 @@
  function label(value){return{pending:"Offen",pass:"Bestanden",fail:"Fehler",skip:"Übersprungen"}[value]||"Offen";}
  function option(v,selected){return '<option'+(v===selected?' selected':'')+'>'+esc(v)+'</option>';}
  function input(id,title,value,max){return '<label class="dt-field">'+title+'<input id="'+id+'" value="'+attr(value||"")+'" maxlength="'+max+'" required></label>';}
+ function knownIos(value){return IOS_GROUPS.some(function(group){return group.versions.indexOf(value)>=0;});}
+ function selectedIos(value,custom){return value==="other"?String(custom||"").trim().slice(0,40):knownIos(value)?value:"";}
+ function iosFields(previous){var custom=!!previous&&!knownIos(previous),selected=custom?"other":previous||"";return '<label class="dt-field">Installierte iOS-Version<select id="dt-ios" required><option value=""'+(!selected?' selected':'')+'>Bitte auswählen</option>'+IOS_GROUPS.map(function(group){return '<optgroup label="'+attr(group.label)+'">'+group.versions.map(function(v){return '<option value="'+v+'"'+(selected===v?' selected':'')+'>iOS '+v+'</option>';}).join('')+'</optgroup>';}).join('')+'<option value="other"'+(custom?' selected':'')+'>Andere Version / Beta …</option></select></label><div id="dt-ios-custom-wrap"'+(custom?'':' hidden')+'>'+input("dt-ios-custom","Genaue iOS-Version / Beta",custom?previous:"",40)+'</div>';}
  function button(action,title,primary,extra){return '<button type="button" class="mbtn'+(primary?' primary':'')+'" data-dt="'+action+'" '+(extra||'')+'>'+title+'</button>';}
  function digest(){syncStore();var json=JSON.stringify(S.logs),hash=2166136261;for(var i=0;i<json.length;i++){hash^=json.charCodeAt(i);hash=Math.imul(hash,16777619);}return (hash>>>0).toString(16);}
  function newState(){
@@ -42,7 +52,7 @@
  function start(){
   var rollback=null,mutationStarted=false;
   try{
-   guard();if(!flushSave())throw new Error("Der aktuelle Trainingsstand konnte nicht gesichert werden.");var model=document.getElementById("dt-model").value,custom=document.getElementById("dt-custom").value.trim(),ios=document.getElementById("dt-ios").value.trim(),context=document.getElementById("dt-context").value;
+   guard();if(!flushSave())throw new Error("Der aktuelle Trainingsstand konnte nicht gesichert werden.");var model=document.getElementById("dt-model").value,custom=document.getElementById("dt-custom").value.trim(),ios=selectedIos(document.getElementById("dt-ios").value,document.getElementById("dt-ios-custom").value),context=document.getElementById("dt-context").value;
    if(!ios||model==="Anderes iPhone"&&!custom){notice="Bitte iOS-Version und gegebenenfalls das genaue Modell eintragen.";var msg=document.getElementById("dt-notice");msg.textContent=notice;return;}
    var data=read(),now=Date.now(),run={id:now+"-"+Math.random().toString(36).slice(2,9),protocol:PROTOCOL,model:model==="Anderes iPhone"?custom:model,ios:ios,context:context,version:APP_VERSION,startedAt:now,step:0,results:{},checkpoints:{},environment:null};
    data.runs.unshift(run);data.runs=data.runs.slice(0,MAX_RUNS);data.active=run.id;
@@ -114,7 +124,7 @@
     h+='<label class="dt-field">Beobachtung / Fehler / Grund fürs Überspringen<textarea id="dt-note" maxlength="1000" rows="3">'+esc(result&&result.note||"")+'</textarea></label>';
     h+='<p class="setbackupstatus">„Bestanden“ bestätigt deine eigene Durchführung auf dem angegebenen physischen Gerät. Automatische Checks allein sind keine Geräteabnahme.</p><div class="dt-actions">'+button("pass","Bestanden",true)+button("fail","Fehler gefunden",false)+button("skip","Überspringen",false)+'</div>';
    }
-   h+='<details class="dt-section"'+(!test?' open':'')+'><summary>Neuen Gerätetest beginnen</summary><p class="setbackupstatus">Dein Hauptgerät ist vorausgewählt. Modell nicht automatisch erkannt. iOS-Version: Einstellungen → Allgemein → Info. Safari und Home-Bildschirm-App jeweils getrennt testen. Ein neuer Lauf ersetzt nur den synthetischen Trainingsstand.</p><label class="dt-field">iPhone-Modell<select id="dt-model">'+MODELS.map(function(m){return option(m,run&&run.model||MODELS[0]);}).join('')+'</select></label>'+input("dt-custom","Anderes Modell (falls ausgewählt)","",80)+input("dt-ios","Installierte iOS-Version",run&&run.ios||"",40)+'<label class="dt-field">Auf diesem Gerät geöffnet als<select id="dt-context">'+["Safari","Home-Bildschirm-App"].map(function(v){return option(v,navigator.standalone||matchMedia("(display-mode: standalone)").matches?"Home-Bildschirm-App":"Safari");}).join('')+'</select></label>'+button("start",test?"Neuer Lauf mit frischen Testdaten":"Testbereich starten",true)+'</details>';
+   h+='<details class="dt-section"'+(!test?' open':'')+'><summary>Neuen Gerätetest beginnen</summary><p class="setbackupstatus">Dein Hauptgerät ist vorausgewählt. Modell nicht automatisch erkannt. iOS-Version: Einstellungen → Allgemein → Info. Safari und Home-Bildschirm-App jeweils getrennt testen. Ein neuer Lauf ersetzt nur den synthetischen Trainingsstand.</p><label class="dt-field">iPhone-Modell<select id="dt-model">'+MODELS.map(function(m){return option(m,run&&run.model||MODELS[0]);}).join('')+'</select></label>'+input("dt-custom","Anderes Modell (falls ausgewählt)","",80)+iosFields(run&&run.ios||"")+'<label class="dt-field">Auf diesem Gerät geöffnet als<select id="dt-context">'+["Safari","Home-Bildschirm-App"].map(function(v){return option(v,navigator.standalone||matchMedia("(display-mode: standalone)").matches?"Home-Bildschirm-App":"Safari");}).join('')+'</select></label>'+button("start",test?"Neuer Lauf mit frischen Testdaten":"Testbereich starten",true)+'</details>';
    h+='<details class="dt-section"><summary>Geräteübersicht und Berichte ('+data.runs.length+')</summary><p class="setbackupstatus">Empfohlen: dein iPhone 17 Pro zuerst in beiden Öffnungsarten; danach kleines iPhone (SE/mini), Standardmodell und Pro Max. Bildschirmgrößen am Computer ersetzen diese Geräte nicht. Ein älterer Lauf gilt nur für seine damalige App- und iOS-Version.</p>';
    if(!data.runs.length)h+='<p>Noch kein physischer Test dokumentiert.</p>';
    data.runs.forEach(function(r){var passed=STEPS.filter(function(s){return r.results[s.id]&&r.results[s.id].status==="pass";}).length;h+='<details class="dt-section"><summary>'+esc(r.model)+' · '+status(r)+' · '+passed+'/'+STEPS.length+'</summary><p>'+esc(r.context)+' · iOS '+esc(r.ios)+' · v'+esc(r.version)+' · '+new Date(r.startedAt).toLocaleDateString("de-DE")+(r.imported?' · importierter Eigenbericht':'')+'</p><ul>'+STEPS.map(function(s){var v=r.results[s.id];return '<li>'+esc(s.title)+': '+label(v&&v.status)+(v&&v.note?' — '+esc(v.note):'')+'</li>';}).join('')+'</ul></details>';});
@@ -137,6 +147,6 @@
  document.addEventListener("click",function(event){var b=event.target.closest("[data-dt]");if(!b)return;var action=b.dataset.dt;
   if(action==="open")show();else if(action==="training")hideModal();else if(action==="start")start();else if(action==="preflight")preflight();else if(action==="checkpoint")checkpoint();else if(action==="reload"){if(flushSave())location.reload();else error(new Error("Testdaten konnten nicht gespeichert werden."));}else if(action==="export")exportReports();else if(["pass","fail","skip"].indexOf(action)>=0)mark(action);
  });
- document.addEventListener("change",function(event){if(event.target.id==="dt-step"){var i=Number(event.target.value);update(function(r){if(Number.isInteger(i)&&i>=0&&i<STEPS.length)r.step=i;});}else if(event.target.id==="dt-import")importReports(event.target.files[0]);});
- window.SatzkraftDeviceTest={show:show,resume:resume,cleanReport:cleanReport,mergeReports:mergeReports,status:status,steps:STEPS};
+ document.addEventListener("change",function(event){if(event.target.id==="dt-ios"){var other=event.target.value==="other";document.getElementById("dt-ios-custom-wrap").hidden=!other;if(other)document.getElementById("dt-ios-custom").focus();}else if(event.target.id==="dt-step"){var i=Number(event.target.value);update(function(r){if(Number.isInteger(i)&&i>=0&&i<STEPS.length)r.step=i;});}else if(event.target.id==="dt-import")importReports(event.target.files[0]);});
+ window.SatzkraftDeviceTest={show:show,resume:resume,cleanReport:cleanReport,mergeReports:mergeReports,status:status,steps:STEPS,selectedIos:selectedIos,iosFields:iosFields};
 })();

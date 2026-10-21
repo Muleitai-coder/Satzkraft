@@ -2052,7 +2052,7 @@ test.describe('Gezielter Offline-Gerätetest-Assistent',()=>{
   const original=await page.evaluate(()=>{flushSave();localStorage.setItem('satzkraft-coach-prefs','{"synthetic":"preserve"}');return localStorage.getItem(KEY);});
   await page.locator('#settingsbtn').click();await page.locator('[data-settings-device-test]').click();
   await expect(page.locator('#dt-model')).toHaveValue('iPhone 17 Pro');
-  await page.locator('#dt-ios').fill('Automatisierter Browsertest');
+  await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('Automatisierter Browsertest');
   const navigation=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await navigation;
   await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
   await expect(page.locator('#modal')).toContainText('TESTDATEN');
@@ -2061,7 +2061,7 @@ test.describe('Gezielter Offline-Gerätetest-Assistent',()=>{
   expect(await page.evaluate(()=>localStorage.getItem('satzkraft-coach-prefs'))).toBe('{"synthetic":"preserve"}');
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
   await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller)).toBe(true);
-  await page.locator('[data-dt="preflight"]').click();await expect(page.locator('#modal')).toContainText('Alle 13 Startressourcen in v0.35.0: bereit');
+  await page.locator('[data-dt="preflight"]').click();await expect(page.locator('#modal')).toContainText('Alle 13 Startressourcen in v0.35.1: bereit');
   await page.locator('[data-dt="pass"]').click();await expect(page.locator('#dt-step')).toHaveValue('1');
   await expect(page.locator('#modaltitle')).toBeInViewport();
   await page.getByRole('button',{name:'Im Testtraining weiter',exact:true}).click();await page.locator('#startw').click();
@@ -2104,14 +2104,14 @@ test.describe('Gezielter Offline-Gerätetest-Assistent',()=>{
   // Starting a fresh run while already in the sandbox must not flush old data over its seed.
   await context.setOffline(false);
   await page.locator('.dt-section').filter({has:page.locator('summary',{hasText:'Neuen Gerätetest beginnen'})}).first().locator('summary').first().click();
-  await page.locator('#dt-ios').fill('Automatisierter Browsertest 2');
+  await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('Automatisierter Browsertest 2');
   // A failed report write must roll the previous sandbox state back.
   await page.evaluate(()=>{const originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='satzkraft-device-test-reports-v1'){Storage.prototype.setItem=originalSet;throw new DOMException('synthetic quota','QuotaExceededError');}return originalSet.call(this,key,value);};});
   await page.locator('[data-dt="start"]').click();await expect(page.locator('#dt-notice')).toContainText('synthetic quota');
   expect(await page.evaluate(()=>Object.values(S.logs)[0].sets[0].weight)).toBe('20');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem(KEY)).store.default.logs['1|A|qa_weight'].sets[0].weight)).toBe('20');
   await page.locator('.dt-section').filter({has:page.locator('summary',{hasText:'Neuen Gerätetest beginnen'})}).first().locator('summary').first().click();
-  await page.locator('#dt-ios').fill('Automatisierter Browsertest 2');const fresh=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await fresh;
+  await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('Automatisierter Browsertest 2');const fresh=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await fresh;
   await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
   await expect(page.locator('#modal')).toContainText('TESTDATEN');expect(await page.evaluate(()=>Object.keys(S.logs))).toEqual([]);
   const back=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Zurück zum echten Training',exact:true}).click();await back;
@@ -2121,4 +2121,22 @@ test.describe('Gezielter Offline-Gerätetest-Assistent',()=>{
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs.length)).toBe(3);
   expect(await page.evaluate(()=>validateBackupFile({deviceTestData:true}))).toContain('nur im Gerätetest-Bereich');expect(errors).toEqual([]);
  });
+});
+
+test('REG-32/P1: iOS-Version auswählen oder genaue Beta-Version eingeben',async({page})=>{
+ await openWithPersistedState(page,compactWorkoutState(2));await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+ await page.locator('#settingsbtn').click();await page.locator('[data-settings-device-test]').click();
+ await expect(page.locator('#dt-ios')).toHaveValue('');await expect(page.locator('#dt-ios-custom')).toBeHidden();
+ await page.locator('[data-dt="start"]').click();await expect(page.locator('#dt-notice')).toContainText('Bitte iOS-Version');
+ await page.locator('#dt-ios').selectOption('other');await expect(page.locator('#dt-ios-custom')).toBeVisible();
+ await page.locator('#dt-ios-custom').fill('27.1 Beta 2');
+ await page.locator('#dt-ios').selectOption('26.6.2');await expect(page.locator('#dt-ios-custom')).toBeHidden();
+ const first=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await first;
+ await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#modal')).toContainText('iOS 26.6.2');
+ await page.getByText('Neuen Gerätetest beginnen',{exact:true}).click();await expect(page.locator('#dt-ios')).toHaveValue('26.6.2');
+ await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('27.1 Beta 2');
+ const second=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await second;
+ await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#modal')).toContainText('iOS 27.1 Beta 2');
+ await page.getByText('Neuen Gerätetest beginnen',{exact:true}).click();await expect(page.locator('#dt-ios')).toHaveValue('other');await expect(page.locator('#dt-ios-custom')).toHaveValue('27.1 Beta 2');
+ const reports=await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs.map(r=>r.ios));expect(reports).toEqual(['27.1 Beta 2','26.6.2']);
 });
