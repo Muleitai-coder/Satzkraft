@@ -1,8 +1,8 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
 - Stand: 22.10.2026
-- GitHub-Stand: v0.37.0 auf `main` hochgeladen (App-Commit `20f3c9b`)
-- Bestätigter Live-Stand: v0.37.0 unter https://satzkraft.netlify.app/; Seitentitel und direkte Testansicht ohne Anleitungsmodal am 22.10.2026 nach automatischer Veröffentlichung geprüft
+- GitHub-Stand: v0.38.0 auf `main` hochgeladen (App-Commit `04f120c`)
+- Bestätigter Live-Stand: v0.38.0 unter https://satzkraft.netlify.app/; Seitentitel, normale Trainingsansicht trotz früher aktivem Testmodus und Einstellungen ohne Admin-/Testeintrag am 22.10.2026 geprüft
 - Arbeitsstand: v0.38.0 (Testbereich entfernt, externe Handy-Checkliste und separate iPhone-Browsersimulation; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.

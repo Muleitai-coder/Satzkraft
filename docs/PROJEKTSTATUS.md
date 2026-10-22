@@ -8,7 +8,7 @@ Der gesamte eingebaute Gerätetest ist auf Nutzerwunsch entfernt: kein Admin-Ein
 
 Die [kurze Handy-Checkliste](tests/SMARTPHONE-ABNAHME.md) ersetzt den Assistenten. Ein separat gestarteter WebKit-Lauf bedient die normale App mit dem iPhone-17-Pro-Profil per Touch, prüft Ränder, knappe Höhe und Querformat. Satzpause-Knöpfe wurden vergrößert und fokussierte Satzfelder lesbarer gemacht. Zehn gezielte Node-Fälle und REG-31 im iPhone-Profil bestanden, einschließlich Offline-Eingaben, Cache-Neustart bei abgeschaltetem Server und vollständiger Backup-Wiederherstellung. Build: 13 öffentliche Dateien. [Verfahren, Befunde und Grenzen](tests/IPHONE-OFFLINE-TESTSYSTEM.md).
 
-Physische iPhone-Abnahme weiterhin offen. Veröffentlichung wird nach dem Upload bestätigt. Die folgenden Abschnitte dokumentieren frühere Stände; die Anleitungen zum integrierten Assistenten v0.35–v0.37 gelten nicht mehr.
+Physische iPhone-Abnahme weiterhin offen. App-Commit `04f120c` wurde nach GitHub/main hochgeladen; Netlify zeigt v0.38.0. Nach Neuladen öffnet der zuvor aktive Testmodus wieder das normale Training; Einstellungen enthalten keinen Admin-/Testeintrag. [Live-Nachweis](../replica/clone-screens/live-ohne-testbereich-v0.38.0.jpg). Die folgenden Abschnitte dokumentieren frühere Stände; die Anleitungen zum integrierten Assistenten v0.35–v0.37 gelten nicht mehr.
 
 | Arbeitspaket | Stand | Ergebnis / verbleibend |
 | --- | --- | --- |
