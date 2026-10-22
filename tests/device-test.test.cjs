@@ -36,3 +36,12 @@ test('finishing or skipping a report step advances once and completes only at th
  assert.equal(run.results.offline.status,'skip');assert.equal(api.status(run),'Offen');
  run.step=9;api.finishStep(run,'pass','');assert.equal(run.finished,true);assert.equal(api.status(run),'Offen');
 });
+
+
+test('inline confirmation waits for exact entered values but never marks a result automatically',()=>{
+ const api=runner(),run={step:1,guide:{step:1,part:1,view:'check'},results:{}},logs={'1|A|qa_weight':{sets:[{reps:'10',weight:'19'}]}};
+ assert.equal(api.inputReady(run,logs,{}),false);logs['1|A|qa_weight'].sets[0].weight='20';assert.equal(api.inputReady(run,logs,{}),true);assert.deepEqual(run.results,{});
+ run.step=2;run.guide={step:2,part:0,view:'check'};logs['1|A|qa_time']={sets:[{reps:'45',weight:'12,5'}]};assert.equal(api.inputReady(run,logs,{}),true);
+ logs['1|A|qa_time'].sets[0].reps='450';assert.equal(api.inputReady(run,logs,{}),false);
+ run.guide.part=1;assert.equal(api.inputReady(run,logs,{}),false);logs['1|A|qa_hold']={sets:[{reps:'3'}]};assert.equal(api.inputReady(run,logs,{}),true);
+});

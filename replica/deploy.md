@@ -55,3 +55,8 @@ Direkte Versionsauswahl, freie Beta-/Sonderversionen und Vorbelegung gezielt gep
 ## 22.10.2026 – v0.36.0 verständliche Gerätebegleitung
 
 App/Cache/versionierte Geräteassistent-URL/Pakete/Historie auf v0.36.0 synchron. Gezielte Prüfung: 14 Node-Fälle und REG-31 mobile-chromium erfolgreich, einschließlich tatsächlichem Offline-Reload, Teilaufgaben-Fortsetzung und Backup-Wiederherstellung. Hauptaktion bei 320 × 568 px sichtbar. Build: ausschließlich 14 freigegebene Dateien. Keine vollständige Suite/Browsermatrix und kein physisches iPhone als getestet markiert. App-Commit `e252a00` erfolgreich nach GitHub/main hochgeladen. Automatische Netlify-Veröffentlichung am 22.10.2026 bestätigt: Seitentitel v0.36.0 und neue Testführung. Der vorhandene ältere Testlauf bleibt erhalten; nur der Einstieg für einen neuen geführten Test wurde aufgeklappt. Kein physisches Testergebnis erzeugt und kein Teststand ersetzt. [Live-Nachweis](clone-screens/live-device-guide-v0.36.0.jpg).
+
+
+## 22.10.2026 – v0.37.0 direkte Testansicht
+
+App/Cache/versionierte Modul-URL/Pakete/Historie synchron. 14 gezielte Gerätetestfälle, eine Versionsprüfung und REG-31 mobile-chromium erfolgreich. Aufgabe, Feld und Weiter-Aktion bei 320 × 568 px gemeinsam sichtbar; auf 390 × 360 px bleibt das Eingabefeld unverdeckt und die Sollwertzeile sichtbar. Der Browserlauf prüft Offline-Neustart, Wiederaufnahme, Bibliothek, Backup, Berichte, Fensterschutz und Datentrennung. Build: 14 öffentliche Dateien. Keine vollständige Suite/Browsermatrix; echte iPhone-Tastatur und OS-Abnahme offen. Veröffentlichung wird anschließend bestätigt.

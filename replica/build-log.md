@@ -24,3 +24,8 @@ S15 Einstellungen erweitert um lokale Admin-Werkzeuge. Zehn geführte physische 
 ## 22.10.2026 – Verständliche Gerätebegleitung v0.36.0
 
 Zehn stabile Berichtsschritte mit kleinen Unteraufgaben, automatischer Online-Vorbereitung, direkten Aktionen und Ergebnisfragen. Aufgabenhinweis im Training, gesicherte Fortsetzung nach Neustart, eigenständiger Abschluss und eingeklappte Verwaltung. Hauptaktion auf kurzen Displays fest sichtbar. Keine automatische physische Bestätigung. 14 gezielte Node-Fälle und REG-31 mobile-chromium erfolgreich; keine große Suite. Screenshots 320 × 568 (hell), 440/1440 (dunkel) und Eingabeanleitung im mobilen Hochformat gesichtet. Build mit 14 öffentlichen Dateien. Reale iPhone-Abnahme offen.
+
+
+## 22.10.2026 – Direkte Testansicht v0.37.0
+
+Anleitung und reale Satzfelder gemeinsam, kurze Stichpunkte, fester Werthinweis und eine Weiter-Aktion. Testmenü für Verwaltung; keine normalen Anleitungsmodals. Die unveränderte Erfassungslogik wird mit einer im Testbereich reduzierten Darstellung verwendet. 14 gezielte Node-Gerätetestfälle und eine Versionsprüfung erfolgreich. REG-31 mobile-chromium gezielt ausgeführt; reale iPhone-Abnahme offen. Screenshots: device-inline-320-light.png, device-inline-390-dark.png, device-inline-1440-dark.png.

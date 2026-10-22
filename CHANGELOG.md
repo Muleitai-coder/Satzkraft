@@ -6,6 +6,15 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.37.0] – 2026-10-22
+
+### Geändert
+
+- Der geführte Offline-Test zeigt Aufgabe, kurze Stichpunkte und echte Satzfelder gemeinsam. Ein fester Kopf erinnert an die einzutragenden Werte; „Passt · Weiter“ führt direkt zur nächsten Aufgabe, ohne die Anleitung öffnen oder schließen zu müssen.
+- Im Testbereich erscheint nur die benötigte Satzzeile. Die Erfassungs-, Speicher- und Timerfunktionen der normalen App bleiben in Verwendung. Bei Zahlenaufgaben wird „Weiter“ erst mit den angegebenen Werten freigegeben; das Ergebnis bestätigt weiterhin der Nutzer selbst.
+- Auswahlmöglichkeiten und Berichte liegen im separaten Testmenü. Modell und iOS-Version werden zu Beginn gewählt; weitere Angaben bleiben eingeklappt. Bibliotheksansichten erhalten einen kurzen Aufgabenhinweis.
+- Nach einem App-Update führt ein direkter Knopf zum neuen Testlauf. Vorhandene Berichte und echte Trainingsdaten bleiben erhalten.
+
 ## [0.36.0] – 2026-10-22
 
 ### Geändert

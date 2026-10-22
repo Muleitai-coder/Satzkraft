@@ -3,7 +3,7 @@
 - Stand: 22.10.2026
 - GitHub-Stand: v0.36.0 auf `main` hochgeladen (App-Commit `e252a00`)
 - Bestätigter Live-Stand: v0.36.0 unter https://satzkraft.netlify.app/; Seitentitel, neue Geräteführung und Einstieg für einen neuen Lauf am 22.10.2026 nach automatischer Veröffentlichung geprüft
-- Arbeitsstand: v0.36.0 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
+- Arbeitsstand: v0.37.0 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -202,3 +202,8 @@ Das Gerätetest-Skript trägt ab diesem Update eine Versionsabfrage in Skript-UR
 ### Gerätebegleitung ab v0.36.0 (22.10.2026)
 
 Auf Nutzerfeedback zur unverständlichen Testoberfläche führt der Geräteassistent innerhalb der zehn stabilen Berichtsschritte durch einzelne Aufgaben. Jede Aufgabe benennt Handlung, Soll-Ergebnis und genau eine primäre Aktion. Die Bereitschaft wird automatisch geprüft; direkte Aktionen öffnen die betreffenden Testfelder beziehungsweise Bibliothek und Backup. Der Assistent trägt niemals Testwerte selbst ein und bestätigt keine physische Durchführung automatisch. Ein Aufgabenhinweis im Training führt zur Ergebnisfrage zurück. Der Unteraufgabenstand bleibt außerhalb der Trainingsdaten im Gerätebericht gespeichert und übersteht Neustarts; alte Berichte bleiben kompatibel. Vor dem Anlegen persönlicher Übungen wird das synthetische Training bewusst über den beschrifteten Knopf beendet. Technische Details und Verwaltung bleiben eingeklappt. Echte iPhone-Abnahme weiterhin offen.
+
+
+### Vereinfachung nach Nutzerrückmeldung v0.37.0 (22.10.2026)
+
+Die aktive Geräteführung ist keine Folge von Anleitungsdialogen mehr. Kurze Stichpunkte, die echten Satzfelder und „Passt · Weiter“ stehen auf einer Seite; der feste Kopf hält die Sollwerte sichtbar. Im Testmodus werden Trainingsnavigation, andere Übungen und zusätzliche Satzzeilen ausgeblendet, ohne die normale Erfassungs-/Speicher-/Timerlogik zu ersetzen. Gerätewahl und Berichte liegen im gesonderten Menü. Problemnotizen öffnen bei Bedarf einen Dialog. Eingabekontrollen geben nur die Bestätigung frei; sie markieren niemals automatisch einen physischen Erfolg. Beim Reload werden gespeicherte Aufgaben beibehalten und das Training bleibt pausiert, bis der Nutzer bei einer Eingabeaufgabe ausdrücklich fortsetzt. Physische iPhone-Abnahme weiterhin offen.

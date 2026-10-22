@@ -2044,113 +2044,101 @@ test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile D
 
 test.describe('Gezielter Offline-Gerätetest-Assistent',()=>{
  test.use({serviceWorkers:'allow'});
- test('REG-31/P0: isolierter Testbereich, Offline-Neustart, Berichte und Rückkehr',async({page,context})=>{
+ test('REG-31/P0: Inline-Gerätetest ohne Dialogwechsel, Offline-Neustart und Datentrennung',async({page,context})=>{
   test.setTimeout(90000);
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await openWithPersistedState(page,compactWorkoutState(2));
   await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
   const original=await page.evaluate(()=>{flushSave();localStorage.setItem('satzkraft-coach-prefs','{"synthetic":"preserve"}');return localStorage.getItem(KEY);});
   await page.locator('#settingsbtn').click();await page.locator('[data-settings-device-test]').click();
-  await expect(page.locator('#dt-model')).toHaveValue('iPhone 17 Pro');
+  await expect(page.locator('#dt-model')).toHaveValue('iPhone 17 Pro');await expect(page.locator('#dt-custom')).toBeHidden();
   await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('Automatisierter Browsertest');
   const navigation=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await navigation;
   await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
-  await expect(page.locator('#modal')).toContainText('TESTDATEN');
+  await expect(page.locator('#modal')).toBeHidden();await expect(page.locator('#deviceTestBar')).toContainText('TESTDATEN');
   expect(await page.evaluate(()=>KEY)).toBe('satzkraft-device-test-v1:cali-plan-v3');
   expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);
   expect(await page.evaluate(()=>localStorage.getItem('satzkraft-coach-prefs'))).toBe('{"synthetic":"preserve"}');
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
-  await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller)).toBe(true);
-  // Preparation runs on its own; there is no pass button before trying a task.
-  await expect(page.locator('#modal')).toContainText('Alles bereit. Du kannst jetzt weitermachen.');
+  await expect(page.locator('#deviceTestTask')).toContainText('Alles bereit.');
   await expect(page.locator('[data-dt="pass"]')).toHaveCount(0);
-  await page.locator('[data-dt="do"]').click();await expect(page.locator('#modaltitle')).toHaveText('Internet am iPhone ausschalten');
+  await page.locator('[data-dt="do"]').click();await expect(page.locator('#dt-title')).toHaveText('Internet ausschalten');
   await context.setOffline(true);await page.locator('[data-dt="do"]').click();
-  await expect(page.locator('#modaltitle')).toHaveText('10 Wiederholungen, 20 kg');
+  // Instructions, real input fields, and confirmation are present together, without a modal.
+  await expect(page.locator('#modal')).toBeHidden();await expect(page.locator('#dt-title')).toHaveText('Diese Werte eintragen');
+  await expect(page.locator('#rep-qa_weight-0')).toBeEditable();await expect(page.locator('#rep-qa_time-0')).toBeHidden();
+  await expect(page.locator('#deviceTestBar')).toContainText('10 Wdh. · 20 kg');
+  await expect(page.locator('[data-dt="pass"]')).toBeDisabled();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs[0].results.offline)).toBeUndefined();
-  await page.screenshot({path:path.resolve(__dirname,'../../replica/clone-screens/device-guide-task-dark.png')});
-  await expect(page.locator('#modaltitle')).toBeInViewport();
-  await page.locator('[data-dt="do"]').click();await expect(page.locator('#rep-qa_weight-0')).toBeEditable();
-  await expect(page.locator('#deviceTestBar')).toContainText('10 Wdh. / 20 kg');
-  await page.locator('#rep-qa_weight-0').fill('10');await page.locator('#wt-qa_weight-0').fill('20');await page.locator('#wt-qa_weight-0').blur();
-  await page.locator('[data-dt="open"]').click();await expect(page.locator('#modal')).toContainText('Sind 10 Wiederholungen und 20 kg');
-  await page.locator('[data-dt="pass"]').click();await expect(page.locator('#modaltitle')).toHaveText('Eine Zeit von Hand eingeben');
-  await page.locator('[data-dt="do"]').click();await page.locator('#rep-qa_time-0').fill('45');await page.locator('#wt-qa_time-0').fill('12.5');await page.locator('#wt-qa_time-0').blur();
-  await page.locator('[data-dt="open"]').click();await page.locator('[data-dt="pass"]').click();
-  await expect(page.locator('#modaltitle')).toHaveText('Die Stoppuhr ausprobieren');
-  // An ordinary reload preserves the exact subtask without marking it as passed.
-  await page.reload();await expect(page.locator('#modaltitle')).toHaveText('Die Stoppuhr ausprobieren');
-  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs[0].results.timer)).toBeUndefined();
-  await page.locator('[data-dt="do"]').click();await page.locator('[data-hold-row="qa_hold"][data-i="0"]').click();await page.locator('#stophold').click();
-  await expect(page.locator('#rtCount')).toBeVisible();
-  await page.locator('[data-dt="open"]').click();await page.locator('[data-dt="pass"]').click();
-  async function jump(step){await page.locator('.dt-manage > summary').click();await page.locator('#dt-step').selectOption(String(step));}
-  await jump(4);
-  const reload=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="do"]').click();await reload;
-  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
-  await expect(page.locator('#modal')).toContainText('Satzwerte gleich, Training pausiert');
-  expect(await page.evaluate(()=>S.logs['1|A|qa_weight'].sets[0])).toMatchObject({reps:'10',weight:'20'});
-  expect(await page.evaluate(()=>S.workout.running)).toBe(false);
-  expect(await page.evaluate(()=>JSON.parse(backupJSON()).deviceTestData)).toBe(true);
-  expect(await page.evaluate(()=>validateBackupFile(JSON.parse(backupJSON())))).toBeNull();
-  expect(await page.evaluate(()=>validateBackupFile({schemaVersion:5}))).toContain('gekennzeichnete Testbackups');
-  await page.locator('[data-dt="issue"]').click();await page.locator('[data-dt="issue-save"]').click();await expect(page.locator('#dt-notice')).toContainText('Bitte Fehler');
-  await page.locator('#dt-outcome').selectOption('skip');await page.locator('#dt-note').fill('Nur automatisierter Browserlauf, keine physische iPhone-Abnahme.');await page.locator('[data-dt="issue-save"]').click();
-  await expect(page.locator('#modaltitle')).toHaveText('Satzkraft vollständig schließen');
-  // A close checkpoint cannot pass in the same JavaScript start.
-  await page.locator('[data-dt="do"]').click();await page.locator('[data-dt="open"]').click();await expect(page.locator('[data-dt="pass"]')).toBeDisabled();
-  await page.locator('[data-dt="back-task"]').click();
-  for(const [width,height,theme] of [[320,568,'light'],[440,900,'dark'],[1440,900,'dark']]){
+  await page.locator('#rep-qa_weight-0').fill('10');await page.locator('#wt-qa_weight-0').fill('19');await page.locator('#wt-qa_weight-0').blur();
+  await expect(page.locator('[data-dt="pass"]')).toBeDisabled();
+  await page.locator('#wt-qa_weight-0').fill('20');await page.locator('#wt-qa_weight-0').blur();
+  await expect(page.locator('[data-dt="pass"]')).toBeEnabled();
+  for(const [width,height,theme] of [[320,568,'light'],[390,700,'dark'],[1440,900,'dark']]){
    await page.setViewportSize({width,height});await page.evaluate(t=>applyTheme(t,true),theme);
-   expect(await page.evaluate(()=>document.querySelector('#modal .mbox').scrollWidth<=innerWidth)).toBe(true);
-   await expect(page.locator('.dt-dock .primary')).toBeInViewport();
-   await page.screenshot({path:path.resolve(__dirname,'../../replica/clone-screens/device-test-'+width+'-'+theme+'.png')});
+   await expect(page.locator('#rep-qa_weight-0')).toBeInViewport();await expect(page.locator('#deviceTestTask .dt-bullets')).toBeInViewport();await expect(page.locator('[data-dt="pass"]')).toBeInViewport();
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+   await page.screenshot({path:path.resolve(__dirname,'../../replica/clone-screens/device-inline-'+width+'-'+theme+'.png')});
   }
-  await page.locator('.dt-manage > summary').click();await page.getByText(/^Geräteübersicht und Berichte \(/).click();
+  // A short available height approximates keyboard space; the value reminder stays visible.
+  await page.setViewportSize({width:390,height:360});await page.locator('#wt-qa_weight-0').focus();await page.locator('#wt-qa_weight-0').scrollIntoViewIfNeeded();
+  await expect(page.locator('#deviceTestBar')).toBeInViewport();await expect(page.locator('#deviceTestBar')).toContainText('10 Wdh. · 20 kg');
+  const reminder=await page.locator('#deviceTestBar').boundingBox(),weightField=await page.locator('#wt-qa_weight-0').boundingBox();expect(weightField.y).toBeGreaterThanOrEqual(reminder.y+reminder.height);expect(weightField.y+weightField.height).toBeLessThanOrEqual(360);await page.locator('#wt-qa_weight-0').blur();
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('[data-dt="pass"]').click();await expect(page.locator('#dt-title')).toHaveText('Zeit und Gewicht eintragen');await expect(page.locator('#modal')).toBeHidden();
+  await page.locator('#rep-qa_time-0').fill('45');await page.locator('#wt-qa_time-0').fill('12.5');await page.locator('#wt-qa_time-0').blur();await page.locator('[data-dt="pass"]').click();
+  await expect(page.locator('#dt-title')).toHaveText('Stoppuhr ausprobieren');
+  await page.reload();await expect(page.locator('#dt-title')).toHaveText('Stoppuhr ausprobieren');await expect(page.locator('#modal')).toBeHidden();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs[0].results.timer)).toBeUndefined();
+  expect(await page.evaluate(()=>S.workout.running)).toBe(false);await page.locator('[data-dt="resume-training"]').click();
+  await page.locator('[data-hold-row="qa_hold"][data-i="0"]').click();await page.locator('#stophold').click();await expect(page.locator('#rtCount')).toBeVisible();await page.locator('[data-dt="pass"]').click();
+  async function menu(){await page.locator('[data-dt="manage"]').click();}
+  async function jump(step){await menu();await page.getByText('Schritt wechseln / wiederholen',{exact:true}).click();await page.locator('#dt-step').selectOption(String(step));}
+  await jump(4);const reload=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="do"]').click();await reload;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#deviceTestTask')).toContainText('Satzwerte gleich, Training pausiert');await expect(page.locator('#modal')).toBeHidden();
+  expect(await page.evaluate(()=>S.logs['1|A|qa_weight'].sets[0])).toMatchObject({reps:'10',weight:'20'});
+  expect(await page.evaluate(()=>S.workout.running)).toBe(false);expect(await page.evaluate(()=>JSON.parse(backupJSON()).deviceTestData)).toBe(true);
+  expect(await page.evaluate(()=>validateBackupFile(JSON.parse(backupJSON())))).toBeNull();expect(await page.evaluate(()=>validateBackupFile({schemaVersion:5}))).toContain('gekennzeichnete Testbackups');
+  await page.locator('[data-dt="issue"]').click();await page.locator('[data-dt="fail"]').click();await expect(page.locator('#dt-notice')).toContainText('Bitte Fehler');
+  await page.locator('#dt-note').fill('Nur automatisierter Browserlauf, keine physische iPhone-Abnahme.');await page.locator('[data-dt="skip"]').click();
+  await expect(page.locator('#dt-title')).toHaveText('App ganz schließen');await page.locator('[data-dt="do"]').click();await expect(page.locator('[data-dt="pass"]')).toBeDisabled();
+  await menu();await page.getByText(/^Berichte \(/).click();
   const download=page.waitForEvent('download');await page.locator('[data-dt="export"]').click();const file=await download;
   const exported=JSON.parse(fs.readFileSync(await file.path(),'utf8'));expect(exported.format).toBe('satzkraft-geraetetest');expect(JSON.stringify(exported)).not.toContain('personalExercises');
-  // A second test window must wait instead of replacing synthetic progress.
+  await page.getByRole('button',{name:'Zurück zum Test',exact:true}).click();
   const other=await context.newPage();await other.goto('/index.html');await expect(other.locator('#windowNotice')).toContainText('anderen Fenster');await other.close();
   expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);
-  // Direct library guidance ends the workout so creating a personal exercise is possible.
-  await jump(7);
-  await page.locator('[data-dt="do"]').click();expect(await page.evaluate(()=>S.workout)).toBeNull();
-  await page.locator('#exercisessearch').fill('Kniebeuge');await page.locator('[data-exercise-detail]').first().click();await expect(page.locator('#lib')).toContainText('Technik & Erfassung');
-  await page.locator('#libclose').click();await page.locator('[data-dt="open"]').click();await page.locator('[data-dt="pass"]').click();
+  await jump(7);await page.locator('[data-dt="do"]').click();expect(await page.evaluate(()=>S.workout)).toBeNull();
+  await expect(page.locator('#lib .dt-lib-hint')).toContainText('Kniebeuge');
+  await page.locator('#exercisessearch').fill('Kniebeuge');await page.locator('[data-exercise-detail]').first().click();await expect(page.locator('#lib')).toContainText('Technik & Erfassung');await expect(page.locator('#lib .dt-lib-hint')).toContainText('Kniebeuge');
+  await page.locator('#libclose').click();await page.locator('[data-dt="pass"]').click();
   await page.locator('[data-dt="do"]').click();await page.locator('#personalnew').click();await page.locator('#personal-name').fill('Offline-Test');await page.locator('#personalsave').click();
-  await expect(page.locator('#lib h1')).toHaveText('Offline-Test');await page.locator('#libclose').click();await page.locator('[data-dt="open"]').click();await page.locator('[data-dt="pass"]').click();
-  // Guided backup download and restore preserve the exact question after restarting.
+  await expect(page.locator('#lib h1')).toHaveText('Offline-Test');await page.locator('#libclose').click();await page.locator('[data-dt="pass"]').click();
   const backupDownload=page.waitForEvent('download');await page.locator('[data-dt="do"]').click();const savedBackup=await backupDownload;
   const testBackup=fs.readFileSync(await savedBackup.path(),'utf8');expect(JSON.parse(testBackup).deviceTestData).toBe(true);
   await page.locator('[data-dt="pass"]').click();await page.locator('[data-dt="do"]').click();
   await page.locator('#backupfile').setInputFiles({name:'satzkraft-testbackup.json',mimeType:'application/json',buffer:Buffer.from(testBackup)});
   const safety=page.waitForEvent('download'),restored=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Sichern & wiederherstellen',exact:true}).click();await safety;await restored;
-  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#modal')).toContainText('Hast du das Testbackup eingelesen');
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#dt-title')).toHaveText('Testbackup einlesen');await expect(page.locator('#modal')).toBeHidden();
   expect(await page.evaluate(()=>S.logs['1|A|qa_weight'].sets[0].weight)).toBe('20');
-  await page.locator('.dt-manage > summary').click();await page.getByText(/^Geräteübersicht und Berichte \(/).click();
+  await menu();await page.getByText(/^Berichte \(/).click();
   exported.runs[0].id='synthetic-other-phone';exported.runs[0].model='iPhone SE (synthetischer Bericht)';exported.runs[0].programs={private:'discard'};
   await page.locator('#dt-import').setInputFiles({name:'geraetebericht.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
   await expect(page.locator('#dt-notice')).toContainText('Geräteberichte übernommen');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs[1].programs)).toBeUndefined();
-  await jump(9);await page.locator('[data-dt="issue"]').click();await page.locator('#dt-outcome').selectOption('skip');await page.locator('#dt-note').fill('Darstellung separat automatisiert, keine physische Abnahme.');await page.locator('[data-dt="issue-save"]').click();
-  await expect(page.locator('#modaltitle')).toHaveText('Dein Test ist dokumentiert');await expect(page.locator('#modal .dt-expect')).toContainText('Offen');
-  // Starting a fresh run while already in the sandbox must not flush old data over its seed.
-  await context.setOffline(false);
-  await page.locator('.dt-manage > summary').click();await page.getByText('Neuen Gerätetest beginnen',{exact:true}).click();
+  await page.getByRole('button',{name:'Zurück zum Test',exact:true}).click();await jump(9);
+  await page.locator('[data-dt="issue"]').click();await page.locator('#dt-note').fill('Darstellung separat automatisiert, keine physische Abnahme.');await page.locator('[data-dt="skip"]').click();
+  await expect(page.locator('#dt-title')).toHaveText('Test abgeschlossen');await expect(page.locator('.dt-result')).toContainText('Offen');
+  await context.setOffline(false);await menu();await page.locator('[data-dt="setup"]').click();
   await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('Automatisierter Browsertest 2');
-  // A failed report write must roll the previous sandbox state back.
   await page.evaluate(()=>{const originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='satzkraft-device-test-reports-v1'){Storage.prototype.setItem=originalSet;throw new DOMException('synthetic quota','QuotaExceededError');}return originalSet.call(this,key,value);};});
   await page.locator('[data-dt="start"]').click();await expect(page.locator('#dt-notice')).toContainText('synthetic quota');
-  expect(await page.evaluate(()=>Object.values(S.logs)[0].sets[0].weight)).toBe('20');
-  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem(KEY)).store.default.logs['1|A|qa_weight'].sets[0].weight)).toBe('20');
-  await page.locator('.dt-manage > summary').click();await page.getByText('Neuen Gerätetest beginnen',{exact:true}).click();
+  expect(await page.evaluate(()=>Object.values(S.logs)[0].sets[0].weight)).toBe('20');expect(await page.evaluate(()=>JSON.parse(localStorage.getItem(KEY)).store.default.logs['1|A|qa_weight'].sets[0].weight)).toBe('20');
   await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('Automatisierter Browsertest 2');const fresh=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await fresh;
-  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
-  await expect(page.locator('#modal')).toContainText('TESTDATEN');expect(await page.evaluate(()=>Object.keys(S.logs))).toEqual([]);
-  await page.locator('.dt-manage > summary').click();const back=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Zurück zum echten Training',exact:true}).click();await back;
+  await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#deviceTestBar')).toContainText('TESTDATEN');expect(await page.evaluate(()=>Object.keys(S.logs))).toEqual([]);
+  await menu();const back=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Zurück zum echten Training',exact:true}).click();await back;
   await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');expect(await page.evaluate(()=>KEY)).toBe('cali-plan-v3');
-  expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);
-  expect(await page.evaluate(()=>localStorage.getItem('satzkraft-device-test-mode-v1'))).toBeNull();
+  expect(await page.evaluate(()=>localStorage.getItem('cali-plan-v3'))).toBe(original);expect(await page.evaluate(()=>localStorage.getItem('satzkraft-device-test-mode-v1'))).toBeNull();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs.length)).toBe(3);
   expect(await page.evaluate(()=>validateBackupFile({deviceTestData:true}))).toContain('nur im Gerätetest-Bereich');expect(errors).toEqual([]);
  });
@@ -2165,11 +2153,11 @@ test('REG-32/P1: iOS-Version auswählen oder genaue Beta-Version eingeben',async
  await page.locator('#dt-ios-custom').fill('27.1 Beta 2');
  await page.locator('#dt-ios').selectOption('26.6.2');await expect(page.locator('#dt-ios-custom')).toBeHidden();
  const first=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await first;
- await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#modal')).toContainText('iOS 26.6.2');
- await page.locator('.dt-manage > summary').click();await page.getByText('Neuen Gerätetest beginnen',{exact:true}).click();await expect(page.locator('#dt-ios')).toHaveValue('26.6.2');
+ await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#deviceTestBar')).toContainText('TESTDATEN');
+ await page.locator('[data-dt="manage"]').click();await page.locator('[data-dt="setup"]').click();await expect(page.locator('#dt-ios')).toHaveValue('26.6.2');
  await page.locator('#dt-ios').selectOption('other');await page.locator('#dt-ios-custom').fill('27.1 Beta 2');
  const second=page.waitForEvent('domcontentloaded');await page.locator('[data-dt="start"]').click();await second;
- await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#modal')).toContainText('iOS 27.1 Beta 2');
- await page.locator('.dt-manage > summary').click();await page.getByText('Neuen Gerätetest beginnen',{exact:true}).click();await expect(page.locator('#dt-ios')).toHaveValue('other');await expect(page.locator('#dt-ios-custom')).toHaveValue('27.1 Beta 2');
+ await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');await expect(page.locator('#deviceTestBar')).toContainText('TESTDATEN');
+ await page.locator('[data-dt="manage"]').click();await page.locator('[data-dt="setup"]').click();await expect(page.locator('#dt-ios')).toHaveValue('other');await expect(page.locator('#dt-ios-custom')).toHaveValue('27.1 Beta 2');
  const reports=await page.evaluate(()=>JSON.parse(localStorage.getItem('satzkraft-device-test-reports-v1')).runs.map(r=>r.ios));expect(reports).toEqual(['27.1 Beta 2','26.6.2']);
 });
