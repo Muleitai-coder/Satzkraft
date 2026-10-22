@@ -1,0 +1,14 @@
+{
+  "appId": "de.satzkraft.app",
+  "appName": "Satzkraft",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0a0b0d",
+    "preferredContentMode": "mobile",
+    "scheme": "App"
+  },
+  "plugins": {
+    "Keyboard": { "resize": "native" }
+  }
+}

@@ -1,5 +1,11 @@
 # Satzkraft – zentrale Projektübersicht
 
+## iPhone-Pilot vorbereitet – 22.10.2026
+
+Der persönliche Capacitor-Test ist als separates iOS-Projekt angelegt: lokale App-Dateien, nativer Speicher, Dateifreigabe für Backups und Schutz vor abgebrochenem Restore. Acht gezielte Node-Fälle und ein WebKit-Ablauf mit nachgebildeten nativen Schnittstellen bestanden; Projektsynchronisierung erfolgreich. Web-App und Live-Version bleiben 0.38.0.
+
+**Noch offen:** vollständiges Xcode installieren, Personal Team anmelden, das iPhone 17 Pro mit iOS 27.0.1 verbinden, signierten Build starten und die echten iOS-Funktionen abnehmen. Auf diesem Mac ist macOS 15.7.9 vorhanden; der empfohlene Xcode-27-Weg benötigt macOS Tahoe ab 26.6. Keine Installation auf dem Handy und kein TestFlight-Build behauptet. [Schritt-für-Schritt-Anleitung](IOS-START.md).
+
 Stand: 22.10.2026. Die zentrale Koordination liegt im Chat „Projektstatus zusammenfassen“. Dieser Stand ist eine Aufgabenübersicht; verbindliche Produktregeln stehen im [Briefing](../BRIEFING-CODEX.md).
 
 ## Aktueller Stand v0.38.0 – Tests außerhalb der App

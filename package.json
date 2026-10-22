@@ -15,7 +15,13 @@
     "test:all:e2e:functional": "playwright test --config qa/playwright/playwright.config.cjs --grep-invert @visual --update-snapshots=none",
     "test:all:e2e:visual": "playwright test --config qa/playwright/playwright.config.cjs --grep @visual --update-snapshots=none",
     "test:update:visual": "playwright test --config qa/playwright/playwright.config.cjs --grep @visual --update-snapshots=all",
-    "test:all": "npm run test:all:unit && npm run test:all:e2e"
+    "test:all": "npm run test:all:unit && npm run test:all:e2e",
+    "ios:prepare": "npm --prefix native ci && npm run ios:sync",
+    "ios:sync": "npm --prefix native run sync",
+    "ios:open": "npm --prefix native run open",
+    "ios:doctor": "npm --prefix native run doctor",
+    "test:ios": "npm --prefix native run build && npm --prefix native test",
+    "test:ios-ui": "playwright test --config qa/playwright/native.config.cjs --project iphone-native --update-snapshots=none"
   },
   "devDependencies": {
     "@playwright/test": "1.61.0"

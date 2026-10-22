@@ -16,3 +16,9 @@ qa/playwright/test-results/
 
 # Lokale Agent-Arbeitsbereiche
 .claude/worktrees/
+
+# Separates iPhone-Buildpaket und persönliche Apple-Signierung
+native/www/
+*.mobileprovision
+*.p12
+*.xcuserstate

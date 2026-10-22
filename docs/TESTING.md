@@ -46,4 +46,6 @@ Ein fehlender großer Test wird im Abschlussbericht transparent genannt, ist abe
 
 ## Gezielter iPhone-Ablauf
 
+Für das separate Capacitor-Projekt: `npm run test:ios` prüft ausschließlich acht native Adapterfälle; `npm run test:ios-ui` bedient ausschließlich das zuvor erzeugte iPhone-Paket in einem WebKit-Profil mit nachgebildeten Pluginantworten. Kein Swift-Build und keine echte iOS-Abnahme. [Einrichtung und Geräteschritte](IOS-START.md), [technische Grenzen](../native/README.md).
+
 `npm run test:iphone` führt ausschließlich den normalen App-Ablauf REG-31 im WebKit-Profil iPhone 17 Pro aus. Eigene isolierte Daten und ein kurzlebiger lokaler Server; keine Testoberfläche im Produkt und keine Erweiterung der regulären Browsermatrix. Touch, Ränder, knappe Höhe, Offline-Eingaben, Cache-Neustart bei Serverausfall und Backup. [Details und Grenzen](tests/IPHONE-OFFLINE-TESTSYSTEM.md). Dieser gezielte Lauf ist für Änderungen an der mobilen Eingabe beziehungsweise für einen ausdrücklich beauftragten iPhone-Check vorgesehen.

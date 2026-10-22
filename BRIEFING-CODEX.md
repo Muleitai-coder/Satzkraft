@@ -51,7 +51,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 ### Guardrails
 
-1. Die kompakte Ein-Datei-App bleibt bestehen. Kein Framework und keine Runtime-Abhängigkeiten einführen. Der Build ist nur ein abhängigkeitenfreies Kopieren der freigegebenen Veröffentlichungsdateien nach `dist/`.
+1. Die kompakte Ein-Datei-Web-App bleibt bestehen. Kein UI-Framework und keine Web-Runtime-Abhängigkeiten einführen. Der Web-Build bleibt ein abhängigkeitenfreies Kopieren der freigegebenen Veröffentlichungsdateien nach `dist/`. Ausnahme gemäß ausdrücklichem Auftrag vom 22.10.2026: separates Capacitor-Projekt unter `native/` für den persönlichen iPhone-Test; dessen Abhängigkeiten und Plattformadapter werden nicht über Netlify veröffentlicht.
 2. Nutzertexte sind deutsch, in Du-Form, kurz und verständlich.
 3. Dynamische HTML-Ausgaben über `esc()` beziehungsweise `attr()` absichern. Nutzereingaben und Importdaten validieren.
 4. Datenkompatibilität erhalten: `cali-plan-v3`, Import alter Schema-4-Backups und Austauschformat `trainings-block` Version 2 nicht brechen. Neue Programmfelder bleiben optional und innerhalb der bisherigen Satzsemantik ausführbar; neue vollständige Backups verwenden bewusst Schema 5.
@@ -60,6 +60,14 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 7. Nutzerrelevante Änderungen unter `Unreleased` in `CHANGELOG.md` dokumentieren. Beim Release `APP_VERSION` und Service-Worker-Cache synchron erhöhen.
 8. Änderungen nach `docs/TESTING.md` risikobasiert prüfen. Keine Prüfungen deaktivieren und keine fehlschlagenden Tests still entfernen.
 9. Vorhandene, unfertige Änderungen bewahren. Der Auftrag vom 13.10.2026 umfasst die Prüfung und Sicherung des vorhandenen Änderungsstands; für diesen Auftrag gilt der Abschlussablauf aus `AGENTS.md`. Keine allgemeine Veröffentlichung daraus ableiten.
+
+### Persönlicher iPhone-Pilot – Auftrag vom 22.10.2026
+
+- Capacitor wird als separates Projekt unter `native/` begonnen, damit der Nutzer Satzkraft kostenlos über Xcode/Personal Team auf seinem iPhone 17 Pro mit iOS 27.0.1 testen kann. Kein TestFlight-Upload, Kauf einer Mitgliedschaft oder Betriebssystem-Update beauftragt.
+- Web-App, Schema 5 und Progressionslogik bleiben unverändert. Native Dateien werden lokal eingebettet; keine Abhängigkeit vom Netlify-Server beim Start. Kein integrierter Testbereich.
+- Native Preferences halten einen eigenen Snapshot; Safari-Daten werden ausschließlich durch bewusstes vollständiges Backup übernommen. Serialisierte Schreibvorgänge, sichtbarer Speicherfehler, bestätigte Dateifreigabe vor Restore und bewusstes Löschen sind Bestandteil dieses Piloten. Details und Grenzen in `native/README.md`.
+- Das erzeugte Target hat genau eine WKWebView und deaktivierte Mehrfenster-Unterstützung. Der native Einzelfenster-Lock ersetzt keine allgemeine Mehrfensterkoordination; bei Erweiterung der Containerarchitektur neu entwerfen.
+- Acht gezielte Node-Fälle, ein WebKit-Adaptertest und Projektsynchronisierung bestanden. Swift-/Xcode-Build, Signierung, echte native Speicher-/Dateidialoge, Tastatur und Offline-Kaltstart sind offen. Auf dem Mac fehlt Xcode; Anleitung und physische Checkliste in `docs/IOS-START.md`.
 
 ### Übungsdatenbank – bestätigter Prototypumfang
 
