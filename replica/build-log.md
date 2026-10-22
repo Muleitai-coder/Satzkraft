@@ -19,3 +19,8 @@ Die technische Übungsidentität ist teilweise umgesetzt; das erweiterte Erfassu
 ## 21.10.2026 – iPhone-Offline-Testsystem
 
 S15 Einstellungen erweitert um lokale Admin-Werkzeuge. Zehn geführte physische Prüfschritte; getrenntes synthetisches Training; persistenter Teststart; Cache-Bereitschaft und Wiederlade-Prüfpunkte; Geräteberichte mit begrenztem Import/Export. Kein Benutzerkonto oder Server-Admin. Reale iPhone-Abnahme weiterhin offen. [Anleitung](../docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).
+
+
+## 22.10.2026 – Verständliche Gerätebegleitung v0.36.0
+
+Zehn stabile Berichtsschritte mit kleinen Unteraufgaben, automatischer Online-Vorbereitung, direkten Aktionen und Ergebnisfragen. Aufgabenhinweis im Training, gesicherte Fortsetzung nach Neustart, eigenständiger Abschluss und eingeklappte Verwaltung. Hauptaktion auf kurzen Displays fest sichtbar. Keine automatische physische Bestätigung. 14 gezielte Node-Fälle und REG-31 mobile-chromium erfolgreich; keine große Suite. Screenshots 320 × 568 (hell), 440/1440 (dunkel) und Eingabeanleitung im mobilen Hochformat gesichtet. Build mit 14 öffentlichen Dateien. Reale iPhone-Abnahme offen.

@@ -903,8 +903,27 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .windowcard h2{font-size:22px;line-height:1.25;margin:0 0 12px}.windowcard p{font-size:15px;line-height:1.5;color:var(--ink2);margin:0 0 16px}.windowactions{display:grid;gap:10px}.windowactions button{min-height:44px;width:100%;white-space:normal}
 /* Lokale Geräteprüfung: bestehende Schrift-/Farbtokens und 44-px-Touchziele. */
 :root{--dt-space:12px;--dt-radius:12px;--dt-touch:44px}
-#deviceTestBar{max-width:560px;margin:auto;padding:env(safe-area-inset-top) var(--dt-space) 0}
-#deviceTestBar button{min-height:var(--dt-touch);color:var(--acc);border-color:var(--accl);width:100%}
+#deviceTestBar{position:sticky;top:0;z-index:45;max-width:560px;margin:auto;padding:max(10px,env(safe-area-inset-top)) var(--dt-space) 10px;background:var(--panel);border-bottom:1px solid var(--accl);display:flex;align-items:center;gap:12px}
+#deviceTestBar button{min-height:var(--dt-touch);color:var(--acc);border-color:var(--accl);flex:0 0 116px;padding:8px;white-space:normal;font-size:13px}
+.dt-bar-copy{flex:1;min-width:0}.dt-bar-copy b{display:block;margin-top:6px;font-size:13px;line-height:1.4;font-weight:600;overflow-wrap:anywhere}
+.dt-bar-copy .heroeyebrow{font-size:9px;letter-spacing:.1em}
+body:has(#deviceTestBar) .ex{scroll-margin-top:145px}
+.mbox.dt-box{max-width:460px;padding:24px;max-height:88dvh;text-align:left}
+.dt-box .mtitle{font-size:25px;line-height:1.12;margin:12px 0;letter-spacing:-.02em}
+.dt-box .mmsg{font-size:15px;line-height:1.5}.dt-box .mbtn{min-height:48px;white-space:normal;padding:12px;line-height:1.35}
+.dt-box .mbtn:not(.primary){border-color:transparent;background:transparent;color:var(--ink2)}
+.dt-box .mbtn:disabled{opacity:.55;cursor:wait}.dt-box .mbtns{border-top:1px solid var(--hair);padding-top:8px}
+.dt-box .heroeyebrow{font-size:10px}.dt-meta{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 20px}
+.mbox.dt-guided{display:flex;flex-direction:column;overflow:hidden}
+.dt-guided>.heroeyebrow,.dt-guided>.mtitle,.dt-guided>.mbtns,.dt-dock{flex-shrink:0}
+.dt-guided>.mmsg{min-height:0;overflow-y:auto;margin-bottom:0;overscroll-behavior:contain}
+.dt-dock{padding-top:12px}.dt-dock>.mbtn{width:100%}.dt-guided>.mbtns{border-top:0;padding-top:0}
+.dt-todo{padding:0;list-style:none;counter-reset:task;margin:20px 0}
+.dt-todo li{counter-increment:task;position:relative;padding-left:34px;margin:0 0 16px;color:var(--ink)}
+.dt-todo li:before{content:counter(task);position:absolute;left:0;top:1px;display:grid;place-items:center;width:23px;height:23px;border:1px solid var(--hair2);border-radius:50%;font:11px var(--mono);color:var(--ink2)}
+.dt-expect{padding:16px;border:1px solid var(--hair);background:var(--panel2);border-radius:16px;margin:16px 0}.dt-expect b{color:var(--ink)}.dt-expect p{margin:6px 0 0;color:var(--ink2)}
+.dt-check{font-size:14px;line-height:1.5}.dt-ok{color:var(--acc)}
+@media(max-width:400px){.mbox.dt-box{padding:20px 16px}.dt-box .mtitle{font-size:23px}}
 .dt-warning{color:var(--orange);overflow-wrap:anywhere}.dt-copy{line-height:1.6;color:var(--ink2)}
 .dt-field{display:grid;gap:6px;margin:var(--dt-space) 0;color:var(--ink2);font-size:13px}
 .dt-field input,.dt-field select,.dt-field textarea{width:100%;min-width:0;min-height:var(--dt-touch);padding:10px;border:1px solid var(--hair2);border-radius:var(--dt-radius);background:var(--panel2);color:var(--ink);font-size:16px;box-sizing:border-box}
@@ -923,7 +942,7 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle" tabindex="-1"></div>
 <div id="wucd" role="dialog" aria-modal="true" aria-label="Trainings-Timer" tabindex="-1"></div>
 <script src="js/progression.js"></script>
-<script src="js/device-test.js?v=0.35.1"></script>
+<script src="js/device-test.js?v=0.36.0"></script>
 <script>
 var CAT_COLORS=["amber","emerald","violet","sky","orange","rose","slate"];
 var LIMITS={maxDays:7,maxWeeks:16,maxExPerDay:12,maxSets:10,maxNameLen:30,maxLabelLen:16};
@@ -988,7 +1007,7 @@ var DEFAULT_PROGRAM={
  ]
 };
 
-var APP_VERSION="0.35.1";
+var APP_VERSION="0.36.0";
 var KEY="cali-plan-v3";
 var DATA_SCHEMA_VERSION=5;
 var THEME_KEY="training-theme-v1";
@@ -2089,6 +2108,7 @@ function showModal(title,msg,btns){
  var m=document.getElementById("modal");m.innerHTML=h+'</div></div>';openModalSurface(m);
 }
 var VERSION_HISTORY=[
+ {version:"v0.36.0",date:"22.10.2026",changes:["Der iPhone-Offline-Test führt dich mit kleinen Aufgaben, konkreten Eingabewerten und einfachen Ergebnisfragen durch die Prüfung.","Die Online-Vorbereitung läuft automatisch. Passende Knöpfe öffnen Testfelder, Stoppuhr, Bibliothek und Backup; ein Hinweis begleitet dich im Training.","Nach einem Neustart geht die Anleitung an derselben Stelle weiter. Probleme, ausgelassene Schritte und der Abschlussbericht sind klar getrennt."]},
  {version:"v0.35.1",date:"21.10.2026",changes:["Die installierte iOS-Version lässt sich im Gerätetest direkt aus einer Liste auswählen. Für weitere Versionen und Betas bleibt eine genaue freie Eingabe möglich."]},
  {version:"v0.35.0",date:"21.10.2026",changes:["Admin-Werkzeuge führen physisch durch zehn iPhone-Offline-Prüfschritte; iPhone 17 Pro ist vorausgewählt.","Getrennter Testbereich mit synthetischem Training schützt echte Trainingsdaten. Prüfstände bleiben nach Neuladen und App-Schließen erhalten.","Bereitschaftscheck, Wiederlade-Prüfpunkte und lokale Geräteberichte für Safari und Home-Bildschirm-App; Ergebnisse anderer Geräte lassen sich vergleichen."]},
  {version:"v0.34.0",date:"13.10.2026",changes:["Persönliche Übungen erstellen, im Programmeditor auswählen, bearbeiten und archivieren; integrierte Übungen als eigene Variante speichern.","Neue Übungsdetails zeigen Technik, letzte Leistung und Verlauf aus aktiven und archivierten Trainingsblöcken.","Neue Satzprotokolle bewahren den damaligen Übungsnamen und die Erfassungsregeln. Vorhandene Werte bleiben ohne nachträglich geratene Angaben erhalten.","Vollständige Backups verwenden Schema 5 und sichern persönliche Definitionen sowie historische Erfassung; alte Schema-4-Backups bleiben importierbar.","Mehrere aktualisierte App-Fenster überschreiben Trainingswerte nicht mehr gegenseitig. Ungespeicherte Entwürfe lassen sich sichern.","Zeitübungen mit Gewicht zeigen Zeit und Last; Sekunden werden nicht mehr als Wiederholungen für 1RM oder Volumen gerechnet.","Zehn geprüfte Bibliotheksübungen behalten ihre Zuordnung in Editor, Import, Export und Backup.","Der eingebaute API-Coach ist entfernt. ChatGPT & Co. bleibt als lokal erzeugter Text mit anschließendem JSON-Import verfügbar."]},

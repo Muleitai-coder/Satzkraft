@@ -1,6 +1,6 @@
 # Satzkraft – zentrale Projektübersicht
 
-Stand: 21.10.2026. Die zentrale Koordination liegt im Chat „Projektstatus zusammenfassen“. Dieser Stand ist eine Aufgabenübersicht; verbindliche Produktregeln stehen im [Briefing](../BRIEFING-CODEX.md).
+Stand: 22.10.2026. Die zentrale Koordination liegt im Chat „Projektstatus zusammenfassen“. Dieser Stand ist eine Aufgabenübersicht; verbindliche Produktregeln stehen im [Briefing](../BRIEFING-CODEX.md).
 
 | Arbeitspaket | Stand | Ergebnis / verbleibend |
 | --- | --- | --- |
@@ -33,3 +33,12 @@ v0.34.0 ist auf GitHub/main hochgeladen. Version, Offline-Cache, Pakete und Vers
 ## Ergänzung v0.35.1 – iOS-Auswahl
 
 Die installierte Version ist direkt auswählbar; andere Versionen und Betas bleiben frei eingebbar. Vorhandene Angaben werden beim nächsten Lauf korrekt vorbelegt. 16 gezielte Node-Fälle (Geräteassistent, Version, Cache) und REG-32 in mobile-webkit bestanden; Build mit 14 öffentlichen Dateien. Kein großer Testlauf. Upload nach main (`60181bd`, `e2659d5`) und Live-Ansicht v0.35.1 bestätigt; [Nachweis](../replica/clone-screens/live-ios-auswahl-v0.35.1.jpg).
+
+
+## Überarbeitete Gerätebegleitung v0.36.0
+
+Auf das Feedback zur unverständlichen Testoberfläche folgen jetzt einzelne Aufgaben mit konkreten Handlungen, erwarteten Ergebnissen und einer einfachen Rückfrage. Online-Vorbereitung läuft automatisch. Der Hauptknopf bleibt auch bei 320 × 568 px sichtbar; im Training erinnert ein Hinweis an die Aufgabe. Bibliothek und Backup öffnen direkt. Unteraufgaben werden nach einem Neustart fortgesetzt. Testdaten und echte Trainingsdaten bleiben getrennt.
+
+Geprüft: 14 gezielte Node-Fälle (Gerätetest und Version), REG-31 in mobile-chromium nach dem Umbau und nochmals nach der Verbesserung für kurze Displays erfolgreich. Der Browserfall umfasst Offline-Eingaben, Zeit/Stoppuhr, Wiederaufnahme der Teilaufgabe, atomaren Prüfpunkt/Reload, gesperrte Kaltstart-Bestätigung vor Neustart, isolierten Speicher, zweiten Tab, persönliche Testübung, geführten Backup-Download/Restore, Berichte, Abschluss und Rücknahme eines fehlgeschlagenen Teststarts. Hell/Dunkel sowie 320/440/1440 px gesichtet. Build: 14 öffentliche Dateien. Keine vollständige Suite oder Browsermatrix; physische iPhone-Abnahme weiterhin offen. REG-32 bleibt an die neue Navigation angepasst, wurde für diesen Auftrag nicht zusätzlich ausgeführt.
+
+Upload und Live-Bestätigung werden nach der Veröffentlichung ergänzt.

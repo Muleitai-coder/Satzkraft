@@ -20,3 +20,19 @@ test('comparison imports deduplicate runs and retain the active test at the limi
 
 test('iOS selection keeps exact listed versions and custom beta names',()=>{const api=runner();assert.equal(api.selectedIos('26.6.2','stale beta'),'26.6.2');assert.equal(api.selectedIos('27.0.1',''),'27.0.1');assert.equal(api.selectedIos('other','  27.1 Beta 2  '),'27.1 Beta 2');assert.equal(api.selectedIos('',''),'');assert.equal(api.selectedIos('other','   '),'');assert.equal(api.selectedIos('invalid','26.0'),'');});
 test('readiness checks the same versioned resources that the worker precaches',()=>{const sw=fs.readFileSync('sw.js','utf8'),version=html.match(/var APP_VERSION="([^"]+)"/)[1],expected=JSON.parse(sw.match(/var ASSETS = (\[[^;]+\]);/)[1]).map(s=>s.slice(2));const context={APP_VERSION:version};vm.createContext(context);vm.runInContext(source.match(/var files=\[[^;]+\];/)[0],context);assert.deepEqual(Array.from(context.files),expected);});
+
+
+test('guide resumes the exact subtask and safely opens old reports at the first task',()=>{
+ const api=runner();
+ assert.equal(api.guide({step:2}).part,0);
+ const saved={step:2,guide:{step:2,part:1,view:'check'}};
+ assert.deepEqual(JSON.parse(JSON.stringify(api.guide(saved))),saved.guide);
+ for(const stale of [{step:1,part:1},{step:2,part:99},{step:2,part:-1}])assert.equal(api.guide({step:2,guide:stale}).part,0);
+});
+test('finishing or skipping a report step advances once and completes only at the end',()=>{
+ const api=runner(),run={step:1,guide:{step:1,part:1,view:'check'},results:{}};
+ api.finishStep(run,'skip','Kein physisches Gerät');
+ assert.equal(run.step,2);assert.equal(run.guide.part,0);assert.equal(run.guide.view,'task');assert.equal(run.finished,undefined);
+ assert.equal(run.results.offline.status,'skip');assert.equal(api.status(run),'Offen');
+ run.step=9;api.finishStep(run,'pass','');assert.equal(run.finished,true);assert.equal(api.status(run),'Offen');
+});

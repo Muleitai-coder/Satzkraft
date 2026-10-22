@@ -1,9 +1,9 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
-- Stand: 21.10.2026
+- Stand: 22.10.2026
 - GitHub-Stand: v0.35.1 auf `main` hochgeladen (App-Commits `60181bd`, `e2659d5`)
 - Bestätigter Live-Stand: v0.35.1 unter https://satzkraft.netlify.app/; Seitentitel und iOS-Auswahlliste am 21.10.2026 nach automatischer Veröffentlichung geprüft
-- Arbeitsstand: v0.35.1 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
+- Arbeitsstand: v0.36.0 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -198,3 +198,7 @@ Geräteberichte liegen separat, enthalten keine Trainingslogs, sind nicht Teil d
 
 Ab v0.35.1 enthält die Gerätevorbereitung eine iOS-Auswahlliste mit leerer Pflichtauswahl; keine installierte Version wird geraten. Andere Versionen und Betas bleiben als genaue Freitextangabe möglich. Berichtformat und vorhandene Versionsangaben bleiben unverändert. Die Liste ist eine manuell gepflegte Eingabehilfe, keine Modell-Kompatibilitätsprüfung.
 Das Gerätetest-Skript trägt ab diesem Update eine Versionsabfrage in Skript-URL und Service-Worker-Positivliste; Bereitschaftscheck und Releaseprüfung verwenden denselben Versionsstand.
+
+### Gerätebegleitung ab v0.36.0 (22.10.2026)
+
+Auf Nutzerfeedback zur unverständlichen Testoberfläche führt der Geräteassistent innerhalb der zehn stabilen Berichtsschritte durch einzelne Aufgaben. Jede Aufgabe benennt Handlung, Soll-Ergebnis und genau eine primäre Aktion. Die Bereitschaft wird automatisch geprüft; direkte Aktionen öffnen die betreffenden Testfelder beziehungsweise Bibliothek und Backup. Der Assistent trägt niemals Testwerte selbst ein und bestätigt keine physische Durchführung automatisch. Ein Aufgabenhinweis im Training führt zur Ergebnisfrage zurück. Der Unteraufgabenstand bleibt außerhalb der Trainingsdaten im Gerätebericht gespeichert und übersteht Neustarts; alte Berichte bleiben kompatibel. Vor dem Anlegen persönlicher Übungen wird das synthetische Training bewusst über den beschrifteten Knopf beendet. Technische Details und Verwaltung bleiben eingeklappt. Echte iPhone-Abnahme weiterhin offen.

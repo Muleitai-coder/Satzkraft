@@ -6,6 +6,14 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.36.0] – 2026-10-22
+
+### Geändert
+
+- Der iPhone-Offline-Test begleitet mit einzelnen Aufgaben, konkreten Testwerten, erwarteten Ergebnissen und einer einfachen Rückfrage nach jeder Durchführung. Online-Vorbereitung und Wiederlade-Vergleich laufen automatisch.
+- Direkte Aktionen öffnen Trainingsfelder, Stoppuhr, Übungssuche und Backup-Wiederherstellung. Ein sichtbarer Aufgabenhinweis führt aus dem Training zur Ergebnisfrage zurück. Die Bibliothek beendet zuvor das Testtraining, damit eigene Übungen angelegt werden können.
+- Der genaue Aufgabenstand bleibt über App-Neustarts erhalten. Fehler und ausgelassene Schritte werden mit einer Notiz dokumentiert; am Ende folgt ein eigener Abschluss. Geräteverwaltung und technische Details sind eingeklappt.
+
 ## [0.35.1] – 2026-10-21
 
 ### Geändert

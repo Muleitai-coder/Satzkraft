@@ -50,3 +50,8 @@ App-Commit `51021e8c5e49e7054d2779d73f11a1752666957a` wurde erfolgreich nach Git
 ## 21.10.2026 – v0.35.1 iOS-Auswahl
 
 Direkte Versionsauswahl, freie Beta-/Sonderversionen und Vorbelegung gezielt geprüft: 16 unterschiedliche Node-Fälle und REG-32 mobile-webkit bestanden; keine vollständige Suite. Nach der Live-Prüfung wurde der Geräteassistent versionsgebunden geladen, damit kein altes Formular aus dem Cache erscheint. `60181bd` und `e2659d5` erfolgreich nach main hochgeladen. Live-Seitentitel v0.35.1 und native Versionsauswahl bestätigt. Kein realer Gerätetest angelegt. [Live-Nachweis](clone-screens/live-ios-auswahl-v0.35.1.jpg).
+
+
+## 22.10.2026 – v0.36.0 verständliche Gerätebegleitung
+
+App/Cache/versionierte Geräteassistent-URL/Pakete/Historie auf v0.36.0 synchron. Gezielte Prüfung: 14 Node-Fälle und REG-31 mobile-chromium erfolgreich, einschließlich tatsächlichem Offline-Reload, Teilaufgaben-Fortsetzung und Backup-Wiederherstellung. Hauptaktion bei 320 × 568 px sichtbar. Build: ausschließlich 14 freigegebene Dateien. Keine vollständige Suite/Browsermatrix und kein physisches iPhone als getestet markiert. Upload und Live-Einstieg werden anschließend bestätigt.

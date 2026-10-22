@@ -1,16 +1,20 @@
 # Geführte iPhone-Offline-Abnahme
 
-Stand: 21.10.2026 · ab Satzkraft v0.35.0 · Testprotokoll 1
+Stand: 22.10.2026 · Begleitung ab Satzkraft v0.36.0 · Testprotokoll 1
 
 ## Auf dem eigenen iPhone beginnen
 
 1. Satzkraft zunächst mit Internet öffnen. Zahnrad → **Admin & Tests → iPhone-Offline-Test öffnen**.
 2. **iPhone 17 Pro** ist vorausgewählt. Deine tatsächlich installierte iOS-Version auswählen (ab v0.35.1); für fehlende Versionen oder Betas „Andere Version / Beta“ wählen und genau eintragen (Einstellungen → Allgemein → Info). Als Öffnungsart Safari oder Home-Bildschirm-App wählen.
-3. **Testbereich starten**. Die App lädt mit einem deutlich sichtbaren TESTDATEN-Hinweis neu. Deine echten Programme und Trainingswerte bleiben im bisherigen Speicher.
-4. **Bereitschaft prüfen**. Alle vier Punkte müssen bereit sein. Fehlt die Offline-Steuerung, einmal online neu laden. Bei unvollständigem Cache zunächst online bleiben.
-5. Den zehn Schritten folgen. Zum Training **Im Testtraining weiter** wählen; zurück über **TESTDATEN · Testleitung öffnen** oberhalb der Startseite oder das Zahnrad.
-6. Bei jedem Schritt selbst prüfen und **Bestanden**, **Fehler gefunden** oder **Überspringen** wählen. Fehler und ausgelassene Schritte benötigen eine kurze Notiz. Solange etwas offen oder übersprungen ist, gilt der Lauf nicht als vollständig bestanden.
-7. Den Bericht unter **Geräteübersicht und Berichte → Geräteberichte herunterladen** sichern und die Datei in Dateien prüfen. **Zurück zum echten Training** beendet den Testbereich.
+3. **Geführten Test starten**. Die App lädt mit einem TESTDATEN-Hinweis neu. Du siehst jeweils nur die aktuelle Aufgabe.
+4. **Lass das Internet noch an:** WLAN oder mobile Daten eingeschaltet lassen. Die App prüft die Vorbereitung automatisch. Sobald „Alles bereit“ erscheint, **Alles bereit · weiter** tippen. Hier musst du noch keine Werte eingeben. Falls die Vorbereitung nicht fertig wird: online bleiben und **Online neu laden** wählen.
+5. Die nächste Aufgabe erklärt, wie du Flugmodus einschaltest und WLAN in den iPhone-Einstellungen ausschaltest. Kehre danach zur App zurück und bestätige **Flugmodus an, WLAN aus**.
+6. **Eingabefelder öffnen** startet das Testtraining und führt direkt zu „Test · Gewicht“. Trage im ersten Satz **10 Wiederholungen und 20 kg** ein und tippe außerhalb des Feldes. Der sichtbare Hinweis oben erinnert dich an diese Werte.
+7. Oben **Ergebnis prüfen** tippen. Beantworte die einfache Frage mit **Ja, hat geklappt**, wenn du es selbst ausprobiert hast. Die nächste kleine Aufgabe erscheint automatisch. Bei Schwierigkeiten **Problem oder auslassen** wählen und eine kurze Beobachtung eintragen.
+8. Folge den weiteren Aufgaben. Zeitmessung, Bibliothek und Backup werden in kleinen Teilen erklärt. Die Hauptaktion bleibt auch auf kurzen Displays sichtbar. Nach Neuladen oder Wiederherstellung öffnet sich dieselbe Teilaufgabe wieder.
+9. Am Ende **Testbericht herunterladen** wählen. Unter **Test verwalten** kannst du Schritte erneut öffnen, weitere Läufe beginnen oder Geräteberichte vergleichen. **Zurück zum echten Training** beendet den Testbereich.
+
+Zum Unterbrechen die Anleitung schließen. Der Aufgabenhinweis im Testtraining öffnet sie wieder. Auch nach einem vollständigen App-Neustart bleibt der Aufgabenstand gespeichert. Über **Test verwalten → Zurück zum echten Training** kannst du den Testbereich verlassen; die Berichte bleiben erhalten. Ein neuer Testlauf beginnt mit frischen Testdaten.
 
 Ein Durchlauf dauert ungefähr 15–25 Minuten. Keine echten Übungen ausführen oder reale Belastungen testen: Es geht nur um die Bedienung mit erfundenen Werten.
 
@@ -18,15 +22,15 @@ Ein Durchlauf dauert ungefähr 15–25 Minuten. Keine echten Übungen ausführen
 
 | Schritt | Durchführung und erwartetes Ergebnis |
 | --- | --- |
-| 1 Online vorbereiten | Lokaler Speicher, aktive Offline-Steuerung, 13 Startressourcen der aktuellen Version und getrennter Testspeicher sind bereit. Training starten. |
+| 1 Startklar machen | Internet anlassen. Die App prüft automatisch Speicherung, Offline-Startdaten und Testbereich. Bei „Alles bereit“ weitergehen; noch keine Eingabe nötig. |
 | 2 Offline eingeben | Flugmodus ein, WLAN in Einstellungen aus. Im ersten Satz Test · Gewicht 10 Wiederholungen / 20 kg eingeben und Feld verlassen. Werte bleiben erhalten. |
 | 3 Zeit und Timer | Test · Zeitlast: 00:45 / 12,5 kg. Test · Halten: Stoppuhr starten/stoppen. Eingabe, Pause und Zeitübernahme funktionieren offline. |
 | 4 Displaysperre | Etwa eine Minute sperren und zurückkehren. Werte erhalten, Zeit plausibel und App bedienbar. Hintergrundton ist nur eine Beobachtung. |
-| 5 Offline neu laden | Prüfpunkt speichern, angebotenen Neu-laden-Knopf verwenden. App startet offline mit gleichen Satzwerten und pausiertem Training. |
-| 6 Vollständig schließen | Prüfpunkt speichern, App im Umschalter hochwischen, offline über denselben Tab/Link beziehungsweise dasselbe App-Symbol öffnen. Testmodus, Werte und pausiertes Training bleiben. |
+| 5 Offline neu laden | „Teststand sichern & neu laden“ erledigt Sicherung und Reload zusammen. App startet offline mit gleichen Satzwerten und pausiertem Training. |
+| 6 Vollständig schließen | „Teststand sichern“ tippen, App im Umschalter hochwischen, offline über denselben Tab/Link beziehungsweise dasselbe App-Symbol öffnen. Testmodus, Werte und pausiertes Training bleiben. |
 | 7 Zwei Fenster | Zweiter Safari-Tab wartet geschützt. Erstes Fenster schließen, im zweiten aktuellen Stand laden. In installierter App ohne zweite Fensteröffnung mit Grund überspringen und Safari separat testen. |
-| 8 Lokale Bibliothek | Offline suchen, Details öffnen, persönliche Übung Offline-Test anlegen. Keine hängenden Ladevorgänge. |
-| 9 Testbackup | Testbackup herunterladen, Datei prüfen, Training beenden und Backup im Testbereich wiederherstellen. Werte prüfen, dann wieder online gehen. |
+| 8 Lokale Bibliothek | Der direkte Knopf beendet das Testtraining und öffnet die Suche. Erst Kniebeuge suchen und Details lesen, anschließend in einer eigenen Aufgabe Offline-Test anlegen. Keine hängenden Ladevorgänge. |
+| 9 Testbackup | Drei Aufgaben: Testbackup herunterladen und in Dateien prüfen; markierte Datei über den direkten Einstieg wiederherstellen; danach wieder online gehen. Werte prüfen, dann wieder online gehen. |
 | 10 Bedienung | Hoch-/Querformat, Tastatur, Bildschirmränder sowie Hell/Dunkel prüfen; optional größere iOS-Schrift. Keine verdeckten Felder oder Aktionen. |
 
 **WLAN wirklich ausschalten:** Flugmodus allein belegt keine unterbrochene Internetverbindung. WLAN kann wieder eingeschaltet werden. Die App zeigt deshalb einen Browser-Netzwerkhinweis nur als technische Beobachtung, niemals als Nachweis des Flugmodus. [Apple: Flugmodus verwenden](https://support.apple.com/en-gb/108785).
@@ -71,6 +75,6 @@ Berichte liegen unter `satzkraft-device-test-reports-v1` außerhalb des Training
 
 ## Prüfstand der Umsetzung
 
-Die reale Abnahme auf dem iPhone 17 Pro und allen weiteren physischen Geräten bleibt offen. Details zur gezielten Softwareprüfung stehen im aktuellen Projektstatus. Bestehende manuelle Checklisten bleiben als ergänzende freie Tests erhalten.
+Die reale Abnahme auf dem iPhone 17 Pro und allen weiteren physischen Geräten bleibt offen. Der gezielte Softwarelauf umfasst die automatische Vorbereitung, direkte Testeingaben, Fortsetzung der Teilaufgabe nach Offline-Reload, gesperrte Bestätigung vor einem Kaltstart, Bibliothek und Backup-Wiederherstellung. Details zur gezielten Softwareprüfung stehen im aktuellen Projektstatus. Bestehende manuelle Checklisten bleiben als ergänzende freie Tests erhalten.
 
 Versionsliste ab v0.35.1: Manuell gepflegte Auswahl, zuletzt am 21.10.2026 mit [Apples iOS-26-Updateübersicht](https://support.apple.com/en-us/123075) und [Apple-Veröffentlichungen](https://support.apple.com/en-us/100100) abgeglichen. Keine automatische Online-Abfrage während des Offline-Tests; neue oder weitere Zwischenversionen über die freie Eingabe erfassen.
