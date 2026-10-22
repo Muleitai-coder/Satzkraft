@@ -34,7 +34,8 @@ function resolveRequestPath(requestUrl) {
   return filePath;
 }
 
-const server = http.createServer((request, response) => {
+function createStaticServer() {
+return http.createServer((request, response) => {
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     response.writeHead(405, { Allow: 'GET, HEAD' });
     response.end('Method Not Allowed');
@@ -68,7 +69,10 @@ const server = http.createServer((request, response) => {
     fs.createReadStream(filePath).pipe(response);
   });
 });
+}
 
+if (require.main === module) {
+const server = createStaticServer();
 server.listen(port, host);
 
 function closeServer() {
@@ -77,3 +81,6 @@ function closeServer() {
 
 process.on('SIGINT', closeServer);
 process.on('SIGTERM', closeServer);
+}
+
+module.exports = { createStaticServer };

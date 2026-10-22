@@ -3,7 +3,7 @@
 - Stand: 22.10.2026
 - GitHub-Stand: v0.37.0 auf `main` hochgeladen (App-Commit `20f3c9b`)
 - Bestätigter Live-Stand: v0.37.0 unter https://satzkraft.netlify.app/; Seitentitel und direkte Testansicht ohne Anleitungsmodal am 22.10.2026 nach automatischer Veröffentlichung geprüft
-- Arbeitsstand: v0.37.0 (geführter iPhone-Offline-Test mit getrennten Testdaten; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
+- Arbeitsstand: v0.38.0 (Testbereich entfernt, externe Handy-Checkliste und separate iPhone-Browsersimulation; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -110,7 +110,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 ### Design und Navigation
 
 - Das Redesign mit Smaragd-Akzent, lokal eingebundenen Schriften sowie hellem und dunklem Schema ist verbindlich. Detailregeln stehen in `docs/DESIGN-BRIEFING.md`.
-- Mobile-first: keine horizontalen Überläufe; Touchziele grundsätzlich mindestens 44 × 44 CSS-Pixel. Die eng gerasterten `− / +`-Stepper in einzeiligen gewichteten Satzzeilen sind die bewusst gewählte Ausnahme: mindestens 32 × 44 Pixel, damit bei 320 px vierstellige Werte sichtbar bleiben. Safe Areas, Bildschirmtastatur und lange Inhalte berücksichtigen. Seitenzoom ist in der App deaktiviert; Satzfelder bleiben mit 16 px Schriftgröße gegen automatischen iPhone-Fokuszoom abgesichert.
+- Mobile-first: keine horizontalen Überläufe; Touchziele grundsätzlich mindestens 44 × 44 CSS-Pixel. Die eng gerasterten `− / +`-Stepper in einzeiligen gewichteten Satzzeilen sind die bewusst gewählte Ausnahme: mindestens 32 × 44 Pixel, damit bei 320 px vierstellige Werte sichtbar bleiben. Safe Areas, Bildschirmtastatur und lange Inhalte berücksichtigen. Seitenzoom ist in der App deaktiviert; Satzfelder verwenden während der Eingabe 16 px Schriftgröße; die kompakte Übersicht bleibt kleiner. Das tatsächliche Fokuszoom-Verhalten bleibt Teil der physischen iPhone-Abnahme.
 - Obere Zurück- und Schließen-Aktionen in Programmeditor und Unteransichten bleiben beim Scrollen sichtbar und halten auf iPhones dauerhaft Abstand zur Statusleiste beziehungsweise Dynamic Island.
 - Startseite: Der aktive Trainingsblock zeigt Wochenfortschritt, Wochenschiene und die auf Wochentage verteilten Einheiten. Programme, Auswertung und Einstellungen liegen in der Kopfzeile.
 - Programme, Auswertung, Protokoll, Editor und Einstellungen verwenden die gemeinsame Designsprache statt lokaler Sonderlösungen.
@@ -188,22 +188,12 @@ Langfristige Ideen stehen in `docs/planung/AUSBAUPLAN.md` und werden erst nach e
 - Historische Feedback-IDs und Releases sind im archivierten Briefing und in `CHANGELOG.md` nachvollziehbar; sie müssen nicht erneut in diesem aktiven Dokument dupliziert werden.
 
 
-## Geführte physische Offline-Abnahme (21.10.2026)
+## Handyprüfung außerhalb der App (22.10.2026, v0.38.0)
 
-Der beauftragte Gerätetest ist ab v0.35.0 unter Einstellungen → Admin & Tests erreichbar. Zehn Schritte, iPhone 17 Pro als Vorgabe, Modell/iOS/Öffnungsart/Version pro Lauf. Das sind lokale Diagnosewerkzeuge ohne Konto oder serverseitige Admin-Berechtigung. Anleitung und Speichervertrag: [iPhone-Offline-Testsystem](docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).
+**Neueste Produktentscheidung:** Der Nutzer verwirft den integrierten Testassistenten vollständig. Keine Test-/Admin-Oberfläche, kein Geräte- oder iOS-Auswahlmenü und kein Testmodus in der veröffentlichten App. Die normale Bedienung wird mit einer kurzen [Handy-Checkliste](docs/tests/SMARTPHONE-ABNAHME.md) geprüft. Eine zusätzliche Testoberfläche benötigt einen neuen ausdrücklichen Auftrag.
 
-Der persistente lokale Startschalter wird vor dem Zustandsladen gelesen. Testdaten nutzen ausschließlich `satzkraft-device-test-v1:` und eine eigene Web Lock; kein v2-Fallback, keine echte Coach-Bereinigung. Die normalen Trainingsfunktionen werden mit einem synthetischen Drei-Übungen-Plan genutzt. Rückkehr lädt die bestehenden echten Daten. Neue Testläufe ersetzen nur Testzustand. Testbackups tragen `deviceTestData: true`; gegenseitige Verwechslung mit echten Backups wird beim Import blockiert. Die Daten-Schemaversion bleibt 5.
+Der frühere Startschalter wird ignoriert. Bei jedem Start gelten die echten Speicherschlüssel und die normale Schreibsperre. Vorhandene getrennte Testdaten und Berichte bleiben ungenutzt lokal liegen; sie werden weder in echte Trainingsdaten übernommen noch beim Update gelöscht. Nur die bereits vorhandene, ausdrücklich bestätigte Komplettlöschung umfasst auch diesen Altbestand. Markierte alte Testbackups bleiben abgewiesen; normale vollständige Backups behalten Schema 5 und Kompatibilität mit Schema 4.
 
-Geräteberichte liegen separat, enthalten keine Trainingslogs, sind nicht Teil des Trainingsbackups und bleiben auf maximal 20 Läufe begrenzt. JSON-Fremdberichte werden streng gefiltert und als Eigenberichte markiert. Kein Cloud-Abgleich. Cache-Bereitschaft und Prüfpunktvergleich sind technische Teilnachweise; Flugmodus, Displaysperre, vollständiges OS-Schließen und reales Modell bleiben manuell. Keine physische Abnahme aus Browserautomatisierung ableiten. Öffnungsarten Safari und Home-Bildschirm-App getrennt abnehmen. Der öffentliche Build umfasst jetzt 14 Dateien; 13 Offline-Startressourcen ohne die SW-Datei selbst.
+Die automatisierte Prüfung liegt ausschließlich unter `qa/playwright/`, verwendet einen isolierten Browser mit synthetischen Daten und die normale Oberfläche. Das installierte Playwright-Profil „iPhone 17 Pro“ liefert 402 × 681 CSS-Pixel Browserfläche bei 402 × 874 Bildschirmgröße und Touch/WebKit. Kleinere Höhen und nicht null gesetzte CSS-Sicherheitsränder sind ausdrücklich Platz-Stresstests. Keine behauptete iOS-Versionssimulation, echte Safari-Leisten, Dynamic Island, Bildschirmtastatur oder OS-Prozessbeendigung. Auf diesem Mac ist kein Xcode-Simulator verfügbar. [Verfahren und Prüfstand](docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).
 
-Ab v0.35.1 enthält die Gerätevorbereitung eine iOS-Auswahlliste mit leerer Pflichtauswahl; keine installierte Version wird geraten. Andere Versionen und Betas bleiben als genaue Freitextangabe möglich. Berichtformat und vorhandene Versionsangaben bleiben unverändert. Die Liste ist eine manuell gepflegte Eingabehilfe, keine Modell-Kompatibilitätsprüfung.
-Das Gerätetest-Skript trägt ab diesem Update eine Versionsabfrage in Skript-URL und Service-Worker-Positivliste; Bereitschaftscheck und Releaseprüfung verwenden denselben Versionsstand.
-
-### Gerätebegleitung ab v0.36.0 (22.10.2026)
-
-Auf Nutzerfeedback zur unverständlichen Testoberfläche führt der Geräteassistent innerhalb der zehn stabilen Berichtsschritte durch einzelne Aufgaben. Jede Aufgabe benennt Handlung, Soll-Ergebnis und genau eine primäre Aktion. Die Bereitschaft wird automatisch geprüft; direkte Aktionen öffnen die betreffenden Testfelder beziehungsweise Bibliothek und Backup. Der Assistent trägt niemals Testwerte selbst ein und bestätigt keine physische Durchführung automatisch. Ein Aufgabenhinweis im Training führt zur Ergebnisfrage zurück. Der Unteraufgabenstand bleibt außerhalb der Trainingsdaten im Gerätebericht gespeichert und übersteht Neustarts; alte Berichte bleiben kompatibel. Vor dem Anlegen persönlicher Übungen wird das synthetische Training bewusst über den beschrifteten Knopf beendet. Technische Details und Verwaltung bleiben eingeklappt. Echte iPhone-Abnahme weiterhin offen.
-
-
-### Vereinfachung nach Nutzerrückmeldung v0.37.0 (22.10.2026)
-
-Die aktive Geräteführung ist keine Folge von Anleitungsdialogen mehr. Kurze Stichpunkte, die echten Satzfelder und „Passt · Weiter“ stehen auf einer Seite; der feste Kopf hält die Sollwerte sichtbar. Im Testmodus werden Trainingsnavigation, andere Übungen und zusätzliche Satzzeilen ausgeblendet, ohne die normale Erfassungs-/Speicher-/Timerlogik zu ersetzen. Gerätewahl und Berichte liegen im gesonderten Menü. Problemnotizen öffnen bei Bedarf einen Dialog. Eingabekontrollen geben nur die Bestätigung frei; sie markieren niemals automatisch einen physischen Erfolg. Beim Reload werden gespeicherte Aufgaben beibehalten und das Training bleibt pausiert, bis der Nutzer bei einer Eingabeaufgabe ausdrücklich fortsetzt. Physische iPhone-Abnahme weiterhin offen.
+Der öffentliche Build umfasst nach dem Ausbau 13 Dateien, davon 12 Startressourcen im Offline-Cache. Historische Assistenten-Releases v0.35–v0.37 bleiben in der Versionshistorie nachvollziehbar; deren UI- und Speichermodus-Regeln gelten nicht mehr.

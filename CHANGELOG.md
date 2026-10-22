@@ -6,6 +6,21 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ## [Unreleased]
 
+## [0.38.0] – 2026-10-22
+
+### Entfernt
+
+- Den gesamten eingebauten Gerätetest: Admin-Einstieg, Testansichten, Geräte-/iOS-Auswahl, Berichte und gesonderten Trainingsmodus. Auch Skript, Offline-Cache-Eintrag und Veröffentlichungsliste sind bereinigt.
+
+### Geändert
+
+- Auch nach einem zuvor aktiven Testmodus öffnet die App den normalen Trainingsbereich. Echte Trainingsdaten bleiben getrennt von ungenutztem altem Testbestand; keine automatische Löschung oder Übernahme. Alte markierte Testbackups werden weiterhin vor einer Wiederherstellung abgelehnt.
+- Eine kurze externe Handy-Checkliste ersetzt die Anleitung in der App. Ein separat ausführbarer WebKit-Test mit iPhone-17-Pro-Profil prüft die normale Oberfläche per Touch, reduzierte Höhe, reservierte Bildschirmränder, Offline-Eingaben und Cache-Neustart bei Serverausfall. Das ist keine physische iOS-Abnahme.
+
+### Behoben
+
+- Der im Touch-Test zu schmale Stoppknopf und die übrigen Knöpfe der unteren Trainingsleiste erhalten mindestens 44 px Breite. Satzfelder zeigen beim Eingeben 16 px große Zahlen.
+
 ## [0.37.0] – 2026-10-22
 
 ### Geändert

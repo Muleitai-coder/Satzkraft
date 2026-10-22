@@ -2,6 +2,14 @@
 
 Stand: 22.10.2026. Die zentrale Koordination liegt im Chat „Projektstatus zusammenfassen“. Dieser Stand ist eine Aufgabenübersicht; verbindliche Produktregeln stehen im [Briefing](../BRIEFING-CODEX.md).
 
+## Aktueller Stand v0.38.0 – Tests außerhalb der App
+
+Der gesamte eingebaute Gerätetest ist auf Nutzerwunsch entfernt: kein Admin-Einstieg, kein Testmodus, keine Geräte-/iOS-Auswahl. Die App öffnet wieder die normalen Trainingsdaten. Alte getrennte Testdaten werden weder übernommen noch automatisch gelöscht; Testbackups bleiben abgewiesen.
+
+Die [kurze Handy-Checkliste](tests/SMARTPHONE-ABNAHME.md) ersetzt den Assistenten. Ein separat gestarteter WebKit-Lauf bedient die normale App mit dem iPhone-17-Pro-Profil per Touch, prüft Ränder, knappe Höhe und Querformat. Satzpause-Knöpfe wurden vergrößert und fokussierte Satzfelder lesbarer gemacht. Zehn gezielte Node-Fälle und REG-31 im iPhone-Profil bestanden, einschließlich Offline-Eingaben, Cache-Neustart bei abgeschaltetem Server und vollständiger Backup-Wiederherstellung. Build: 13 öffentliche Dateien. [Verfahren, Befunde und Grenzen](tests/IPHONE-OFFLINE-TESTSYSTEM.md).
+
+Physische iPhone-Abnahme weiterhin offen. Veröffentlichung wird nach dem Upload bestätigt. Die folgenden Abschnitte dokumentieren frühere Stände; die Anleitungen zum integrierten Assistenten v0.35–v0.37 gelten nicht mehr.
+
 | Arbeitspaket | Stand | Ergebnis / verbleibend |
 | --- | --- | --- |
 | 1 – Bisherigen Änderungsstand prüfen und sichern | gesichert und hochgeladen | Zwischenstand `3a631a0`, Ausbau `31397ba` und App-Update `6103451` auf GitHub/main |

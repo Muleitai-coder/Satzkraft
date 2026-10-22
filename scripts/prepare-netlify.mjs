@@ -12,7 +12,6 @@ const publicFiles = [
   "icon-512.png",
   "uebungen.json",
   "js/progression.js",
-  "js/device-test.js",
   "fonts/hanken-grotesk-latin.woff2",
   "fonts/jetbrains-mono-latin.woff2",
   "programme/gym-ganzkoerper-beginner.json",

@@ -43,3 +43,7 @@ Auch `npm run test:update:visual` läuft nur auf ausdrücklichen Befehl, da es v
 | Releasevorbereitung | Versionsprüfung; Komplettabnahme nur auf Befehl |
 
 Ein fehlender großer Test wird im Abschlussbericht transparent genannt, ist aber kein Grund, ihn ungefragt zu starten.
+
+## Gezielter iPhone-Ablauf
+
+`npm run test:iphone` führt ausschließlich den normalen App-Ablauf REG-31 im WebKit-Profil iPhone 17 Pro aus. Eigene isolierte Daten und ein kurzlebiger lokaler Server; keine Testoberfläche im Produkt und keine Erweiterung der regulären Browsermatrix. Touch, Ränder, knappe Höhe, Offline-Eingaben, Cache-Neustart bei Serverausfall und Backup. [Details und Grenzen](tests/IPHONE-OFFLINE-TESTSYSTEM.md). Dieser gezielte Lauf ist für Änderungen an der mobilen Eingabe beziehungsweise für einen ausdrücklich beauftragten iPhone-Check vorgesehen.
