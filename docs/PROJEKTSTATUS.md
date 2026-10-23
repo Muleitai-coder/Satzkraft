@@ -4,9 +4,9 @@
 
 Der persönliche Capacitor-Test ist als separates iOS-Projekt angelegt: lokale App-Dateien, nativer Speicher, Dateifreigabe für Backups und Schutz vor abgebrochenem Restore. Acht gezielte Node-Fälle und ein WebKit-Ablauf mit nachgebildeten nativen Schnittstellen bestanden; Projektsynchronisierung erfolgreich. Web-App und Live-Version bleiben 0.38.0.
 
-**Noch offen:** vollständiges Xcode installieren, Personal Team anmelden, das iPhone 17 Pro mit iOS 27.0.1 verbinden, signierten Build starten und die echten iOS-Funktionen abnehmen. Auf diesem Mac ist macOS 15.7.9 vorhanden; der empfohlene Xcode-27-Weg benötigt macOS Tahoe ab 26.6. Keine Installation auf dem Handy und kein TestFlight-Build behauptet. [Schritt-für-Schritt-Anleitung](IOS-START.md).
+**Einrichtung am 23.10.2026:** Der Intel-Mac von 2019 läuft jetzt mit macOS Tahoe 26.7.1. Xcode 27 unterstützt ausschließlich Apple-Chips; die bisherige Empfehlung war für diesen Mac falsch. Nächster Installationsweg ist Xcode 26.6 Universal aus Apples älteren Downloads. Die Apple-Anmeldung ist dafür noch erforderlich. Vollständiges Xcode, Personal Team, signierter Build und die echte iPhone-Abnahme sind weiter offen. Die Verbindung zu iOS 27.0.1 muss praktisch bestätigt werden; Xcode 26.6 liefert keinen iOS-27-Simulator. Keine Installation auf dem Handy und kein TestFlight-Build behauptet. [Korrigierte Schritt-für-Schritt-Anleitung und Quellen](IOS-START.md).
 
-Stand: 22.10.2026. Die zentrale Koordination liegt im Chat „Projektstatus zusammenfassen“. Dieser Stand ist eine Aufgabenübersicht; verbindliche Produktregeln stehen im [Briefing](../BRIEFING-CODEX.md).
+Stand: 23.10.2026. Die zentrale Koordination liegt im Chat „Projektstatus zusammenfassen“. Dieser Stand ist eine Aufgabenübersicht; verbindliche Produktregeln stehen im [Briefing](../BRIEFING-CODEX.md).
 
 ## Aktueller Stand v0.38.0 – Tests außerhalb der App
 

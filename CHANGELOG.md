@@ -11,6 +11,10 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 - Separates Capacitor-iPhone-Projekt für den kostenlosen persönlichen Test per Xcode. Mitgelieferte Offline-Dateien, nativer lokaler Speicher, iOS-Dateifreigabe für Backups, Schutz bei Speicherfehlern und abgebrochener Sicherung sowie Anpassung an Tastatur und Systemleisten.
 - Kurze Anleitung zur Einrichtung des Personal Teams und zur physischen Abnahme auf dem iPhone 17 Pro mit iOS 27.0.1. Xcode-Kompilierung, Signierung und Geräteinstallation sind noch offen. Web-App und Live-Version bleiben bei 0.38.0.
 
+### Korrigiert
+
+- Xcode-Einrichtung für den Intel-Mac von 2019: Xcode 27 setzt einen Apple-Chip voraus. Die Anleitung verwendet stattdessen Xcode 26.6 Universal und kennzeichnet den Test mit iOS 27.0.1 weiterhin als offen.
+
 ## [0.38.0] – 2026-10-22
 
 ### Entfernt

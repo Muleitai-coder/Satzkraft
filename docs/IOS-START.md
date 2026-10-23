@@ -1,24 +1,26 @@
 # Satzkraft kostenlos auf deinem iPhone testen
 
-Stand: 22.10.2026 · Vorbereitung auf Basis von Satzkraft 0.38.0, iPhone-Build 1.
+Stand: 23.10.2026 · Vorbereitung auf Basis von Satzkraft 0.38.0, iPhone-Build 1.
 
 Das iPhone-Projekt ist vorbereitet. Auf dem Handy installiert ist es noch nicht. Dafür brauchst du Xcode auf deinem Mac, deinen normalen Apple Account und dein iPhone mit Kabel. Ein bezahltes Entwicklerabo ist für diesen persönlichen Test nicht nötig. TestFlight kommt gegebenenfalls später.
 
 ## 1. Xcode auf dem Mac einrichten
 
-Dein gemeldetes Testgerät ist ein **iPhone 17 Pro mit iOS 27.0.1**. Auf dem Mac wurden **macOS 15.7.9**, Modellkennung **MacBookPro16,1** und nur die Kommandozeilenwerkzeuge gefunden; das vollständige Xcode fehlt.
+Dein gemeldetes Testgerät ist ein **iPhone 17 Pro mit iOS 27.0.1**. Dein **MacBook Pro von 2019 mit Intel Core i9** (MacBookPro16,1) wurde inzwischen auf **macOS Tahoe 26.7.1** aktualisiert. Das vollständige Xcode ist noch nicht installiert.
 
-Für eine Entwicklungsumgebung mit iOS-27-SDK und passendem Simulator empfehle ich **Xcode 27 oder neuer**. Xcode 27/27.1 setzt laut Apples Tabelle **macOS Tahoe 26.6 oder neuer** voraus. Dein MacBook Pro (16 Zoll, 2019) wird von Tahoe unterstützt. Die angebotene kompatible Aktualisierung findest du unter **Systemeinstellungen → Allgemein → Softwareupdate**. Vor einem Betriebssystemwechsel ein Mac-Backup erstellen. Das Projekt installiert oder aktualisiert macOS nicht selbst.
+**Xcode 27 läuft ausschließlich auf Macs mit Apple-Chip.** Die frühere Empfehlung, auf diesem Intel-Mac nach dem macOS-Update Xcode 27 zu installieren, war falsch. Ein weiteres macOS-Update behebt diese Prozessorgrenze nicht.
 
-Quelle: [Xcode-Systemanforderungen](https://developer.apple.com/xcode/system-requirements), [Mac-Modell erkennen](https://support.apple.com/en-euro/108052), [Tahoe-kompatible Macs](https://support.apple.com/en-mide/122867).
+Für diesen Mac verwenden wir **Xcode 26.6 in der Universal-Ausgabe**, die Intel unterstützt. Die macOS-Voraussetzung ab Tahoe 26.2 ist erfüllt; Capacitor 8 benötigt Xcode ab 26.0. Ältere Xcode-Versionen gibt es direkt bei Apple nach Anmeldung mit einem normalen Apple Account, ohne kostenpflichtige Mitgliedschaft.
 
-Xcode 26.3 läuft noch auf deinem bisherigen macOS. Apples Tabelle nennt auch dort neuere physische Geräte ohne feste Obergrenze. Ob die konkrete Verbindung mit deinem iOS 27.0.1 funktioniert, ist jedoch ungeprüft; ein iOS-27-Simulator gehört nicht zu diesem älteren Paket. Ein macOS-Upgrade ist daher Voraussetzung für den oben empfohlenen Xcode-27-Weg, nicht pauschal für jeden denkbaren Geräteversuch.
+**Noch offen:** Xcode 26.6 enthält das iOS-26.5-SDK, keinen iOS-27-Simulator. Apples Tabelle nennt Geräteunterstützung ab iOS 15 ohne feste Obergrenze. Ob Verbindung, Signierung und Installation mit deinem konkreten iOS 27.0.1 funktionieren, prüfen wir am angeschlossenen iPhone; ein erfolgreicher Gerätebuild ist noch nicht bestätigt.
 
-Nach der Auswahl der passenden Mac-Version:
+Quellen: [Apples Hinweis zu Xcode auf Intel-Macs](https://developer.apple.com/documentation/apple-silicon/porting-just-in-time-compilers-to-apple-silicon), [Xcode-Systemanforderungen](https://developer.apple.com/xcode/system-requirements), [ältere Versionen ohne Bezahlabo](https://developer.apple.com/xcode/resources/), [Capacitor-8-Voraussetzungen](https://capacitorjs.com/docs/ios).
 
-1. **Xcode** kostenlos aus dem Mac App Store installieren.
-2. Xcode einmal öffnen. Die angebotenen iOS-Komponenten laden; Apple-Bedingungen selbst prüfen und bestätigen.
-3. **Xcode → Settings → Accounts / Apple Accounts → +** öffnen und mit deinem Apple Account anmelden.
+1. Die [Apple-Downloads für Xcode 26.6](https://developer.apple.com/download/all/?q=Xcode%2026.6) öffnen und selbst bei Apple anmelden.
+2. Das vollständige **Xcode 26.6** herunterladen. Bei mehreren Ausgaben **Universal** wählen; die nur für Apple-Chips angebotene Ausgabe läuft auf diesem Mac nicht. Die „Command Line Tools“ allein reichen nicht.
+3. Das Apple-Archiv entpacken und Xcode im Programme-Ordner installieren lassen.
+4. Xcode einmal öffnen. Benötigte iOS-Komponenten laden; Apple-Bedingungen selbst prüfen und bestätigen.
+5. **Xcode → Settings → Accounts / Apple Accounts → +** öffnen und mit deinem Apple Account anmelden.
 
 ## 2. Satzkraft öffnen und aufspielen
 
