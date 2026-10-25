@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
+const backupPolicy = require('../src/core/backup-policy.js');
 
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 const APP_KEYS = [
@@ -13,7 +14,10 @@ const APP_KEYS = [
   'satzkraft-storage-persist-v1',
   'satzkraft-design-update-v1',
   'satzkraft-coach-prefs',
-  'satzkraft-coach-reset-v1'
+  'satzkraft-coach-reset-v1',
+  'satzkraft-device-test-mode-v1',
+  'satzkraft-device-test-reports-v1',
+  ...['cali-plan-v3', 'training-theme-v1', 'satzkraft-backup-meta-v1', 'satzkraft-storage-persist-v1', 'satzkraft-design-update-v1', 'satzkraft-reset-v1'].map(key => 'satzkraft-device-test-v1:' + key)
 ];
 
 function privacyContext({ failGetKey = '', failRemoveKey = '' } = {}) {
@@ -76,6 +80,7 @@ function privacyContext({ failGetKey = '', failRemoveKey = '' } = {}) {
     clearCoachPreferences: () => true,
     downloadFullBackup: () => true
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
   return {
@@ -85,7 +90,7 @@ function privacyContext({ failGetKey = '', failRemoveKey = '' } = {}) {
   };
 }
 
-test('löscht ausschließlich die neun lokalen Satzkraft-Datenschlüssel', () => {
+test('löscht ausschließlich Satzkraft-Datenschlüssel einschließlich ungenutztem Testaltbestand', () => {
   const { context, storage, state } = privacyContext();
 
   assert.deepEqual(Array.from(context.localAppStorageKeys()), APP_KEYS);
@@ -139,6 +144,7 @@ test('schützt die Löschung vor Autosave und weiteren offenen Tabs', () => {
     RESET_GENERATION_KEY: 'satzkraft-reset-v1',
     localStorage: { getItem: key => sharedStorage.has(key) ? sharedStorage.get(key) : null }
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
 
@@ -185,13 +191,15 @@ test('schreibt Hauptdaten und Backup-Metadaten nicht nach einem Reset während d
         }
       }
     };
-    vm.createContext(context);
+    Object.assign(context, backupPolicy);
+  vm.createContext(context);
     vm.runInContext(html.slice(guardStart, guardEnd), context);
     return { context, state: () => ({ writes, stringifies }) };
   }
 
   const main = raceContext();
   Object.assign(main.context, {
+    ...backupPolicy,
     DATA_SCHEMA_VERSION: 4,
     KEY: 'cali-plan-v3',
     S: { programs: {}, active: 'default', store: {} },
@@ -203,7 +211,7 @@ test('schreibt Hauptdaten und Backup-Metadaten nicht nach einem Reset während d
   const persistEnd = html.indexOf('var saveT', persistStart);
   vm.runInContext(html.slice(persistStart, persistEnd), main.context);
   assert.equal(main.context.persist(), false);
-  assert.deepEqual(main.state(), { writes: 0, stringifies: 1 });
+  assert.deepEqual(main.state(), { writes: 0, stringifies: 2 });
 
   const meta = raceContext();
   Object.assign(meta.context, { BACKUP_META_KEY: 'satzkraft-backup-meta-v1' });
@@ -251,6 +259,7 @@ test('prüft einen bereits geöffneten Backup-Restore unmittelbar vor dem Schrei
     save: () => { saveCalls++; },
     JSON
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(html.slice(start, end), context);
 
@@ -274,6 +283,8 @@ test('prüft einen bereits geöffneten Backup-Restore unmittelbar vor dem Schrei
   blockDuringDownload = false;
   throwOnWrite = true;
   context.confirmBackupRestore({ programs: {}, store: {} });
+  dialog.actions[0].action();
+  assert.equal(writes,0);
   dialog.actions[0].action();
   assert.equal(writes, 1);
   assert.equal(context.backupRestorePending, false);

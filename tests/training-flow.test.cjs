@@ -133,8 +133,9 @@ test('keeps weighted repetitions, time and weight in one consistent row', () => 
   assert.match(html, /timeStep\?SET_TIME_MAX_SECONDS:SET_REP_MAX/);
 });
 
-test('disables page zoom without triggering iPhone input focus zoom', () => {
-  assert.match(html, /name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/);
+test('allows page zoom and keeps focused iPhone input text legible', () => {
+  assert.match(html, /name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/);
+  assert.doesNotMatch(html, /user-scalable=no|maximum-scale=1/);
   assert.match(html, /\.inp\{[^}]*font-size:16px/);
   assert.match(html, /\*\{[^}]*touch-action:manipulation/);
 });

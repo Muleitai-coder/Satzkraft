@@ -220,6 +220,7 @@ test('REG-31/P0: normale App am iPhone-17-Pro-Profil – Touch, Ränder, Offline
   const safetyCopy = page.waitForEvent('download');
   const restored = page.waitForEvent('domcontentloaded');
   await tap(page, page.getByRole('button', { name: 'Sichern & wiederherstellen', exact: true }), reserved);
+  await tap(page, page.getByRole('button', { name: 'Datei geprüft – wiederherstellen', exact: true }), reserved);
   await safetyCopy;
   await restored;
   await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');

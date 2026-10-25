@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
+const backupPolicy = require('../src/core/backup-policy.js');
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 function source(start, end) {
   const a = html.indexOf(start), b = html.indexOf(end, a);
@@ -69,6 +70,7 @@ function fixture(shared, options = {}) {
     clone: value => JSON.parse(JSON.stringify(value)), esc: String, JSON, Date, Promise,
   };
   context.S = context.load();
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(source('function localWriteBlocked()', 'function currentTheme()'), context);
   vm.runInContext(source('function persist()', '// ---------- Programm-Zugriff'), context);
@@ -127,6 +129,8 @@ test('restore updates the expected snapshot; stale windows cannot undo the resto
   a.context.requestLocalWriter(); b.context.requestLocalWriter(); await settle();
   a.context.confirmBackupRestore({ programs: { restored: {} }, active: 'restored', store: { restored: { logs: { value: 'saved' } } } });
   a.dialogs[0].actions[0].action();
+  assert.equal(shared.storage.has("cali-plan-v3"),false);
+  a.dialogs[1].actions[0].action();
   const restored = shared.storage.get('cali-plan-v3');
   assert.equal(a.context.localStoredSnapshot, restored);
   assert.equal(JSON.parse(restored).store.restored.logs.value, 'saved');
@@ -165,4 +169,23 @@ test('all inline scripts parse; schema and exchange format stay compatible', () 
   for (const script of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)) new vm.Script(script[1]);
   assert.match(html, /DATA_SCHEMA_VERSION=5/); assert.match(html, /var KEY="cali-plan-v3"/);
   assert.match(html, /version:2/);
+});
+
+test('a real load failure cannot overwrite original bytes on autosave, background or page exit', async () => {
+  const shared = sharedEnvironment(), app = fixture(shared);
+  const original = '{"schemaVersion":5,"valuable":"unfinished original';
+  shared.storage.set('cali-plan-v3', original);
+  // Use the production loader, not the fixture's successful-read substitute.
+  app.context.initState = () => ({ schemaVersion: 5, programs: { default: {} }, active: 'default', store: { default: {} } });
+  vm.runInContext(source('function load(){', 'function migrateProgram'), app.context);
+  app.context.requestLocalWriter(); await settle();
+  assert.equal(app.context.localWriterState, 'recovery');
+  assert.equal(app.context.loadIssueRaw, original);
+  assert.match(app.notice.innerHTML, /Trainingsdaten geschützt/);
+  assert.equal(app.context.save(), false);
+  assert.equal(app.context.persist(), false);
+  app.callbacks.visibilitychange();
+  app.callbacks.pagehide();
+  assert.equal(shared.storage.get('cali-plan-v3'), original);
+  assert.equal(shared.writes.length, 0);
 });

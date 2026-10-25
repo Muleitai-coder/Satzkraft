@@ -1,5 +1,5 @@
 import { parse } from 'acorn';
-import { fullAncestor, simple } from 'acorn-walk';
+import { fullAncestor } from 'acorn-walk';
 
 // Native capability adaptation happens on parsed JS, not text replacement of
 // application data. Generated files remain inspectable. The web build is intact.
@@ -20,7 +20,7 @@ export function adaptApp(source, overrides) {
   if (replacements.size) throw new Error(`Native hooks missing: ${[...replacements.keys()]}`);
   source = applyEdits(source, edits);
   const tree = parseJS(source), changes = [], functions = new Set();
-  const asyncCalls = new Set(['downloadText', 'downloadFullBackup', 'clearLocalAppData', 'handleBackupReminder']);
+  const asyncCalls = new Set(['downloadText', 'downloadFullBackup', 'clearLocalAppData', 'handleBackupReminder', 'replaceRecoveredState']);
   fullAncestor(tree, (node, state, ancestors) => {
     if (node.type === 'Identifier' && node.name === 'localStorage') {
       changes.push({ start: node.start, end: node.end, text: 'window.SatzkraftNative.storage' });
@@ -47,13 +47,16 @@ export function adaptApp(source, overrides) {
     .replace('beim Löschen der Browserdaten verloren gehen', 'beim Löschen der App verloren gehen')
     .replace('Der lokale Browserspeicher wird', 'Der lokale App-Speicher wird');
   // Native overlay buttons remain usable if a storage error blocked the core UI.
+  if (source.split('if(notice.contains(target)){').length !== 2) throw new Error('Native recovery hook changed');
   source = source.replace('if(notice.contains(target)){', 'if(window.SatzkraftNative.ownsControl(target))return;\n if(notice.contains(target)){');
   source += '\nwindow.SatzkraftNative.bind({ flush: flushSave, backup: backupJSON });\n';
   parseJS(source);
-  // Fail on newly introduced synchronous consumers of the adapted functions.
-  simple(parseJS(source), { CallExpression(node) {
+  // Every transformed asynchronous call must be awaited, including recovery.
+  fullAncestor(parseJS(source), (node, state, ancestors) => {
+    if (node.type !== 'CallExpression' || !asyncCalls.has(node.callee.name)) return;
+    if (ancestors.at(-2)?.type !== 'AwaitExpression') throw new Error(`Unawaited native call: ${node.callee.name}`);
     if (node.callee.name === 'downloadText' && node.arguments.length !== 2) throw new Error('Unexpected export contract');
-  } });
+  });
   return source;
 }
 

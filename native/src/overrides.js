@@ -42,3 +42,10 @@ function confirmBackupRestore(raw){
  ]);
 }
 function requestPersistentStorageOnce(){ /* Native checkpoint storage replaces browser eviction requests. */ }
+
+async function replaceRecoveredState(payload) {
+ var next=window.SatzkraftNative.storage.snapshot();next[KEY]=payload;
+ await window.SatzkraftNative.busy(async function(){await window.SatzkraftNative.storage.commit(next);});
+ localStoredSnapshot=payload;loadIssueText="";loadIssueRaw="";
+ location.reload();return true;
+}

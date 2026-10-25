@@ -1,0 +1,33 @@
+{
+  "styles": [
+    "src/styles/fonts.css",
+    "src/styles/tokens.css",
+    "src/styles/components.css",
+    "src/styles/recovery.css"
+  ],
+  "theme": "src/platform/theme.js",
+  "scripts": [
+    "src/app/config.js",
+    "src/app/default-program.js",
+    "src/app/storage-context.js",
+    "src/app/state.js",
+    "src/app/exercise-access.js",
+    "src/app/training-model.js",
+    "src/app/privacy-settings.js",
+    "src/app/training-view.js",
+    "src/app/dialogs.js",
+    "src/app/device-capabilities.js",
+    "src/app/timers-workout.js",
+    "src/app/reports.js",
+    "src/app/program-contract.js",
+    "src/core/backup-policy.js",
+    "src/app/backup.js",
+    "src/app/program-library.js",
+    "src/app/warmup.js",
+    "src/app/program-editor.js",
+    "src/app/library-view.js",
+    "src/app/events.js",
+    "src/app/window-coordination.js",
+    "src/app/bootstrap.js"
+  ]
+}

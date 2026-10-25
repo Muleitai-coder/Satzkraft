@@ -1,0 +1,3 @@
+#windowNotice:not([hidden]){position:fixed;inset:0;z-index:var(--layer-notice);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));background:var(--scrim);overflow-y:auto}
+.windowcard{width:100%;max-width:420px;margin:auto;padding:24px;border:1px solid var(--hair2);border-radius:var(--radius-dialog);background:var(--panel);color:var(--ink);box-shadow:0 16px 48px var(--scrim)}
+.windowcard h2{font-size:22px;line-height:1.25;margin:0 0 12px}.windowcard p{font-size:15px;line-height:1.5;color:var(--ink2);margin:0 0 16px}.windowactions{display:grid;gap:10px}.windowactions button{min-height:var(--touch-target);width:100%;white-space:normal}

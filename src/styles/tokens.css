@@ -1,0 +1,40 @@
+/* ===== Satzkraft Redesign 2026 – Design-Tokens ===== */
+:root{
+ --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;
+ --radius-control:12px;--radius-card:16px;--radius-dialog:20px;
+ --touch-target:44px;--touch-native:48px;
+ --layer-notice:1000;--layer-native-status:1100;--layer-native-guard:1200;
+ --font:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+ --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+ --bodybg:radial-gradient(130% 90% at 50% -8%,#111418,#08090b 62%) fixed #0a0b0d;
+ --exercise-details-meta:.75em;--exercise-details-space:.5em;
+ --bg:#0a0b0d;--panel:#121418;--panel2:#171a1f;--up:#1e2228;
+ --hair:rgba(255,255,255,.09);--hair2:rgba(255,255,255,.16);
+ --ink:#f3f3f1;--ink2:#c3c4c1;--muted:#87898e;--faint:#87898e;
+ --acc:#37e0a2;--accd:#0f9d6b;--accg:rgba(55,224,162,.13);--accl:rgba(55,224,162,.34);
+ --onacc:#04130c;
+ --kraft:#f4b03e;--kraftg:rgba(244,176,62,.13);--kraftl:rgba(244,176,62,.38);
+ --hyp:#37e0a2;
+ --skill:#ac95f9;--skillg:rgba(172,149,249,.13);--skilll:rgba(172,149,249,.38);
+ --core:#3cc0f2;--coreg:rgba(60,192,242,.12);--corel:rgba(60,192,242,.38);
+ --orange:#eb8a4f;--orangeg:rgba(235,138,79,.13);--orangel:rgba(235,138,79,.38);
+ --danger:#f87171;--dangerg:rgba(244,63,94,.14);--dangerl:rgba(244,63,94,.4);
+ --scrim:rgba(0,0,0,.62);
+ --barbg:rgba(8,9,11,.92);
+}
+html[data-theme="light"]{
+ --bodybg:#efece5;
+ --bg:#efece5;--panel:#ffffff;--panel2:#f8f6f1;--up:#f1eee7;
+ --hair:rgba(24,22,20,.11);--hair2:rgba(24,22,20,.2);
+ --ink:#171614;--ink2:#45433f;--muted:#6d6a64;--faint:#6e6b65;
+ --acc:#087a52;--accd:#087a52;--accg:rgba(8,122,82,.12);--accl:rgba(8,122,82,.3);
+ --onacc:#ffffff;
+ --kraft:#8a570e;--kraftg:rgba(138,87,14,.12);--kraftl:rgba(138,87,14,.32);
+ --hyp:#087a52;
+ --skill:#6a4fe0;--skillg:rgba(106,79,224,.1);--skilll:rgba(106,79,224,.3);
+ --core:#086b9c;--coreg:rgba(8,107,156,.1);--corel:rgba(8,107,156,.3);
+ --orange:#9b431c;--orangeg:rgba(155,67,28,.11);--orangel:rgba(155,67,28,.3);
+ --danger:#b3261e;--dangerg:rgba(179,38,30,.1);--dangerl:rgba(179,38,30,.3);
+ --scrim:rgba(28,24,18,.42);
+ --barbg:rgba(239,236,229,.92);
+}

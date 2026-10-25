@@ -9,13 +9,28 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 ### Hinzugefügt
 
 - Separates Capacitor-iPhone-Projekt für den kostenlosen persönlichen Test per Xcode. Mitgelieferte Offline-Dateien, nativer lokaler Speicher, iOS-Dateifreigabe für Backups, Schutz bei Speicherfehlern und abgebrochener Sicherung sowie Anpassung an Tastatur und Systemleisten.
-- Kurze Anleitung zur Einrichtung des Personal Teams und zur physischen Abnahme auf dem iPhone 17 Pro mit iOS 27.0.1. Xcode-Kompilierung, Signierung und Geräteinstallation sind noch offen. Web-App und Live-Version bleiben bei 0.38.0.
+- Kurze Anleitung zur Einrichtung des Personal Teams und zur physischen Abnahme auf dem iPhone 17 Pro mit iOS 27.0.1. Xcode-Kompilierung, Signierung und Geräteinstallation sind noch offen. Der Pilot wurde ursprünglich mit Web-Stand 0.38.0 begonnen; der aktuelle gemeinsame Quellstand steht im neuesten Releaseabschnitt.
 
 ### Korrigiert
 
 - Der Knopf „Zuletzt … Verlauf“ öffnet für alle Übungen wieder dieselbe kompakte Wochenübersicht mit Satzwerten und gegebenenfalls Volumen und Verlaufskurve. Übungsdetails bleiben getrennt über den Übungsnamen erreichbar. Die unterschiedliche Weiterleitung war beim Bibliotheksausbau vor Einführung des Testmodus entstanden.
 - „Verlauf“ im Training prüft neben dem Übungsnamen auch Gewichtserfassung und Seitenregel. Beispielsweise öffnen gewichtete „Step Ups“ wieder ihre gespeicherten Satzwerte statt der leeren Detailansicht für „Step-ups“ ohne Gewicht. Bestehende Trainingsdaten bleiben unverändert.
 - Xcode-Einrichtung für den Intel-Mac von 2019: Xcode 27 setzt einen Apple-Chip voraus. Die Anleitung verwendet stattdessen Xcode 26.6 Universal und kennzeichnet den Test mit iOS 27.0.1 weiterhin als offen.
+
+## [0.39.0] – 2026-10-25
+
+### Korrigiert
+
+- Beschädigte lokale Trainingsdaten bleiben auch bei Hintergrundwechsel und Schließen erhalten. Ein geschützter Rettungsmodus erlaubt Rohdatenexport und einen ausdrücklich bestätigten Neustart.
+- Gelöschte Vorblöcke hinterlassen keine ungültigen Folgeblock-Verweise in unmittelbar erstellten Backups.
+- Vollständige Backups können mehr als 50 Programme enthalten. Dateiimport, Textprüfung, Export und neue Speicherstände nutzen ein gemeinsames 20-MB-Limit in UTF-8; rohe Notfallexporte bleiben möglich.
+- Wiederherstellung überschreibt den aktuellen Stand erst nach Bestätigung der geprüften Sicherheitskopie. Der Backupstatus spricht präzise von Export.
+- Native Pakete werden anhand des aktuellen Quellfingerprints und ihrer Dateihashes auf Aktualität geprüft. Die WKWebView erhält genau einen Erzeugungspfad.
+
+### Geändert
+
+- Gemeinsame Quellbereiche unter `src/` mit abhängigkeitenfreiem Web-Build, zentralen Gestaltungswerten, Architekturprüfung und verbindlichen Entwicklungsregeln. Web und iPhone nutzen dieselbe Grundlage.
+- Seitenzoom ist wieder erlaubt; fokussierte Satzfelder bleiben gut lesbar.
 
 ## [0.38.0] – 2026-10-22
 

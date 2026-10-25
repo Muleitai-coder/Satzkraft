@@ -1,3 +1,4 @@
+import { buildSource } from './build-source.mjs';
 import { cp, mkdir, rm } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,6 +21,8 @@ const publicFiles = [
   "programme/hybrid-gym-calisthenics.json"
 ];
 
+await buildSource();
+await import("./check-architecture.mjs");
 await rm(output, { recursive: true, force: true });
 for (const relativePath of publicFiles) {
   const target = join(output, relativePath);

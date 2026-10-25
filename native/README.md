@@ -1,14 +1,14 @@
 # Satzkraft – persönlicher iPhone-Pilot
 
-Capacitor 8.5.3, iOS 15+, App 0.38.0 / Build 1. Separates npm-Projekt mit festgeschriebenem Lockfile. [Installation ohne Bezahlabo](../docs/IOS-START.md).
+Capacitor 8.5.3, iOS 15+, App 0.39.0 / Build 1. Separates npm-Projekt mit festgeschriebenem Lockfile. [Installation ohne Bezahlabo](../docs/IOS-START.md).
 
 ## Aufbau
 
 - `ios/App/App.xcodeproj`: offizielles Capacitor-SPM-Projekt, eigenes Satzkraft-Icon, deutscher Anzeigename, iPhone-Target, Privacy Manifest. Keine Team-ID, Zertifikate oder bezahlten Capabilities eingecheckt.
 - `scripts/build.mjs`: kopiert ausschließlich öffentliche App-Ressourcen nach `www/`; keine Netlify-URL, kein Live-Reload-Server, kein Service Worker. Übungsbibliothek, vier Programme und Schriften sind mitgeliefert.
-- `scripts/adapt.mjs`: liest die beiden Inline-Skripte aus der bestehenden Web-App. AST-gestützt werden Speicherzugriffe, der Einzelfenster-Lock und asynchrone Export-Aufrufer an native Fähigkeiten angebunden. `src/overrides.js` ersetzt nur vier benannte Plattformfunktionen. Fehlende Hooks, unerwartete Skriptstruktur oder Syntaxfehler brechen den Build ab. Das erzeugte `www/native-app.js` bleibt lesbar.
+- `scripts/adapt.mjs`: erhält die gemeinsamen Quellen aus `src/` über den zentralen Assembler. AST-gestützt werden Speicherzugriffe, der Einzelfenster-Lock und asynchrone Export-Aufrufer an native Fähigkeiten angebunden. `src/overrides.js` ersetzt ausschließlich benannte Plattformfunktionen. Fehlende Hooks, unerwartete Skriptstruktur oder Syntaxfehler brechen den Build ab. Das erzeugte `www/native-app.js` bleibt lesbar.
 - `src/bridge.mjs`: lädt den nativen Speicher vor der App, bindet Preferences, Filesystem/Share, App-Lebenszyklus und Keyboard an. Systemleisten und Tastatur folgen dem App-Farbmodus; das aktive Feld wird nach dem Öffnen der Tastatur sichtbar gescrollt.
-- Der Web-Quellcode, Web Locks, Datenformat und Netlify-Publish-Liste bleiben unverändert. Neue Plattformlogik darf nicht in die Progressionsberechnung wandern.
+- Web und iPhone teilen die Quellbasis. Web Locks, Datenformat und Netlify-Publish-Liste bleiben kompatibel. Neue Plattformlogik darf nicht in die Progressionsberechnung wandern.
 
 ## Speichervertrag für den Pilot
 
@@ -47,3 +47,9 @@ Vorliegende Prüfung: acht Node-Fälle, ein WebKit-Fall, Plist-/Projekt-Syntax u
 Bei späterer Veröffentlichung native Versionsnummer und Buildnummer bewusst erhöhen. Bundle-ID nach erster Geräteinstallation stabil halten. `www/`, `ios/App/App/public`, persönliche Xcode-Dateien und Zertifikate bleiben unversioniert. Der bestehende Netlify-Build veröffentlicht ausschließlich `dist/`.
 
 Das Icon wird aus `assets/app-icon.svg` (bestehendes Satzkraft-Vektormotiv) mit 1024 × 1024 Pixeln auf deckendem Hintergrund exportiert. Keine fremden Capacitor-Demosymbole in der App.
+
+### Gemeinsamer Stand und Aktualität
+
+`scripts/freshness.mjs` erfasst gemeinsame Quellen, Buildwerkzeuge, Native-Adapter, Lockfile und eingebettete Ressourcen. Das erzeugte `build-info.json` enthält den Quellfingerprint sowie Hashes sämtlicher Paketdateien. `ios:doctor` verifiziert diese gegen das aktuelle Projekt. Bloße Dateiexistenz gilt nicht mehr als Synchronisierungsnachweis. Vor dem Gerätebuild `npm run ios:sync` ausführen.
+
+Der SceneDelegate erzeugt das einzige Fenster samt Bridge-Controller. Die parallele Scene-/Main-Storyboard-Zuordnung ist entfernt; der LaunchScreen bleibt bestehen. Ein erfolgreicher Gerätebuild ist damit noch nicht behauptet.

@@ -1,0 +1,3 @@
+/* Lokale Schriften statt Google-CDN, damit die App offline vollständig funktioniert */
+@font-face{font-family:'Hanken Grotesk';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/hanken-grotesk-latin.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/jetbrains-mono-latin.woff2) format('woff2')}

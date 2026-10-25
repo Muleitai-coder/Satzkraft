@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
+const backupPolicy = require('../src/core/backup-policy.js');
 
 const html = fs.readFileSync(new URL('../index.html', `file://${__filename}`), 'utf8');
 
@@ -21,6 +22,7 @@ function loadRealBackupValidator() {
     esc: value => String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
     wucdSan: list => Array.isArray(list) ? list.map(item => ({ name: item.name, sec: item.seconds })) : []
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   const programStart = html.indexOf('function genId()');
   const programEnd = html.indexOf('function setActive(', programStart);
@@ -61,6 +63,7 @@ test('records full backups across all programs', () => {
     downloadText: name => { downloadedName = name; return true; },
     showModal() {}
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(html.slice(html.indexOf('var EXERCISE_REFERENCES='), html.indexOf('function genProgramCode')), context);
   vm.runInContext(html.slice(start, end), context);
@@ -110,6 +113,7 @@ test('validates full backup structure and recorded values', () => {
     exportTranslate: value => value,
     parseProgram: () => ({ prog: {} })
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(html.slice(html.indexOf('var EXERCISE_REFERENCES='), html.indexOf('function genProgramCode')), context);
   vm.runInContext(html.slice(start, end), context);
@@ -302,6 +306,7 @@ test('normalization keeps the exact program set from a non-empty backup', () => 
       state.day = store.day;
     }
   };
+  Object.assign(context, backupPolicy);
   vm.createContext(context);
   vm.runInContext(html.slice(html.indexOf('function personalExerciseError('), html.indexOf('var EXERCISE_REFERENCES=')), context);
   vm.runInContext(html.slice(start, end), context);
@@ -358,6 +363,8 @@ test('restore blocks stale autosaves until the restored state reloads', () => {
   const backup = { schemaVersion: 3, programs: { only: {} }, active: 'only', store: { only: {} } };
   restoreContext.confirmBackupRestore(backup);
   actions[0].action();
+  assert.equal(cleared, false, "export alone must not replace data");
+  actions[0].action();
   assert.equal(cleared, true);
   assert.equal(restoreContext.saveT, null);
   assert.equal(restoreContext.backupRestorePending, true);
@@ -393,4 +400,48 @@ test('accepts the complete report example backup with recorded training values',
     }
   }
   assert.ok(!Object.keys(store.logs).some(key => key.startsWith('8|')), 'Woche 8 soll vollständig offen bleiben');
+});
+
+test('deleting a parent block preserves export/import compatibility immediately, without reload', () => {
+  const context = loadRealBackupValidator();
+  const raw = fs.readFileSync(new URL('../programme/gym-ganzkoerper-beginner.json', `file://${__filename}`), 'utf8');
+  const external = JSON.parse(raw);
+  for (const day of external.days) { delete day.warmup; delete day.cooldown; }
+  const parsed = context.parseProgram(JSON.stringify(external));
+  assert.equal(parsed.err, undefined);
+  const program = parsed.prog;
+  assert.ok(program);
+  const store = () => ({ tg: {}, barw: {}, notes: {}, logs: {}, history: [], workout: null, week: 1, day: program.days[0].key, removedEx: {}, pendingReplacements: [] });
+  context.S = { schemaVersion: 5, personalExercises: {}, active: 'child', programs: { prior: structuredClone(program), child: { ...structuredClone(program), parent: 'prior' } }, store: { prior: store(), child: store() } };
+  Object.assign(context, { programWriteLocked: () => false, save() {}, renderLib() {} });
+  vm.runInContext(html.slice(html.indexOf('function deleteProgram(id)'), html.indexOf('function copyTextFallback')), context);
+  assert.equal(context.validateBackupFile(JSON.parse(JSON.stringify(context.S))), null);
+  assert.equal(context.deleteProgram('prior'), true);
+  assert.equal(context.S.programs.child.parent, undefined);
+  assert.equal(context.validateBackupFile(JSON.parse(JSON.stringify(context.S))), null);
+});
+
+test('a library with more than fifty archived blocks can be exported and restored', () => {
+  const context = loadRealBackupValidator();
+  const raw = fs.readFileSync(new URL('../programme/gym-ganzkoerper-beginner.json', `file://${__filename}`), 'utf8');
+  const external = JSON.parse(raw);
+  for (const day of external.days) { delete day.warmup; delete day.cooldown; }
+  const parsed = context.parseProgram(JSON.stringify(external));
+  assert.equal(parsed.err, undefined);
+  const program = parsed.prog;
+  const backup = { schemaVersion: 5, personalExercises: {}, active: 'p0', programs: {}, store: {} };
+  for (let i = 0; i < 60; i++) {
+    backup.programs[`p${i}`] = { ...structuredClone(program), archived: i !== 0 };
+    backup.store[`p${i}`] = { tg: {}, barw: {}, notes: {}, logs: {}, history: [], workout: null, week: 1, day: program.days[0].key };
+  }
+  const exported = JSON.stringify(backup, null, 1);
+  assert.equal(backupPolicy.backupSizeError(exported), null);
+  assert.equal(context.validateBackupFile(JSON.parse(exported)), null);
+});
+
+test('backup limits consistently use UTF-8 bytes, including non-ASCII exercise names', () => {
+  assert.equal(backupPolicy.backupFileTooLarge(20_000_000), false);
+  assert.equal(backupPolicy.backupFileTooLarge(20_000_001), true);
+  assert.equal(backupPolicy.backupSizeError('ä'.repeat(10_000_000)), null);
+  assert.match(backupPolicy.backupSizeError('ä'.repeat(10_000_001)), /20 MB/);
 });

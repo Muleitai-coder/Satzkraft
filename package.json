@@ -1,6 +1,6 @@
 {
   "name": "satzkraft",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "private": true,
   "packageManager": "npm@10.9.8",
   "engines": {
@@ -21,7 +21,11 @@
     "ios:open": "npm --prefix native run open",
     "ios:doctor": "npm --prefix native run doctor",
     "test:ios": "npm --prefix native run build && npm --prefix native test",
-    "test:ios-ui": "playwright test --config qa/playwright/native.config.cjs --project iphone-native --update-snapshots=none"
+    "test:ios-ui": "playwright test --config qa/playwright/native.config.cjs --project iphone-native --update-snapshots=none",
+    "build:source": "node scripts/build-source.mjs",
+    "check:source": "node scripts/build-source.mjs --check",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "dev": "npm run build:source && node qa/playwright/static-server.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.61.0"

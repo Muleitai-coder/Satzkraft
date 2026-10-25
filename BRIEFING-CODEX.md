@@ -1,9 +1,9 @@
 # Satzkraft – aktives Produkt- und Architekturbriefing
 
-- Stand: 23.10.2026
+- Stand: 25.10.2026
 - GitHub-Stand: v0.38.0 auf `main` hochgeladen (App-Commit `04f120c`)
 - Bestätigter Live-Stand: v0.38.0 unter https://satzkraft.netlify.app/; Seitentitel, normale Trainingsansicht trotz früher aktivem Testmodus und Einstellungen ohne Admin-/Testeintrag am 22.10.2026 geprüft
-- Arbeitsstand: v0.38.0 (Testbereich entfernt, externe Handy-Checkliste und separate iPhone-Browsersimulation; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
+- Arbeitsstand: v0.39.0 (modulare Quellbereiche, geschützte Datenrettung und verlässliche Backupverträge; Testbereich entfernt, externe Handy-Checkliste und separate iPhone-Browsersimulation; API-Coach entfernt; Fensterschutz; Zeit mit Gewicht korrekt; optionale Übungszuordnungen; historische Erfassung; persönliche Übungen und Details)
 
 Dieses Dokument ist die kurze, verbindliche Quelle für den aktuellen Stand. Die vollständige frühere Spezifikations- und Entscheidungshistorie liegt unter [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) und ist nicht mehr normativ.
 
@@ -13,7 +13,7 @@ Bei Widersprüchen gilt diese Reihenfolge:
 
 1. die neueste ausdrückliche Entscheidung des Produktverantwortlichen,
 2. dieses aktive Briefing,
-3. `AGENTS.md`, `docs/DESIGN-BRIEFING.md` und `docs/TESTING.md` für Arbeitsweise, Gestaltung und Tests,
+3. `AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN-BRIEFING.md` und `docs/TESTING.md` für Arbeitsweise, Gestaltung und Tests,
 4. aktuelle Referenzdokumente und `CHANGELOG.md`,
 5. historische Pläne, Testberichte und das archivierte Briefing nur als Kontext.
 
@@ -41,7 +41,8 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 | Bereich | Verbindliche Rolle |
 |---|---|
-| `index.html` | App-Oberfläche, Styles und UI-Logik |
+| `src/` | Verbindliche Quellen: Anwendung, Core, Styles, Plattformstart und Shell |
+| `index.html` | Erzeugtes Web-Artefakt; nicht direkt bearbeiten |
 | `js/progression.js` | isolierte Progressions- und Empfehlungslogik |
 | `sw.js` | Offline-Cache der statischen App-Ressourcen |
 | `programme/*.json` | mitgelieferte Programme |
@@ -51,12 +52,12 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 ### Guardrails
 
-1. Die kompakte Ein-Datei-Web-App bleibt bestehen. Kein UI-Framework und keine Web-Runtime-Abhängigkeiten einführen. Der Web-Build bleibt ein abhängigkeitenfreies Kopieren der freigegebenen Veröffentlichungsdateien nach `dist/`. Ausnahme gemäß ausdrücklichem Auftrag vom 22.10.2026: separates Capacitor-Projekt unter `native/` für den persönlichen iPhone-Test; dessen Abhängigkeiten und Plattformadapter werden nicht über Netlify veröffentlicht.
+1. **Neuester Auftrag 25.10.2026:** Die Ein-Datei-Entwicklung ist aufgehoben. Gemeinsame Quellen unter `src/`, zentrale Design-Tokens und ein reproduzierbarer Build dienen Web und iOS. `index.html` bleibt ein erzeugtes kompatibles Artefakt. Kein Frameworkwechsel und keine neuen Web-Laufzeitabhängigkeiten sind dafür nötig. Verbindliche Regeln und verbleibende Kopplung des Altbestands stehen in `docs/ARCHITECTURE.md`.
 2. Nutzertexte sind deutsch, in Du-Form, kurz und verständlich.
 3. Dynamische HTML-Ausgaben über `esc()` beziehungsweise `attr()` absichern. Nutzereingaben und Importdaten validieren.
 4. Datenkompatibilität erhalten: `cali-plan-v3`, Import alter Schema-4-Backups und Austauschformat `trainings-block` Version 2 nicht brechen. Neue Programmfelder bleiben optional und innerhalb der bisherigen Satzsemantik ausführbar; neue vollständige Backups verwenden bewusst Schema 5.
 5. `js/progression.js` ist fachlich sensibel. Nur bei bestätigten Rechen- oder Produktfehlern ändern und die Grenzfälle direkt testen; keine stilistischen Umbauten.
-6. Von Tests verwendete String-Anker und Funktionsreihenfolgen in `index.html` nur ändern, wenn die betroffenen Tests bewusst mit angepasst werden.
+6. Bestehende Extraktionstests lesen weiterhin das erzeugte Web-Artefakt. Neue Datenlogik direkt prüfen; Abhängigkeiten und Übergänge durch Verhaltenstests absichern. Vor Prüfungen Quellstand und Artefakt abgleichen.
 7. Nutzerrelevante Änderungen unter `Unreleased` in `CHANGELOG.md` dokumentieren. Beim Release `APP_VERSION` und Service-Worker-Cache synchron erhöhen.
 8. Änderungen nach `docs/TESTING.md` risikobasiert prüfen. Keine Prüfungen deaktivieren und keine fehlschlagenden Tests still entfernen.
 9. Vorhandene, unfertige Änderungen bewahren. Der Auftrag vom 13.10.2026 umfasst die Prüfung und Sicherung des vorhandenen Änderungsstands; für diesen Auftrag gilt der Abschlussablauf aus `AGENTS.md`. Keine allgemeine Veröffentlichung daraus ableiten.
@@ -119,7 +120,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 ### Design und Navigation
 
 - Das Redesign mit Smaragd-Akzent, lokal eingebundenen Schriften sowie hellem und dunklem Schema ist verbindlich. Detailregeln stehen in `docs/DESIGN-BRIEFING.md`.
-- Mobile-first: keine horizontalen Überläufe; Touchziele grundsätzlich mindestens 44 × 44 CSS-Pixel. Die eng gerasterten `− / +`-Stepper in einzeiligen gewichteten Satzzeilen sind die bewusst gewählte Ausnahme: mindestens 32 × 44 Pixel, damit bei 320 px vierstellige Werte sichtbar bleiben. Safe Areas, Bildschirmtastatur und lange Inhalte berücksichtigen. Seitenzoom ist in der App deaktiviert; Satzfelder verwenden während der Eingabe 16 px Schriftgröße; die kompakte Übersicht bleibt kleiner. Das tatsächliche Fokuszoom-Verhalten bleibt Teil der physischen iPhone-Abnahme.
+- Mobile-first: keine horizontalen Überläufe; Touchziele grundsätzlich mindestens 44 × 44 CSS-Pixel. Die eng gerasterten `− / +`-Stepper in einzeiligen gewichteten Satzzeilen sind die bewusst gewählte Ausnahme: mindestens 32 × 44 Pixel, damit bei 320 px vierstellige Werte sichtbar bleiben. Safe Areas, Bildschirmtastatur und lange Inhalte berücksichtigen. Seitenzoom ist seit dem Auftrag vom 25.10.2026 wieder erlaubt; Satzfelder verwenden während der Eingabe 16 px Schriftgröße; die kompakte Übersicht bleibt kleiner. Das tatsächliche Fokuszoom-Verhalten bleibt Teil der physischen iPhone-Abnahme.
 - Obere Zurück- und Schließen-Aktionen in Programmeditor und Unteransichten bleiben beim Scrollen sichtbar und halten auf iPhones dauerhaft Abstand zur Statusleiste beziehungsweise Dynamic Island.
 - Startseite: Der aktive Trainingsblock zeigt Wochenfortschritt, Wochenschiene und die auf Wochentage verteilten Einheiten. Programme, Auswertung und Einstellungen liegen in der Kopfzeile.
 - Programme, Auswertung, Protokoll, Editor und Einstellungen verwenden die gemeinsame Designsprache statt lokaler Sonderlösungen.
@@ -206,3 +207,13 @@ Der frühere Startschalter wird ignoriert. Bei jedem Start gelten die echten Spe
 Die automatisierte Prüfung liegt ausschließlich unter `qa/playwright/`, verwendet einen isolierten Browser mit synthetischen Daten und die normale Oberfläche. Das installierte Playwright-Profil „iPhone 17 Pro“ liefert 402 × 681 CSS-Pixel Browserfläche bei 402 × 874 Bildschirmgröße und Touch/WebKit. Kleinere Höhen und nicht null gesetzte CSS-Sicherheitsränder sind ausdrücklich Platz-Stresstests. Keine behauptete iOS-Versionssimulation, echte Safari-Leisten, Dynamic Island, Bildschirmtastatur oder OS-Prozessbeendigung. Auf diesem Mac ist kein Xcode-Simulator verfügbar. [Verfahren und Prüfstand](docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).
 
 Der öffentliche Build umfasst nach dem Ausbau 13 Dateien, davon 12 Startressourcen im Offline-Cache. Historische Assistenten-Releases v0.35–v0.37 bleiben in der Versionshistorie nachvollziehbar; deren UI- und Speichermodus-Regeln gelten nicht mehr.
+
+## Architektur- und Fehlerbehebungsauftrag 25.10.2026
+
+Der Nutzer beauftragt Fehlerbehebung, Wartbarkeit, Weiterentwicklung und Vorbereitung der iOS-App sowie zentrale Designregeln. Die gemeinsame Quellstruktur ist verbindlich; [Architektur](docs/ARCHITECTURE.md) und [Designvertrag](docs/DESIGN-BRIEFING.md) sind deren zentrale Quellen.
+
+- Ladefehler sperren das Schreiben und bieten Rohdatenrettung; kein automatisches Überschreiben durch Lebenszyklusereignisse.
+- Vorblock-Löschung bereinigt Folgeblock-Verweise sofort. Vollständige Backups besitzen ein gemeinsames UTF-8-Budget von 20 MB, keine pauschale 50-Programme-Grenze. Schema 5 und Schema-4-Import bleiben erhalten.
+- Wiederherstellung verlangt vor dem Ersetzen die Bestätigung einer tatsächlich geprüften Sicherheitskopie. Exportstatus bezeichnet den Export, nicht eine vom Browser unbestätigte Dateisicherung.
+- Native Builds verwenden dieselben Quellen und weisen ihren Stand mit Quellfingerprint und Dateihashes nach. Die reale iPhone-/Xcode-Abnahme bleibt separat offen.
+- Seitenzoom wird für bessere Zugänglichkeit zugelassen. Alle neuen Designentscheidungen werden zentral dokumentiert.

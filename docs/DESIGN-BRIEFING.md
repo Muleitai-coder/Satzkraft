@@ -9,7 +9,7 @@ Verbindliche Gestaltungsregeln für alle Ansichten. Referenz ist die **neue Star
 3. **Text statt Buttonflächen für Nebenaktionen.** Primäraktion als gefüllter Akzent-Button, alles Weitere als Textaktion oder Icon.
 4. **Beide Farbschemata.** Jede Änderung muss im dunklen und hellen Schema funktionieren (`html[data-theme]`). Nur Tokens verwenden, nie Rohfarben.
 
-## 2. Design-Tokens (Quelle: `index.html`, Block „Satzkraft Redesign 2026“)
+## 2. Design-Tokens (Quelle: `src/styles/tokens.css`)
 
 | Token | Bedeutung |
 | --- | --- |
@@ -58,3 +58,27 @@ Vor jedem UI-Merge prüfen:
 2. Stimmen Schrift (Fließtext `--font`, Meta `--mono`) und Tokens in hell und dunkel?
 3. Sind Nebeninformationen eingeklappt statt dauerhaft sichtbar?
 4. Gibt es genau eine Primäraktion?
+
+## 7. Zentrale Quelle für Web und iOS (25.10.2026)
+
+Dieses Dokument ist der verbindliche Designvertrag. Die technische Quelle der Tokens ist **`src/styles/tokens.css`**; sie ersetzt den früheren Verweis auf einen manuell gepflegten Block in `index.html`. Beide Plattformen erhalten die gleiche CSS-Basis aus dem gemeinsamen Build. `native/src/native.css` ergänzt nur Plattformzustände und Safe Areas.
+
+- **Abstände:** `--space-1/2/3/4/6` = 4/8/12/16/24 px.
+- **Radien:** `--radius-control` = 12 px, `--radius-card` = 16 px, `--radius-dialog` = 20 px.
+- **Bedienziele:** `--touch-target` = 44 px, `--touch-native` = 48 px. Die bestehende schmale Satz-Stepper-Ausnahme bleibt dokumentiert; keine weiteren Ausnahmen ohne Entscheidung.
+- **Ebenen:** `--layer-notice`, `--layer-native-status`, `--layer-native-guard` ordnen Schreibschutz und native Fehleroberflächen eindeutig.
+- **Neue Oberflächen:** Bestehende Farben, Typografie, Abstände und Komponenten verwenden. Keine neuen lokalen Paletten, Schriften oder Schatten ohne begründete Ergänzung dieses Vertrags.
+- **Altbestand:** Bestehende feste Abstände werden bei einer fachlichen Überarbeitung auf die Tokens umgestellt. Die Einführung der Tokens behauptet keine vollständige Vereinheitlichung sämtlicher alter CSS-Regeln.
+
+## 8. Barrierearme Zustände und Abnahme
+
+- Seitenzoom bleibt erlaubt. Die ältere Entscheidung zur Zoomsperre ist aufgehoben; fokussierte Satzfelder behalten mindestens 16 px Schriftgröße.
+- Jede Aktion erhält einen verständlichen zugänglichen Namen. Dialoge benennen Titel, halten den Fokus und geben ihn beim Schließen zurück.
+- Fortschritt und Fehler dürfen nicht ausschließlich über Farbe vermittelt werden. Fehlermeldungen nennen die nächste mögliche Handlung.
+- Datenrettung und laufende Speichervorgänge sperren die übrige Oberfläche. Sicherung, Bestätigung und tatsächliches Ersetzen bleiben getrennte Schritte.
+- Für neue/überarbeitete Ansichten: hell/dunkel, schmale Breite, lange deutsche Texte, Tastaturbedienung, Fokus, Safe Areas und Fehlersituation gezielt prüfen. Keine neuen Screenshot-Baselines ohne Auftrag.
+- Auf dem echten iPhone müssen Tastatur, Textvergrößerung, VoiceOver und Betriebssystem-Unterbrechung zusätzlich praktisch geprüft werden. Browsersimulationen werden als solche benannt.
+
+## 9. Änderung des Designvertrags
+
+Eine neue wiederverwendbare Komponente erhält hier Zweck, Zustände, Tokens und Bedienregeln. Abweichungen werden hier begründet, nicht nur in einzelnen CSS-Dateien. Eine echte native UI kann diese semantischen Rollen später übernehmen; sie erfindet keine zweite Designsprache.

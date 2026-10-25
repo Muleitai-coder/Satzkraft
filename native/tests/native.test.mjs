@@ -1,3 +1,4 @@
+import backupPolicy from '../../src/core/backup-policy.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -53,7 +54,7 @@ const functions = parse(app,{ecmaVersion:'latest'}).body.filter(n=>n.type==='Fun
 function functionSource(name){const fn=functions.find(n=>n.id.name===name);assert.ok(fn,name);return app.slice(fn.start,fn.end);}
 test('Native backup waits for sharing and does not record cancellation as success',async () => {
   let complete, meta=0;
-  const ctx=vm.createContext({Date,downloadText:()=>new Promise(r=>complete=r),backupDatePart:()=> '2026-10-22',backupJSON:()=> '{}',totalCompletedTrainings:()=>1,writeBackupMeta:()=>meta++});
+  const ctx=vm.createContext({...backupPolicy,Date,downloadText:()=>new Promise(r=>complete=r),backupDatePart:()=> '2026-10-22',backupJSON:()=> '{}',totalCompletedTrainings:()=>1,writeBackupMeta:()=>meta++});
   vm.runInContext(functionSource('downloadFullBackup'),ctx);
   const canceled=ctx.downloadFullBackup('backup');assert.equal(meta,0);complete(false);assert.equal(await canceled,false);assert.equal(meta,0);
   const success=ctx.downloadFullBackup('backup');assert.equal(meta,0);complete(true);assert.equal(await success,true);assert.equal(meta,1);

@@ -1,14 +1,15 @@
 # Satzkraft
 
-Aktuelle App: [satzkraft.netlify.app](https://satzkraft.netlify.app/) · v0.34.0
+Aktuelle App: [satzkraft.netlify.app](https://satzkraft.netlify.app/) · Quellstand v0.39.0
 
-Satzkraft ist eine deutschsprachige Krafttrainings-PWA ohne Konto. Programme und Trainingsdaten bleiben lokal im Browser. Der frühere API-Coach ist entfernt; „ChatGPT & Co.“ erzeugt weiterhin lokal einen Text für eine vom Nutzer gewählte externe KI. Lokal läuft die App ohne Kompilierung über einen statischen Server aus `index.html`; für die Veröffentlichung wird eine feste Positivliste nach `dist/` kopiert.
+Satzkraft ist eine deutschsprachige Krafttrainings-PWA ohne Konto. Programme und Trainingsdaten bleiben lokal im Browser. Der frühere API-Coach ist entfernt; „ChatGPT & Co.“ erzeugt weiterhin lokal einen Text für eine vom Nutzer gewählte externe KI. Lokal läuft die App ohne Kompilierung über einen statischen Server aus der erzeugten `index.html`; entwickelt wird unter `src/`. Für die Veröffentlichung wird eine feste Positivliste nach `dist/` kopiert.
 
 ## Projektstruktur
 
 | Pfad | Zweck |
 |---|---|
-| `index.html` | Oberfläche, Styles und App-Logik |
+| `src/` | Gemeinsame Quellen für Web und iOS |
+| `index.html` | Erzeugtes Web-Artefakt, nicht direkt bearbeiten |
 | `js/progression.js` | getrennte Progressionslogik |
 | `programme/` | offizielle Startprogramme |
 | `tests/` | Node-Tests |
@@ -24,7 +25,7 @@ Die App kann über einen statischen Server geöffnet werden. Für die vorhandene
 
 ```bash
 npm install
-node qa/playwright/static-server.cjs
+npm run dev
 ```
 
 Danach ist die vollständige statische App unter <http://127.0.0.1:4173> erreichbar. Es sind keine KI-API-Schlüssel oder Serverfunktionen erforderlich.
@@ -58,3 +59,11 @@ Netlify führt diesen Schritt über `netlify.toml` selbst aus und veröffentlich
 - [`docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md`](docs/historie/BRIEFING-CODEX-BIS-v0.32.0.md) bewahrt das frühere vollständige Briefing als nicht normative Historie.
 - [`docs/referenz/`](docs/referenz/) enthält fachliche Quelldaten.
 - [`docs/tests/`](docs/tests/) enthält die Teststrategie sowie klar datierte aktuelle beziehungsweise historische Testunterlagen.
+
+## Verbindliche Entwicklung
+
+- [Architektur und Quellstruktur](docs/ARCHITECTURE.md)
+- [Zentraler Designvertrag](docs/DESIGN-BRIEFING.md) und `src/styles/tokens.css`
+- `npm run build:source` erzeugt die Web-Datei; `npm run check:architecture` prüft Struktur und Aktualität.
+- `npm run ios:sync` baut die aktuelle gemeinsame Quelle für Xcode; `ios:doctor` erkennt fehlende oder veraltete Pakete.
+- Die vorhandene UI-Logik besitzt noch einen gemeinsamen Funktionsraum. Neue Fachlogik wird in reine Core-Funktionen ausgelagert; die Migration bleibt durch gezielte Tests abgesichert.
