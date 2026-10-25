@@ -13,6 +13,7 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Korrigiert
 
+- Der Knopf „Zuletzt … Verlauf“ öffnet für alle Übungen wieder dieselbe kompakte Wochenübersicht mit Satzwerten und gegebenenfalls Volumen und Verlaufskurve. Übungsdetails bleiben getrennt über den Übungsnamen erreichbar. Die unterschiedliche Weiterleitung war beim Bibliotheksausbau vor Einführung des Testmodus entstanden.
 - „Verlauf“ im Training prüft neben dem Übungsnamen auch Gewichtserfassung und Seitenregel. Beispielsweise öffnen gewichtete „Step Ups“ wieder ihre gespeicherten Satzwerte statt der leeren Detailansicht für „Step-ups“ ohne Gewicht. Bestehende Trainingsdaten bleiben unverändert.
 - Xcode-Einrichtung für den Intel-Mac von 2019: Xcode 27 setzt einen Apple-Chip voraus. Die Anleitung verwendet stattdessen Xcode 26.6 Universal und kennzeichnet den Test mit iOS 27.0.1 weiterhin als offen.
 

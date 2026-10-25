@@ -1828,7 +1828,7 @@ function exCardHtml(ex){
  if(!active()&&expandedPreviewRows[ex.id])collapseBtn='<button type="button" class="cardcollapse" data-collapse-prev="'+attr(ex.id)+'" aria-label="Übung einklappen" title="Einklappen">'+icon("chevron-left")+'</button>';
  else if(active()&&done)collapseBtn='<button type="button" class="cardcollapse" data-collapse-done="'+attr(ex.id)+'" aria-label="Übung einklappen" title="Einklappen">'+icon("chevron-left")+'</button>';
  h+='<div class="cardtop"><div class="cardheading"><div class="cardcat '+catColor(ex)+'"><span>'+esc(catLabel(ex))+'</span></div><div class="exhead"><div class="info">';
- h+='<h3 class="exname"><button type="button" class="exnamelink" data-hist="'+attr(ex.id)+'" aria-label="Verlauf für '+attr(displayName)+' öffnen">'+esc(displayName)+'</button></h3>'+(swap?'<p class="exswap">Für dieses Training statt '+esc(ex.name)+'</p>':(ex.en?'<p class="exen">'+esc(ex.en)+'</p>':'')+(ex.sub?'<p class="exsub">'+esc(ex.sub)+'</p>':''));
+ h+='<h3 class="exname"><button type="button" class="exnamelink" data-workout-detail="'+attr(ex.id)+'" aria-label="Übungsdetails für '+attr(displayName)+' öffnen">'+esc(displayName)+'</button></h3>'+(swap?'<p class="exswap">Für dieses Training statt '+esc(ex.name)+'</p>':(ex.en?'<p class="exen">'+esc(ex.en)+'</p>':'')+(ex.sub?'<p class="exsub">'+esc(ex.sub)+'</p>':''));
  if(ex.fromWeek>1)h+='<button type="button" class="notebtn" data-timeline="'+attr(ex.id)+'">seit Woche '+ex.fromWeek+'</button>';
  h+='<div class="links"><a href="'+ytUrl(swap?(displayName+" Technik"):(ex.q||(ex.name+" Technik")))+'" target="_blank" rel="noopener noreferrer">'+icon("play")+' Video</a><button type="button" class="notebtn" data-note="'+attr(ex.id)+'" aria-label="Notiz für '+attr(ex.name)+' öffnen">'+icon("edit")+' Notiz</button></div>';
  h+='</div></div></div><div class="cardtools"><button type="button" class="kebab" data-exmenu="'+attr(ex.id)+'" aria-label="Aktionen für '+attr(displayName)+'">'+icon("more")+'</button>'+collapseBtn+'</div></div>';
@@ -3988,7 +3988,8 @@ app.addEventListener("click",function(e){
  if(b.dataset.note){var noteEx=findEx(b.dataset.note);if(noteEx)showExerciseNote(noteEx);return;}
  if(b.dataset.swapEx){var swapEx=findEx(b.dataset.swapEx);if(swapEx)showExerciseSwap(swapEx);return;}
  if(b.dataset.timeline){var timelineEx=findEx(b.dataset.timeline);if(timelineEx)showExerciseTimeline(timelineEx);return;}
- if(b.dataset.hist){var hex=findEx(b.dataset.hist);if(hex)openWorkoutExerciseDetail(hex);return;}
+ if(b.dataset.workoutDetail){var detailEx=findEx(b.dataset.workoutDetail);if(detailEx)openWorkoutExerciseDetail(detailEx);return;}
+ if(b.dataset.hist){var hex=findEx(b.dataset.hist);if(hex)showHistory(hex);return;}
  if(b.id==="pausew"){e.preventDefault();return;}
  if(b.id==="resumew"){resumeWorkout();return;}
  if(b.id==="stopw"){confirmStop();return;}

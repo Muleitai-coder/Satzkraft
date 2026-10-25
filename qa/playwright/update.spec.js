@@ -1923,6 +1923,43 @@ test('REG-29/P1: Übungszuordnung bleibt im Editor, v2-Export und Backup erhalte
   expect(errors).toEqual([]);
 });
 
+test('REG-32/P0: Verlauf öffnet für Bibliotheksübungen und freie Übungen dieselbe Wochenübersicht', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const state = compactWorkoutState(2), program = state.programs[state.active], store = state.store[state.active];
+  const day = program.days[0], category = day.ex[0].cat;
+  day.ex = [
+    { id: 'bench', name: 'Bankdrücken', cat: category, unit: 'reps', w: true, bw: false, inc: 2.5, def: 30 },
+    { id: 'steps', name: 'Step Ups', cat: category, unit: 'reps', w: true, bw: false, perSide: true, inc: 2, def: 8 }
+  ];
+  store.week = 2;
+  store.logs = {
+    [`1|${day.key}|bench`]: { sets: [{ reps: '10', weight: '30' }] },
+    [`1|${day.key}|steps`]: { sets: [{ reps: '12', weight: '8' }] }
+  };
+  await openWithPersistedState(page, state);
+  await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
+  await page.evaluate(() => loadExerciseLibrary());
+  const before = await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }));
+  for (const [id, name, values] of [['bench', 'Bankdrücken', '10×30'], ['steps', 'Step Ups', '12×8']]) {
+    await page.locator(`[data-expand-prev="${id}"]`).click();
+    await page.locator(`[data-hist="${id}"]`).click();
+    await expect(page.locator('#modal')).toContainText('Verlauf · ' + name);
+    await expect(page.locator('#modal .htbl')).toContainText('W1');
+    await expect(page.locator('#modal .htbl')).toContainText(values);
+    await expect(page.locator('#modal .htbl')).toContainText('Vol.');
+    await expect(page.locator('#lib')).not.toHaveClass(/open/);
+    await page.locator('#modal').getByRole('button', { name: 'Schließen', exact: true }).click();
+  }
+  await page.getByRole('button', { name: 'Übungsdetails für Bankdrücken öffnen', exact: true }).click();
+  await expect(page.locator('#lib h1')).toHaveText('Bankdrücken');
+  await expect(page.locator('#lib')).toContainText('Letzte Leistung');
+  await expect(page.locator('#lib')).toContainText('10 × 30 kg');
+  await page.locator('#exercisedetailback').click();
+  expect(await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }))).toBe(before);
+  expect(errors).toEqual([]);
+});
+
 test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotokoll getrennt', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -1937,7 +1974,7 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
   await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
   const before = await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }));
   await page.locator('[data-expand-prev="carry"]').click();
-  await page.locator('[data-hist="carry"]').first().click();
+  await page.locator('[data-workout-detail="carry"]').click();
   await expect(page.locator('#lib .htbl')).toContainText('1:00 min · 20 kg · je Seite');
   await expect(page.locator('#lib .htbl')).toContainText('0:45 min · 0 kg · je Seite');
   await expect(page.locator('#lib')).not.toContainText('Geschätztes 1RM');
