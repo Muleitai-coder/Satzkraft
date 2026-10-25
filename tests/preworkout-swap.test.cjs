@@ -71,7 +71,7 @@ function functionSource(name) {
       continue;
     }
     if (char === '{') depth++;
-    else if (char === '}' && --depth === 0) return html.slice(start, index + 1);
+    else if (char === '}' && --depth === 0) return html.slice(html.slice(start - 6, start) === "async " ? start - 6 : start, index + 1);
   }
   assert.fail(`${name} konnte nicht vollständig gelesen werden`);
 }

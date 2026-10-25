@@ -71,7 +71,7 @@ function functionSource(name) {
       continue;
     }
     if (char === '{') depth++;
-    else if (char === '}' && --depth === 0) return html.slice(start, index + 1);
+    else if (char === '}' && --depth === 0) return html.slice(html.slice(start - 6, start) === "async " ? start - 6 : start, index + 1);
   }
   assert.fail(`${name} konnte nicht vollständig gelesen werden`);
 }
@@ -94,6 +94,10 @@ function appContext(overrides) {
     document: { getElementById: () => null }
   };
   vm.createContext(context);
+  // Real writer-state defaults, omitted by the historical function-only harness.
+  vm.runInContext(html.slice(html.indexOf('var KEY='), html.indexOf('function currentTheme(')), context);
+  context.localWriterState = 'owner';
+  vm.runInContext(html.slice(html.indexOf('var EXERCISE_REFERENCES='), html.indexOf('function genProgramCode(')), context);
   const names = [...html.matchAll(/\bfunction\s+([A-Za-z_$][\w$]*)\s*\(/g)].map(match => match[1]);
   for (const name of [...new Set(names)]) vm.runInContext(functionSource(name), context);
   Object.assign(context, overrides || {});

@@ -23,7 +23,7 @@ Stand: 25.10.2026. Diese Regeln gelten für Web/PWA und den iOS-Container. Die n
 
 ## Tatsächlicher Entkopplungsstand
 
-Die 21 Einheiten unter `src/app/` sind nach Verantwortung getrennte Quellbereiche, noch keine voneinander unabhängigen ES-Module. Die bestehende Anwendung teilt weiterhin ihren Zustand und Funktionsraum. Der Assembler bewahrt bewusst Reihenfolge und bestehende Funktionsverträge. Das ist eine überprüfbare Migration der Quellen, keine Behauptung, alle historischen Abhängigkeiten seien bereits beseitigt.
+Die Quellbereiche unter `src/app/` sind nach Verantwortung getrennte Quellbereiche, noch keine voneinander unabhängigen ES-Module. Die bestehende Anwendung teilt weiterhin ihren Zustand und Funktionsraum. Der Assembler bewahrt bewusst Reihenfolge und bestehende Funktionsverträge. Das ist eine überprüfbare Migration der Quellen, keine Behauptung, alle historischen Abhängigkeiten seien bereits beseitigt.
 
 Neue Fachlogik gehört in `src/core/` mit expliziten Eingaben und Rückgaben, ohne DOM, Browser-Speicher, Netzwerk, Uhr oder Capacitor. Bestehende gemeinsam genutzte Zustände nicht erweitern, wenn ein expliziter Parameter genügt. Eine spätere Herauslösung einer bestehenden Funktion erfolgt zusammen mit ihren Verhaltenstests; kein gleichzeitiger Komplettumbau der Progression oder gespeicherter Formate.
 
@@ -66,3 +66,11 @@ npm run ios:doctor
 ```
 
 `check:architecture` prüft Quellmanifest, Syntax, doppelte Funktionsdefinitionen, Größenbudget der Quellbereiche, reine Core-Grenze, zentrale Tokens und Aktualität der Web-Datei. Vollständige Testsuiten bleiben ausdrücklich beauftragten Läufen vorbehalten.
+
+## Lokaler PDF-Export
+
+Die Auswertung liefert bereits formatierte Werte an `src/app/pdf-export.js`; dort wird ausschließlich die geöffnete Auswertung beziehungsweise das Protokoll gelesen. Die Berechnung von Kennzahlen bleibt in `reports.js`. `src/core/pdf-document.js` übernimmt reine A4-Textanordnung und Seitenumbrüche mit explizit übergebenem PDF-Konstruktor, Schrift und Inhalten. jsPDF 4.2.1 übernimmt PDF-Kodierung und Schrifteinbettung; kein selbst entwickelter PDF-Writer.
+
+`package-lock.json` fixiert die Abhängigkeit. `scripts/prepare-pdf-assets.mjs` erzeugt/prüft die lokalen Vendor-Dateien für Web und iOS. Schrift, Bibliothek und Lizenzen stehen auf der öffentlichen Positivliste und im Offline-Cache. Die TrueType-Datei wurde aus der vorhandenen WOFF2-Schrift mit fontTools 4.60.2, Achse `wght=400`, erzeugt; die SIL-OFL liegt unter `fonts/OFL-Hanken-Grotesk.txt`. Beim Schriftwechsel beide Formate gemeinsam erneuern.
+
+Die optionale Fähigkeit `window.SatzkraftFiles.savePdf(name, arrayBuffer)` ist der explizite Übergang zum nativen Dateiadapter. Ohne sie nutzt die Web-App Web Share für PDF-Dateien oder einen Blob-Download. Der native Adapter kodiert binäre PDF-Bytes als Base64 ohne UTF-8-Option für Filesystem und räumt temporäre Dateien nach der Freigabe auf. Der Teilen-Dialog wird erst durch den bewussten Klick auf „PDF sichern“ geöffnet. Abbruch oder Fehler sind kein Nachweis einer extern gespeicherten Datei.

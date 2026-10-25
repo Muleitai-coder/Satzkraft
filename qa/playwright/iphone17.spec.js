@@ -5,7 +5,7 @@ const { createStaticServer } = require('./static-server.cjs');
 
 const retiredStateKey = 'satzkraft-device-test-v1:cali-plan-v3';
 const retiredReportsKey = 'satzkraft-device-test-reports-v1';
-const evidenceDir = path.resolve(__dirname, '../../replica/clone-screens');
+const evidenceDir = path.resolve(__dirname, 'test-results/iphone-evidence');
 let server, origin;
 async function stopOrigin() {
   if (!server?.listening) return;
@@ -181,6 +181,16 @@ test('REG-31/P0: normale App am iPhone-17-Pro-Profil – Touch, Ränder, Offline
   await expect(page.locator('#modal')).toContainText('alte Testdaten');
   expect(await page.evaluate(() => localStorage.getItem(KEY))).toBe(beforeReject);
   await page.getByRole('button', { name: 'OK', exact: true }).tap();
+
+  // Cold-load the PDF library and font from the SW cache with the origin stopped.
+  await page.evaluate(()=>Object.defineProperty(navigator,'canShare',{value:()=>false,configurable:true}));
+  await tap(page,page.locator('#pdf'),reserved);
+  await tap(page,page.locator('#reprint'),reserved);
+  const pdfDownload=page.waitForEvent('download');
+  await page.getByRole('button',{name:'PDF sichern',exact:true}).tap();
+  const pdfBytes=fs.readFileSync(await (await pdfDownload).path());
+  expect(pdfBytes.subarray(0,5).toString()).toBe('%PDF-');
+  await page.locator('#repclose').tap();
 
   await tap(page, page.locator('#libbtn'), reserved);
   await tap(page, page.locator('#exercisesbtn'), reserved);

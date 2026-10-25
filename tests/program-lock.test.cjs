@@ -68,12 +68,12 @@ test('renders a clear read-only notice and disables all structural library actio
 });
 
 test('guards stale or indirect mutation paths in addition to disabled controls', () => {
-  assert.match(html, /function setActive\(id\)\{\s*if\(!S\.programs\[id\]\)return false;\s*if\(S\.programs\[id\]\.archived===true\)return false;\s*if\(programWriteLocked\(\)&&id!==S\.active\)/);
-  assert.match(html, /function openProgramEditor\(id\)\{\s*if\(programWriteLocked\(\)\)/);
-  assert.match(html, /function storeImportedProgram\(activate,allowDuplicate\)\{\s*if\(programWriteLocked\(\)\)/);
-  assert.match(html, /function importBackup\(text\)\{\s*if\(programWriteLocked\(\)\)/);
-  assert.match(html, /function confirmReset\(\)\{\s*if\(programWriteLocked\(\)\)/);
-  assert.match(html, /function editorStoreProgram\(replaceOriginal,exitMode,activateNew\)\{\s*syncEditorForm\(\);\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function setActive\(id\)\{(?:if\(typeof localWriteBlocked==="function"&&localWriteBlocked\(\)\)return(?: false)?;)?\s*if\(!S\.programs\[id\]\)return false;\s*if\(S\.programs\[id\]\.archived===true\)return false;\s*if\(programWriteLocked\(\)&&id!==S\.active\)/);
+  assert.match(html, /function openProgramEditor\(id\)\{(?:if\(typeof localWriteBlocked==="function"&&localWriteBlocked\(\)\)return(?: false)?;)?\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function storeImportedProgram\(activate,allowDuplicate\)\{(?:if\(typeof localWriteBlocked==="function"&&localWriteBlocked\(\)\)return(?: false)?;)?\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function importBackup\(text\)\{(?:if\(typeof localWriteBlocked==="function"&&localWriteBlocked\(\)\)return(?: false)?;)?\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function confirmReset\(\)\{(?:if\(typeof localWriteBlocked==="function"&&localWriteBlocked\(\)\)return(?: false)?;)?\s*if\(programWriteLocked\(\)\)/);
+  assert.match(html, /function editorStoreProgram\(replaceOriginal,exitMode,activateNew\)\{(?:if\(typeof localWriteBlocked==="function"&&localWriteBlocked\(\)\)return(?: false)?;)?\s*syncEditorForm\(\);\s*if\(programWriteLocked\(\)\)/);
 });
 
 test('keeps safe read-only and backup-download actions available', () => {

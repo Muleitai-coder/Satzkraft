@@ -8,10 +8,16 @@ In dieser Datei werden alle nutzerrelevanten Änderungen an Satzkraft dokumentie
 
 ### Hinzugefügt
 
+- Auswertung und Trainingsprotokoll erzeugen eine echte, durchsuchbare PDF lokal auf dem Gerät. Die Datei lässt sich herunterladen oder über das Teilen-Menü sichern; PDF-Erstellung funktioniert auch ohne Browser-Druckdialog und offline.
+
 - Separates Capacitor-iPhone-Projekt für den kostenlosen persönlichen Test per Xcode. Mitgelieferte Offline-Dateien, nativer lokaler Speicher, iOS-Dateifreigabe für Backups, Schutz bei Speicherfehlern und abgebrochener Sicherung sowie Anpassung an Tastatur und Systemleisten.
 - Kurze Anleitung zur Einrichtung des Personal Teams und zur physischen Abnahme auf dem iPhone 17 Pro mit iOS 27.0.1. Xcode-Kompilierung, Signierung und Geräteinstallation sind noch offen. Der Pilot wurde ursprünglich mit Web-Stand 0.38.0 begonnen; der aktuelle gemeinsame Quellstand steht im neuesten Releaseabschnitt.
 
 ### Korrigiert
+
+- Übungsdetails im Training verwenden die tatsächliche Programmübung und deren gespeicherte Erfassung, auch ohne passende Bibliothekszuordnung. Eindeutige kompatible Aliasse erscheinen wieder im Bibliotheksverlauf; Tauschhistorien werden getrennt gehalten.
+- Die letzte Leistung zeigt Zeit und Gewicht gemeinsam sowie ausdrücklich 0 kg beziehungsweise fehlendes Gewicht.
+- Der PDF-Knopf erfüllt auch auf schmalen iPhone-Ansichten die Mindestgröße von 44 × 44 Pixeln. Der optionale Browserdruck erhält lesbare Farben im Dunkelmodus und ungekürzte Titel.
 
 - Der Knopf „Zuletzt … Verlauf“ öffnet für alle Übungen wieder dieselbe kompakte Wochenübersicht mit Satzwerten und gegebenenfalls Volumen und Verlaufskurve. Übungsdetails bleiben getrennt über den Übungsnamen erreichbar. Die unterschiedliche Weiterleitung war beim Bibliotheksausbau vor Einführung des Testmodus entstanden.
 - „Verlauf“ im Training prüft neben dem Übungsnamen auch Gewichtserfassung und Seitenregel. Beispielsweise öffnen gewichtete „Step Ups“ wieder ihre gespeicherten Satzwerte statt der leeren Detailansicht für „Step-ups“ ohne Gewicht. Bestehende Trainingsdaten bleiben unverändert.

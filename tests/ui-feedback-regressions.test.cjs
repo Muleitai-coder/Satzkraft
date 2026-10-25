@@ -85,7 +85,7 @@ function functionSource(name) {
       continue;
     }
     if (char === '{') depth++;
-    else if (char === '}' && --depth === 0) return html.slice(start, index + 1);
+    else if (char === '}' && --depth === 0) return html.slice(html.slice(start - 6, start) === "async " ? start - 6 : start, index + 1);
   }
   assert.fail(`${name} konnte nicht vollständig gelesen werden`);
 }
@@ -315,7 +315,8 @@ test('zeigt im Protokoll Original und Ersatz sowie vorhandene Notizen direkt inl
   assert.doesNotMatch(withNote, /<details[^>]*class="[^"]*rprotocolnote/i);
   assert.doesNotMatch(withNote, /<summary[^>]*>[\s\S]*Notiz/i);
   assert.match(withNote, /Sitzhöhe 4 · Schulterblätter fixieren/);
-  assert.doesNotMatch(withoutNote, /class="[^"]*rprotocolnote[^"]*"/i);
+  assert.doesNotMatch(withoutNote, /rprotocolnotelabel|rprotocolnotebody/i);
+  assert.match(withoutNote, /damalige Erfassung unbestätigt/);
   assert.match(removedAfterEntry, /Bankdrücken/, 'bereits eingetragene Arbeit bleibt Teil des Protokolls');
   assert.match(
     html,

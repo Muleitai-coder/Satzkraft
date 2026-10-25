@@ -56,7 +56,9 @@ function loadEditorStoreContext(sourceProgram) {
       programs: { [sourceProgram.id]: sourceProgram },
       store: { [sourceProgram.id]: { logs: {} } }
     },
+    cloneJSON: value => JSON.parse(JSON.stringify(value)),
     syncEditorForm() {},
+    editorConfirmReferenceNames: () => true,
     programWriteLocked: () => false,
     showProgramWriteLocked() {},
     parseProgram: () => ({ prog: JSON.parse(JSON.stringify(parsedProgram)) }),
@@ -79,7 +81,9 @@ function loadEditorStoreContext(sourceProgram) {
     editorHasUnsavedChanges: () => false,
     discardEditorAndReturn() {}
   };
+  context.plainObject = v => !!v && typeof v === "object" && !Array.isArray(v);
   vm.createContext(context);
+  vm.runInContext(sourceBetween('function personalExerciseError', 'function genProgramCode'), context);
   vm.runInContext(sourceBetween('function programNameWithSuffix', 'function programWriteLocked'), context);
   return { context, modals, activations, editorExits };
 }
@@ -138,6 +142,7 @@ test('wires copy and replace actions to the non-activating back path', () => {
 
 test('keeps local program timestamps out of the version-2 exchange format', () => {
   const context = { ANLEITUNG: {} };
+  context.plainObject = v => !!v && typeof v === "object" && !Array.isArray(v);
   vm.createContext(context);
   vm.runInContext(sourceBetween('function exportTranslate', 'function plainObject'), context);
 
@@ -169,6 +174,7 @@ test('deleting from the program card keeps the program list open', () => {
     deleteProgram(id) { deleted.push(id); listRendered++; return true; },
     showModal(title, message, actions) { modals.push({ title, message, actions }); }
   };
+  context.plainObject = v => !!v && typeof v === "object" && !Array.isArray(v);
   vm.createContext(context);
   vm.runInContext(confirmSource, context);
 

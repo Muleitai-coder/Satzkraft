@@ -43,6 +43,7 @@ test('keeps a running workout active when the app moves into the background', ()
       addEventListener: (type, callback) => { handlers[type] = callback; }
     },
     window: { addEventListener: (type, callback) => { handlers[type] = callback; } },
+    releaseLocalWriter() {},
     localWriteBlocked: () => false,
     flushSave: () => { saved += 1; },
     pauseWorkout: () => assert.fail('Hintergrundwechsel darf das Training nicht pausieren')

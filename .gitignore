@@ -22,3 +22,7 @@ native/www/
 *.mobileprovision
 *.p12
 *.xcuserstate
+
+# Generated from the pinned PDF dependency by build:source
+vendor/
+qa/playwright/pdf-results/

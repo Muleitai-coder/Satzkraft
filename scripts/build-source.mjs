@@ -1,8 +1,10 @@
+import { preparePdfAssets } from './prepare-pdf-assets.mjs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { readApplication, root } from './lib/sources.mjs';
 
 export async function buildSource({ check = false } = {}) {
+  await preparePdfAssets({ check });
   const { html } = await readApplication();
   const target = resolve(root, 'index.html');
   if (check) {

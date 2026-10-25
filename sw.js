@@ -1,5 +1,5 @@
 var CACHE = "satzkraft-v0.39.0";
-var ASSETS = ["./index.html", "./js/progression.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./uebungen.json", "./fonts/hanken-grotesk-latin.woff2", "./fonts/jetbrains-mono-latin.woff2", "./programme/gym-ganzkoerper-beginner.json", "./programme/gym-ganzkoerper-fortgeschritten.json", "./programme/calisthenics-einstieg.json", "./programme/hybrid-gym-calisthenics.json"];
+var ASSETS = ["./vendor/jspdf.umd.min.js", "./vendor/LICENSE-jsPDF.txt", "./fonts/hanken-grotesk-pdf.ttf", "./fonts/OFL-Hanken-Grotesk.txt", "./index.html", "./js/progression.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./uebungen.json", "./fonts/hanken-grotesk-latin.woff2", "./fonts/jetbrains-mono-latin.woff2", "./programme/gym-ganzkoerper-beginner.json", "./programme/gym-ganzkoerper-fortgeschritten.json", "./programme/calisthenics-einstieg.json", "./programme/hybrid-gym-calisthenics.json"];
 var APP_SCOPE = self.registration && self.registration.scope ? self.registration.scope : new URL("./", location.href).href;
 
 function isAppNavigation(request) {

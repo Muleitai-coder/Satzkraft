@@ -7,6 +7,10 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const output = join(root, "dist");
 const publicFiles = [
   "index.html",
+  "vendor/jspdf.umd.min.js",
+  "vendor/LICENSE-jsPDF.txt",
+  "fonts/hanken-grotesk-pdf.ttf",
+  "fonts/OFL-Hanken-Grotesk.txt",
   "sw.js",
   "manifest.json",
   "icon-192.png",

@@ -3,7 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { root, readApplication } from '../../scripts/lib/sources.mjs';
 
-export const publicFiles = ['icon-192.png', 'icon-512.png', 'uebungen.json', 'js/progression.js',
+export const publicFiles = ['vendor/jspdf.umd.min.js', 'vendor/LICENSE-jsPDF.txt', 'fonts/hanken-grotesk-pdf.ttf', 'fonts/OFL-Hanken-Grotesk.txt', 'icon-192.png', 'icon-512.png', 'uebungen.json', 'js/progression.js',
   'fonts/hanken-grotesk-latin.woff2', 'fonts/jetbrains-mono-latin.woff2',
   'programme/gym-ganzkoerper-beginner.json', 'programme/gym-ganzkoerper-fortgeschritten.json',
   'programme/calisthenics-einstieg.json', 'programme/hybrid-gym-calisthenics.json'];
@@ -13,7 +13,7 @@ export async function sourceFingerprint() {
   const files = [...sources.keys(), 'src/sources.json', 'scripts/lib/sources.mjs',
     'native/scripts/build.mjs', 'native/scripts/adapt.mjs', 'native/scripts/freshness.mjs',
     'native/src/overrides.js', 'native/src/bridge.mjs', 'native/src/storage.mjs', 'native/src/native.css',
-    'native/package-lock.json', 'native/capacitor.config.json', ...publicFiles];
+    'native/package-lock.json', 'package-lock.json', 'scripts/prepare-pdf-assets.mjs', 'native/capacitor.config.json', ...publicFiles];
   const hash = createHash('sha256');
   for (const path of files.sort()) hash.update(path + '\0').update(await readFile(join(root, path))).update('\0');
   return hash.digest('hex');

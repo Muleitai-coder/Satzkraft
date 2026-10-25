@@ -1,5 +1,6 @@
 /* ===== Satzkraft Redesign 2026 – Design-Tokens ===== */
 :root{
+ --pdf-ink:#111827;--pdf-muted:#4b5563;--pdf-accent:#047857;
  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;
  --radius-control:12px;--radius-card:16px;--radius-dialog:20px;
  --touch-target:44px;--touch-native:48px;

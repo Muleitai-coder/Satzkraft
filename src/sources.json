@@ -18,6 +18,8 @@
     "src/app/dialogs.js",
     "src/app/device-capabilities.js",
     "src/app/timers-workout.js",
+    "src/core/pdf-document.js",
+    "src/app/pdf-export.js",
     "src/app/reports.js",
     "src/app/program-contract.js",
     "src/core/backup-policy.js",

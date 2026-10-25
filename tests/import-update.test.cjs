@@ -161,7 +161,9 @@ test("Import übernimmt eine gültige Kennung aus dem JSON und vergibt bei Kolli
     setActive() {}, flushSave() {}, closeLib() {}, renderLib() {}, showModal() {}, saveCoachPreferences() {},
     esc: v => String(v)
   };
+  ictx.plainObject = v => !!v && typeof v === "object" && !Array.isArray(v);
   vm.createContext(ictx);
+  vm.runInContext(slice("function personalExerciseError", "function genProgramCode"), ictx);
   vm.runInContext(slice("function storeImportedProgram", "function useExistingDuplicate"), ictx);
   // Freie Kennung wird übernommen, revision auch
   ictx.pendingProgramImport = { origin: "json", program: { name: "P", code: "sk-eigen01", rev: 4, categories: {}, weeks: [], days: [] } };

@@ -40,12 +40,12 @@ function workoutDetailContext() {
   currentExerciseSwap:ex=>c.normalizeSwapName(c.currentExerciseCell(ex)?.swap),
   PROG:()=>c.S.programs.sample,isTime:ex=>ex.unit==='seconds',round:Math.round,
   showModal:(title,body)=>{c.opened={title,body};},
-  openLib:()=>{c.libraryOpened=true;},renderExerciseDetail:identity=>{c.detailIdentity=identity;}
+  openLib:()=>{c.libraryOpened=true;},renderExerciseDetail:(identity,returnView,detail)=>{c.detail=detail;c.detailReturn=returnView;}
  });
  return c;
 }
 
-for(const recorded of [false,true])test(`weighted Step Ups opens its saved week-3 history instead of bodyweight library details (snapshot: ${recorded})`,()=>{
+for(const recorded of [false,true])test(`weighted Step Ups keeps its saved week-3 values in history and program details (snapshot: ${recorded})`,()=>{
  const c=workoutDetailContext(),ex=position({name:'Step Ups',exerciseId:undefined,perSide:true});
  c.S.programs.sample={days:[{key:'A',ex:[ex]}],weeks:Array.from({length:8},()=>({label:'Aufbau'}))};
  c.S.week=3;
@@ -53,23 +53,34 @@ for(const recorded of [false,true])test(`weighted Step Ups opens its saved week-
  if(recorded)c.writeSets(ex,sets);else c.S.logs['3|A|A_0']={sets};
  c.S.week=5;
  const before=JSON.stringify(c.S);
- c.openWorkoutExerciseDetail(ex);
+ c.showHistory(ex);
  assert.equal(c.libraryOpened,undefined);assert.equal(c.opened.title,'Verlauf · Step Ups');
  assert.match(c.opened.body,/W3/);assert.match(c.opened.body,/15×12\.5 · 15×12\.5 · 15×12\.5/);
+ c.openWorkoutExerciseDetail(ex);
+ assert.equal(c.libraryOpened,true);assert.equal(c.detail.entry.de,'Step Ups');
+ assert.equal(c.detail.entry.typ,'gewicht');assert.equal(c.detail.entry.einseitig,true);
+ assert.equal(c.detail.rows.length,1);assert.match(c.detail.rows[0].parts[0],/15 × 12.5 kg · je Seite/);
  assert.equal(JSON.stringify(c.S),before);
 });
 
-test('a different per-side recording also keeps its program history',()=>{
+test('a different per-side recording keeps its own detail page even before the library loads',()=>{
  const c=workoutDetailContext(),ex=position({name:'Step-ups',exerciseId:undefined,w:false,perSide:true});
  c.S.programs.sample={days:[{key:'A',ex:[ex]}],weeks:[{label:'Aufbau'}]};
  c.S.logs['1|A|A_0']={sets:[{reps:'12',weight:''}]};
- c.openWorkoutExerciseDetail(ex);
- assert.equal(c.libraryOpened,undefined);assert.match(c.opened.body,/12/);
+ c.setExerciseLibrary([]);c.openWorkoutExerciseDetail(ex);
+ assert.equal(c.libraryOpened,true);assert.equal(c.detail.entry.einseitig,true);assert.match(c.detail.rows[0].parts[0],/12 Wdh · je Seite/);
 });
 
-test('a compatible registered exercise still opens its library details',()=>{
- const c=workoutDetailContext();c.openWorkoutExerciseDetail(position());
- assert.equal(c.libraryOpened,true);assert.equal(c.detailIdentity,'dumbbell_bench_press');assert.equal(c.opened,undefined);
+test('a compatible registered exercise opens program details with its identity',()=>{
+ const c=workoutDetailContext(),ex=position();c.S.programs.sample={days:[{key:'A',ex:[ex]}],weeks:[{}]};c.openWorkoutExerciseDetail(ex);
+ assert.equal(c.libraryOpened,true);assert.equal(c.detail.entry.id,'dumbbell_bench_press');assert.equal(c.detailReturn,'training');assert.equal(c.opened,undefined);
+});
+
+test('replacement history never shows original sets under the replacement name',()=>{
+ const c=workoutDetailContext(),ex=position();c.S.programs.sample={days:[{key:'A',ex:[ex]}],weeks:[{},{}]};
+ c.S.logs={'1|A|A_0':{sets:[{reps:'5',weight:'40'}]},'2|A|A_0':{swap:'Andere Bank',sets:[{reps:'8',weight:'18'}]}};c.S.week=2;
+ c.showHistory(ex);assert.equal(c.opened.title,'Verlauf · Andere Bank');assert.match(c.opened.body,/8×18/);assert.doesNotMatch(c.opened.body,/5×40/);
+ c.openWorkoutExerciseDetail(ex);assert.equal(c.detail.entry.de,'Andere Bank');assert.equal(c.detail.rows.length,1);
 });
 
 test('first complete set freezes the initial context through partial entry, renaming and later corrections',()=>{
@@ -133,6 +144,45 @@ test('backup bounds come from the historical recording and cannot be changed by 
 test('detail history includes archived programs and replacement identity without claiming ambiguous legacy entries',()=>{
  const c=context(),def=definition(),p=customProgram(c);p.name='Archiv';p.archived=true;const snapshot={version:1,name:def.name,exerciseId:def.id,unit:'reps',weighted:true,bodyweight:false,perSide:false,weightConvention:'per_dumbbell'};
  c.S.programs={past:p};c.S.store={past:{history:[],logs:{'1|A|A_0':{sets:[{reps:'8',weight:'20'}],performedExercise:snapshot}}}};c.S.active='elsewhere';const rows=c.exerciseDetailRows(c.personalExerciseEntry(def));assert.equal(rows.length,1);assert.equal(rows[0].program,'Archiv');assert.match(rows[0].parts[0],/pro Hantel/);
+});
+
+test('library history keeps new recordings without an assigned library ID',()=>{
+ const c=context(),ex=position({exerciseId:undefined});
+ c.S.programs.sample={days:[{key:'A',ex:[ex]}]};
+ c.writeSets(ex,[{reps:'9',weight:'16'}]);
+ const before=JSON.stringify(c.S);
+ const rows=c.exerciseDetailRows(c.findExerciseLibraryEntryById('dumbbell_bench_press'));
+ assert.equal(rows.length,1);assert.match(rows[0].parts[0],/9 × 16 kg/);
+ assert.equal(JSON.stringify(c.S),before);
+});
+
+test('library aliases include compatible recordings but exclude other types and explicit identities',()=>{
+ const c=context(),ex=position({exerciseId:undefined,name:'Dumbbell Bench Press'});
+ c.S.programs.sample={days:[{key:'A',ex:[ex]}]};
+ c.writeSets(ex,[{reps:'9',weight:'16'}]);
+ const entry=c.findExerciseLibraryEntryById('dumbbell_bench_press');
+ assert.equal(c.exerciseDetailRows(entry).length,1);
+ c.S.logs['1|A|A_0'].performedExercise.exerciseId='custom_other_bench';
+ assert.equal(c.exerciseDetailRows(entry).length,0);
+ delete c.S.logs['1|A|A_0'].performedExercise.exerciseId;
+ c.S.logs['1|A|A_0'].performedExercise.weighted=false;
+ assert.equal(c.exerciseDetailRows(entry).length,0);
+});
+
+test('ambiguous library names never combine recordings by first match',()=>{
+ const c=context(),ex=position({exerciseId:undefined,name:'Shared alias'});
+ const entries=[{de:'First bench',en:'',alias:['Shared alias'],typ:'gewicht'}, {de:'Second bench',en:'',alias:['Shared alias'],typ:'gewicht'}];
+ c.setExerciseLibrary(entries);c.S.programs.sample={days:[{key:'A',ex:[ex]}]};
+ c.writeSets(ex,[{reps:'9',weight:'16'}]);
+ assert.equal(c.exerciseDetailRows(entries[0]).length,0);
+ assert.equal(c.exerciseDetailRows(entries[1]).length,0);
+});
+
+test('last-performance summary keeps time and zero load visible',()=>{
+ const c=context();c.isTime=ex=>ex.unit==='seconds';
+ vm.runInContext(section('function performanceSummary(', 'function lastPerf('),c);
+ assert.equal(c.performanceSummary({unit:'seconds',w:true,perSide:true},[{reps:'60',weight:'20'},{reps:'45',weight:'0'}]),'1:00 min · 20 kg · je Seite · 0:45 min · 0 kg · je Seite');
+ assert.match(c.performanceSummary({unit:'reps',w:true,bw:true},[{reps:'8',weight:'0'}]),/0 kg/);
 });
 test('personal limits reject overlong text, assistance, prototype keys and oversized catalog',()=>{
  const c=context();assert.ok(c.personalExerciseError(definition({name:'x'.repeat(81)})));assert.ok(c.personalExerciseError(definition({type:'assistance'})));assert.ok(c.personalExerciseError(definition({id:'__proto__'})));assert.ok(c.personalExerciseError(definition({technique:'x'.repeat(501)})));assert.ok(c.personalExerciseCatalogError(Object.fromEntries(Array.from({length:201},(_,i)=>[`custom_${i}`,definition({id:`custom_${i}`})]))));

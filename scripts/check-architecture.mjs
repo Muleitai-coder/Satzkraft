@@ -28,9 +28,9 @@ for (const path of manifest.scripts) {
   }
 }
 const tokens = sources.get('src/styles/tokens.css');
-for (const token of ['--font', '--mono', '--bg', '--panel', '--ink', '--acc', '--danger', '--touch-target', '--radius-card']) {
+for (const token of ['--font', '--mono', '--bg', '--panel', '--ink', '--acc', '--danger', '--touch-target', '--radius-card', '--pdf-ink', '--pdf-muted', '--pdf-accent']) {
   assert.ok(tokens.includes(`${token}:`), `Missing design token ${token}`);
 }
 const pkg = JSON.parse(await readFile(join(root, 'package.json')));
-assert.ok(!pkg.dependencies || !Object.keys(pkg.dependencies).length, 'Web runtime dependencies require an architecture decision');
+assert.deepEqual(pkg.dependencies, { jspdf: '4.2.1' }, 'Web runtime dependencies require an architecture decision');
 console.log(`Architecture checked: ${manifest.scripts.length} source units, pure core boundary, design tokens, source freshness.`);

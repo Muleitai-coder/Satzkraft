@@ -53,3 +53,7 @@ Das Icon wird aus `assets/app-icon.svg` (bestehendes Satzkraft-Vektormotiv) mit 
 `scripts/freshness.mjs` erfasst gemeinsame Quellen, Buildwerkzeuge, Native-Adapter, Lockfile und eingebettete Ressourcen. Das erzeugte `build-info.json` enthält den Quellfingerprint sowie Hashes sämtlicher Paketdateien. `ios:doctor` verifiziert diese gegen das aktuelle Projekt. Bloße Dateiexistenz gilt nicht mehr als Synchronisierungsnachweis. Vor dem Gerätebuild `npm run ios:sync` ausführen.
 
 Der SceneDelegate erzeugt das einzige Fenster samt Bridge-Controller. Die parallele Scene-/Main-Storyboard-Zuordnung ist entfernt; der LaunchScreen bleibt bestehen. Ein erfolgreicher Gerätebuild ist damit noch nicht behauptet.
+
+### PDF und gemeinsame Build-Abhängigkeiten
+
+Vor dem nativen Build auch im Repository-Stamm `npm ci` ausführen. Der gemeinsame PDF-Export benötigt dort jsPDF 4.2.1; `npm run ios:sync` übernimmt dessen lokale Dateien und Schrift in das native Paket. PDF-Bytes werden binär geschrieben und über den nativen Teilen-Dialog übergeben. Die JS-/WebKit-Abnahme verwendet Plugin-Doubles; eine erfolgreiche echte Dateisicherung auf dem iPhone bleibt Teil der physischen Abnahme.

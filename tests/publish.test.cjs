@@ -9,7 +9,9 @@ const output = path.join(root, 'dist');
 const netlifyConfig = fs.readFileSync(path.join(root, 'netlify.toml'), 'utf8');
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const expected = [
+  'fonts/OFL-Hanken-Grotesk.txt',
   'fonts/hanken-grotesk-latin.woff2',
+  'fonts/hanken-grotesk-pdf.ttf',
   'fonts/jetbrains-mono-latin.woff2',
   'icon-192.png',
   'icon-512.png',
@@ -21,7 +23,9 @@ const expected = [
   'programme/gym-ganzkoerper-fortgeschritten.json',
   'programme/hybrid-gym-calisthenics.json',
   'sw.js',
-  'uebungen.json'
+  'uebungen.json',
+  'vendor/LICENSE-jsPDF.txt',
+  'vendor/jspdf.umd.min.js'
 ];
 
 function filesBelow(directory, prefix = '') {

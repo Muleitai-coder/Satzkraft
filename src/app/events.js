@@ -60,8 +60,8 @@ document.getElementById("bar").addEventListener("click",function(e){
  else if(b.id==="nextpause"){startRest(restBaseSec,restExId);}
  else if(b.dataset.radj){adjustRest(+b.dataset.radj);}
 });
-document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose"||b.id==="repback")closeReport();else if(b.id==="reprint")printReport();else if(b.id==="repprotocol")openProtocol();});
-document.getElementById("protocol").addEventListener("click",function(e){if(e.target.id==="protocol"){closeProtocol();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="protback")closeProtocol();else if(b.id==="protprint")printProtocol();});
+document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose"||b.id==="repback")closeReport();else if(b.id==="reprint")openPdfExport("report");else if(b.id==="repprotocol")openProtocol();});
+document.getElementById("protocol").addEventListener("click",function(e){if(e.target.id==="protocol"){closeProtocol();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="protback")closeProtocol();else if(b.id==="protprint")openPdfExport("protocol");});
 window.addEventListener("keydown",function(e){
  var modal=document.getElementById("modal"),protocol=document.getElementById("protocol"),report=document.getElementById("report"),lib=document.getElementById("lib"),wucd=document.getElementById("wucd"),surface=modal.style.display==="flex"?modal:protocol.classList.contains("open")?protocol:report.classList.contains("open")?report:lib.classList.contains("open")?lib:wucd.classList.contains("open")?wucd:null;
  if(e.key==="Tab"&&surface){trapSurfaceFocus(e,surface);return;}

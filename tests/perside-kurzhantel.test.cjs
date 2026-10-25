@@ -151,6 +151,7 @@ test("Vorlagen: Pallof Press, Bird Dog und einbeiniges Wadenheben verwenden die 
 test("Kurzhantel-Erkennung nutzt das Equipment-Feld der Bibliothek (auch über Alias-Namen)", () => {
   const lctx = { EXERCISE_LIBRARY: null, EXERCISE_ALIAS_INDEX: null };
   vm.createContext(lctx);
+  vm.runInContext(slice("function personalExerciseError", "function genProgramCode"), lctx);
   vm.runInContext(slice("function normalizeExerciseLibraryName", "function exerciseLibraryMatches"), lctx);
   lctx.setExerciseLibrary(JSON.parse(JSON.stringify(library)));
   assert.equal(lctx.exerciseUsesDumbbells("Kurzhantel-Bankdrücken"), true);

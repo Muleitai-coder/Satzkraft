@@ -78,7 +78,7 @@ function showExerciseNote(ex){
   {label:"Abbrechen",action:null}
  ]);
 }
-function performanceSummary(ex,sets){return(sets||[]).filter(function(s){return s&&s.reps!==""&&s.reps!=null;}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":(isTime(ex)?fmtSeconds(s.reps):""+s.reps);}).join(" · ")||"—";}
+function performanceSummary(ex,sets){return(sets||[]).filter(reportSetHasData).map(function(set){if(isTime(ex))return reportTimedSetText(ex,set);return ex.w?set.reps+"×"+(set.weight===""||set.weight==null?"Gewicht fehlt":set.weight+" kg"):String(set.reps);}).join(" · ")||"—";}
 function lastPerf(ex){for(var w=S.week-1;w>=1;w--){var c=S.logs[w+"|"+S.day+"|"+ex.id];if(c&&!normalizeSwapName(c.swap)&&c.sets&&c.sets.some(function(s){return s.reps!==""&&s.reps!=null;}))return{week:w,sets:c.sets};}return null;}
 function otherDayPerfForUnit(ex,day,w){
  var exercises=dayExercisesFor(day,w);
@@ -280,13 +280,13 @@ function setRowHtml(ex,i,s,rr,tw,dis,firstOpen,canHold){
  return h+'</div>';
 }
 function exHistory(ex){
- var rows=[];
+ var rows=[],selectedSwap=currentExerciseSwap(ex);
  for(var w=1,max=PROG().weeks.length;w<=max;w++){
   if(!exerciseValidForWeek(ex,w))continue;
-  var c=S.logs[w+"|"+S.day+"|"+ex.id];if(!c||!c.sets||normalizeSwapName(c.swap))continue;
+  var c=S.logs[w+"|"+S.day+"|"+ex.id];if(!c||!c.sets||normalizeSwapName(c.swap)!==selectedSwap)continue;
   var performed=historicalExercise(ex,c),need=c.sets.length,parts=[],vol=0,has=false;
   var e1=0;
-  for(var i=0;i<need;i++){var s=c.sets[i];if(s&&s.reps!==""){has=true;if(isTime(performed)){parts.push(reportTimedSetText(performed,s));}else if(performed.w&&s.weight!==""&&Number(s.weight)>0){parts.push(s.reps+"×"+s.weight);vol+=Number(s.reps)*Number(s.weight);var est=Number(s.weight)*(1+Number(s.reps)/30);if(est>e1)e1=est;}else{parts.push(isTime(performed)?fmtSeconds(s.reps):(""+s.reps));}}}
+  for(var i=0;i<need;i++){var s=c.sets[i];if(reportSetHasData(s)){has=true;if(isTime(performed)){parts.push(reportTimedSetText(performed,s));}else if(performed.w&&s.weight!==""&&Number(s.weight)>0){parts.push(s.reps+"×"+s.weight);vol+=Number(s.reps)*Number(s.weight);var est=Number(s.weight)*(1+Number(s.reps)/30);if(est>e1)e1=est;}else{parts.push(isTime(performed)?fmtSeconds(s.reps):(""+s.reps));}}}
   if(has)rows.push({name:performed.name,confirmed:!!c.performedExercise,w:w,label:(PROG().weeks[w-1]||{}).label||"",parts:parts,vol:vol,e1:e1>0?round(e1):null});
  }
  return rows;

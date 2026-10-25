@@ -8,7 +8,7 @@ const port = Number(process.env.PORT) || 4173;
 
 module.exports = defineConfig({
   testDir: __dirname,
-  testMatch: 'update.spec.js',
+  testMatch: ['update.spec.js', 'windows.spec.js', 'pdf.spec.js'],
   timeout: 30_000,
   expect: {
     timeout: 5_000,

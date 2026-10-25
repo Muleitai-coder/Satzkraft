@@ -52,7 +52,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 
 ### Guardrails
 
-1. **Neuester Auftrag 25.10.2026:** Die Ein-Datei-Entwicklung ist aufgehoben. Gemeinsame Quellen unter `src/`, zentrale Design-Tokens und ein reproduzierbarer Build dienen Web und iOS. `index.html` bleibt ein erzeugtes kompatibles Artefakt. Kein Frameworkwechsel und keine neuen Web-Laufzeitabhängigkeiten sind dafür nötig. Verbindliche Regeln und verbleibende Kopplung des Altbestands stehen in `docs/ARCHITECTURE.md`.
+1. **Neuester Auftrag 25.10.2026:** Die Ein-Datei-Entwicklung ist aufgehoben. Gemeinsame Quellen unter `src/`, zentrale Design-Tokens und ein reproduzierbarer Build dienen Web und iOS. `index.html` bleibt ein erzeugtes kompatibles Artefakt. Kein Frameworkwechsel. Der anschließende PDF-Fix verwendet die ausdrücklich dokumentierte, lokal eingebettete Abhängigkeit jsPDF 4.2.1. Verbindliche Regeln und verbleibende Kopplung des Altbestands stehen in `docs/ARCHITECTURE.md`.
 2. Nutzertexte sind deutsch, in Du-Form, kurz und verständlich.
 3. Dynamische HTML-Ausgaben über `esc()` beziehungsweise `attr()` absichern. Nutzereingaben und Importdaten validieren.
 4. Datenkompatibilität erhalten: `cali-plan-v3`, Import alter Schema-4-Backups und Austauschformat `trainings-block` Version 2 nicht brechen. Neue Programmfelder bleiben optional und innerhalb der bisherigen Satzsemantik ausführbar; neue vollständige Backups verwenden bewusst Schema 5.
@@ -68,7 +68,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 - Web-App, Schema 5 und Progressionslogik bleiben unverändert. Native Dateien werden lokal eingebettet; keine Abhängigkeit vom Netlify-Server beim Start. Kein integrierter Testbereich.
 - Native Preferences halten einen eigenen Snapshot; Safari-Daten werden ausschließlich durch bewusstes vollständiges Backup übernommen. Serialisierte Schreibvorgänge, sichtbarer Speicherfehler, bestätigte Dateifreigabe vor Restore und bewusstes Löschen sind Bestandteil dieses Piloten. Details und Grenzen in `native/README.md`.
 - Das erzeugte Target hat genau eine WKWebView und deaktivierte Mehrfenster-Unterstützung. Der native Einzelfenster-Lock ersetzt keine allgemeine Mehrfensterkoordination; bei Erweiterung der Containerarchitektur neu entwerfen.
-- Acht gezielte Node-Fälle, ein WebKit-Adaptertest und Projektsynchronisierung bestanden. Swift-/Xcode-Build, Signierung, echte native Speicher-/Dateidialoge, Tastatur und Offline-Kaltstart sind offen. Auf dem Mac fehlt Xcode; Anleitung und physische Checkliste in `docs/IOS-START.md`.
+- Neun Node-Fälle, ein WebKit-Adaptertest einschließlich PDF-Dateifreigabe und Projektsynchronisierung bestanden. Swift-/Xcode-Build, Signierung, echte native Speicher-/Dateidialoge, Tastatur und Offline-Kaltstart sind offen. Auf dem Mac fehlt Xcode; Anleitung und physische Checkliste in `docs/IOS-START.md`.
 - **Einrichtung 23.10.2026:** Der Nutzer hat die Xcode-Installation beauftragt und den Intel-Mac (MacBookPro16,1, 2019) selbst auf macOS Tahoe 26.7.1 aktualisiert. Xcode 27 benötigt einen Apple-Chip; die vorherige Empfehlung für diesen Mac ist zurückgenommen. Xcode 26.6 Universal ist der nächste Installationsweg für Capacitor 8.5.3. Apple-Anmeldung, Lizenzbestätigung und Gerätefreigaben erfolgen durch den Nutzer. Keine Zusage eines iOS-27-Simulators oder einer bereits funktionierenden Verbindung zum iPhone mit iOS 27.0.1. Quellen und Schritte in `docs/IOS-START.md`.
 
 ### Übungsdatenbank – bestätigter Prototypumfang
@@ -93,7 +93,7 @@ Der aktuelle Link wird im privaten Bekanntenkreis geteilt und ist damit extern e
 - `personalExercises` wird gemeinsam mit Programmen und Stores gespeichert und gesichert. Programmpositionen transportieren ihre `exerciseDefinition` und `weightConvention`. Widersprüchliche persönliche Importkennungen erhalten nach angekündigter Vorschau neue IDs in der Kopie; vorhandene Definitionen werden nicht überschrieben.
 - Vollständige Backups verwenden **Schema 5**; Schema 4 bleibt importierbar. Ein Schema-4-Dokument mit neuen persönlichen/historischen Pflichtinhalten wird abgelehnt. Alte Backup-Reader lehnen Schema 5 ab. Ältere bereits laufende JavaScript-Fenster werden dadurch nicht kooperativ: vor einem Rollout schließen/aktualisieren.
 - Programmformat bleibt v2, ausschließlich für die bisherigen fünf kompatiblen Erfassungsarten. Unterstützung/Gegengewicht bleibt zurückgestellt. Persönliche v2-Dateien sind selbstständig ausführbar; ältere Reader können Zusatzdefinitionen verlieren oder unbekannte IDs ablehnen. Sie sind kein vollständiges Bibliotheksbackup.
-- Übungen sind über Programme → „Übungen & persönliche Bibliothek“ erreichbar. Namenslinks im Training öffnen registrierte Übungsdetails mit Technik, letzter Leistung und Verlauf über aktive/archivierte Programme. Freie Übungen behalten ihren bisherigen Verlaufsdialog. Der separate Knopf „Zuletzt … Verlauf“ öffnet für alle Übungen einheitlich den Wochenverlauf der Position im aktuellen Programm; er führt nicht zur Bibliotheksdetailseite.
+- Übungen sind über Programme → „Übungen & persönliche Bibliothek“ erreichbar. Namenslinks im Training öffnen registrierte Übungsdetails mit Technik, letzter Leistung und Verlauf über aktive/archivierte Programme. Auch freie Übungen erhalten beim Tippen auf den Namen Details aus ihrem tatsächlichen Programmkontext. Der separate Knopf „Zuletzt … Verlauf“ öffnet für alle Übungen einheitlich den Wochenverlauf der Position im aktuellen Programm; er führt nicht zur Bibliotheksdetailseite.
 - [Prüfbericht](docs/tests/TESTBERICHT-PERSOENLICHE-UEBUNGEN.md): 71 unterschiedliche gezielte Node-Fälle und ein WebKit-Ablauf; [physische Geräteabnahme](docs/tests/SMARTPHONE-ABNAHME.md) weiterhin offen. App-Version/Cache werden mit dem anschließenden Auftrag „einmal komplett updaten“ auf v0.34.0 synchron erhöht.
 
 ### Lokale Daten bei mehreren Fenstern
@@ -206,7 +206,7 @@ Der frühere Startschalter wird ignoriert. Bei jedem Start gelten die echten Spe
 
 Die automatisierte Prüfung liegt ausschließlich unter `qa/playwright/`, verwendet einen isolierten Browser mit synthetischen Daten und die normale Oberfläche. Das installierte Playwright-Profil „iPhone 17 Pro“ liefert 402 × 681 CSS-Pixel Browserfläche bei 402 × 874 Bildschirmgröße und Touch/WebKit. Kleinere Höhen und nicht null gesetzte CSS-Sicherheitsränder sind ausdrücklich Platz-Stresstests. Keine behauptete iOS-Versionssimulation, echte Safari-Leisten, Dynamic Island, Bildschirmtastatur oder OS-Prozessbeendigung. Auf diesem Mac ist kein Xcode-Simulator verfügbar. [Verfahren und Prüfstand](docs/tests/IPHONE-OFFLINE-TESTSYSTEM.md).
 
-Der öffentliche Build umfasst nach dem Ausbau 13 Dateien, davon 12 Startressourcen im Offline-Cache. Historische Assistenten-Releases v0.35–v0.37 bleiben in der Versionshistorie nachvollziehbar; deren UI- und Speichermodus-Regeln gelten nicht mehr.
+Der öffentliche Build umfasst nach dem Ausbau 17 Dateien, davon 16 Startressourcen im Offline-Cache. Historische Assistenten-Releases v0.35–v0.37 bleiben in der Versionshistorie nachvollziehbar; deren UI- und Speichermodus-Regeln gelten nicht mehr.
 
 ## Architektur- und Fehlerbehebungsauftrag 25.10.2026
 
@@ -217,3 +217,9 @@ Der Nutzer beauftragt Fehlerbehebung, Wartbarkeit, Weiterentwicklung und Vorbere
 - Wiederherstellung verlangt vor dem Ersetzen die Bestätigung einer tatsächlich geprüften Sicherheitskopie. Exportstatus bezeichnet den Export, nicht eine vom Browser unbestätigte Dateisicherung.
 - Native Builds verwenden dieselben Quellen und weisen ihren Stand mit Quellfingerprint und Dateihashes nach. Die reale iPhone-/Xcode-Abnahme bleibt separat offen.
 - Seitenzoom wird für bessere Zugänglichkeit zugelassen. Alle neuen Designentscheidungen werden zentral dokumentiert.
+
+### PDF-Ausgabe und Funktionsabnahme (25.10.2026)
+
+- „PDF exportieren“ in Auswertung und Protokoll erzeugt eine durchsuchbare A4-Datei auf dem Gerät; keine Übermittlung an einen Server. Der zusätzliche Browserdruck bleibt optional. In der nativen App übernimmt die Dateifreigabe den Export.
+- Architekturentscheidung: jsPDF **4.2.1** ist die einzige Web-Laufzeitabhängigkeit. Der Build kopiert ausschließlich den fest versionierten UMD-Build und die Lizenz nach `vendor/`; kein CDN, keine HTML-Konvertierung und keine dynamisch nachgeladenen optionalen Bibliotheken. Die vorhandene Hanken-Grotesk-Schrift wird als lokale TrueType-Teilmenge eingebettet. PDF-Farben liegen als `--pdf-*` in den zentralen Design-Tokens.
+- Die Nutzerbeauftragung umfasst den gesamten Funktionstest und die Integration der vorhandenen Änderungen aus dem anderen Chat. Testannahmen werden an Fensterschutz, zweistufige Wiederherstellung und Programm-Übungsdetails angepasst; keine fachlichen Prüfungen werden entfernt. [Ergebnisse und verbleibende Geräteprüfung](docs/tests/FUNKTIONSPRUEFUNG-2026-10-25.md).

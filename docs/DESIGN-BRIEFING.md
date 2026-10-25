@@ -82,3 +82,11 @@ Dieses Dokument ist der verbindliche Designvertrag. Die technische Quelle der To
 ## 9. Änderung des Designvertrags
 
 Eine neue wiederverwendbare Komponente erhält hier Zweck, Zustände, Tokens und Bedienregeln. Abweichungen werden hier begründet, nicht nur in einzelnen CSS-Dateien. Eine echte native UI kann diese semantischen Rollen später übernehmen; sie erfindet keine zweite Designsprache.
+
+## 8. PDF und Druck
+
+- A4 mit 44 pt Rand, weißem Hintergrund, eingebetteter Hanken Grotesk und durchsuchbarem Text. Fester heller Export unabhängig vom App-Farbmodus.
+- Farben ausschließlich aus `--pdf-ink`, `--pdf-muted` und `--pdf-accent` in `src/styles/tokens.css`.
+- Titel 22 pt, Abschnitt 15 pt, Übung 12 pt, Inhalt 10 pt, Metadaten 9 pt und Seitenfuß 8 pt. Die Anordnung liegt in `src/core/pdf-document.js`. Lange Namen und Notizen umbrechen; Inhalte und letzte Protokollwochen nicht abschneiden.
+- Der Dateiexport enthält Zusammenfassung und Übungswerte beziehungsweise das vollständige Protokoll. Die interaktiven Balken der App werden durch benannte Vergleichswerte dargestellt.
+- Im Exportdialog genau eine Primäraktion: „PDF sichern“. „Drucken“ bleibt eine Web-Nebenaktion. Exportknöpfe auch mobil mindestens 44 × 44 px.

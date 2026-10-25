@@ -2,12 +2,14 @@ import { readFile, writeFile, mkdir, rm, cp } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { build } from 'esbuild';
+import { preparePdfAssets } from '../../scripts/prepare-pdf-assets.mjs';
 import { adaptApp } from './adapt.mjs';
 import { readApplication } from '../../scripts/lib/sources.mjs';
 import { publicFiles, sourceFingerprint, artifactHashes } from './freshness.mjs';
 
 const root = fileURLToPath(new URL('../../',import.meta.url));
 const native = join(root,'native'), output = join(native,'www');
+await preparePdfAssets();
 const shared = await readApplication();
 const overrides = await readFile(join(native,'src/overrides.js'),'utf8');
 const code = adaptApp(shared.theme+'\n'+shared.code,overrides);

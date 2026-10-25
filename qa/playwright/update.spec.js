@@ -6,50 +6,10 @@ const APP_STATE_KEY = 'cali-plan-v3';
 const THEME_KEY = 'training-theme-v1';
 const REDESIGN_NOTICE_KEY = 'satzkraft-design-update-v1';
 const BACKUP_META_KEY = 'satzkraft-backup-meta-v1';
-const REPORT_BACKUP = JSON.parse(
-  fs.readFileSync(
-    path.resolve(__dirname, '../../TESTBACKUP-AUSWERTUNG.json'),
-    'utf8'
-  )
-);
+const {clone,reportState,compactWorkoutState,openWithPersistedState}=require('./helpers/workout-fixtures.cjs');
 
 const CORRECTION_EFFECT_COPY =
   'Du änderst nur die Satzwerte dieser abgeschlossenen Einheit. Trainingszeit und Protokolleintrag bleiben unverändert. Empfehlungen und Zielwerte späterer Wochen werden nach deiner Korrektur neu berechnet.';
-
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
-}
-
-function reportState(mutator) {
-  const state = clone(REPORT_BACKUP);
-  if (mutator) mutator(state, state.programs[state.active], state.store[state.active]);
-  return state;
-}
-
-function compactWorkoutState(exerciseCount = 1) {
-  return reportState((state, program, store) => {
-    program.weeks = program.weeks.slice(0, 2);
-    program.days = [program.days[0]];
-    program.days[0].ex = program.days[0].ex.slice(0, exerciseCount);
-    const usedCategories = new Set(
-      program.days[0].ex.map((exercise) => exercise.cat)
-    );
-    for (const week of program.weeks) {
-      week.sets = {};
-      for (const category of usedCategories) week.sets[category] = 1;
-    }
-    store.tg = {};
-    store.barw = {};
-    store.notes = {};
-    store.logs = {};
-    store.history = [];
-    store.workout = null;
-    store.pendingReplacements = [];
-    store.week = 1;
-    store.day = program.days[0].key;
-    store.blockCelebrated = false;
-  });
-}
 
 function weightedTimedWorkoutState() {
   return reportState((state, program, store) => {
@@ -128,38 +88,6 @@ async function openWithState(page, state, options = {}) {
           JSON.stringify({ snoozeUntil: Date.now() + 365 * 86400000 })
         );
       localStorage.setItem(appStateKey, JSON.stringify(seededState));
-    },
-    {
-      appStateKey: APP_STATE_KEY,
-      themeKey: THEME_KEY,
-      noticeKey: REDESIGN_NOTICE_KEY,
-      backupKey: BACKUP_META_KEY,
-      seededState: state,
-      seededTheme: theme,
-      showUpdateNotice: options.updateNotice === true,
-      showBackupReminder: options.backupReminder === true,
-    }
-  );
-  await page.goto('/index.html');
-  await expect(page.locator('#app .ptitle')).toBeVisible();
-}
-
-async function openWithPersistedState(page, state, options = {}) {
-  const theme = options.theme || 'dark';
-  await page.addInitScript(
-    ({ appStateKey, themeKey, noticeKey, backupKey, seededState, seededTheme, showUpdateNotice, showBackupReminder }) => {
-      const seedMarker = 'satzkraft-playwright-persisted-seed';
-      if (sessionStorage.getItem(seedMarker)) return;
-      localStorage.clear();
-      localStorage.setItem(themeKey, seededTheme);
-      if (!showUpdateNotice) localStorage.setItem(noticeKey, '1');
-      if (!showBackupReminder)
-        localStorage.setItem(
-          backupKey,
-          JSON.stringify({ snoozeUntil: Date.now() + 365 * 86400000 })
-        );
-      localStorage.setItem(appStateKey, JSON.stringify(seededState));
-      sessionStorage.setItem(seedMarker, '1');
     },
     {
       appStateKey: APP_STATE_KEY,
@@ -499,7 +427,7 @@ test.describe('1 · Texte & Kommunikation', () => {
       'Vorhandene Angaben ersetzen?'
     );
     await expect(modal.locator('.mmsg')).toHaveText(
-      'Für diese Übung sind bereits Angaben hinterlegt. Soll Satzkraft Typ, englischen Namen, Technik-Hinweis, Video-Suchbegriff und Ersatzübung mit den Bibliothekswerten überschreiben?'
+      'Soll Satzkraft die Übungszuordnung und die vorhandenen Angaben mit dieser Bibliotheksübung ersetzen? Die Satzfelder werden passend übernommen.'
     );
     await expect(modal.locator('.mbtn')).toHaveText([
       'Bibliothekswerte übernehmen',
@@ -1552,7 +1480,9 @@ test.describe('4 · Regression & Kernfunktion', () => {
       .getByRole('button', { name: 'Training beenden', exact: true })
       .click();
 
-    const decisionPage = await page.context().newPage();
+    const decisionContext = page.context();
+    await page.close(); // Release the writer before reopening the saved decisions.
+    const decisionPage = await decisionContext.newPage();
     await decisionPage.goto('/index.html');
     await expect(decisionPage.locator('#app .ptitle')).toBeVisible();
     const modal = decisionPage.locator('#modal');
@@ -1761,114 +1691,7 @@ test.describe('4 · Regression & Kernfunktion', () => {
   });
 });
 
-test('REG-27/P0: zwei Fenster schützen Satzwerte, Übernahme und ungesicherte Entwürfe', async ({ page, context }) => {
-  const errors = [];
-  page.on('pageerror', error => errors.push(error.message));
-  const seeded = compactWorkoutState();
-  const exercise = seeded.programs[seeded.active].days[0].ex[0];
-  await openWithPersistedState(page, seeded);
-  await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
-  const second = await context.newPage();
-  second.on('pageerror', error => errors.push(error.message));
-  await second.setViewportSize({ width: 320, height: 720 });
-  await second.goto('/index.html');
-  await expect(second.locator('#windowNotice')).toBeVisible();
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('other');
-  await expect(second.locator('#windowNotice')).toContainText('in einem anderen Fenster');
-  expect(await second.locator('#app').evaluate(node => node.inert)).toBe(true);
-  await page.locator('#startw').click();
-  if (exercise.w) await page.locator(`#wt-${exercise.id}-0`).fill('20');
-  await page.locator(`#rep-${exercise.id}-0`).fill('10');
-  await page.locator(`#rep-${exercise.id}-0`).blur();
-  await expect.poll(() => page.evaluate(() => {
-    const saved = JSON.parse(localStorage.getItem(KEY));
-    return saved.store[saved.active].logs[exerciseLogKey(PROG().days[0].ex[0])]?.sets[0].reps;
-  })).toBe('10');
-  const latest = await page.evaluate(() => localStorage.getItem(KEY));
-  expect(await second.evaluate(() => {
-    const ex = PROG().days[0].ex[0];
-    writeSets(ex, [{ reps: '999', weight: '999' }]);
-    document.dispatchEvent(new Event('visibilitychange'));
-    window.dispatchEvent(new PageTransitionEvent('pagehide'));
-    return persist();
-  })).toBe(false);
-  expect(await second.evaluate(() => localStorage.getItem(KEY))).toBe(latest);
-  // Übernahme gibt niemals die Freigabe eines laufenden anderen Fensters gewaltsam frei.
-  await second.locator('#windowReload').click();
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('other');
-  for (const theme of ['light', 'dark']) {
-    await second.evaluate(value => applyTheme(value, false), theme);
-    expect(await second.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await second.locator('#windowReload').focus();
-    await second.keyboard.press('Shift+Tab');
-    await expect(second.locator('#windowBackup')).toBeFocused();
-  }
-  await page.close();
-  await expect.poll(() => second.evaluate(async () => (await navigator.locks.query()).held.length)).toBe(0);
-  await second.locator('#windowReload').click();
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
-  await expect(second.locator('#windowNotice')).toBeHidden();
-  expect(await second.evaluate(() => S.workout.running)).toBe(false);
-  expect(await second.evaluate(() => getSets(PROG().days[0].ex[0])[0].reps)).toBe('10');
-  // Erhaltener Seitenkontext (BFCache) muss die Freigabe erneut erwerben und frisch laden.
-  await second.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide')));
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('suspended');
-  await second.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
-  // Eine alte, nicht kooperierende App-Version wird als Konflikt erkannt; kein stiller Merge.
-  const legacy = await context.newPage();
-  legacy.on('pageerror', error => errors.push(error.message));
-  await legacy.goto('/index.html');
-  await second.evaluate(() => { S.notes['unsaved-test'] = 'Ungesicherter Entwurf'; save(); clearTimeout(saveT); });
-  await legacy.evaluate(() => {
-    const state = JSON.parse(localStorage.getItem(KEY));
-    state.store[state.active].notes['legacy-test'] = 'Fremder neuer Stand';
-    localStorage.setItem(KEY, JSON.stringify(state));
-  });
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('conflict');
-  await expect(second.locator('#windowNotice')).toContainText('ungespeicherten Änderungen');
-  expect(await second.evaluate(() => flushSave())).toBe(false);
-  expect(await second.evaluate(() => S.notes['unsaved-test'])).toBe('Ungesicherter Entwurf');
-  expect(await second.evaluate(() => JSON.parse(localStorage.getItem(KEY)).store[S.active].notes['legacy-test'])).toBe('Fremder neuer Stand');
-  const download = second.waitForEvent('download');
-  await second.locator('#windowBackup').click();
-  const rescued = await download;
-  expect(rescued.suggestedFilename()).toBe('satzkraft-fenster-backup.json');
-  const rescuedData = JSON.parse(fs.readFileSync(await rescued.path(), 'utf8'));
-  expect(rescuedData.store[seeded.active].notes['unsaved-test']).toBe('Ungesicherter Entwurf');
-  expect(rescuedData.windowDraft.format).toBe('satzkraft-fenster-entwurf');
-  await expect(second.locator('#windowFeedback')).toContainText('Prüfe die heruntergeladene Datei');
-  await second.locator('#windowReload').click();
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
-  expect(await second.evaluate(() => S.notes['legacy-test'])).toBe('Fremder neuer Stand');
-  expect(await second.evaluate(() => S.notes['unsaved-test'])).toBeUndefined();
-  await second.evaluate(() => { stopWorkout(true); hideModal(); openLib(); openProgramEditor(S.active); });
-  await second.locator('[data-ed-tab="details"]').click();
-  await second.locator('[data-ed-program="name"]').fill('Mein Entwurf');
-  await legacy.evaluate(() => {
-    const state = JSON.parse(localStorage.getItem(KEY));
-    state.store[state.active].notes['legacy-test'] = 'Weiterer neuer Stand';
-    localStorage.setItem(KEY, JSON.stringify(state));
-  });
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('conflict');
-  expect(await second.evaluate(() => editorDraft.name)).toBe('Mein Entwurf');
-  const editorDownload = second.waitForEvent('download');
-  await second.locator('#windowBackup').click();
-  const editorRescue = JSON.parse(fs.readFileSync(await (await editorDownload).path(), 'utf8'));
-  expect(editorRescue.windowDraft.program.name).toBe('Mein Entwurf');
-  await second.locator('#windowReload').click();
-  await expect.poll(() => second.evaluate(() => localWriterState)).toBe('owner');
-  expect(await second.evaluate(() => S.notes['legacy-test'])).toBe('Weiterer neuer Stand');
-  const unsupported = await context.newPage();
-  await unsupported.addInitScript(() => Object.defineProperty(navigator, 'locks', { value: undefined }));
-  await unsupported.goto('/index.html');
-  await expect.poll(() => unsupported.evaluate(() => localWriterState)).toBe('unsupported');
-  await expect(unsupported.locator('#windowNotice')).toContainText('aktuellen Browser');
-  expect(await unsupported.evaluate(() => flushSave())).toBe(false);
-  expect(errors).toEqual([]);
-});
-
-test('REG-29/P1: Übungszuordnung bleibt im Editor, v2-Export und Backup erhalten', async ({ page }) => {
+test('REG-29/P1: Übungszuordnung bleibt im Editor, v2-Export und Backup erhalten', async ({ page }, testInfo) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const state = compactWorkoutState(1);
@@ -1890,7 +1713,7 @@ test('REG-29/P1: Übungszuordnung bleibt im Editor, v2-Export und Backup erhalte
     await page.evaluate(value => document.documentElement.dataset.theme = value, theme);
     await expect(release).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    const directory = path.resolve(__dirname, '../../replica/clone-screens');
+    const directory = testInfo.outputPath('screens');
     fs.mkdirSync(directory, { recursive: true });
     await page.screenshot({ path: path.join(directory, 'C1-editor-' + theme + '.png') });
   }
@@ -1978,7 +1801,7 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
   await expect(page.locator('#lib .htbl')).toContainText('1:00 min · 20 kg · je Seite');
   await expect(page.locator('#lib .htbl')).toContainText('0:45 min · 0 kg · je Seite');
   await expect(page.locator('#lib')).not.toContainText('Geschätztes 1RM');
-  await expect(page.locator('#modal .htbl th')).toHaveCount(2);
+  await expect(page.locator('#lib .htbl th')).toHaveCount(2);
   await page.locator('#exercisedetailback').click();
   await page.locator('#pdf').click();
   await expect(page.locator('#report .rmetric').last()).toContainText('0 kg');
@@ -2000,6 +1823,7 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
   // Derselbe DOM-Inhalt ist Grundlage für den bestehenden Druck-/PDF-Weg.
   await page.evaluate(() => { window.print = () => { window.__weightedPrintText = document.getElementById('report').innerText; }; });
   await page.locator('#reprint').click();
+  await page.getByRole('button', { name: 'Drucken', exact: true }).click();
   expect(await page.evaluate(() => window.__weightedPrintText)).toContain('0:45 min · 22,5 kg · je Seite');
   await page.locator('#repprotocol').click();
   const row = page.locator('#protocol tbody tr').first();
@@ -2008,6 +1832,7 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
   await expect(page.locator('#protocol')).not.toContainText('60×20');
   await page.evaluate(() => { window.print = () => { window.__weightedPrintText = document.getElementById('protocol').innerText; }; });
   await page.locator('#protprint').click();
+  await page.getByRole('button', { name: 'Drucken', exact: true }).click();
   expect(await page.evaluate(() => window.__weightedPrintText)).toContain('1:00 min · 20 kg · je Seite');
   for (const theme of ['light', 'dark']) {
     await page.setViewportSize({ width: 320, height: 720 });
@@ -2023,7 +1848,7 @@ test('REG-28/P0: Zeit und Gewicht bleiben in Auswertung, Verlauf und Druckprotok
 
 test.describe('C2/C3 gezielte mobile Abnahme', () => {
  test.use({serviceWorkers:'allow'});
-test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile Detailansicht', async ({ page }) => {
+test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile Detailansicht', async ({ page }, testInfo) => {
  test.setTimeout(60000);
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await openWithPersistedState(page,compactWorkoutState(1));
@@ -2039,7 +1864,7 @@ test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile D
   await page.setViewportSize({width:320,height:780});await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
   await expect(page.locator('#lib')).toContainText('Für diese Übung sind noch keine Satzwerte');
   expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);
-  const directory=path.resolve(__dirname,'../../replica/clone-screens');fs.mkdirSync(directory,{recursive:true});await page.screenshot({path:path.join(directory,'C3-detail-empty-'+theme+'.png')});
+  const directory=testInfo.outputPath('screens');fs.mkdirSync(directory,{recursive:true});await page.screenshot({path:path.join(directory,'C3-detail-empty-'+theme+'.png')});
  }
  await page.locator('#exercisedetailback').click();await page.locator('#exercisesback').click();
  await page.locator('.progitem.active [data-edit]').click();await page.locator('[data-ed-openex="0"]').click();
@@ -2057,7 +1882,7 @@ test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile D
  expect(await page.evaluate(()=>Object.values(S.logs)[0].sets[0].weight)).toBe('20');expect(await page.evaluate(()=>S.workout.running)).toBe(false);
  if(await page.locator('[data-expand-done]').first().isVisible())await page.locator('[data-expand-done]').first().click();
  await page.locator('#app .exnamelink').first().click();await expect(page.locator('#lib')).toContainText('10 × 20 kg · pro Hantel');
- for(const theme of ['dark','light']){await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);const directory=path.resolve(__dirname,'../../replica/clone-screens');await page.screenshot({path:path.join(directory,'C3-detail-filled-'+theme+'.png')});}
+ for(const theme of ['dark','light']){await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);const directory=testInfo.outputPath('screens');await page.screenshot({path:path.join(directory,'C3-detail-filled-'+theme+'.png')});}
  const backup=await page.evaluate(()=>backupJSON());const saved=JSON.parse(backup);expect(saved.schemaVersion).toBe(5);expect(saved.personalExercises[personalId].name).toBe('Meine Testbank');expect(await page.evaluate(raw=>validateBackupFile(raw),saved)).toBeNull();
  await page.locator('#exercisedetailback').click();
  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
@@ -2068,13 +1893,14 @@ test('REG-30/P0: persönliche Übung, historische Erfassung, Backup und mobile D
  await page.context().setOffline(false);
  await page.evaluate(()=>stopWorkout(true));
  await page.evaluate(text=>importBackup(text),backup);
- const download=page.waitForEvent('download'),navigation=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Sichern & wiederherstellen',exact:true}).click();await download;await navigation;await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
+ const download=page.waitForEvent('download');await page.getByRole('button',{name:'Sichern & wiederherstellen',exact:true}).click();await download;
+ const navigation=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Datei geprüft – wiederherstellen',exact:true}).click();await navigation;await expect.poll(()=>page.evaluate(()=>localWriterState)).toBe('owner');
  await expect.poll(()=>page.evaluate(()=>S.workout&&S.workout.running)).toBe(false);
  expect(await page.evaluate(()=>Object.keys(S.personalExercises).length)).toBe(1);
  expect(await page.evaluate(()=>Object.values(S.logs)[0].performedExercise.name)).toBe('Meine Testbank');
  await page.setViewportSize({width:1440,height:900});await openPrograms(page);await page.locator('#exercisesbtn').click();await page.locator('[data-exercise-detail="'+personalId+'"]').click();
  expect(await page.evaluate(()=>document.getElementById('lib').scrollWidth<=innerWidth)).toBe(true);
- await page.screenshot({path:path.resolve(__dirname,'../../replica/clone-screens/C3-detail-desktop.png')});
+ await page.screenshot({path:testInfo.outputPath('screens/C3-detail-desktop.png')});
  await page.locator('#libclose').focus();await page.keyboard.press('Enter');await expect(page.locator('#lib')).not.toHaveClass(/open/);expect(errors).toEqual([]);
 });
 });

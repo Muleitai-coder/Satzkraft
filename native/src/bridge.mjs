@@ -76,14 +76,14 @@ async function withBusy(action) {
   try { return await action(); }
   finally { busy = false; if (failed) storageError(); else hideGuard(); }
 }
-async function exportFile(name,text) {
+async function exportFile(name,text,binary = false) {
   let path;
   try {
     return await withBusy(async () => {
       const safeName = String(name).replace(/[^a-zA-Z0-9äöüÄÖÜß._-]/g,'_').slice(0,120);
       // Cache names need uniqueness, not a secure-context-only UUID API.
       path = `exports/${Date.now()}-${Math.random().toString(36).slice(2)}/${safeName}`;
-      const file = await Filesystem.writeFile({ path, data:text, directory:Directory.Cache, encoding:Encoding.UTF8, recursive:true });
+      const file = await Filesystem.writeFile({ path, data:text, directory:Directory.Cache, ...(binary ? {} : { encoding:Encoding.UTF8 }), recursive:true });
       // iOS Share rejects on cancellation. Only a completed handoff returns true.
       await Share.share({ title:'Satzkraft – Datei sichern', files:[file.uri], dialogTitle:'In Dateien sichern' });
       return true;
@@ -103,6 +103,15 @@ async function start() {
     read:async () => (await Preferences.get({ key:'snapshot-v1' })).value,
     write:value => Preferences.set({ key:'snapshot-v1', value }), status
   });
+  // Explicit file capability used by the shared export UI; storage stays native-only.
+  window.SatzkraftFiles = {
+    async savePdf(name, buffer) {
+      const bytes = new Uint8Array(buffer);
+      let binary = "";
+      for (const byte of bytes) binary += String.fromCharCode(byte);
+      return exportFile(name, btoa(binary), true);
+    }
+  };
   window.SatzkraftNative = {
     storage:store, locks:createSingleViewLock(), exportFile, busy:withBusy,
     ownsControl:target => guard.contains(target),

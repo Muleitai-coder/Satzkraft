@@ -305,6 +305,7 @@ body.rest-lock{--rest-mode:1}
 #protocol{z-index:70}
 .reportwrap{max-width:900px;padding-bottom:70px}
 .reporthead{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;margin:-20px -16px 20px;padding:max(16px,env(safe-area-inset-top)) 16px 14px;background:var(--barbg);border-bottom:1px solid var(--hair);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.reportactions .histbtn{min-width:var(--touch-target);min-height:var(--touch-target)}
 .reportheadmain{flex:1;min-width:0}
 .reporteyebrow{font-family:var(--mono);font-size:10px;line-height:1;text-transform:uppercase;letter-spacing:.16em;font-weight:700;color:var(--acc);margin-bottom:5px}
 .reporthead h1{font-size:22px;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -805,6 +806,8 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .exrowd.slate .rowbar{background:var(--faint)}.exrowd.slate .rowcat{color:var(--muted)}
 @media print{
  @page{size:A4;margin:13mm}
+ body{--ink:#111;--muted:#555;--faint:#555;--acc:#047857;--danger:#b91c1c}
+ .reporthead h1{white-space:normal!important;overflow:visible!important}
  html,body,body.surface-locked{position:static!important;top:auto!important;overflow:visible!important;height:auto!important;background:#fff !important}
  #app,#bar,#modal,#lib,#wucd{display:none !important}
  #report{position:static !important;display:block !important;background:#fff !important;overflow:visible !important}

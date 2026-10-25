@@ -17,6 +17,7 @@
 
 /* ===== Satzkraft Redesign 2026 – Design-Tokens ===== */
 :root{
+ --pdf-ink:#111827;--pdf-muted:#4b5563;--pdf-accent:#047857;
  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;
  --radius-control:12px;--radius-card:16px;--radius-dialog:20px;
  --touch-target:44px;--touch-native:48px;
@@ -363,6 +364,7 @@ body.rest-lock{--rest-mode:1}
 #protocol{z-index:70}
 .reportwrap{max-width:900px;padding-bottom:70px}
 .reporthead{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;margin:-20px -16px 20px;padding:max(16px,env(safe-area-inset-top)) 16px 14px;background:var(--barbg);border-bottom:1px solid var(--hair);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.reportactions .histbtn{min-width:var(--touch-target);min-height:var(--touch-target)}
 .reportheadmain{flex:1;min-width:0}
 .reporteyebrow{font-family:var(--mono);font-size:10px;line-height:1;text-transform:uppercase;letter-spacing:.16em;font-weight:700;color:var(--acc);margin-bottom:5px}
 .reporthead h1{font-size:22px;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -863,6 +865,8 @@ html[data-theme="light"] .edexercise.pendingreplacement,html[data-theme="light"]
 .exrowd.slate .rowbar{background:var(--faint)}.exrowd.slate .rowcat{color:var(--muted)}
 @media print{
  @page{size:A4;margin:13mm}
+ body{--ink:#111;--muted:#555;--faint:#555;--acc:#047857;--danger:#b91c1c}
+ .reporthead h1{white-space:normal!important;overflow:visible!important}
  html,body,body.surface-locked{position:static!important;top:auto!important;overflow:visible!important;height:auto!important;background:#fff !important}
  #app,#bar,#modal,#lib,#wucd{display:none !important}
  #report{position:static !important;display:block !important;background:#fff !important;overflow:visible !important}
@@ -1451,7 +1455,7 @@ function showExerciseNote(ex){
   {label:"Abbrechen",action:null}
  ]);
 }
-function performanceSummary(ex,sets){return(sets||[]).filter(function(s){return s&&s.reps!==""&&s.reps!=null;}).map(function(s){return(ex.w&&s.weight!==""&&Number(s.weight)>0)?s.reps+"×"+s.weight+" kg":(isTime(ex)?fmtSeconds(s.reps):""+s.reps);}).join(" · ")||"—";}
+function performanceSummary(ex,sets){return(sets||[]).filter(reportSetHasData).map(function(set){if(isTime(ex))return reportTimedSetText(ex,set);return ex.w?set.reps+"×"+(set.weight===""||set.weight==null?"Gewicht fehlt":set.weight+" kg"):String(set.reps);}).join(" · ")||"—";}
 function lastPerf(ex){for(var w=S.week-1;w>=1;w--){var c=S.logs[w+"|"+S.day+"|"+ex.id];if(c&&!normalizeSwapName(c.swap)&&c.sets&&c.sets.some(function(s){return s.reps!==""&&s.reps!=null;}))return{week:w,sets:c.sets};}return null;}
 function otherDayPerfForUnit(ex,day,w){
  var exercises=dayExercisesFor(day,w);
@@ -1653,13 +1657,13 @@ function setRowHtml(ex,i,s,rr,tw,dis,firstOpen,canHold){
  return h+'</div>';
 }
 function exHistory(ex){
- var rows=[];
+ var rows=[],selectedSwap=currentExerciseSwap(ex);
  for(var w=1,max=PROG().weeks.length;w<=max;w++){
   if(!exerciseValidForWeek(ex,w))continue;
-  var c=S.logs[w+"|"+S.day+"|"+ex.id];if(!c||!c.sets||normalizeSwapName(c.swap))continue;
+  var c=S.logs[w+"|"+S.day+"|"+ex.id];if(!c||!c.sets||normalizeSwapName(c.swap)!==selectedSwap)continue;
   var performed=historicalExercise(ex,c),need=c.sets.length,parts=[],vol=0,has=false;
   var e1=0;
-  for(var i=0;i<need;i++){var s=c.sets[i];if(s&&s.reps!==""){has=true;if(isTime(performed)){parts.push(reportTimedSetText(performed,s));}else if(performed.w&&s.weight!==""&&Number(s.weight)>0){parts.push(s.reps+"×"+s.weight);vol+=Number(s.reps)*Number(s.weight);var est=Number(s.weight)*(1+Number(s.reps)/30);if(est>e1)e1=est;}else{parts.push(isTime(performed)?fmtSeconds(s.reps):(""+s.reps));}}}
+  for(var i=0;i<need;i++){var s=c.sets[i];if(reportSetHasData(s)){has=true;if(isTime(performed)){parts.push(reportTimedSetText(performed,s));}else if(performed.w&&s.weight!==""&&Number(s.weight)>0){parts.push(s.reps+"×"+s.weight);vol+=Number(s.reps)*Number(s.weight);var est=Number(s.weight)*(1+Number(s.reps)/30);if(est>e1)e1=est;}else{parts.push(isTime(performed)?fmtSeconds(s.reps):(""+s.reps));}}}
   if(has)rows.push({name:performed.name,confirmed:!!c.performedExercise,w:w,label:(PROG().weeks[w-1]||{}).label||"",parts:parts,vol:vol,e1:e1>0?round(e1):null});
  }
  return rows;
@@ -2436,6 +2440,132 @@ setInterval(function(){
  if(restPhase==="hold"){var held=holdElapsedSeconds(),targetMode=holdTimerMode==="target",count=document.getElementById("holdCount"),holdFill=document.getElementById("holdFill"),status=document.getElementById("holdStatus");if(count)count.textContent=fmtTime(held);if(holdFill){var benchmark=targetMode?holdMax:holdBest;if(benchmark)holdFill.style.width=Math.max(0,Math.min(100,held/benchmark*100))+"%";}if(targetMode&&holdMin!=null&&held>=holdMin){if(status)status.textContent="Ziel erreicht · Ende bei "+fmtSeconds(holdMax);}if(targetMode&&holdMax!=null&&held>=holdMax&&!holdMaxAlerted){holdMaxAlerted=true;beep();if(navigator.vibrate)navigator.vibrate([250,100,400]);finishHold(holdMax);}}
 },250);
 
+// Pure layout: formatted report values arrive from the existing report surface.
+// PDF encoding/font subsetting is delegated to the pinned jsPDF implementation.
+function createReportPdf(Pdf, fontBase64, content) {
+ var pdf = new Pdf({unit:"pt",format:"a4",compress:true,putOnlyUsedFonts:true});
+ pdf.addFileToVFS("HankenGrotesk.ttf",fontBase64);
+ pdf.addFont("HankenGrotesk.ttf","HankenGrotesk","normal");
+ pdf.setFont("HankenGrotesk","normal");
+ pdf.setProperties({title:content.title+" – "+content.kind,author:"Satzkraft",creator:"Satzkraft"});
+ var palette=content.palette;
+ var margin=44,width=pdf.internal.pageSize.getWidth(),height=pdf.internal.pageSize.getHeight(),y=margin;
+ function newPage(){pdf.addPage();y=margin;}
+ function text(value,size,color,after){
+  pdf.setFontSize(size);pdf.setTextColor.apply(pdf,color);
+  var lines=pdf.splitTextToSize(String(value||""),width-2*margin),lineHeight=size*1.4;
+  lines.forEach(function(line){
+   if(y+lineHeight>height-margin-20)newPage();
+   pdf.text(line,margin,y+size);y+=lineHeight;
+  });
+  y+=after||0;
+ }
+ text("SATZKRAFT · "+content.kind.toUpperCase(),10,palette.accent,12);
+ text(content.title,22,palette.ink,8);
+ text(content.subtitle,9,palette.muted,18);
+ content.blocks.forEach(function(block){
+  if(y+70>height-margin-20)newPage();
+  if(block.heading)text(block.heading,block.section?15:12,palette.accent,6);
+  (block.lines||[]).forEach(function(line){text(line,10,palette.ink,4);});
+  y+=10;
+ });
+ var pages=pdf.getNumberOfPages();
+ for(var page=1;page<=pages;page++){
+  pdf.setPage(page);pdf.setFontSize(8);pdf.setTextColor.apply(pdf,palette.muted);
+  pdf.text("Satzkraft · "+content.kind,margin,height-25);
+  pdf.text(page+" / "+pages,width-margin,height-25,{align:"right"});
+ }
+ return pdf.output("arraybuffer");
+}
+if(typeof module!=="undefined"&&module.exports)module.exports={createReportPdf:createReportPdf};
+
+// One export path for Web/PWA and iOS. No server or print-dialog dependency.
+var pdfResourcesPromise=null;
+function loadPdfResources(){
+ if(pdfResourcesPromise)return pdfResourcesPromise;
+ pdfResourcesPromise=Promise.all([
+  new Promise(function(resolve,reject){
+   if(window.jspdf){resolve(window.jspdf.jsPDF);return;}
+   var script=document.createElement("script");script.src="vendor/jspdf.umd.min.js";
+   script.onload=function(){if(window.jspdf)resolve(window.jspdf.jsPDF);else reject(new Error("PDF-Bibliothek fehlt"));};
+   script.onerror=function(){script.remove();reject(new Error("PDF-Bibliothek nicht verfügbar"));};
+   document.head.appendChild(script);
+  }),
+  fetch("fonts/hanken-grotesk-pdf.ttf").then(function(response){if(!response.ok)throw new Error("PDF-Schrift nicht verfügbar");return response.arrayBuffer();}).then(function(buffer){
+   var bytes=new Uint8Array(buffer),binary="";
+   for(var i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);
+   return btoa(binary);
+  })
+ ]).catch(function(error){pdfResourcesPromise=null;throw error;});
+ return pdfResourcesPromise;
+}
+function pdfSurfaceContent(surfaceId){
+ var surface=document.getElementById(surfaceId),protocol=surfaceId==="protocol";
+ if(!surface||!surface.classList.contains("open"))throw new Error("Auswertung ist nicht geöffnet");
+ function text(node,selector){var found=selector?node.querySelector(selector):node;return found?found.textContent.trim():"";}
+ var style=getComputedStyle(document.documentElement),palette={};
+ ["ink","muted","accent"].forEach(function(role){var value=style.getPropertyValue("--pdf-"+role).trim();palette[role]=[1,3,5].map(function(offset){return parseInt(value.slice(offset,offset+2),16);});});
+ var content={palette:palette,title:text(surface,"h1"),kind:protocol?"Trainingsprotokoll":"Auswertung",subtitle:text(surface,".rstand"),blocks:[]};
+ if(protocol){
+  Array.prototype.forEach.call(surface.querySelectorAll(".rwk,.rd3,.rtbl,.rempty"),function(node){
+   if(node.matches(".rtbl")){
+    Array.prototype.forEach.call(node.querySelectorAll("tbody tr"),function(row){
+     var cells=row.querySelectorAll("td"),name=cells[0].cloneNode(true);
+     Array.prototype.forEach.call(name.querySelectorAll(".rprotocolnote"),function(note){note.remove();});
+     var notes=Array.prototype.map.call(cells[0].querySelectorAll(".rprotocolnote"),function(note){return text(note);});
+     content.blocks.push({heading:text(name),lines:["Sätze: "+text(cells[1]),"Volumen: "+text(cells[2])].concat(notes)});
+    });
+   }else content.blocks.push({heading:text(node),section:true,lines:[]});
+  });
+ }else{
+  Array.prototype.forEach.call(surface.querySelectorAll(".rmetric"),function(node){content.blocks.push({heading:text(node,".rlab")+": "+text(node,".rval"),lines:[text(node,".rsub")]});});
+  content.blocks.push({heading:"Fortschritt je Übung",section:true,lines:[]});
+  Array.prototype.forEach.call(surface.querySelectorAll(".rexcard"),function(card){
+   var lines=[text(card,".rexcat")],from=text(card,".rfrom"),to=text(card,".rto");
+   if(from||to)lines.push("Erste Ausführung: "+from+" · Zuletzt: "+to);
+   [".rexpill",".rexdelta",".rexrecorded",".rexbest",".rexprevious"].forEach(function(selector){var value=text(card,selector);if(value)lines.push(value);});
+   content.blocks.push({heading:text(card,".rexname"),lines:lines});
+  });
+  var empty=text(surface,".rempty");if(empty)content.blocks.push({lines:[empty]});
+  content.blocks.push({lines:[text(surface,".rfootnote")]});
+ }
+ return content;
+}
+function pdfFileName(title,kind){return ("Satzkraft-"+title+"-"+kind).replace(/[\\/:*?"<>|\u0000-\u001f]/g,"_").slice(0,150)+".pdf";}
+async function savePdfFile(name,buffer){
+ if(window.SatzkraftFiles){
+  if(!await window.SatzkraftFiles.savePdf(name,buffer))throw new Error("Dateifreigabe nicht abgeschlossen");
+  return;
+ }
+ var file=new File([buffer],name,{type:"application/pdf"});
+ if(navigator.canShare&&navigator.canShare({files:[file]})){
+  await navigator.share({files:[file],title:name});return;
+ }
+ var url=URL.createObjectURL(file),link=document.createElement("a");
+ link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();
+ // Safari may read the URL after the click returns. Do not revoke immediately.
+ setTimeout(function(){URL.revokeObjectURL(url);},60000);
+}
+async function openPdfExport(surfaceId){
+ var button=document.getElementById(surfaceId==="protocol"?"protprint":"reprint");
+ if(button&&button.disabled)return;
+ if(button)button.disabled=true;
+ try{
+  var content=pdfSurfaceContent(surfaceId),resources=await loadPdfResources();
+  var buffer=createReportPdf(resources[0],resources[1],content),name=pdfFileName(content.title,content.kind);
+  var actions=[
+   {label:"PDF sichern",cls:"primary",action:async function(){
+    try{await savePdfFile(name,buffer);}catch(error){if(error.name!=="AbortError")showModal("PDF nicht gesichert","Die Dateifreigabe wurde nicht abgeschlossen. Du kannst den Export erneut öffnen und die Datei sichern.",[{label:"OK",action:null}]);}
+   }},
+  ];
+  if(!window.SatzkraftFiles)actions.push({label:"Drucken",action:function(){if(surfaceId==="protocol")printProtocol();else printReport();}});
+  actions.push({label:"Schließen",action:null});
+  showModal("PDF bereit","Die PDF wurde auf deinem Gerät erstellt. Wähle im Teilen-Menü „In Dateien sichern“ oder speichere den Download.",actions);
+ }catch(error){
+  showModal("PDF konnte nicht erstellt werden","Bitte öffne die Auswertung erneut und versuche es noch einmal. Falls die App-Dateien fehlen, öffne Satzkraft einmal mit Internetverbindung.",[{label:"OK",action:null}]);
+ }finally{if(button)button.disabled=false;}
+}
+
 // ---------- Auswertung / PDF ----------
 function reportFinite(value){var number=Number(value);return isFinite(number)&&number>=0?number:null;}
 function historicalExercise(ex,cell){
@@ -2551,7 +2681,7 @@ function reportDetailedProtocol(program,logs,history,notes){
  return any?out:'<div class="rempty"><strong>Noch kein Trainingsprotokoll</strong>Sobald du Satzwerte einträgst, erscheint hier die vollständige Übersicht.</div>';
 }
 function buildReport(programId,returnView){
- programId=programId&&S.programs[programId]?programId:S.active;var program=S.programs[programId],store=S.store[programId]||newStore(program),data=buildReportData(program,store.logs,store.history),previous=programId===S.active&&program.archived!==true?previousBlockMetrics(programId):{},now=Date.now(),back=returnView==="archive",b='<div class="owrap reportwrap"><header class="reporthead">'+(back?'<button class="iconbtn reportback" id="repback" aria-label="Zurück zum Archiv">'+icon("chevron-left")+'</button>':'')+'<div class="reportheadmain"><div class="reporteyebrow">Auswertung</div><h1 id="reporttitle">'+esc(program.name)+artSubtitleHtml(program.name,program.art)+'</h1></div><div class="reportactions"><button class="histbtn" id="reprint">'+icon("download")+' Drucken / PDF</button>'+(back?'':'<button class="iconbtn" id="repclose" aria-label="Auswertung schließen">'+icon("close")+'</button>')+'</div></header>';
+ programId=programId&&S.programs[programId]?programId:S.active;var program=S.programs[programId],store=S.store[programId]||newStore(program),data=buildReportData(program,store.logs,store.history),previous=programId===S.active&&program.archived!==true?previousBlockMetrics(programId):{},now=Date.now(),back=returnView==="archive",b='<div class="owrap reportwrap"><header class="reporthead">'+(back?'<button class="iconbtn reportback" id="repback" aria-label="Zurück zum Archiv">'+icon("chevron-left")+'</button>':'')+'<div class="reportheadmain"><div class="reporteyebrow">Auswertung</div><h1 id="reporttitle">'+esc(program.name)+artSubtitleHtml(program.name,program.art)+'</h1></div><div class="reportactions"><button class="histbtn" id="reprint">'+icon("download")+' PDF exportieren</button>'+(back?'':'<button class="iconbtn" id="repclose" aria-label="Auswertung schließen">'+icon("close")+'</button>')+'</div></header>';
  b+='<div class="reportintro"><p class="rstand">Stand '+dDate(now)+' · '+dClock(now)+' Uhr · Kennzahlen aus deinen eingetragenen Daten</p><span class="reportlocal">Nur lokal gespeichert</span></div>';
  b+='<section class="rsummary" aria-label="Zusammenfassung"><div class="rmetric"><span class="rlab">Einheiten</span><span class="rval">'+data.completedSessions+'<span class="rvalsuf"> / '+data.totalPlanned+'</span></span><span class="rsub">'+data.completionPct+' % des Trainingsblocks · gezählt wird jede vollständig beendete Einheit</span></div><div class="rmetric"><span class="rlab">Trainingszeit</span><span class="rval">'+reportDuration(data.totalDuration)+'</span><span class="rsub">dokumentiert, inkl. Fortsetzungen</span></div><div class="rmetric"><span class="rlab">Bewegtes Gewicht</span><span class="rval">'+reportNumber(data.totalVolume,0)+'<span class="rvalsuf"> kg</span></span><span class="rsub">Gewicht × Wiederholungen · ohne Zeitübungen</span></div></section>';
  b+='<div class="rsechead"><span>Fortschritt je Übung</span><span class="rsecmeta">Typgerechte Werte</span></div><section class="rsecplain">';
@@ -2570,7 +2700,7 @@ function printReport(){
 var protocolReturnFocus=null,protocolProgramId=null;
 function buildProtocol(programId){
  var program=S.programs[programId],store=S.store[programId]||newStore(program),now=Date.now();
- var b='<div class="owrap reportwrap"><header class="reporthead"><button class="iconbtn reportback" id="protback" aria-label="Zurück zur Auswertung">'+icon("chevron-left")+'</button><div class="reportheadmain"><div class="reporteyebrow">Trainingsprotokoll</div><h1 id="protocoltitle">'+esc(program.name)+artSubtitleHtml(program.name,program.art)+'</h1></div><div class="reportactions"><button class="histbtn" id="protprint">'+icon("download")+' Drucken / PDF</button></div></header>';
+ var b='<div class="owrap reportwrap"><header class="reporthead"><button class="iconbtn reportback" id="protback" aria-label="Zurück zur Auswertung">'+icon("chevron-left")+'</button><div class="reportheadmain"><div class="reporteyebrow">Trainingsprotokoll</div><h1 id="protocoltitle">'+esc(program.name)+artSubtitleHtml(program.name,program.art)+'</h1></div><div class="reportactions"><button class="histbtn" id="protprint">'+icon("download")+' PDF exportieren</button></div></header>';
  b+='<div class="reportintro"><p class="rstand">Stand '+dDate(now)+' · '+dClock(now)+' Uhr · alle eingetragenen Sätze, Zeiten und Notizen</p><span class="reportlocal">Nur lokal gespeichert</span></div>';
  b+=reportDetailedProtocol(program,store.logs,store.history,store.notes)+'</div>';
  document.getElementById("protocol").innerHTML=b;
@@ -3827,22 +3957,35 @@ function renderExerciseLibrary(query,loaded){
 }
 function openExerciseLibrary(){openLib();renderExerciseLibrary();focusSurface(document.getElementById("lib"),"#exercisessearch");}
 function exerciseDetailRows(entry){
- var records=[];Object.keys(S.programs).forEach(function(pid){var program=S.programs[pid],store=S.store[pid]||{},logs=pid===S.active?S.logs:store.logs||{},positions=Object.create(null);(program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){positions[day.key+"|"+ex.id]=ex;});});
- Object.keys(logs).forEach(function(key){var parts=key.split("|"),cell=logs[key],ex=positions[parts[1]+"|"+parts[2]];if(!ex||!cell||!Array.isArray(cell.sets))return;var performed=historicalExercise(ex,cell),snapshot=cell.performedExercise,swapped=normalizeSwapName(cell.swap),matches=snapshot?(entry.id?snapshot.exerciseId===entry.id:!snapshot.exerciseId&&snapshot.name===entry.de):((swapped||ex.name)===entry.de&&exerciseSwapTypeCompatible(ex,entry));if(!matches)return;var sets=cell.sets.filter(reportSetHasData);if(!sets.length)return;var session=(store.history||[]).filter(function(item){return item.week===+parts[0]&&item.day===parts[1];})[0];records.push({program:program.name,week:+parts[0],day:parts[1],start:session&&session.start||0,name:performed.name,confirmed:!!snapshot,convention:performed.weightConvention||"unspecified",parts:sets.map(function(set){return historicalSetText(performed,set);})});});
+ var records=[];Object.keys(S.programs).forEach(function(pid){var program=S.programs[pid],store=S.store[pid]||{},logs=pid===S.active?S.logs:store.logs||{},history=pid===S.active?(S.history||store.history||[]):store.history||[],positions=Object.create(null);(program.days||[]).forEach(function(day){(day.ex||[]).forEach(function(ex){positions[day.key+"|"+ex.id]=ex;});});
+ Object.keys(logs).forEach(function(key){var parts=key.split("|"),cell=logs[key],ex=positions[parts[1]+"|"+parts[2]];if(!ex||!cell||!Array.isArray(cell.sets))return;var performed=historicalExercise(ex,cell);if(!exerciseDetailMatches(entry,ex,cell))return;var sets=cell.sets.filter(reportSetHasData);if(!sets.length)return;var session=history.filter(function(item){return item.week===+parts[0]&&item.day===parts[1];})[0];records.push({program:program.name,week:+parts[0],day:parts[1],start:session&&session.start||0,name:performed.name,confirmed:!!cell.performedExercise,convention:performed.weightConvention||"unspecified",parts:sets.map(function(set){return historicalSetText(performed,set);})});});
  });return records.sort(function(a,b){return b.start-a.start||b.week-a.week;});
 }
-function renderExerciseDetail(identity,returnView){
- var entry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry){showModal("Übung nicht gefunden","Diese Übung ist gerade nicht in der Bibliothek verfügbar.",[{label:"OK",cls:"primary",action:null}]);return;}
- exerciseLibraryView="detail";personalReturnView=returnView||"library";var rows=exerciseDetailRows(entry),last=rows[0],h='<div class="libbox exercisedetail">'+exerciseSubviewHeader("Übung",entry.de,"exercisedetailback")+'<div class="libnote">'+esc(entry.definition?'Deine persönliche Übung':entry.equipment||'Integrierte Übung')+'</div>';
+function exerciseDetailMatches(entry,ex,cell){
+ var snapshot=cell.performedExercise||cell.pendingPerformedExercise,performed=historicalExercise(ex,cell),swap=normalizeSwapName(cell.swap);
+ if(snapshot&&snapshot.exerciseId)return !!entry.id&&snapshot.exerciseId===entry.id;
+ if(!exerciseSwapTypeCompatible(performed,entry))return false;
+ if(entry.definition)return !snapshot&&!swap&&ex.exerciseId===entry.id;
+ var name=normalizeExerciseLibraryName(snapshot?snapshot.name:swap||ex.name),matches=(EXERCISE_LIBRARY||[]).filter(function(candidate){return exerciseSwapTypeCompatible(performed,candidate)&&exerciseLibraryEntryNames(candidate).some(function(alias){return normalizeExerciseLibraryName(alias)===name;});});
+ return matches.length===1&&matches[0]===entry;
+}
+function workoutExerciseDetail(ex){
+ var cell=currentExerciseCell(ex),performed=historicalExercise(ex,cell),swap=currentExerciseSwap(ex),snapshot=cell&&(cell.performedExercise||cell.pendingPerformedExercise),identity=snapshot?snapshot.exerciseId:swap?null:ex.exerciseId,name=snapshot?snapshot.name:swap||ex.name;
+ var libraryEntry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(name),compatible=libraryEntry&&exerciseSwapTypeCompatible(performed,libraryEntry),entry={de:name,typ:isTime(performed)?"zeit":performed.w?(performed.bw?"kgz":"gewicht"):"koerpergewicht",weightedTime:isTime(performed)&&performed.w,einseitig:!!performed.perSide,weightConvention:performed.weightConvention||"unspecified",technik:swap?(compatible?libraryEntry.technik:""):ex.sub||(compatible?libraryEntry.technik:""),equipment:compatible?libraryEntry.equipment:"Übung aus deinem Programm",programOnly:true};
+ if(compatible&&identity&&libraryEntry.id===identity){entry.id=identity;entry.definition=libraryEntry.definition;entry.programOnly=false;}
+ var rows=exHistory(ex).map(function(row){var recorded=S.logs[row.w+"|"+S.day+"|"+ex.id],historic=historicalExercise(ex,recorded);return{program:PROG().name,week:row.w,day:S.day,confirmed:row.confirmed,parts:recorded.sets.filter(reportSetHasData).map(function(set){return historicalSetText(historic,set);})};}).reverse();
+ return{entry:entry,rows:rows};
+}
+function renderExerciseDetail(identity,returnView,workoutDetail){
+ var entry=workoutDetail?workoutDetail.entry:findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry){showModal("Übung nicht gefunden","Diese Übung ist gerade nicht in der Bibliothek verfügbar.",[{label:"OK",cls:"primary",action:null}]);return;}
+ exerciseLibraryView="detail";personalReturnView=returnView||"library";var rows=workoutDetail?workoutDetail.rows:exerciseDetailRows(entry),last=rows[0],h='<div class="libbox exercisedetail">'+exerciseSubviewHeader("Übung",entry.de,"exercisedetailback")+'<div class="libnote">'+esc(entry.definition?'Deine persönliche Übung':entry.equipment||'Integrierte Übung')+'</div>';
  h+='<section class="eddaysettings"><h2 class="tplname">Letzte Leistung</h2><p>'+esc(last?last.parts.join(' / '):'Für diese Übung sind noch keine Satzwerte gespeichert.')+'</p>'+(last?'<div class="libnote">'+esc(last.program+' · Woche '+last.week+' · '+(last.confirmed?'Erfassung gespeichert':'Älterer Eintrag · Erfassung unbestätigt'))+'</div>':'')+'</section>';
  h+='<details class="edadvanced"><summary>Technik &amp; Erfassung</summary><div class="edbody"><p>'+esc(entry.technik||'Noch keine Technikangabe hinterlegt.')+'</p><p>'+esc(exerciseLibraryTypeSignature(entry)==='weighted_seconds'?'Zeit und Gewicht gemeinsam':entry.typ==='zeit'?'Zeit in Minuten und Sekunden':entry.typ==='gewicht'?'Wiederholungen und Gewicht':entry.typ==='kgz'?'Wiederholungen und Zusatzgewicht':'Wiederholungen')+(entry.einseitig?' · je Seite':'')+'</p>'+(entry.weightConvention?'<p>'+esc(weightConventionText(entry.weightConvention))+'</p>':'')+'</div></details>';
  h+='<details class="edadvanced" open><summary>Verlauf'+(rows.length?' ('+rows.length+')':'')+'</summary><div class="edbody">';if(rows.length){h+='<table class="htbl"><thead><tr><th>Training</th><th>Sätze</th></tr></thead><tbody>';rows.slice(0,30).forEach(function(row){h+='<tr><td>'+esc(row.program)+'<span class="hwl">W'+row.week+' · '+esc(row.day)+'</span></td><td>'+esc(row.parts.join(' / '))+'<span class="hwl">'+esc(row.confirmed?'Erfassung gespeichert':'Älterer Eintrag · Erfassung unbestätigt')+'</span></td></tr>';});h+='</tbody></table>'+(rows.length>30?'<p>Die letzten 30 Ausführungen. Alle Satzwerte bleiben im Backup erhalten.</p>':'');}else h+='<p>Der Verlauf erscheint nach deinem ersten eingetragenen Satz.</p>';h+='</div></details><div class="librow">';
- if(!programWriteLocked()){if(entry.definition)h+='<button type="button" class="smallbtn" data-personal-edit="'+attr(entry.id)+'">Übungsdaten bearbeiten</button><button type="button" class="progtextaction" data-personal-archive="'+attr(entry.id)+'">Archivieren</button>';else h+='<button type="button" class="smallbtn" data-personal-duplicate="'+attr(entry.id||entry.de)+'">Als eigene Variante speichern</button>';}h+='</div></div>';document.getElementById("lib").innerHTML=h;focusSurface(document.getElementById("lib"),"#exercisedetailback");
+ if(!entry.programOnly&&!programWriteLocked()){if(entry.definition)h+='<button type="button" class="smallbtn" data-personal-edit="'+attr(entry.id)+'">Übungsdaten bearbeiten</button><button type="button" class="progtextaction" data-personal-archive="'+attr(entry.id)+'">Archivieren</button>';else h+='<button type="button" class="smallbtn" data-personal-duplicate="'+attr(entry.id||entry.de)+'">Als eigene Variante speichern</button>';}h+='</div></div>';document.getElementById("lib").innerHTML=h;focusSurface(document.getElementById("lib"),"#exercisedetailback");
 }
 function openWorkoutExerciseDetail(ex){
- var cell=currentExerciseCell(ex),snapshot=cell&&cell.performedExercise,swap=currentExerciseSwap(ex),identity=swap?(snapshot&&snapshot.exerciseId||swap):ex.exerciseId||ex.name;
- var entry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry||!exerciseSwapTypeCompatible(historicalExercise(ex,cell),entry)){showHistory(ex);return;}
- openLib();renderExerciseDetail(identity,"training");
+ var detail=workoutExerciseDetail(ex);openLib();renderExerciseDetail(null,"training",detail);
 }
 function openPersonalExerciseForm(identity,returnView,duplicate){
  if(localWriteBlocked()||programWriteLocked()){showProgramWriteLocked();return;}personalReturnView=returnView||"library";var entry=identity&&(findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity)),definition=entry&&entry.definition;personalFormSourceId=definition&&!duplicate?definition.id:null;
@@ -4073,8 +4216,8 @@ document.getElementById("bar").addEventListener("click",function(e){
  else if(b.id==="nextpause"){startRest(restBaseSec,restExId);}
  else if(b.dataset.radj){adjustRest(+b.dataset.radj);}
 });
-document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose"||b.id==="repback")closeReport();else if(b.id==="reprint")printReport();else if(b.id==="repprotocol")openProtocol();});
-document.getElementById("protocol").addEventListener("click",function(e){if(e.target.id==="protocol"){closeProtocol();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="protback")closeProtocol();else if(b.id==="protprint")printProtocol();});
+document.getElementById("report").addEventListener("click",function(e){if(e.target.id==="report"){closeReport();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="repclose"||b.id==="repback")closeReport();else if(b.id==="reprint")openPdfExport("report");else if(b.id==="repprotocol")openProtocol();});
+document.getElementById("protocol").addEventListener("click",function(e){if(e.target.id==="protocol"){closeProtocol();return;}var b=e.target.closest("button");if(!b)return;if(b.id==="protback")closeProtocol();else if(b.id==="protprint")openPdfExport("protocol");});
 window.addEventListener("keydown",function(e){
  var modal=document.getElementById("modal"),protocol=document.getElementById("protocol"),report=document.getElementById("report"),lib=document.getElementById("lib"),wucd=document.getElementById("wucd"),surface=modal.style.display==="flex"?modal:protocol.classList.contains("open")?protocol:report.classList.contains("open")?report:lib.classList.contains("open")?lib:wucd.classList.contains("open")?wucd:null;
  if(e.key==="Tab"&&surface){trapSurfaceFocus(e,surface);return;}
