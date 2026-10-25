@@ -1760,9 +1760,11 @@ test('REG-32/P0: Verlauf öffnet für Bibliotheksübungen und freie Übungen die
     [`1|${day.key}|bench`]: { sets: [{ reps: '10', weight: '30' }] },
     [`1|${day.key}|steps`]: { sets: [{ reps: '12', weight: '8' }] }
   };
+  await page.route('**/uebungen.json', route => route.abort());
   await openWithPersistedState(page, state);
   await expect.poll(() => page.evaluate(() => localWriterState)).toBe('owner');
   await page.evaluate(() => loadExerciseLibrary());
+  expect(await page.evaluate(() => EXERCISE_LIBRARY)).toBeNull();
   const before = await page.evaluate(() => JSON.stringify({ programs: S.programs, store: S.store }));
   for (const [id, name, values] of [['bench', 'Bankdrücken', '10×30'], ['steps', 'Step Ups', '12×8']]) {
     await page.locator(`[data-expand-prev="${id}"]`).click();
@@ -1773,7 +1775,15 @@ test('REG-32/P0: Verlauf öffnet für Bibliotheksübungen und freie Übungen die
     await expect(page.locator('#modal .htbl')).toContainText('Vol.');
     await expect(page.locator('#lib')).not.toHaveClass(/open/);
     await page.locator('#modal').getByRole('button', { name: 'Schließen', exact: true }).click();
+    await page.getByRole('button', { name: `Übungsdetails für ${name} öffnen`, exact: true }).click();
+    await expect(page.locator('#lib h1')).toHaveText(name);
+    await expect(page.locator('#lib .htbl tbody tr')).toHaveCount(1);
+    await expect(page.locator('#lib')).toContainText(id === 'bench' ? '10 × 30 kg' : '12 × 8 kg · je Seite');
+    await page.locator('#exercisedetailback').click();
   }
+  await page.unroute('**/uebungen.json');
+  await page.evaluate(() => loadExerciseLibrary());
+  expect(await page.evaluate(() => EXERCISE_LIBRARY.length)).toBeGreaterThan(0);
   await page.getByRole('button', { name: 'Übungsdetails für Bankdrücken öffnen', exact: true }).click();
   await expect(page.locator('#lib h1')).toHaveText('Bankdrücken');
   await expect(page.locator('#lib')).toContainText('Letzte Leistung');

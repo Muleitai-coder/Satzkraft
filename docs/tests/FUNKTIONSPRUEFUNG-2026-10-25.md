@@ -53,6 +53,17 @@ Die exportierte Zusammenfassung stellt die Diagramme durch benannte Vergleichswe
 - Quellbereiche teilen weiterhin globalen Anwendungszustand. Die vorherige Strukturmigration ist keine vollständige Entkopplung aller Module; der PDF-Pfad nutzt einen expliziten Dateiadapter und einen reinen Layoutkern.
 - Dieser Bericht belegt den lokalen Arbeitsstand. Die frühere automatische Freigabeprüfung hat den Upload nach `origin/main` mangels ausdrücklicher Veröffentlichungsfreigabe abgelehnt. Kein erneuter Push und keine Änderung der Live-App durch diesen Auftrag.
 
+## Nachprüfung der anderen Sitzung
+
+Auf ausdrücklichen Folgeauftrag wurde der Chat „Verlaufsfenster nach App-Reset behe“ gelesen und dessen isoliert gesicherter Commit `aad6653` mit dem Hauptstand `14a24e5` verglichen. Ergebnis:
+
+- Alle sieben geänderten App-Funktionen (`performanceSummary`, `exHistory`, `exerciseDetailRows`, `exerciseDetailMatches`, `workoutExerciseDetail`, `renderExerciseDetail`, `openWorkoutExerciseDetail`) sind inhaltlich identisch übernommen und liegen in den maßgeblichen `src/app/`-Dateien. Kein Überschreiben der generierten `index.html` und kein erneuter Import des alten Ein-Datei-Stands erforderlich.
+- `tests/personal-exercise-history.test.cjs` stimmt vollständig mit dem gesicherten Stand überein. Die ergänzten Speicherzustände der Tauschtests und die Löschschlüssel des Datenschutztests sind ebenfalls vorhanden; ihre aktuellen Testkontexte berücksichtigen zusätzlich den Architekturumbau und den abgesicherten Restore.
+- Im Browserfall REG-32 fehlte noch die Erweiterung für eine nicht erreichbare und anschließend geladene Übungsbibliothek. Sie ist jetzt übernommen. Zusätzliche Assertions belegen ausdrücklich den fehlgeschlagenen beziehungsweise erfolgreichen Ladevorgang. Wochenübersicht, Details beider Übungen, gespeicherte Satzwerte, unveränderte Programmdaten und ausbleibende Browserfehler werden geprüft.
+- Die widersprüchliche Briefing-Aussage zum Datenumfang wurde korrigiert: Namensdetails im Training zeigen die jeweilige Programmposition; die Bibliothek zeigt getrennt davon zuordenbare Ausführungen über Programme hinweg. Das entspricht der Entscheidung im anderen Chat und dem bestehenden Code.
+
+Neu ausgeführt: REG-32 in mobilem WebKit **1/1 bestanden** (6,3 Sekunden Gesamtlauf), Architektur-/Quellaktualitätsprüfung und `git diff --check` bestanden. Die oben dokumentierten unveränderten Gesamttests wurden nicht wiederholt. Der private Backup-Durchlauf der anderen Sitzung wurde gelesen, aber in dieser Nachprüfung nicht erneut ausgeführt; keine privaten Trainingsdaten wurden übernommen. Keine Änderung des App-Laufzeitcodes.
+
 ## Nachvollziehbare Quellen
 
 - [jsPDF: lokale PDF-Erzeugung und Schrifteinbettung](https://github.com/parallax/jsPDF)
