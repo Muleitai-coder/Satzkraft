@@ -3786,7 +3786,7 @@ function renderExerciseDetail(identity,returnView){
 }
 function openWorkoutExerciseDetail(ex){
  var cell=currentExerciseCell(ex),snapshot=cell&&cell.performedExercise,swap=currentExerciseSwap(ex),identity=swap?(snapshot&&snapshot.exerciseId||swap):ex.exerciseId||ex.name;
- var entry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry){showHistory(ex);return;}
+ var entry=findExerciseLibraryEntryById(identity)||findExerciseLibraryEntry(identity);if(!entry||!exerciseSwapTypeCompatible(historicalExercise(ex,cell),entry)){showHistory(ex);return;}
  openLib();renderExerciseDetail(identity,"training");
 }
 function openPersonalExerciseForm(identity,returnView,duplicate){

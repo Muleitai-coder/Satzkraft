@@ -31,6 +31,47 @@ function definition(patch={}) {return {id:'custom_my_bench',name:'Meine Bank',ty
 function position(patch={}) {return {id:'A_0',name:'Kurzhantel-Bankdrücken',exerciseId:'dumbbell_bench_press',unit:'reps',w:true,bw:false,perSide:false,...patch};}
 function customProgram(c, def=definition()) {return c.parseProgram(JSON.stringify(sampleProgram({name:def.name,exerciseId:def.id,exerciseDefinition:def,weightConvention:def.weightConvention,perSide:def.perSide}))).prog;}
 
+function workoutDetailContext() {
+ const c=context();
+ vm.runInContext(section('function exHistory(', '// Altbestand des entfernten API-Coachs:'),c);
+ vm.runInContext(section('function openWorkoutExerciseDetail(', 'function openPersonalExerciseForm('),c);
+ Object.assign(c,{
+  currentExerciseCell:ex=>c.S.logs[c.exerciseLogKey(ex)]||null,
+  currentExerciseSwap:ex=>c.normalizeSwapName(c.currentExerciseCell(ex)?.swap),
+  PROG:()=>c.S.programs.sample,isTime:ex=>ex.unit==='seconds',round:Math.round,
+  showModal:(title,body)=>{c.opened={title,body};},
+  openLib:()=>{c.libraryOpened=true;},renderExerciseDetail:identity=>{c.detailIdentity=identity;}
+ });
+ return c;
+}
+
+for(const recorded of [false,true])test(`weighted Step Ups opens its saved week-3 history instead of bodyweight library details (snapshot: ${recorded})`,()=>{
+ const c=workoutDetailContext(),ex=position({name:'Step Ups',exerciseId:undefined,perSide:true});
+ c.S.programs.sample={days:[{key:'A',ex:[ex]}],weeks:Array.from({length:8},()=>({label:'Aufbau'}))};
+ c.S.week=3;
+ const sets=Array.from({length:3},()=>({reps:'15',weight:'12.5'}));
+ if(recorded)c.writeSets(ex,sets);else c.S.logs['3|A|A_0']={sets};
+ c.S.week=5;
+ const before=JSON.stringify(c.S);
+ c.openWorkoutExerciseDetail(ex);
+ assert.equal(c.libraryOpened,undefined);assert.equal(c.opened.title,'Verlauf · Step Ups');
+ assert.match(c.opened.body,/W3/);assert.match(c.opened.body,/15×12\.5 · 15×12\.5 · 15×12\.5/);
+ assert.equal(JSON.stringify(c.S),before);
+});
+
+test('a different per-side recording also keeps its program history',()=>{
+ const c=workoutDetailContext(),ex=position({name:'Step-ups',exerciseId:undefined,w:false,perSide:true});
+ c.S.programs.sample={days:[{key:'A',ex:[ex]}],weeks:[{label:'Aufbau'}]};
+ c.S.logs['1|A|A_0']={sets:[{reps:'12',weight:''}]};
+ c.openWorkoutExerciseDetail(ex);
+ assert.equal(c.libraryOpened,undefined);assert.match(c.opened.body,/12/);
+});
+
+test('a compatible registered exercise still opens its library details',()=>{
+ const c=workoutDetailContext();c.openWorkoutExerciseDetail(position());
+ assert.equal(c.libraryOpened,true);assert.equal(c.detailIdentity,'dumbbell_bench_press');assert.equal(c.opened,undefined);
+});
+
 test('first complete set freezes the initial context through partial entry, renaming and later corrections',()=>{
  const c=context(),ex=position(); c.writeSets(ex,[{reps:'10',weight:''}]);assert.equal(c.S.logs['1|A|A_0'].performedExercise,undefined);
  c.writeSets(ex,[{reps:'10',weight:'20'}]);const snapshot=copy(c.S.logs['1|A|A_0'].performedExercise);
