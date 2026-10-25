@@ -112,4 +112,3 @@ test('REG-27/P0: zwei Fenster schützen Satzwerte, Übernahme und ungesicherte E
   expect(await unsupported.evaluate(() => flushSave())).toBe(false);
   expect(errors).toEqual([]);
 });
-
