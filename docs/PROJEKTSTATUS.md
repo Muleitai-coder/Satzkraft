@@ -1,5 +1,13 @@
 # Satzkraft – zentrale Projektübersicht
 
+## Xcode installiert – 29.10.2026
+
+Xcode 26.6 Universal (Build 17F113) ist auf dem Intel-Mac unter `/Applications/Xcode.app` installiert und als Entwicklerumgebung erkannt. Apple-Archivsignatur, Programmsignatur, macOS-Sicherheitsbewertung und Intel-Unterstützung sind geprüft. Die Anmeldung für Apples Downloadbereich ist abgeschlossen.
+
+**Nächster Schritt beim Nutzer:** Programme → Xcode öffnen, Apples Lizenzbedingungen prüfen und bestätigen. Diese Zustimmung fehlt noch; die Fernsteuerung konnte Xcode wegen fehlender Bedienungsberechtigung nicht öffnen. Danach folgen benötigte iOS-Komponenten, Anmeldung des Personal Teams und die Verbindung zum iPhone. Satzkraft ist noch nicht auf dem iPhone installiert; ein Swift-/Gerätebuild bleibt offen. [Aktuelle Einrichtungsschritte](IOS-START.md).
+
+Die folgenden datierten Abschnitte beschreiben frühere Projektstände.
+
 ## iPhone-Pilot vorbereitet – 22.10.2026
 
 Der persönliche Capacitor-Test ist als separates iOS-Projekt angelegt: lokale App-Dateien, nativer Speicher, Dateifreigabe für Backups und Schutz vor abgebrochenem Restore. Acht gezielte Node-Fälle und ein WebKit-Ablauf mit nachgebildeten nativen Schnittstellen bestanden; Projektsynchronisierung erfolgreich. Web-App und Live-Version bleiben 0.38.0.

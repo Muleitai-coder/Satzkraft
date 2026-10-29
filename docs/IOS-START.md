@@ -1,12 +1,14 @@
 # Satzkraft kostenlos auf deinem iPhone testen
 
-Stand: 23.10.2026 · Vorbereitung auf Basis von Satzkraft 0.38.0, iPhone-Build 1.
+Einrichtungsstand: 29.10.2026. Der iPhone-Pilot wurde ursprünglich mit Satzkraft 0.38.0 begonnen; das native Paket steht inzwischen auf 0.39.0. Ein Gerätebuild ist weiterhin offen.
 
 Das iPhone-Projekt ist vorbereitet. Auf dem Handy installiert ist es noch nicht. Dafür brauchst du Xcode auf deinem Mac, deinen normalen Apple Account und dein iPhone mit Kabel. Ein bezahltes Entwicklerabo ist für diesen persönlichen Test nicht nötig. TestFlight kommt gegebenenfalls später.
 
 ## 1. Xcode auf dem Mac einrichten
 
-Dein gemeldetes Testgerät ist ein **iPhone 17 Pro mit iOS 27.0.1**. Dein **MacBook Pro von 2019 mit Intel Core i9** (MacBookPro16,1) wurde inzwischen auf **macOS Tahoe 26.7.1** aktualisiert. Das vollständige Xcode ist noch nicht installiert.
+Dein gemeldetes Testgerät ist ein **iPhone 17 Pro mit iOS 27.0.1**. Dein **MacBook Pro von 2019 mit Intel Core i9** (MacBookPro16,1) läuft mit **macOS Tahoe 26.7.1**. **Xcode 26.6 Universal (Build 17F113) ist seit dem 29.10.2026 unter `/Applications/Xcode.app` installiert.** Apple-Archivsignatur, Programmsignatur, macOS-Sicherheitsbewertung und Intel-Architektur wurden geprüft; `xcodebuild -version` bestätigt die Version. `xcode-select` zeigt auf diese Installation.
+
+**Jetzt bei dir:** Programme → Xcode öffnen und Apples Lizenzbedingungen prüfen und bestätigen. Weitere Entwicklerwerkzeuge melden derzeit noch die fehlende Lizenzzustimmung. Danach benötigte iOS-Komponenten und deinen Apple Account in Xcode einrichten. Die Apple-Anmeldung für den Download ist abgeschlossen; sie ersetzt die Anmeldung in Xcode nicht. Das Öffnen per Fernsteuerung war wegen fehlender Computer-Use-Berechtigung blockiert.
 
 **Xcode 27 läuft ausschließlich auf Macs mit Apple-Chip.** Die frühere Empfehlung, auf diesem Intel-Mac nach dem macOS-Update Xcode 27 zu installieren, war falsch. Ein weiteres macOS-Update behebt diese Prozessorgrenze nicht.
 
@@ -15,6 +17,8 @@ Für diesen Mac verwenden wir **Xcode 26.6 in der Universal-Ausgabe**, die Intel
 **Noch offen:** Xcode 26.6 enthält das iOS-26.5-SDK, keinen iOS-27-Simulator. Apples Tabelle nennt Geräteunterstützung ab iOS 15 ohne feste Obergrenze. Ob Verbindung, Signierung und Installation mit deinem konkreten iOS 27.0.1 funktionieren, prüfen wir am angeschlossenen iPhone; ein erfolgreicher Gerätebuild ist noch nicht bestätigt.
 
 Quellen: [Apples Hinweis zu Xcode auf Intel-Macs](https://developer.apple.com/documentation/apple-silicon/porting-just-in-time-compilers-to-apple-silicon), [Xcode-Systemanforderungen](https://developer.apple.com/xcode/system-requirements), [ältere Versionen ohne Bezahlabo](https://developer.apple.com/xcode/resources/), [Capacitor-8-Voraussetzungen](https://capacitorjs.com/docs/ios).
+
+Die folgenden Schritte 1–3 sind auf diesem Mac erledigt; weiter geht es mit Schritt 4. Bei einer erneuten Einrichtung:
 
 1. Die [Apple-Downloads für Xcode 26.6](https://developer.apple.com/download/all/?q=Xcode%2026.6) öffnen und selbst bei Apple anmelden.
 2. Das vollständige **Xcode 26.6** herunterladen. Bei mehreren Ausgaben **Universal** wählen; die nur für Apple-Chips angebotene Ausgabe läuft auf diesem Mac nicht. Die „Command Line Tools“ allein reichen nicht.

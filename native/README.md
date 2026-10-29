@@ -42,7 +42,7 @@ npm run ios:open
 
 Die beiden Testbefehle sind gezielt für diesen Adapter, keine vollständige App-Suite. `test:ios-ui` benötigt den zuvor gebauten Stand. Er verwendet isolierte Werte und simulierte Capacitor-Pluginantworten; er kompiliert kein Swift, bedient keine echte iOS-Tastatur und bestätigt keine native Persistenz. Der Screenshot liegt lokal unter `qa/playwright/test-results/` und wird nicht veröffentlicht.
 
-Vorliegende Prüfung: acht Node-Fälle, ein WebKit-Fall, Plist-/Projekt-Syntax und `cap sync ios` erfolgreich. Vollständiges Xcode fehlt auf dem Arbeits-Mac; Kompilierung, Signierung, echte Plugins und Hardwareabnahme sind offen. Die ersten Geräteprüfungen stehen in `docs/IOS-START.md`.
+Vorliegende Prüfung: acht Node-Fälle, ein WebKit-Fall, Plist-/Projekt-Syntax und `cap sync ios` erfolgreich. Xcode 26.6 Universal (Build 17F113) ist seit dem 29.10.2026 auf dem Arbeits-Mac installiert; Apples Lizenzbestätigung und die weitere Einrichtung sind noch offen. Kompilierung, Signierung, echte Plugins und Hardwareabnahme bleiben ungeprüft. Die nächsten Schritte stehen in `docs/IOS-START.md`.
 
 Bei späterer Veröffentlichung native Versionsnummer und Buildnummer bewusst erhöhen. Bundle-ID nach erster Geräteinstallation stabil halten. `www/`, `ios/App/App/public`, persönliche Xcode-Dateien und Zertifikate bleiben unversioniert. Der bestehende Netlify-Build veröffentlicht ausschließlich `dist/`.
 
