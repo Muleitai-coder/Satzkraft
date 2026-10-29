@@ -1,10 +1,12 @@
 # Satzkraft – zentrale Projektübersicht
 
-## Xcode installiert – 29.10.2026
+## Xcode eingerichtet und erster iPhone-Build bestanden – 29.10.2026
 
 Xcode 26.6 Universal (Build 17F113) ist auf dem Intel-Mac unter `/Applications/Xcode.app` installiert und als Entwicklerumgebung erkannt. Apple-Archivsignatur, Programmsignatur, macOS-Sicherheitsbewertung und Intel-Unterstützung sind geprüft. Die Anmeldung für Apples Downloadbereich ist abgeschlossen.
 
-**Nächster Schritt beim Nutzer:** Programme → Xcode öffnen, Apples Lizenzbedingungen prüfen und bestätigen. Diese Zustimmung fehlt noch; die Fernsteuerung konnte Xcode wegen fehlender Bedienungsberechtigung nicht öffnen. Danach folgen benötigte iOS-Komponenten, Anmeldung des Personal Teams und die Verbindung zum iPhone. Satzkraft ist noch nicht auf dem iPhone installiert; ein Swift-/Gerätebuild bleibt offen. [Aktuelle Einrichtungsschritte](IOS-START.md).
+**Bestätigt:** `xcodebuild -checkFirstLaunchStatus`, `npm run ios:doctor` und der vollständige unsignierte Debug-Build für `generic/platform=iOS` bestehen. Die zunächst fehlende iOS-26.5-Plattform ist verfügbar. Das erzeugte App-Paket enthält Satzkraft 0.39.0 / Build 1 samt nativen Plugins und lokalen Web-Dateien. Die aufgelösten Swift-Abhängigkeiten sind im gemeinsamen `Package.resolved` festgeschrieben.
+
+**Nächster Schritt beim Nutzer:** In Xcode den Apple Account anmelden und das Personal Team wählen, dann das iPhone per Kabel verbinden und die Vertrauensabfrage bestätigen. Es wurden noch kein verbundenes Gerät und keine gültige lokale Apple-Entwicklungssignatur erkannt. Das Kabel wird für die Übertragung gebraucht und kann danach wieder abgezogen werden. Satzkraft ist noch nicht auf dem iPhone installiert; Signierung, Verbindung zu iOS 27.0.1 und Hardwareabnahme bleiben offen. Die Fernsteuerung von Xcode ist mangels Computer-Use-Berechtigung nicht verfügbar. [Aktuelle Einrichtungsschritte](IOS-START.md).
 
 Die folgenden datierten Abschnitte beschreiben frühere Projektstände.
 
