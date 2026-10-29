@@ -1,12 +1,12 @@
 # Satzkraft – zentrale Projektübersicht
 
-## Xcode eingerichtet und erster iPhone-Build bestanden – 29.10.2026
+## Satzkraft auf dem eigenen iPhone installiert und gestartet – 29.10.2026
 
 Xcode 26.6 Universal (Build 17F113) ist auf dem Intel-Mac unter `/Applications/Xcode.app` installiert und als Entwicklerumgebung erkannt. Apple-Archivsignatur, Programmsignatur, macOS-Sicherheitsbewertung und Intel-Unterstützung sind geprüft. Die Anmeldung für Apples Downloadbereich ist abgeschlossen.
 
-**Bestätigt:** `xcodebuild -checkFirstLaunchStatus`, `npm run ios:doctor` und der vollständige unsignierte Debug-Build für `generic/platform=iOS` bestehen. Die zunächst fehlende iOS-26.5-Plattform ist verfügbar. Das erzeugte App-Paket enthält Satzkraft 0.39.0 / Build 1 samt nativen Plugins und lokalen Web-Dateien. Die aufgelösten Swift-Abhängigkeiten sind im gemeinsamen `Package.resolved` festgeschrieben.
+**Bestätigt:** Grundkonfiguration, Aktualitätsprüfung, unsignierter und signierter Debug-Build bestehen. Satzkraft 0.39.0 / Build 1 ist über das kostenlose Personal Team auf dem iPhone 17 Pro mit iOS 27.0.1 installiert. App-Signatur und Gerätezuordnung des Entwicklungsprofils wurden geprüft. Nach der Vertrauensfreigabe des Entwicklerprofils startete die App erfolgreich; der Nutzer bestätigt die normale Oberfläche. Die aufgelösten Swift-Abhängigkeiten sind im gemeinsamen `Package.resolved` festgeschrieben.
 
-**Nächster Schritt beim Nutzer:** In Xcode den Apple Account anmelden und das Personal Team wählen, dann das iPhone per Kabel verbinden und die Vertrauensabfrage bestätigen. Es wurden noch kein verbundenes Gerät und keine gültige lokale Apple-Entwicklungssignatur erkannt. Das Kabel wird für die Übertragung gebraucht und kann danach wieder abgezogen werden. Satzkraft ist noch nicht auf dem iPhone installiert; Signierung, Verbindung zu iOS 27.0.1 und Hardwareabnahme bleiben offen. Die Fernsteuerung von Xcode ist mangels Computer-Use-Berechtigung nicht verfügbar. [Aktuelle Einrichtungsschritte](IOS-START.md).
+**Nächster Schritt beim Nutzer:** Kabel abziehen und den kurzen praktischen Test mit Tastatur, Bildschirmrändern, Offline-Eingabe und App-Neustart durchführen. Speicher-/Dateidialoge, Backup und Offline-Datenerhalt sind noch nicht physisch abgenommen. Das aktuelle Entwicklungsprofil läuft am 05.11.2026 um 23:25 Uhr (Europe/Berlin) ab; anschließend erneut aufspielen, ohne die App vorher zu löschen. Persönliche Team-Zuordnung und Signierdaten bleiben ausschließlich lokal. [Aktueller Stand und Checkliste](IOS-START.md).
 
 Die folgenden datierten Abschnitte beschreiben frühere Projektstände.
 

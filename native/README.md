@@ -42,7 +42,11 @@ npm run ios:open
 
 Die beiden Testbefehle sind gezielt für diesen Adapter, keine vollständige App-Suite. `test:ios-ui` benötigt den zuvor gebauten Stand. Er verwendet isolierte Werte und simulierte Capacitor-Pluginantworten; er kompiliert kein Swift, bedient keine echte iOS-Tastatur und bestätigt keine native Persistenz. Der Screenshot liegt lokal unter `qa/playwright/test-results/` und wird nicht veröffentlicht.
 
-Vorliegende Prüfung: neun Node-Fälle, ein WebKit-Fall, Plist-/Projekt-Syntax und `cap sync ios` erfolgreich. Xcode 26.6 Universal (Build 17F113) ist seit dem 29.10.2026 auf dem Arbeits-Mac eingerichtet. `xcodebuild -checkFirstLaunchStatus` und `npm run ios:doctor` bestehen. Die zunächst fehlende iOS-26.5-Plattform ist verfügbar; der nachfolgende unsignierte Debug-Build für `generic/platform=iOS` besteht mit App-Version 0.39.0 / Build 1. Swift-Plugins, Assets und lokale Web-Dateien sind im App-Paket vorhanden. Die einzige Build-Warnung betrifft übersprungene AppIntents-Metadaten; Satzkraft bindet dieses Framework nicht ein. Signierung, echte Plugin-Ausführung und Hardwareabnahme bleiben ungeprüft. Die nächsten Schritte stehen in `docs/IOS-START.md`.
+Vorliegende Prüfung: neun Node-Fälle, ein WebKit-Fall, Plist-/Projekt-Syntax und `cap sync ios` erfolgreich. Xcode 26.6 Universal (Build 17F113) ist seit dem 29.10.2026 auf dem Arbeits-Mac eingerichtet. `xcodebuild -checkFirstLaunchStatus` und `npm run ios:doctor` bestehen. Nach Installation der iOS-26.5-Plattform bestehen sowohl der unsignierte generische Gerätebuild als auch der signierte Debug-Build für das echte iPhone 17 Pro mit iOS 27.0.1. Satzkraft 0.39.0 / Build 1 enthält Swift-Plugins, Assets und lokale Web-Dateien. Die einzige Build-Warnung betrifft übersprungene AppIntents-Metadaten; Satzkraft bindet dieses Framework nicht ein.
+
+`codesign --verify --deep --strict`, Bundle-ID und Gerätezuordnung im eingebetteten Entwicklungsprofil sind geprüft. `devicectl device install app` bestätigt die Installation; nach Vertrauensfreigabe des Profils bestätigt `devicectl device process launch` einen erfolgreichen Start. Die normale Oberfläche ist vom Nutzer auf dem iPhone bestätigt. Das kostenlose Profil läuft am 05.11.2026 um 23:25 Uhr (Europe/Berlin) ab. Tatsächlicher Datenerhalt, Dateifreigabe, Tastatur und Offline-Kaltstart bleiben praktisch zu prüfen. Details in `docs/IOS-START.md`.
+
+Die vom Nutzer gewählte Team-Zuordnung bleibt als lokale Änderung in `project.pbxproj` erhalten. Diese Datei mit persönlicher Team-ID nicht zusammen mit allgemeinen Projektänderungen committen. Zertifikate, Provisionierungsprofile, Gerätekennungen und vollständige Signierprotokolle bleiben außerhalb des versionierten Projekts.
 
 Unsignierte Kompilierungsprüfung im Repository-Hauptordner (installierte iOS-Plattform erforderlich):
 
@@ -61,7 +65,7 @@ Das Icon wird aus `assets/app-icon.svg` (bestehendes Satzkraft-Vektormotiv) mit 
 
 `scripts/freshness.mjs` erfasst gemeinsame Quellen, Buildwerkzeuge, Native-Adapter, Lockfile und eingebettete Ressourcen. Das erzeugte `build-info.json` enthält den Quellfingerprint sowie Hashes sämtlicher Paketdateien. `ios:doctor` verifiziert diese gegen das aktuelle Projekt. Bloße Dateiexistenz gilt nicht mehr als Synchronisierungsnachweis. Vor dem Gerätebuild `npm run ios:sync` ausführen.
 
-Der SceneDelegate erzeugt das einzige Fenster samt Bridge-Controller. Die parallele Scene-/Main-Storyboard-Zuordnung ist entfernt; der LaunchScreen bleibt bestehen. Der unsignierte Gerätebuild besteht; die tatsächliche Fenster- und Plugin-Ausführung auf dem iPhone bleibt zu prüfen.
+Der SceneDelegate erzeugt das einzige Fenster samt Bridge-Controller. Die parallele Scene-/Main-Storyboard-Zuordnung ist entfernt; der LaunchScreen bleibt bestehen. Der signierte Gerätebuild und der sichtbare Start auf dem iPhone bestehen. Die einzelnen nativen Plugin-Abläufe bleiben Teil der praktischen Abnahme.
 
 ### PDF und gemeinsame Build-Abhängigkeiten
 
